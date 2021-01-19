@@ -1,0 +1,28 @@
+psql --host=mp-identifier.cyxo9dxpukfl.us-east-2.rds.amazonaws.com --port=5432 --username=postgres --password --dbname=mpdb
+
+
+CREATE TABLE IF NOT EXISTS users (
+  user_id INT NOT NULL,
+  first_name VARCHAR(45) NOT NULL,
+  last_name VARCHAR(45) NOT NULL,
+  email VARCHAR(45) NOT NULL,
+  password VARCHAR(45) NOT NULL,
+  PRIMARY KEY (user_id)
+);
+
+INSERT INTO users(user_id, first_name, last_name, email, password)
+    VALUES(1,'Joe',  'Jackson', 'joe.jackson@gmail.com', 'jackjoe123'),
+    (2,'Sarah', 'Marcus', 'Sar.Mar@gmail.com', 'SMAR321'),
+    (3,'Evan', 'Samson', 'evsa7039@colorado.edu', 'smevans1598'),
+    (4,'Sawyer', 'Mack', 'Smack.backup@gmail.com', 'prez1234'),
+    (5,'Alan', 'Warder', 'alan.mailbox@gmail.com', 'gobuffs'),
+    (6,'Fred', 'Frankerson', 'franky.frank@hotmail.com', 'frankrules')
+;
+
+select * from users;
+
+CREATE TABLE IF NOT EXISTS testTable (
+    data VARCHAR(45) NULL
+);
+
+INSERT INTO testTable(data) VALUES ('Some test text');
