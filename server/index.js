@@ -1,7 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 var bodyParser = require('body-parser');
-var db = require("./db");
+var db = require("./config/db");
 const path = require('path');
 
 // Express
@@ -12,9 +12,6 @@ app.use(express.static(path.join(__dirname, 'client')));
 
 app.use(cors());
 app.use(express.json()); //req.body
-
-// Body-parser
-//app.use(bodyParser.urlencoded({ extended: false }));
 
 // Routes
 

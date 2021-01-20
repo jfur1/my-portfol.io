@@ -8,11 +8,11 @@ class Home extends Component {
     <div className="App">
       <h1>Project Home</h1>
       {/* Link to List.js */}
-      <Link to={'./test'}>
+      <Link to={'./getData'}>
         <button variant="raised">
-            My List
+            View Database
         </button>
-      </Link>
+      </Link><br></br>
     </div>
     );
   }

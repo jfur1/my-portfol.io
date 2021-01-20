@@ -1,20 +1,21 @@
 import React, { Component } from 'react';
 import './App.css';
 import { Route, Switch } from 'react-router-dom';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 // Components
-import List from "./components/test";
 import Home from "./components/home";
+import List from './components/getData';
 
 class App extends Component {
   render() {
     const App = () => (
-      <div>
+      <>
         <Switch>
-          <Route exact path='/' component={Home}/>
-          <Route path='/test' component={List}/>
+          <Route exact path='/' component={Home} />
+          <Route path='/getData' component={List} />
         </Switch>
-      </div>
+      </>
     )
     return (
       <Switch>
