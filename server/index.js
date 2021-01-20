@@ -2,9 +2,13 @@ const express = require("express");
 const cors = require("cors");
 var bodyParser = require('body-parser');
 var db = require("./db");
+const path = require('path');
 
 // Express
 const app = express();
+
+// Serve the static files from the React app
+app.use(express.static(path.join(__dirname, 'client')));
 
 app.use(cors());
 app.use(express.json()); //req.body
@@ -20,8 +24,8 @@ app.get('/getData', function(req, res){
     })
     .then((d) => {
         console.log("Successfully returned data!");
-        console.log(d);
-        res.json(d.rows);
+        console.log(d, '\n');
+        return res.json(d);
     })
 });
 
