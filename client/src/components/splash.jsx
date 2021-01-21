@@ -6,7 +6,7 @@ class Splash extends Component {
   render() {
     return (
     <div className="App">
-      <h1>Project Home</h1>
+      <img className="logostyle" src="/mp-logo.png" alt="logo" />
       {/* Link to List.js */}
       <Link to={'./getData'}>
         <button variant="raised">

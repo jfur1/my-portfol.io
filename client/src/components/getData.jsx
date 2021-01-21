@@ -29,6 +29,7 @@ class List extends Component {
 
     return (
       <div className="App">
+        <img className="logostyle" src="/mp-logo.png" alt="logo" />
         <h1>List of Items</h1>
         {/* Check to see if any items are found*/}
         {list.length ? (

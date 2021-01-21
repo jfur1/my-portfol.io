@@ -50,6 +50,7 @@ class User extends Component{
     render(){
         return(
             <div className="container">
+                <img className="logostyle" src="/mp-logo.png" alt="logo" />
                 <form onSubmit={this.handleSubmit}>
                     <div className="form-group">
                         <input type="text" className="form-control" placeholder="Enter First Name"name="firstname" value={this.state.firstname} onChange={this.handleInputChange}/>
