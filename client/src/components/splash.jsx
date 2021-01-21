@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
 
-class Home extends Component {
+class Splash extends Component {
   render() {
     return (
     <div className="App">
@@ -12,7 +12,8 @@ class Home extends Component {
         <button variant="raised">
             View Database
         </button>
-      </Link><br></br>
+      </Link>
+      <br></br>
       <Link to={'./newUser'}>
         <button variant="raised">
           Sign Up
@@ -22,4 +23,4 @@ class Home extends Component {
     );
   }
 }
-export default Home;
+export default Splash;

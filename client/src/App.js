@@ -4,7 +4,7 @@ import { Route, Switch } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 // Components
-import Home from "./components/home";
+import Splash from "./components/splash";
 import List from './components/getData';
 import User from "./components/newUser"
 
@@ -13,7 +13,7 @@ class App extends Component {
     const App = () => (
       <>
         <Switch>
-          <Route exact path='/' component={Home} />
+          <Route exact path='/' component={Splash} />
           <Route path='/getData' component={List} />
           <Route path = '/newUser' component={User} />
         </Switch>
