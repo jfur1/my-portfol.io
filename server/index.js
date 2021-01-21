@@ -26,6 +26,10 @@ app.get('/getData', function(req, res){
     })
 });
 
+app.post('/newUser', function(req, res){
+    console.log('Body: ' , req.body);
+});
+
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, console.log('Server started on port ' + PORT));

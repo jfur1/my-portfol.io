@@ -13,6 +13,12 @@ class Home extends Component {
             View Database
         </button>
       </Link><br></br>
+      {/*Link to user.js*/}
+      <Link to={'./newUser'}>
+        <button variant="raised">
+            Add Name
+        </button>
+      </Link>
     </div>
     );
   }
