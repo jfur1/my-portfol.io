@@ -13,6 +13,11 @@ class Home extends Component {
             View Database
         </button>
       </Link><br></br>
+      <Link to={'./newUser'}>
+        <button variant="raised">
+          Sign Up
+        </button>
+      </Link>
     </div>
     );
   }

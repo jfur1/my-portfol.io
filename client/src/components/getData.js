@@ -35,13 +35,19 @@ class List extends Component {
         {list.length ? (
           <div>
             {/* Render the list of items */}
-            {list.map((item, idx) => {
+            <table className="center">
+            {list.map((sublist, idx) => {
               return(
                 <div key={idx}>
-                  {item.data}
+                    <tr>
+                      <th>{sublist.user_id}</th>
+                      <th>{sublist.first_name}  {sublist.last_name}</th>
+                      <th>{sublist.email}</th>
+                    </tr>
                 </div>
               );
             })}
+            </table>
           </div>
         ) : (
           <div>

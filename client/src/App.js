@@ -6,6 +6,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 // Components
 import Home from "./components/home";
 import List from './components/getData';
+import User from "./components/newUser"
 
 class App extends Component {
   render() {
@@ -14,6 +15,7 @@ class App extends Component {
         <Switch>
           <Route exact path='/' component={Home} />
           <Route path='/getData' component={List} />
+          <Route path = '/newUser' component={User} />
         </Switch>
       </>
     )
@@ -24,6 +26,5 @@ class App extends Component {
     );
   }
 }
-
 
 export default App;

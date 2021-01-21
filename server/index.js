@@ -17,13 +17,83 @@ app.use(express.json()); //req.body
 
 app.get('/getData', function(req, res){
     db.tx(t => {
-        return t.any('SELECT * FROM testTable;');
+        return t.any('SELECT * FROM users;');
     })
     .then((d) => {
-        console.log("Successfully returned data!");
+        console.log("Successfully returned users table!");
         console.log(d, '\n');
         return res.json(d);
     })
+
+});
+
+app.post('/insert', (req, res) => {
+    const { data } = req.body;
+    console.log(data);
+
+
+    db.tx(data => {
+        return data.none('INSERT INTO testTable(data) VALUES($1)',[data])
+    })
+    .then(() => {
+        console.log("Inserted data into DB successfully!");
+        res.json();
+    })
+    .catch((err) => {
+        console.log(err);
+    })
+})
+
+app.post('/newUser', function(req, res){
+    console.log('Request Body Recieved by the Server: \n' , req.body);
+    const {
+        firstname,
+        lastname,
+        email,
+        password
+    } = req.body;
+    
+    // Check if user exists in database
+    db.tx(t => {
+        return t.oneOrNone('SELECT * FROM users WHERE \'' + email + '\' = email;');
+    })
+    .then((row) => {
+        if(row !== null){
+            console.log("Email is already taken!");
+        }
+    })
+    .catch((err) => {
+        console.log(err);
+    })
+
+    // Only get to this point if email not already in the DB
+    console.log('Storing User!');
+
+    // Use db.task when we want to chain queries 
+    db.task(t => {
+        return t.one('SELECT MAX(user_id) FROM users;')
+            .then((data) => {
+                //console.log("Data: ", data);
+                let newUserId = data.max;
+                newUserId++;
+                //console.log("New User ID: ", newUserId);
+                return t.none('INSERT INTO users (user_id, first_name, last_name, email, password) VALUES($1, $2, $3, $4, $5)', 
+                [
+                    newUserId,
+                    firstname,
+                    lastname,
+                    email,
+                    password
+                ]);
+            })
+    })
+    .then(user => {
+        console.log('[Server] Success! New user stored in database.');
+    })
+    .catch((err) => {
+        console.log(err);
+    });
+    
 });
 
 const PORT = process.env.PORT || 5000;

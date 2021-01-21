@@ -26,3 +26,5 @@ CREATE TABLE IF NOT EXISTS testTable (
 );
 
 INSERT INTO testTable(data) VALUES ('Some test text');
+
+DELETE FROM users WHERE user_id=9;
