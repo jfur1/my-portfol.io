@@ -58,41 +58,45 @@ app.post('/newUser', function(req, res){
         return t.oneOrNone('SELECT * FROM users WHERE \'' + email + '\' = email;');
     })
     .then((row) => {
-        if(row !== null){
+        console.log(row);
+        if(row === null){
             console.log("Email is already taken!");
+            // Only get to this point if email not already in the DB
+            console.log('Storing User!');
+
+            // Use db.task when we want to chain queries 
+            db.task(t => {
+                return t.one('SELECT MAX(user_id) FROM users;')
+                    .then((data) => {
+                        //console.log("Data: ", data);
+                        let newUserId = data.max;
+                        newUserId++;
+                        //console.log("New User ID: ", newUserId);
+                        return t.none('INSERT INTO users (user_id, first_name, last_name, email, password) VALUES($1, $2, $3, $4, $5)', 
+                        [
+                            newUserId,
+                            firstname,
+                            lastname,
+                            email,
+                            password
+                        ]);
+                    })
+            })
+            .then(user => {
+                console.log('[Server] Success! New user stored in database.');
+                res.send("Stored User!");
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+        }
+        else{
+            console.log("Email already exists!");
         }
     })
     .catch((err) => {
         console.log(err);
     })
-
-    // Only get to this point if email not already in the DB
-    console.log('Storing User!');
-
-    // Use db.task when we want to chain queries 
-    db.task(t => {
-        return t.one('SELECT MAX(user_id) FROM users;')
-            .then((data) => {
-                //console.log("Data: ", data);
-                let newUserId = data.max;
-                newUserId++;
-                //console.log("New User ID: ", newUserId);
-                return t.none('INSERT INTO users (user_id, first_name, last_name, email, password) VALUES($1, $2, $3, $4, $5)', 
-                [
-                    newUserId,
-                    firstname,
-                    lastname,
-                    email,
-                    password
-                ]);
-            })
-    })
-    .then(user => {
-        console.log('[Server] Success! New user stored in database.');
-    })
-    .catch((err) => {
-        console.log(err);
-    });
     
 });
 
