@@ -20,7 +20,6 @@ class List extends Component {
         .then(function(response){
             return response.json();
         })
-        //.then(res => res.json())
         .then(list => this.setState({ list }))
     }
 
@@ -36,17 +35,19 @@ class List extends Component {
           <div>
             {/* Render the list of items */}
             <table className="center">
+              <tbody>
             {list.map((sublist, idx) => {
               return(
-                <div key={idx}>
-                    <tr>
+                // <div key={idx}>
+                    <tr key={idx}>
                       <th>{sublist.user_id}</th>
                       <th>{sublist.first_name}  {sublist.last_name}</th>
                       <th>{sublist.email}</th>
                     </tr>
-                </div>
+                // </div>
               );
             })}
+              </tbody>
             </table>
           </div>
         ) : (
