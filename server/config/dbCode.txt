@@ -19,12 +19,47 @@ INSERT INTO users(user_id, first_name, last_name, email, password)
     (6,'Fred', 'Frankerson', 'franky.frank@hotmail.com', 'frankrules')
 ;
 
-select * from users;
-
-CREATE TABLE IF NOT EXISTS testTable (
-    data VARCHAR(45) NULL
+CREATE TABLE IF NOT EXISTS profile (
+  profile_id INT NOT NULL,
+  bio VARCHAR(240) NULL,
+  links VARCHAR(500) NULL,
+  city VARCHAR(45) NULL,
+  state VARCHAR(45) NULL,
+  country VARCHAR(45) NULL,
+  users_user_id INT NOT NULL,
+  PRIMARY KEY (profile_id, users_user_id),
+  CONSTRAINT fk_user_profile
+    foreign key(users_user_id)
+    REFERENCES users (user_id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
 );
 
-INSERT INTO testTable(data) VALUES ('Some test text');
+INSERT INTO profile(profile_id, bio, links, city, state, country, users_user_id)
+VALUES(1, 'This is my bio!', 'http://google.com', 'Boulder', 'CO', NULL, 6);
 
-DELETE FROM users WHERE user_id=9;
+CREATE TABLE IF NOT EXISTS wall_posts(
+  wall_post_id INT NOT NULL,
+  wall_post_title VARCHAR(45) NULL,
+  wall_post_content VARCHAR(240) NOT NULL,
+  wall_post_date DATE NOT NULL DEFAULT CURRENT_DATE,
+  users_user_id INT NOT NULL,
+  PRIMARY KEY(wall_post_id, users_user_id),
+  CONSTRAINT fk_user_wall
+    foreign key(users_user_id)
+    REFERENCES users(user_id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+);
+
+INSERT INTO wall_posts(wall_post_id, wall_post_content, users_user_id)
+VALUES(1, 'This is the content of my wall post!', 6),
+(2, 'Went for a run today but I broke my legs!', 4),
+(3, 'Like for a tbh', 3);
+
+
+// TEST QUERIES
+
+select * from profile where users_user_id = (select user_id from users where email='johnfurlong24@gmail.com');
+
+select wall_post_content FROM wall_posts where users_user_id = (select user_id from users where email='johnfurlong24@gmail.com');
