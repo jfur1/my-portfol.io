@@ -2,6 +2,13 @@
   text-align: center;
 }
 
+.card-container{
+  margin-top: 5%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .App-logo {
   height: 40vmin;
   pointer-events: none;

@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 
-
-class User extends Component{
+class newUser extends Component{
     constructor(props){
         super(props);
         this.state = {
@@ -50,7 +49,7 @@ class User extends Component{
     render(){
         return(
             <div className="container">
-                <img className="logostyle" src="/mp-logo.png" alt="logo" />
+                <a href="/home"><img className="logostyle" src="/mp-logo.png" alt="logo"/></a>
                 <form onSubmit={this.handleSubmit}>
                     <div className="form-group">
                         <input type="text" className="form-control" placeholder="Enter First Name"name="firstname" value={this.state.firstname} onChange={this.handleInputChange}/>
@@ -72,6 +71,8 @@ class User extends Component{
                     <br/><br/>
                     <div className="form-group">
                         <input className="btn btn-dark btn-lg btn-block" type="submit" value="Submit"/>
+                        {/* <br></br>
+                        <a href="./getData" class="btn btn-secondary btn-block" type="submit">Submit</a> */}
                     </div>
                 </form>
             </div>
@@ -79,4 +80,4 @@ class User extends Component{
     }
 }
 
-export default User;
+export default newUser;

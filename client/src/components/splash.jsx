@@ -1,24 +1,26 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
-
+import { Card } from 'react-bootstrap';
 
 class Splash extends Component {
   render() {
     return (
     <div className="App">
-      <img className="logostyle" src="/mp-logo.png" alt="logo" />
-      {/* Link to List.js */}
-      <Link to={'./getData'}>
-        <button variant="raised">
-            View Database
-        </button>
-      </Link>
-      <br></br>
-      <Link to={'./newUser'}>
-        <button variant="raised">
-          Sign Up
-        </button>
-      </Link>
+      <div className="card-container">
+        <Card style={{width: '35rem'}}>
+          <Card.Body>
+            <a href="/home">
+                <img className="logostyle" src="/mp-logo.png" alt="logo"/>
+            </a>
+            <br></br>
+            <Card.Title>Create an account or login</Card.Title>
+            <br></br>
+            <a href="./register" className="btn btn-primary btn-block mb-2"
+            >Register</a>
+            <br></br>
+            <a href="./login" className="btn btn-primary btn-block">Login</a>
+          </Card.Body>
+        </Card>
+      </div>
     </div>
     );
   }
