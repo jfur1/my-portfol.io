@@ -14,10 +14,9 @@ class Splash extends Component {
             <br></br>
             <Card.Title>Create an account or login</Card.Title>
             <br></br>
-            <a href="./register" className="btn btn-primary btn-block mb-2"
-            >Register</a>
+            <a href="./register" className="btn btn-dark btn-lg btn-block">Register</a>
             <br></br>
-            <a href="./login" className="btn btn-primary btn-block">Login</a>
+            <a href="./login" className="btn btn-dark btn-lg btn-block">Login</a>
           </Card.Body>
         </Card>
       </div>
