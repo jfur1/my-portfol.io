@@ -6,14 +6,14 @@ class Splash extends Component {
   render() {
     return (
     <div className="App">
-      <img className="logostyle" src="/mp-logo.png" alt="logo" />
+      <img src="/mp-logo.png" alt="logo" />
       {/* Link to List.js */}
       <Link to={'./getData'}>
-        <button variant="raised">
+        <button className="btn btn-dark btn-lg" variant="raised">
             View Database
         </button>
       </Link>
-      <br></br>
+      <br><br/>
       <Link to={'./newUser'}>
         <button variant="raised">
           Sign Up

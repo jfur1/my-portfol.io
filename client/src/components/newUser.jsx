@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-
+import Card from 'react-bootstrap/Card';
 
 class User extends Component{
     constructor(props){
@@ -51,29 +51,29 @@ class User extends Component{
         return(
             <div className="container">
                 <img className="logostyle" src="/mp-logo.png" alt="logo" />
-                <form onSubmit={this.handleSubmit}>
-                    <div className="form-group">
-                        <input type="text" className="form-control" placeholder="Enter First Name"name="firstname" value={this.state.firstname} onChange={this.handleInputChange}/>
-                    </div>
-                    <br/><br/>
-                    <div className="form-group">
-                        <input type="text" className="form-control" placeholder="Enter Last Name" name="lastname" value={this.state.lastname} onChange={this.handleInputChange}/>
-                    </div>
-                    <br/><br/>
-                    <div className="form-group">
-                        <input type="text" className="form-control" placeholder="Enter Email" name="email" value={this.state.email} onChange={this.handleInputChange}/>
-                    </div>
-                    <br/><br/>
-                    <div className="form-group">
-                        <input type={this.state.hidden ? 'password' : 'text'} className="form-control" placeholder="Enter Password" name="password" value={this.state.password} id="password" onChange={this.handleInputChange} />
-                        <br/>
-                        <input type="checkbox" onChange={this.handleInputChange}/>Show Password
-                    </div>
-                    <br/><br/>
-                    <div className="form-group">
-                        <input className="btn btn-dark btn-lg btn-block" type="submit" value="Submit"/>
-                    </div>
-                </form>
+                        <form onSubmit={this.handleSubmit}>
+                            <div className="form-group">
+                                <input type="text" className="form-control" placeholder="Enter First Name"name="firstname" value={this.state.firstname} onChange={this.handleInputChange}/>
+                            </div>
+                            
+                            <div className="form-group">
+                                <input type="text" className="form-control" placeholder="Enter Last Name" name="lastname" value={this.state.lastname} onChange={this.handleInputChange}/>
+                            </div>
+                            
+                            <div className="form-group">
+                                <input type="text" className="form-control" placeholder="Enter Email" name="email" value={this.state.email} onChange={this.handleInputChange}/>
+                            </div>
+                            
+                            <div className="form-group">
+                                <input type={this.state.hidden ? 'password' : 'text'} className="form-control" placeholder="Enter Password" name="password" value={this.state.password} id="password" onChange={this.handleInputChange} />
+                                
+                                <input type="checkbox" onChange={this.handleInputChange}/> Show Password
+                            </div>
+                            
+                            <div className="form-group">
+                                <input className="btn btn-dark btn-lg btn-block" type="submit" value="Submit"/>
+                            </div>
+                        </form>
             </div>
         );
     }
