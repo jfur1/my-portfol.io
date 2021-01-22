@@ -126,9 +126,8 @@ class newUser extends Component{
                                 <div className="text-danger">{this.state.errors.confirmpassword}</div>
                                 <div className="text-danger">{this.state.errors.passwordmatch}</div>
                             </div>
-                            
                             <div className="form-group">
-                                <input className="btn btn-dark btn-lg btn-block" type="submit" value="Register"/>
+                            <input className="btn btn-dark btn-lg btn-block" type="submit" value="Register"/>
                             </div>
                         </form>
                     </Card.Body>
