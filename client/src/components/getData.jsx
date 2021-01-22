@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-class List extends Component {
+class UsersTable extends Component {
   // Initialize the state
   constructor(props){
     super(props);
@@ -29,7 +29,7 @@ class List extends Component {
 
     return (
       <div className="App">
-        <img className="logostyle" src="/mp-logo.png" alt="logo" />
+        <a href="/home"><img className="logostyle" src="/mp-logo.png" alt="logo"/></a>
         <h1>List of Items</h1>
         {/* Check to see if any items are found*/}
         {list.length ? (
@@ -53,7 +53,8 @@ class List extends Component {
           </div>
         ) : (
           <div>
-            <h2>No List Items Found</h2>
+            {/* Comment Out: Avoids the temporary "No items found" img upon our initial render (looks smoother).
+            <h2>No List Items Found</h2> */}
           </div>
         )
       }
@@ -62,4 +63,4 @@ class List extends Component {
   }
 }
 
-export default List;
+export default UsersTable;

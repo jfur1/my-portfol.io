@@ -5,8 +5,9 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 // Components
 import Splash from "./components/splash";
-import List from './components/getData';
-import User from "./components/newUser"
+import UsersTable from './components/getData';
+import newUser from "./components/register";
+import Home from './components/home';
 
 class App extends Component {
   render() {
@@ -14,8 +15,9 @@ class App extends Component {
       <>
         <Switch>
           <Route exact path='/' component={Splash} />
-          <Route path='/getData' component={List} />
-          <Route path = '/newUser' component={User} />
+          <Route path='/getData' component={UsersTable} />
+          <Route path = '/register' component={newUser} />
+          <Route path = '/home' component={Home} />
         </Switch>
       </>
     )
