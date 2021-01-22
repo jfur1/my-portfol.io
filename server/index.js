@@ -14,6 +14,7 @@ app.use(express.static(path.join(__dirname, 'client')));
 
 app.use(cors());
 app.use(express.json()); //req.body
+app.use(express.urlencoded({extended: true}));
 
 // Routes
 
