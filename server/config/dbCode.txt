@@ -5,8 +5,9 @@ CREATE TABLE IF NOT EXISTS users (
   user_id INT NOT NULL,
   first_name VARCHAR(45) NOT NULL,
   last_name VARCHAR(45) NOT NULL,
+  username VARCHAR(25) NULL,
   email VARCHAR(45) NOT NULL,
-  password VARCHAR(45) NOT NULL,
+  password VARCHAR(100) NOT NULL,
   PRIMARY KEY (user_id)
 );
 
@@ -16,8 +17,13 @@ INSERT INTO users(user_id, first_name, last_name, email, password)
     (3,'Evan', 'Samson', 'evsa7039@colorado.edu', 'smevans1598'),
     (4,'Sawyer', 'Mack', 'Smack.backup@gmail.com', 'prez1234'),
     (5,'Alan', 'Warder', 'alan.mailbox@gmail.com', 'gobuffs'),
-    (6,'Fred', 'Frankerson', 'franky.frank@hotmail.com', 'frankrules')
-;
+    (6,'Fred', 'Frankerson', 'franky.frank@hotmail.com', 'frankrules');
+
+
+
+
+
+----------------------------------- WAIT TO ADD THESE TABLES -----------------------------
 
 CREATE TABLE IF NOT EXISTS profile (
   profile_id INT NOT NULL,
@@ -27,10 +33,16 @@ CREATE TABLE IF NOT EXISTS profile (
   state VARCHAR(45) NULL,
   country VARCHAR(45) NULL,
   users_user_id INT NOT NULL,
-  PRIMARY KEY (profile_id, users_user_id),
-  CONSTRAINT fk_user_profile
+  wall_post_id INT NOT NULL,
+  PRIMARY KEY (profile_id, users_user_id, wall_post_id),
+  CONSTRAINT fk_profile_user
     foreign key(users_user_id)
     REFERENCES users (user_id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+  CONSTRAINT fk_profile_wall
+    foreign key(wall_post_id)
+    REFERENCES wall_posts(wall_post_id)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION
 );
@@ -44,12 +56,16 @@ CREATE TABLE IF NOT EXISTS wall_posts(
   wall_post_content VARCHAR(240) NOT NULL,
   wall_post_date DATE NOT NULL DEFAULT CURRENT_DATE,
   users_user_id INT NOT NULL,
-  PRIMARY KEY(wall_post_id, users_user_id),
-  CONSTRAINT fk_user_wall
+  profile_profile_id INT NOT NULL,
+  PRIMARY KEY(wall_post_id, users_user_id, profile_profile_id),
+  CONSTRAINT fk_wall_user
     foreign key(users_user_id)
     REFERENCES users(user_id)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION
+  CONSTRAINT fk_profile_wall
+    foreign key(profile_profile_id)
+    REFERENCES profile(profile_id)
 );
 
 INSERT INTO wall_posts(wall_post_id, wall_post_content, users_user_id)
