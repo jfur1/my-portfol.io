@@ -1,7 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 var bodyParser = require('body-parser');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 var db = require("./config/db");
 const path = require('path');
 const { task } = require("./config/db");
