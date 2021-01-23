@@ -1,6 +1,11 @@
 import React, { Component } from 'react';
 import './App.css';
-import { Route, Switch, Redirect } from 'react-router-dom';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link
+} from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 // Components
@@ -22,9 +27,9 @@ class App extends Component {
           <Route path = '/home' component={Home} />
           <Route path = '/login' component={Login} />
           
-          <Route path = '/test' >
+          {/* <Route path = '/test' >
             <Redirect to="/register" />
-          </Route>
+          </Route> */}
           
           {/* Catch-All Method: Undefined Routes Render the Home Componenet */}
           <Route path="*" component={Home} />

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Card } from 'react-bootstrap';
-import { Link, useHistory } from 'react-router-dom';
+import { Route, Redirect } from 'react-router-dom';
 
 class newUser extends Component{
     constructor(props){
@@ -13,7 +13,7 @@ class newUser extends Component{
             password: "",
             confirmpassword: "",
             hidden: true,
-            isRegistered: false,
+            redirect: null,
             errors: {}
         };
         this.handleInputChange = this.handleInputChange.bind(this);
@@ -48,6 +48,8 @@ class newUser extends Component{
             .then(response => response.json())
             .then(data => {
                 console.log('Success:', data);
+                this.setState({redirect: '/login'});
+                return;
             })
             .catch((error) => {
                 console.error('Error:', error);
@@ -96,49 +98,56 @@ class newUser extends Component{
         this.setState({errors: errors});
         return isValid;
     }
+
+
     render(){
-        return(
-            <div className="container">
-                <a href="/home"><img className="logostyle" src="/mp-logo.png" alt="logo"/></a>
-                <div className="card-container">
-                <Card style={{width: '35rem'}}>
-                    <Card.Body>
-                        <form onSubmit={this.handleSubmit}>
-                            <div className="form-group">
-                                <input type="text" className="form-control" placeholder="Enter First Name"name="firstname" value={this.state.firstname} onChange={this.handleInputChange}/>
-                                <div className="text-danger">{this.state.errors.firstname}</div>
-                            </div>
-                            <div className="form-group">
-                                <input type="text" className="form-control" placeholder="Enter Last Name" name="lastname" value={this.state.lastname} onChange={this.handleInputChange}/>
-                                <div className="text-danger">{this.state.errors.lastname}</div>
-                            </div>
-                            <div className="form-group">
-                                <input type="text" className="form-control" placeholder="Enter Username" name="username" value={this.state.username} onChange={this.handleInputChange}/>
-                                <div className="text-danger">{this.state.errors.username}</div>
-                            </div>
-                            <div className="form-group">
-                                <input type="text" className="form-control" placeholder="Enter Email" name="email" value={this.state.email} onChange={this.handleInputChange}/>
-                                <div className="text-danger">{this.state.errors.email}</div>
-                            </div>
-                            <div className="form-group">
-                                <input type={this.state.hidden ? 'password' : 'text'} className="form-control" placeholder="Enter Password" name="password" value={this.state.password} id="password" onChange={this.handleInputChange} />
-                                <div className="text-danger">{this.state.errors.password}</div>
-                                <input type="checkbox" onChange={this.handleInputChange}/> Show Password
-                                <br/>
-                                <input type={this.state.hidden ? 'password' : 'text'} className="form-control" placeholder="Confirm Password" name="confirmpassword" value={this.state.confirmpassword} id="confirmpassword" onChange={this.handleInputChange} />
-                                <div className="text-danger">{this.state.errors.confirmpassword}</div>
-                                <div className="text-danger">{this.state.errors.passwordmatch}</div>
-                            </div>
-                            <div className="form-group">
-                            <input className="btn btn-dark btn-lg btn-block" type="submit" 
-                            value="Register"/>
-                            </div>
-                        </form>
-                    </Card.Body>
-                </Card>
+        if(this.state.redirect){
+            return (<Redirect to={this.state.redirect} />);
+        }
+        else{
+            return(
+                <div className="container">
+                    <a href="/home"><img className="logostyle" src="/mp-logo.png" alt="logo"/></a>
+                    <div className="card-container">
+                    <Card style={{width: '35rem'}}>
+                        <Card.Body>
+                            <form onSubmit={this.handleSubmit}>
+                                <div className="form-group">
+                                    <input type="text" className="form-control" placeholder="Enter First Name"name="firstname" value={this.state.firstname} onChange={this.handleInputChange}/>
+                                    <div className="text-danger">{this.state.errors.firstname}</div>
+                                </div>
+                                <div className="form-group">
+                                    <input type="text" className="form-control" placeholder="Enter Last Name" name="lastname" value={this.state.lastname} onChange={this.handleInputChange}/>
+                                    <div className="text-danger">{this.state.errors.lastname}</div>
+                                </div>
+                                <div className="form-group">
+                                    <input type="text" className="form-control" placeholder="Enter Username" name="username" value={this.state.username} onChange={this.handleInputChange}/>
+                                    <div className="text-danger">{this.state.errors.username}</div>
+                                </div>
+                                <div className="form-group">
+                                    <input type="text" className="form-control" placeholder="Enter Email" name="email" value={this.state.email} onChange={this.handleInputChange}/>
+                                    <div className="text-danger">{this.state.errors.email}</div>
+                                </div>
+                                <div className="form-group">
+                                    <input type={this.state.hidden ? 'password' : 'text'} className="form-control" placeholder="Enter Password" name="password" value={this.state.password} id="password" onChange={this.handleInputChange} />
+                                    <div className="text-danger">{this.state.errors.password}</div>
+                                    <input type="checkbox" onChange={this.handleInputChange}/> Show Password
+                                    <br/>
+                                    <input type={this.state.hidden ? 'password' : 'text'} className="form-control" placeholder="Confirm Password" name="confirmpassword" value={this.state.confirmpassword} id="confirmpassword" onChange={this.handleInputChange} />
+                                    <div className="text-danger">{this.state.errors.confirmpassword}</div>
+                                    <div className="text-danger">{this.state.errors.passwordmatch}</div>
+                                </div>
+                                <div className="form-group">
+                                <input className="btn btn-dark btn-lg btn-block" type="submit" 
+                                value="Register"/>
+                                </div>
+                            </form>
+                        </Card.Body>
+                    </Card>
+                    </div>
                 </div>
-            </div>
-        );
+            );
+        }
     }
 }
 
