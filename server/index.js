@@ -1,20 +1,19 @@
 const express = require("express");
 const cors = require("cors");
-var bodyParser = require('body-parser');
 const bcrypt = require('bcryptjs');
 var db = require("./config/db");
 const path = require('path');
-const { task } = require("./config/db");
+const erv = require('express-react-views');
 
 // Express
 const app = express();
 
-// Serve the static files from the React app
-app.use(express.static(path.join(__dirname, 'client')));
-
 app.use(cors());
 app.use(express.json()); //req.body
 app.use(express.urlencoded({extended: true}));
+
+app.use('/static', express.static(path.join(__dirname, '../../client/build//static')));
+
 
 // Routes
 
@@ -27,22 +26,10 @@ app.get('/getData', function(req, res){
         console.log(d, '\n');
         return res.json(d);
     })
-
 });
 
-app.post('/insert', (req, res) => {
-    const { data } = req.body;
-    console.log(data);
-
-    db.tx(data => {
-        return data.none('INSERT INTO testTable(data) VALUES($1)',[data])
-    })
-    .then(() => {
-        console.log("Inserted data into DB successfully!");
-    })
-    .catch((err) => {
-        console.log(err);
-    })
+app.get('/test', (req, res) => {
+    console.log('hi');
 })
 
 /* 
@@ -107,6 +94,7 @@ app.post('/newUser', async(req, res) => {
     })
     .then(data => {
         console.log("Made it to callback.");
+        return res.json(data);
     })
     .catch((err) => {
         console.log(err);
