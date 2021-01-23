@@ -9,6 +9,12 @@
   justify-content: center;
 }
 
+.card-container > .alert-container{
+  margin-top: 5%;
+  margin-bottom: 5px;
+  display: inline-block;
+}
+
 .App-logo {
   height: 40vmin;
   pointer-events: none;

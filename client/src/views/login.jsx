@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { Card } from 'react-bootstrap';
+import { makeStyles } from '@material-ui/core/styles';
+import { Alert, AlertTitle } from '@material-ui/lab';
 
 class Login extends Component{
     constructor(props){
@@ -71,6 +73,12 @@ class Login extends Component{
                 <div className="card-container">
                 <Card style={{width: '35rem'}}>
                     <Card.Body>
+                    <div className="alert-container">
+                        {/* <Alert severity="error">This is an error alert — check it out!</Alert>
+                        <Alert severity="warning">This is a warning alert — check it out!</Alert>
+                        <Alert severity="info">This is an info alert — check it out!</Alert> */}
+                        <Alert severity="success">This is a success alert — check it out!</Alert>
+                    </div>
                         <form onSubmit={this.handleSubmit}>
                             <div className="form-group">
                                 <input type="text" className="form-control" placeholder="Enter Username or Email" name="username" value={this.state.username} onChange={this.handleInputChange}/>
