@@ -102,7 +102,14 @@ class newUser extends Component{
 
     render(){
         if(this.state.redirect){
-            return (<Redirect to={this.state.redirect} />);
+            return (
+                <Redirect 
+                    to={{
+                        pathname: this.state.redirect,
+                        state: 'You are now registered and can login to your account!'
+                    }} 
+                />
+            );
         }
         else{
             return(
