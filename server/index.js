@@ -67,6 +67,7 @@ app.post('/newUser', async(req, res) => {
     const {
         firstname,
         lastname,
+        username,
         email,
         password
     } = req.body;
@@ -93,11 +94,12 @@ app.post('/newUser', async(req, res) => {
             console.log('Generated hashed password: ');
             console.log(hashedPassword);
 
-            return t.none('INSERT INTO users (user_id, first_name, last_name, email, password) VALUES($1, $2, $3, $4, $5)', 
+            return t.none('INSERT INTO users (user_id, first_name, last_name, username, email, password) VALUES($1, $2, $3, $4, $5, $6)', 
             [
                 newUserId,
                 firstname,
                 lastname,
+                username,
                 email,
                 hashedPassword
             ])
