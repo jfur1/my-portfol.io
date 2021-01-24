@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import FlashMessage from 'react-flash-message';
 
 class UsersTable extends Component {
   // Initialize the state

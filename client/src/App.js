@@ -4,7 +4,6 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
-  Link
 } from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -18,7 +17,7 @@ import Login from './views/login';
 class App extends Component {
   render() {
     const App = () => (
-      <>
+      <Router>
         {/* React Switch: Finds the first path to match our current URI and renders associated component */}
         <Switch>
           <Route exact path='/' component={Splash} />
@@ -34,7 +33,7 @@ class App extends Component {
           {/* Catch-All Method: Undefined Routes Render the Home Componenet */}
           <Route path="*" component={Home} />
         </Switch>
-      </>
+      </Router>
     )
     return (
       <Switch>
