@@ -8,7 +8,7 @@ class Splash extends Component {
       <div className="card-container">
         <Card style={{width: '35rem'}}>
           <Card.Body>
-            <a href="/home">
+            <a href="/">
                 <img className="logostyle" src="/mp-logo.png" alt="logo"/>
             </a>
             <br></br>
