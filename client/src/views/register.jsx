@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Card } from 'react-bootstrap';
-import { Route, Redirect } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 
 class newUser extends Component{
     constructor(props){
@@ -14,7 +14,7 @@ class newUser extends Component{
             confirmpassword: "",
             hidden: true,
             redirect: null,
-            errors: {}
+            errors: {},
         };
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -102,7 +102,14 @@ class newUser extends Component{
 
     render(){
         if(this.state.redirect){
-            return (<Redirect to={this.state.redirect} />);
+            return (
+                <Redirect 
+                    to={{
+                        pathname: this.state.redirect,
+                        state: { newUser: true }
+                    }} 
+                />
+            );
         }
         else{
             return(

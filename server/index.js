@@ -2,9 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const bcrypt = require('bcryptjs');
 var db = require("./config/db");
-const flash = require('connect-flash');
 const path = require('path');
-const erv = require('express-react-views');
 
 // Express
 const app = express();
@@ -12,19 +10,6 @@ const app = express();
 app.use(cors());
 app.use(express.json()); //req.body
 app.use(express.urlencoded({extended: true}));
-
-app.use('/static', express.static(path.join(__dirname, '../../client/build//static')));
-
-// Connect flash
-app.use(flash());
-
-// Global variables
-app.use(function(req, res, next) {
-    res.locals.success_msg = req.flash('success_msg');
-    res.locals.error_msg = req.flash('error_msg');
-    res.locals.error = req.flash('error');
-    next();
-});
 
 // Routes
 
