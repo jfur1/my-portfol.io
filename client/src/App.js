@@ -1,46 +1,29 @@
-import React, { Component } from 'react';
-import './App.css';
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-} from "react-router-dom";
+import React from 'react';
+import { Switch, Route } from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.min.css';
+import './App.css';
 
 // Components
-import Splash from "./views/splash";
-import UsersTable from './views/getData';
-import newUser from "./views/register";
-import Home from './views/home';
-import Login from './views/login';
+import { Welcome } from "./views/welcome";
+import { Dashboard } from './views/dashboard';
+import { ProtectedRoute } from './components/protectedRoute';
+import { Login } from './views/login';
+import { Register } from './views/register';
 
-class App extends Component {
-  render() {
-    const App = () => (
-      <Router>
-        {/* React Switch: Finds the first path to match our current URI and renders associated component */}
-        <Switch>
-          <Route exact path='/' component={Splash} />
-          <Route path='/getData' component={UsersTable} />
-          <Route path = '/register' component={newUser} />
-          <Route path = '/home' component={Home} />
-          <Route path = '/login' component={Login} />
-          
-          {/* <Route path = '/test' >
-            <Redirect to="/register" />
-          </Route> */}
-          
-          {/* Catch-All Method: Undefined Routes Render the Home Componenet */}
-          <Route path="*" component={Home} />
-        </Switch>
-      </Router>
-    )
-    return (
+function App() {
+  return (
+    <div className="App">
       <Switch>
-        <App/>
+        <Route exact path="/" component={Welcome} />
+        <Route exact path="/login" component={Login} />
+        <Route exact path="/register" component={Register} />
+        <ProtectedRoute exact path="/dashboard" component={Dashboard} />
+        <Route path="*" component={() => "404 Not Found"} />
       </Switch>
-    );
-  }
+    </div>
+  );
 }
 
 export default App;
+
+/* <Route> and <ProtectedRoute> pass a 'history' attribute onto props * NOTE: Will not work with react Components!! */

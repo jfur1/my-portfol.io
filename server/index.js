@@ -3,7 +3,6 @@ var cors = require('cors');
 const bcrypt = require('bcryptjs');
 var db = require("./config/db");
 const path = require('path');
-
 const session = require('express-session');
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
@@ -11,11 +10,13 @@ var LocalStrategy = require('passport-local').Strategy;
 // Express
 const app = express();
 
+// Middleware
 app.use(cors());
 app.use(express.json()); //req.body
-app.use(express.urlencoded({extended: true}));
+app.use(express.urlencoded({extended: false}));
 
-// Passport Config
+// ------------------------------------------ BEGIN Passport.js Middleware ---------------------------------------
+
 // Passport Config
 passport.use(
     new LocalStrategy({ usernameField: 'email' }, (email, password, done) => {
@@ -31,12 +32,6 @@ passport.use(
                 console.log('Wrong email!');
                 return done(null, false, { message: 'That email is not registered' });
             }
-
-            //Check if user has verified their account via email
-            //if(!user.verified){
-           //     console.log("Confirm Email to Login"); // User has not verified email
-            //    return done(null, false, { message: 'That email is not verified' });
-            //}
 
             // Match Password
             bcrypt.compare(password, user.password, (err, isMatch) => {
@@ -86,18 +81,12 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-function loggedIn(req, res, next) {
-    if (req.user) {
-        next();
-    } else {
+// ------------------------------------------ END Passport.js Middleware ------------------------------------------
 
-        res.redirect('/login');
-    }
-}
 
 // Routes
 
-app.get('/getData', loggedIn, function(req, res){
+app.get('/getData', function(req, res){
     db.tx(t => {
         return t.any('SELECT * FROM users;');
     })
@@ -107,26 +96,6 @@ app.get('/getData', loggedIn, function(req, res){
     })
 });
 
-app.get('/test', (req, res) => {
-    console.log('hi');
-})
-
-/* 
-    // using an ES7 syntax for the callback:
-    db.task('my-task', async t {
-            // t.ctx = task context object
-
-            const user = await t.one('SELECT id FROM Users WHERE name = $1', 'John');
-            return t.any('SELECT * FROM Events WHERE userId = $1', user.id);
-        })
-        .then(data => {
-            // success
-            // data = as returned from the task's callback
-        })
-        .catch(error => {
-            // error
-        });
-*/
 
 app.post('/newUser', async(req, res) => {
     console.log('Request Body Recieved by the Server: \n' , req.body);
@@ -138,13 +107,12 @@ app.post('/newUser', async(req, res) => {
         password
     } = req.body;
 
-
-
     db.task(async t => {
         const email_check = await t.oneOrNone('SELECT * FROM users WHERE \'' + email + '\' = email;');
         
         if(email_check !== null){
             console.log("Email Already Exists!");
+            res.json({registered: false});
             return null;
         }
         else{
@@ -174,16 +142,20 @@ app.post('/newUser', async(req, res) => {
         }
     })
     .then(data => {
-        console.log("Made it to callback.");
-        return res.json(data);
+        console.log("Server successfully registered user.");
+        res.json({registered: true});
+        return;
     })
     .catch((err) => {
         console.log(err);
+        res.json({registered: false});
     })
 })
 
+
 app.post('/login', (req, res, next) => {
     const { email } = req.body;
+    
     let errors = [];
     db.tx(t => {
         return t.oneOrNone('SELECT * FROM users WHERE \'' + email + '\' = email;');
@@ -191,12 +163,13 @@ app.post('/login', (req, res, next) => {
     .then((data) => {
         console.log("Secret: " + data);
          if (data == null) {
-            console.log("Email ")
-            res.json(`No registed email matching ${email}`);
+            console.log('No users registered with that email!');
+            res.json({authenticated: false});
+            return;
         } else {
             passport.authenticate('local', {
-                successRedirect: '/getData',
-                failureRedirect: '/',
+                successRedirect: '/passport-success',
+                failureRedirect: '/passport-failure',
                 failureFlash: false
             })(req, res, next);
         }
@@ -206,11 +179,24 @@ app.post('/login', (req, res, next) => {
     });
 });
 
+app.get('/passport-success', (req, res) => {
+    console.log("Passport success!");
+    res.json({authenticated: true});
+    return;
+});
+
+app.get('/passport-failure', (req, res) => {
+    console.log('Passoprt Failure!');
+    res.json({authenticated: false});
+    return;
+})
+
 // Logout
 app.get('/logout', (req, res) => {
     req.logout();
     console.log("You logged out");
-    res.redirect('/login');
+    res.json({authenticated: false});
+    return;
 });
 
 
