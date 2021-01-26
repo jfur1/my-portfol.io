@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Card } from 'react-bootstrap';
 import auth from '../components/auth';
+import { AlertMsg } from '../components/alerts';
 
 export const Login = props => {
     const [email, setEmail] = useState();
@@ -13,6 +14,10 @@ export const Login = props => {
                     <img className="logostyle" src="/mp-logo.png" alt="logo"/>
 
                     <Card.Title><h1>Login</h1></Card.Title>
+                    
+                    <div className="alert-container mb-2">
+                        {AlertMsg("success", "This is an example success flash message!")}
+                    </div>
 
                     <div className="form-group">
                         <input type="text" className="form-control" placeholder="Enter Email" name="email" id="email" onChange={e => setEmail(e.target.value)}/>

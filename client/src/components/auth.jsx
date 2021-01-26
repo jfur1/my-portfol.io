@@ -17,7 +17,7 @@ class Auth {
         .then(data => data.json())
         .then(user => {
 
-            if(typeof(user) == undefined || !user.authenticated){
+            if(typeof(user) === undefined || !user.authenticated){
                 this.authenticated = false;
                 next();
                 return;

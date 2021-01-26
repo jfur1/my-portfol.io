@@ -6,12 +6,13 @@ import { registerUser } from '../components/registerUser';
 export const Register = props => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [passwordCheck, setPasswordCheck] = useState("")
     const [firstname, setFirstName] = useState("");
     const [lastname, setLastName] = useState("");
-    const [error, setError] = useState({});
     const [username, setUserName] = useState("");
     const [hidden, toggleHidden] = useToggle();
+    
+    const [passwordCheck, setPasswordCheck] = useState("");
+    const [error, setError] = useState({});
 
     return(
         <div className="card-container">

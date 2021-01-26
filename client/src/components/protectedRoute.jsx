@@ -15,12 +15,14 @@ export const ProtectedRoute = ({
                     return <Component {...props} />;
                 }
                 else{
+                    console.log(props);
                     return <Redirect to={
                         {
                         pathname: '/login',
                         state: {
                             from: props.location,
-                            msg: 'I want to eventually store alerts here'
+                            type: "error",
+                            msg: "You must be logged in to view this resource!"
                         }
                     }} />    
                 }
