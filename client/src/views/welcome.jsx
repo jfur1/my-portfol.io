@@ -13,7 +13,10 @@ export const Welcome = props => {
                 <br></br>
 
                 <button className="btn btn-danger btn-lg btn-block" onClick={() => {
-                    props.history.push("/register");
+                    props.history.push({
+                        pathname: "/register",
+                        state: {isRegistered: null, failedAttempt: false, emailTaken: null, errors: []}
+                        });
                     }
                 }>Register</button>
 

@@ -112,8 +112,7 @@ app.post('/newUser', async(req, res) => {
         
         if(email_check !== null){
             console.log("Email Already Exists!");
-            res.json({registered: false});
-            return null;
+            return res.json({isRegistered: false, failedAttempt: true, emailTaken: true});
         }
         else{
             const max_id = await t.one('SELECT MAX(user_id) FROM users;');
@@ -142,13 +141,12 @@ app.post('/newUser', async(req, res) => {
         }
     })
     .then(data => {
-        console.log("Server successfully registered user.");
-        res.json({registered: true});
+        console.log("Made it to register user callback.");
         return;
     })
     .catch((err) => {
         console.log(err);
-        res.json({registered: false});
+        res.json({isRegistered: false, newUser: false, failedAttempt: true, emailTaken: false});
     })
 })
 
@@ -180,13 +178,13 @@ app.post('/login', (req, res, next) => {
 });
 
 app.get('/passport-success', (req, res) => {
-    console.log("Passport success!");
+    console.log("Passport Login Success!");
     res.json({authenticated: true});
     return;
 });
 
 app.get('/passport-failure', (req, res) => {
-    console.log('Passoprt Failure!');
+    console.log('Passoprt Login Failure!');
     res.json({authenticated: false});
     return;
 })
