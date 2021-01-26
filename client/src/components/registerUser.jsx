@@ -1,7 +1,7 @@
 import { ValidateRegistration } from './validateRegistration';
 
 export const registerUser = (credentials, props, next) => {
-    console.log('props: ', props.history);
+    //console.log('props: ', props.history);
 
     const errors = ValidateRegistration(credentials);
     
@@ -11,7 +11,7 @@ export const registerUser = (credentials, props, next) => {
     if(errors.length){
         console.log("Invalid Registration!");
         console.log("Errors: ", errors);
-        return next(errors);
+        return next({data: {isRegistered: false, failedAttempt: true}, errors: errors});
     }
 
     fetch('http://localhost:5000/newUser', {
@@ -27,16 +27,16 @@ export const registerUser = (credentials, props, next) => {
         console.log('Response:', data);
         if(data.emailTaken){
             errors.push("Email already taken!");
-            return next(errors);
+            return next({data: data, errors: errors});
         }
 
         else if(typeof(data.isRegistered) == undefined || !data.isRegistered){
             console.log("Server Error: Failed to Register!");
             errors.push("Server error! Failed to register.");
-            return next(errors);
+            return next({data: data, errors: errors});
         }
     
-    return next({errors: []});
+    return next({data: data, errors: errors});
     })
     .catch((err) => {
         console.error('Error:', err);

@@ -1,4 +1,5 @@
 import Alert from '@material-ui/lab/Alert';
+
 /* Valid "severity" types: {error, warning, info, success} */
 
 export const AlertMsg = (type, msg) => {
@@ -11,6 +12,6 @@ export const AlertMsg = (type, msg) => {
     }
 
     return (
-        <Alert severity={severity}>{msg}</Alert>
+        <Alert severity={severity}> {msg} </Alert>
     );
 }
