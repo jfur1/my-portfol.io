@@ -19,14 +19,12 @@ class Auth {
 
             if(typeof(user) === undefined || !user.authenticated){
                 this.authenticated = false;
-                next();
-                return;
+                return next();
             }
     
             // Only authenticate a user upon JSON response: {authenticated: true}
             this.authenticated = true;
-            next();
-            return;
+            return next();
         })
         .catch((err) => console.log(err));
     }

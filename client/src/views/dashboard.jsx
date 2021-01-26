@@ -3,7 +3,7 @@ import { Card } from 'react-bootstrap';
 import auth from '../components/auth';
 
 export const Dashboard = props => {
-    //console.log(props);
+    console.log(props.history.location.pathname);
     return (
         <div className="card-container">
             <Card style={{width: '35rem'}}>

@@ -7,6 +7,13 @@ export const Login = props => {
     const [email, setEmail] = useState();
     const [password, setPassword] = useState();
 
+    // Check for first time login
+
+    // Check for failed login attempt
+
+    // Check for null form
+
+
     return(
         <div className="card-container">
             <Card style={{width: '35rem'}}>
@@ -16,7 +23,7 @@ export const Login = props => {
                     <Card.Title><h1>Login</h1></Card.Title>
                     
                     <div className="alert-container mb-2">
-                        {AlertMsg("success", "This is an example success flash message!")}
+                        {AlertMsg("success", "This is an example of a success alert!")}
                     </div>
 
                     <div className="form-group">
@@ -27,13 +34,14 @@ export const Login = props => {
                         <input type="password" className="form-control" placeholder="Enter Password" name="password" id="password" onChange={e => setPassword(e.target.value)}/>
                     </div>
 
-                    <button className="btn btn-danger btn-lg btn-block" onClick={() => { 
-                        auth.login(email, password, 
-                            () => { 
-                                props.history.push("/dashboard");
-                            })
-                    }
-                    }>Login</button>
+                    <button className="btn btn-danger btn-lg btn-block" 
+                        onClick={() => { 
+                            auth.login(email, password, 
+                                () => { 
+                                    props.history.push('/dashboard');
+                                })
+                            }
+                        }>Login</button>
 
                 </Card.Body>
             </Card>
