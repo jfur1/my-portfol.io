@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import { Card } from 'react-bootstrap';
+import { Card, Nav, Navbar } from 'react-bootstrap';
 
 class Splash extends Component {
   render() {
     return (
-    <div className="App">
+    <div className="App" style={{backgroundImage: 'url("/mp-background.jpg")', backgroundPosition: '0 0 center', backgroundSize: 'cover'}}>
       <div className="card-container">
         <Card style={{width: '35rem'}}>
           <Card.Body>
