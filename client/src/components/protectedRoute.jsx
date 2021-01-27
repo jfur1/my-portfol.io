@@ -20,9 +20,9 @@ export const ProtectedRoute = ({
                         {
                         pathname: '/login',
                         state: {
-                            from: props.location,
+                            from: props.history.location,
                             type: "error",
-                            msg: "You must be logged in to view this resource!"
+                            msg: "Failure to Authenticate!"
                         }
                     }} />    
                 }

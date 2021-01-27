@@ -7,12 +7,21 @@ export const Login = props => {
     const [email, setEmail] = useState();
     const [password, setPassword] = useState();
 
-    // Check for first time login
+    let alert;
 
+    if(props.history.location.state == null){
+        alert = null;
+    }
+    // Check for Redirect from Successful Registration
+    else if(props.location.state.isRegistered && !props.location.state.failedAttempt){
+        alert = AlertMsg("success", "You were successfully registered!");
+    }
     // Check for failed login attempt
+    else if(props.history.location.state){
+        alert = AlertMsg("error", "Invalid Email or Password!");
+    }
 
-    // Check for null form
-
+    //console.log("Props Recieved by Login Component: ", props);
 
     return(
         <div className="card-container">
@@ -23,7 +32,7 @@ export const Login = props => {
                     <Card.Title><h1>Login</h1></Card.Title>
                     
                     <div className="alert-container mb-2">
-                        {AlertMsg("success", "This is an example of a success alert!")}
+                        {alert}
                     </div>
 
                     <div className="form-group">

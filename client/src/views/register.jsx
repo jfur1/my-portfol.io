@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card } from 'react-bootstrap';
 import { useToggle } from '../components/useToggle';
 import { registerUser } from '../components/registerUser';
@@ -10,21 +10,23 @@ export const Register = props => {
     const [firstname, setFirstName] = useState("");
     const [lastname, setLastName] = useState("");
     const [username, setUserName] = useState("");
+    const [count, setCount] = useState(0);
     const [hidden, toggleHidden] = useToggle();
-    
     const [passwordCheck, setPasswordCheck] = useState("");
-    const [error, setError] = useState({});
+    
+
+    useEffect(() => {
+        console.log("Render Count = ", count);
+    })
 
     let alert;
-    console.log(props);
 
-    // Null upon first render -- either fail or succeed registration
-    // Only defined on this page when registration attempt has failed
-    if(props.location.state.emailTaken === true){
-        alert = AlertMsg("error", "Email Already Exists!");
-    } 
-    else if(props.location.state.failedAttempt && props.location.state.errors){
-        alert = AlertMsg("warning", props.location.state.errors[0]);
+    if(count === 0){
+        alert = null;
+    }
+    else if(props.location.state["data"].failedAttempt && props.location.state["errors"]){
+        alert = AlertMsg("warning", props.location.state["errors"][0]);
+        props.location.state["errors"].pop();
     }
     else{
         console.log("State upon render: ", props.location.state);
@@ -61,15 +63,17 @@ export const Register = props => {
 
                     <button className="btn btn-danger btn-lg btn-block" onClick={() => { 
                         registerUser({firstname, lastname, username, email, password, passwordCheck}, {props},
-                            (errors) => { 
-
+                            (res) => { 
+                                setCount(count + 1);
                                 console.log("State: ", props.location.state);
-
+                                console.log("Client Recieved Response: ", res);
+                                const data = res["data"];
+                                const errors = res["errors"];
                                 
-                                if(!(props.location.state.isRegistered)){
+                                if(errors.length > 0){
                                     props.history.push({
                                         pathname: '/register',
-                                        state: {isRegistered: false, failedAttempt: true, errors: errors}
+                                        state: {data: data,  errors: errors}
                                     });
                                 } else{
                                     props.history.push({
@@ -77,9 +81,9 @@ export const Register = props => {
                                         state: {isRegistered: true, failedAttempt: false, errors: []}
                                     });
                                 }
-                            });
-                        }
-                    }>Register</button>
+                            }   
+                        );
+                    }}>Register</button>
 
                 </Card.Body>
             </Card>

@@ -15,7 +15,7 @@ export const Welcome = props => {
                 <button className="btn btn-danger btn-lg btn-block" onClick={() => {
                     props.history.push({
                         pathname: "/register",
-                        state: {isRegistered: null, failedAttempt: false, emailTaken: null, errors: []}
+                        state: {isRegistered: false, failedAttempt: false, emailTaken: false, errors: []}
                         });
                     }
                 }>Register</button>

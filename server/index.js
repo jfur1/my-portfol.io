@@ -112,7 +112,7 @@ app.post('/newUser', async(req, res) => {
         
         if(email_check !== null){
             console.log("Email Already Exists!");
-            return res.json({isRegistered: false, failedAttempt: true, emailTaken: true});
+            return false;
         }
         else{
             const max_id = await t.one('SELECT MAX(user_id) FROM users;');
@@ -141,8 +141,12 @@ app.post('/newUser', async(req, res) => {
         }
     })
     .then(data => {
+        if(data === false){
+            return res.json({isRegistered: false, failedAttempt: true, emailTaken: true});
+        }
+
         console.log("Made it to register user callback.");
-        return;
+        return res.json({isRegistered: true, failedAttempt: false, emailTaken: false});
     })
     .catch((err) => {
         console.log(err);
