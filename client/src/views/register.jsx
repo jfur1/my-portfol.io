@@ -67,13 +67,11 @@ export const Register = props => {
                                 setCount(count + 1);
                                 console.log("State: ", props.location.state);
                                 console.log("Client Recieved Response: ", res);
-                                const data = res["data"];
-                                const errors = res["errors"];
                                 
-                                if(errors.length > 0){
+                                if(res["errors"].length > 0){
                                     props.history.push({
                                         pathname: '/register',
-                                        state: {data: data,  errors: errors}
+                                        state: {data: res["data"],  errors: res["errors"]}
                                     });
                                 } else{
                                     props.history.push({

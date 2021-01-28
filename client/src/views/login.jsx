@@ -21,8 +21,6 @@ export const Login = props => {
         alert = AlertMsg("error", "Invalid Email or Password!");
     }
 
-    //console.log("Props Recieved by Login Component: ", props);
-
     return(
         <div className="card-container">
             <Card style={{width: '35rem'}}>
@@ -46,8 +44,11 @@ export const Login = props => {
                     <button className="btn btn-danger btn-lg btn-block" 
                         onClick={() => { 
                             auth.login(email, password, 
-                                () => { 
-                                    props.history.push('/dashboard');
+                                (res) => { 
+                                    props.history.push({
+                                        pathname: '/dashboard',
+                                        state: res
+                                    });
                                 })
                             }
                         }>Login</button>

@@ -10,6 +10,8 @@ import { ProtectedRoute } from './components/protectedRoute';
 import { Login } from './views/login';
 import { Register } from './views/register';
 
+import  UsersTable  from  './oldCode/getData';
+
 function App() {
   return (
     <div className="App">
@@ -18,6 +20,7 @@ function App() {
         <Route exact path="/login" component={Login} />
         <Route exact path="/register" component={Register} />
         <ProtectedRoute exact path="/dashboard" component={Dashboard} />
+        <ProtectedRoute exact path="/getData" component={UsersTable} />
         <Route path="*" component={() => "404 Not Found"} />
       </Switch>
     </div>

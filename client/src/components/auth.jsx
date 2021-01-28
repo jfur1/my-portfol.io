@@ -5,21 +5,23 @@ class Auth {
 
     login(email, password, next){
 
-        const data = { email, password }
-        
-        if(!email && !password) return next({error: "Please fill in all required forms!"});
-        else if(!email) return next({error: "Enter Email!"});
-        else if(!password) return next({error: "Enter Password!"});
+        const data = { email, password };
 
         fetch('http://localhost:5000/login', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
             },
-            body: JSON.stringify(data)
+            withCredentials: true,
+            mode: 'cors',
+            credentials: 'include',
+            body: JSON.stringify(data),
         })
         .then(data => data.json())
         .then(user => {
+
+            console.log("User Recieved by /auth : ", user);
 
             if(typeof(user) === undefined || !user.authenticated){
                 this.authenticated = false;
@@ -28,15 +30,30 @@ class Auth {
     
             // Only authenticate a user upon JSON response: {authenticated: true}
             this.authenticated = true;
-            return next({error: false});
+            return next(user.data);
         })
         .catch((err) => console.log(err));
     }
 
     // User remains authenticated until they log out
-    logout(cb){
-        this.authenticated = false;
-        cb();
+    logout(next){
+        fetch('http://localhost:5000/logout', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            withCredentials: true,
+            mode: 'cors',
+            credentials: 'include',
+        })
+        .then(data => data.json())
+        .then((res) => {
+            console.log("Logged Out.");
+            this.authenticated = false;
+            return next();
+        })
+        .catch((err) => console.log(err));
     }
 
     isAuthenticated(){

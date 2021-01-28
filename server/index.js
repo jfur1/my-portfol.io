@@ -3,19 +3,20 @@ var cors = require('cors');
 const bcrypt = require('bcryptjs');
 var db = require("./config/db");
 const path = require('path');
+const cookieParser = require('cookie-parser');
 const session = require('express-session');
-var passport = require('passport');
+const passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
 
 // Express
 const app = express();
 
 // Middleware
-app.use(cors());
+app.use(cors({credentials: true, origin: 'http://localhost:3000'}));
 app.use(express.json()); //req.body
 app.use(express.urlencoded({extended: false}));
 
-// ------------------------------------------ BEGIN Passport.js Middleware ---------------------------------------
+// --------------------------- BEGIN Passport.js Middleware ---------------------
 
 // Passport Config
 passport.use(
@@ -41,6 +42,7 @@ passport.use(
 
                 if (isMatch) {
                     console.log('Made it past username and password checks!');
+                    //console.log("Passport Middleware User: ", user);
                     return done(null, user);
                 } else {
                     console.log('Wrong password!');
@@ -63,6 +65,7 @@ passport.deserializeUser((user_id, done) => {
         return t.one('SELECT * FROM users WHERE \'' + user_id + '\' = user_id;');
     })
     .then((res) => {
+        console.log("Deserialized User");
         done(null, res);
     })
     .catch((err) => {
@@ -73,29 +76,22 @@ passport.deserializeUser((user_id, done) => {
 // Express Session
 app.use(session({
     secret: 'secret',
-    resave: true,
-    saveUninitialized: true
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        secure: false,
+        maxAge: 60*1000
+    }
 }));
 
 // Passport Middleware
 app.use(passport.initialize());
 app.use(passport.session());
 
-// ------------------------------------------ END Passport.js Middleware ------------------------------------------
 
+// ------------------------ END Passport.js Middleware ------------------------------
 
 // Routes
-
-app.get('/getData', function(req, res){
-    db.tx(t => {
-        return t.any('SELECT * FROM users;');
-    })
-    .then((d) => {
-        console.log("Successfully returned users table!");
-        res.json(d);
-    })
-});
-
 
 app.post('/newUser', async(req, res) => {
     console.log('Request Body Recieved by the Server: \n' , req.body);
@@ -163,17 +159,35 @@ app.post('/login', (req, res, next) => {
         return t.oneOrNone('SELECT * FROM users WHERE \'' + email + '\' = email;');
     })
     .then((data) => {
-        console.log("Secret: " + data);
+
          if (data == null) {
             console.log('No users registered with that email!');
             res.json({authenticated: false});
             return;
         } else {
-            passport.authenticate('local', {
-                successRedirect: '/passport-success',
-                failureRedirect: '/passport-failure',
-                failureFlash: false
-            })(req, res, next);
+            passport.authenticate('local', (err, user) => {
+
+                req.logIn(user, (err) => {
+
+                    if(req.isAuthenticated()){
+
+                        return res.json({
+                            authenticated: true, 
+                            data: {
+                                user_id: req.user.user_id,
+                                firstname: req.user.first_name,
+                                lastname: req.user.last_name,
+                                username: req.user.username,
+                                email: req.user.email
+                            }
+                        });
+                    }
+                    else{
+                        return res.json({authenticated: false});
+                    }
+                });
+            })
+            (req, res, next);
         }
     })
     .catch(err => {
@@ -181,26 +195,37 @@ app.post('/login', (req, res, next) => {
     });
 });
 
-app.get('/passport-success', (req, res) => {
-    console.log("Passport Login Success!");
-    res.json({authenticated: true});
-    return;
-});
-
-app.get('/passport-failure', (req, res) => {
-    console.log('Passoprt Login Failure!');
-    res.json({authenticated: false});
-    return;
-})
-
 // Logout
-app.get('/logout', (req, res) => {
+app.post('/logout', (req, res) => {
     req.logout();
     console.log("You logged out");
     res.json({authenticated: false});
     return;
 });
 
+app.get('/getData', ensureAuthenticated, (req, res) => {
+    db.tx(t => {
+        return t.any('SELECT * FROM users;');
+    })
+    .then((d) => {
+        console.log("Successfully returned users table!");
+        return res.json(d);
+    })
+    .catch((err) => console.log(err));
+});
+
+function ensureAuthenticated(req, res, next) {
+    if (req.isAuthenticated()) { 
+        //console.log(req.session);
+        // console.log("Req.user: ", req.user);
+        // console.log("User Auth? :", req.isAuthenticated());
+        return next(); 
+    }
+    console.log("Invalid Session -- Could not authenticate client cookie");
+    console.log(req.session);
+
+    res.json({authenticated: false});
+  }
 
 const PORT = process.env.PORT || 5000;
 
