@@ -16,7 +16,12 @@ class UsersTable extends Component {
 
     // Retrieves the list of items from the Express app
     getList = () => {
-        fetch('http://localhost:5000/getData')
+        fetch('http://localhost:5000/getData',{
+          method: 'GET',
+          mode: 'cors',
+          credentials: 'include',
+          withCredentials: true
+        })
         .then(function(response){
             return response.json();
         })

@@ -35,8 +35,11 @@ export const registerUser = (credentials, props, next) => {
             errors.push("Server error! Failed to register.");
             return next({data: data, errors: errors});
         }
-    
-    return next({data: data, errors: errors});
+        else{
+            // Errors should be empty. Store non-sensitive user data here
+            
+            return next({data: data, errors: errors});
+        }
     })
     .catch((err) => {
         console.error('Error:', err);
