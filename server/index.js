@@ -61,11 +61,11 @@ passport.serializeUser((user, done) => {
 });
 
 passport.deserializeUser((user_id, done) => {
+
     db.tx(t => {
         return t.one('SELECT * FROM users WHERE \'' + user_id + '\' = user_id;');
     })
     .then((res) => {
-        console.log(res);
         console.log("Deserialized User");
         done(null, res);
     })
@@ -167,9 +167,9 @@ app.post('/login', (req, res, next) => {
             return;
         } else {
             passport.authenticate('local', (err, user) => {
-
+                if(err) console.log(err);
                 req.logIn(user, (err) => {
-
+                    if(err) console.log(err);
                     if(req.isAuthenticated()){
 
                         return res.json({
