@@ -1,9 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Card } from 'react-bootstrap';
 import auth from '../components/auth';
+import { createPost } from '../components/createPost';
+import GetPosts from '../components/getPosts';
 
 
 export const Dashboard = props => {
+    const [newPost, setNewPost] = useState("");
 
     console.log("Props.Location.State: ", props.location.state);
 
@@ -36,6 +39,23 @@ export const Dashboard = props => {
                         });
                     }}> Logout</button>
 
+                </Card.Body>
+            </Card>
+            <Card style={{width: '35rem'}}>
+                <Card.Body>
+                    <br></br>
+                    <Card.Title>Feed</Card.Title>
+                    <br></br>
+                    <div className="form-group">
+                        <input type="text" className="form-control" placeholder="Share your shit." name="newPost" id="newPost" onChange={e => setNewPost(e.target.value)}/>
+                    </div>
+                    <button className="btn btn-danger btn-lg btn-block" onClick={() => {
+                        createPost({newPost}, (res) => {
+                            console.log(res);
+                            props.history.push("/dashboard");
+                        });
+                    }}> Add New Post</button>
+                    <GetPosts/>
                 </Card.Body>
             </Card>
         </div>

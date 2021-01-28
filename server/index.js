@@ -65,6 +65,7 @@ passport.deserializeUser((user_id, done) => {
         return t.one('SELECT * FROM users WHERE \'' + user_id + '\' = user_id;');
     })
     .then((res) => {
+        console.log(res);
         console.log("Deserialized User");
         done(null, res);
     })

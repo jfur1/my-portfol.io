@@ -1,10 +1,11 @@
-export const getUserData = () => {
-
-    fetch('http://localhost:5000/getUserData', {
-        method: 'GET',
+export const createPost = (post) => {
+    console.log(post);
+    fetch('http://localhost:5000/createPost', {
+        method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-        }
+        },
+        body: JSON.stringify(post)
     })
     .then(res => res.json())
     .then(data => {
@@ -12,6 +13,4 @@ export const getUserData = () => {
         return;
     })
     .catch((err) => console.log(err));
-    
-
 }
