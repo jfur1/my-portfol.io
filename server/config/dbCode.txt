@@ -21,6 +21,20 @@ INSERT INTO users(user_id, first_name, last_name, username, email, password)
     (5,'Alan', 'Warder', '@warderA', 'alan.mailbox@gmail.com', 'gobuffs'),
     (6,'Fred', 'Frankerson', '@freddyF', 'franky.frank@hotmail.com', 'frankrules');
 
+CREATE TABLE IF NOT EXISTS post (
+  pid SERIAL PRIMARY KEY,
+  body VARCHAR CONSTRAINT tbl_col_len CHECK (length(body) < 240),
+  uid INT REFERENCES users(user_id),
+  author VARCHAR REFERENCES users(username),
+  date_created DATE NOT NULL DEFAULT CURRENT_DATE,
+  like_user_id INT[] DEFAULT ARRAY[]::INT[],
+  likes INT DEFAULT 0
+);
+
+INSERT INTO post(body, uid, author)
+VALUES('This is an example of a body for a post! We don''t need to insert post_id because they are auto incremented by postgres!', 8, '@dopamine'),
+('I love football so much!', 7, 'tristanhanna');
+
 
 CREATE TABLE IF NOT EXISTS profile (
   profile_id INT NOT NULL,
@@ -54,31 +68,38 @@ SELECT email FROM users WHERE user_id=(
 );
 
 
-CREATE TABLE IF NOT EXISTS post (
-  post_id INT NOT NULL,
-  profile_id INT NOT NULL,
-  post_date DATE NOT NULL DEFAULT CURRENT_DATE,
-  tags VARCHAR(64) NULL,
-  content VARCHAR(240) NOT NULL,
-  other_details VARCHAR(64) NULL,
-  PRIMARY KEY(post_id)
-);
-
-// Insert Test Data
-INSERT INTO post(post_id, profile_id, tags, content, other_details)
-  VALUES(1, 2, '#test', 'Sarah here! Testing the content of my post!', 'I like cats'),
-  (2, 1, '', 'Why I hate my name, Sawyer', ''),
-  (3, 3, '#playoffs', 'Anyone see the game last night?', '');
-
-// Test Query: Get the email of anyone who used the tag '#playoffs
-SELECT email FROM users WHERE user_id = (
-  SELECT profile_id FROM profile WHERE profile_id=(
-    SELECT profile_id FROM post WHERE tags='#playoffs'
-  )
-);
-
 
 ----------------------------------- WAIT TO ADD THESE TABLES -----------------------------
+from: https://www.freecodecamp.org/news/fullstack-react-blog-app-with-express-and-psql/
+
+CREATE TABLE users (
+  uid SERIAL PRIMARY KEY,
+  username VARCHAR(255) UNIQUE,
+  email VARCHAR(255),
+  email_verified BOOLEAN,
+  date_created DATE,
+  last_login DATE
+);
+
+CREATE TABLE IF NOT EXISTS post (
+  pid SERIAL PRIMARY KEY,
+  body VARCHAR(240),
+  uid INT REFERENCES users(user_id),
+  author VARCHAR REFERENCES users(username),
+  date_created TIMESTAMP,
+  like_user_id INT[] DEFAULT ARRAY[]::INT[],
+  likes INT DEFAULT 0
+);
+
+CREATE TABLE comments (
+  cid SERIAL PRIMARY KEY,
+  comment VARCHAR(255),
+  author VARCHAR REFERENCES users(username),
+  user_id INT REFERENCES users(uid),
+  post_id INT REFERENCES posts(pid),
+  date_created TIMESTAMP
+);
+-------------------------------------------------------------------
 
 */
 CREATE TABLE users (
