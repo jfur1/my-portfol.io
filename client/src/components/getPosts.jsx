@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Post } from '../views/post';
 
 class GetPosts extends Component {
   // Initialize the state
@@ -33,7 +32,7 @@ class GetPosts extends Component {
 
   render() {
     const { list } = this.state;
-    console.log("List: ", list);
+    console.log("Get Posts Returned: ", list);
 
     return (
       <div className="posts">

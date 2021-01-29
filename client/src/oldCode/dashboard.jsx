@@ -13,7 +13,7 @@ export const Dashboard = props => {
     console.log("Props.Location.State: ", props.location.state);
 
     // Fetch User Data
-    const user = props.location.state;
+    let user = props.location.state;
 
     return (
         <>
@@ -69,7 +69,7 @@ export const Dashboard = props => {
                             <button className="btn btn-success btn-md btn-block" onClick={() => {
                                 createPost({newPost}, user, () => {
                                     props.history.push({
-                                        pathname: "/newPost",
+                                        pathname: "/dashboard",
                                         state: user,
                                     });
                                 });

@@ -1,4 +1,5 @@
 export const createPost = (post, user, next) => {
+    console.log(post);
     // Clean data -- so we can send as one JSON object
     user["post"] = post["newPost"];
     console.log(user);
@@ -15,8 +16,13 @@ export const createPost = (post, user, next) => {
     })
     .then(res => res.json())
     .then(data => {
-        console.log("User Data Recieved by Client: ", data);
-        return next();
+        console.log("Create Post Response: ", data);
+        if(typeof data["status"] !== 'undefined' && data["status"] === true){
+            return next(true);
+        }
+        else{
+            return next(false);
+        }
     })
     .catch((err) => console.log(err));
 }

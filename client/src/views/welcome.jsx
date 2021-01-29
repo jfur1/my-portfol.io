@@ -3,7 +3,7 @@ import { Card } from 'react-bootstrap';
 
 export const Welcome = props => {
     return (
-        <div className="card-container">
+        <div className="splash-container">
             <Card style={{width: '35rem'}}>
             <Card.Body>
                 <img className="logostyle" src="/mp-logo.png" alt="logo"/>

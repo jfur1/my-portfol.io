@@ -33,17 +33,17 @@ class TestGetPostsList extends Component {
 
   render() {
     const { list } = this.state;
-    console.log("List: ", list);
+    console.log("Posts: ", list);
 
     return (
       <div className="posts">
-          
+
         {list.length ? (
           <div>
 
             {list.map((sublist, idx) => {
               return(
-                    <Post data={sublist} />
+                    <Post data={sublist} key={idx}/>
               );
             })}
 
