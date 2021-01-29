@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Card } from 'react-bootstrap';
 import auth from '../components/auth';
 import { createPost } from '../components/createPost';
-import GetPosts  from '../components/getPosts';
+//import GetPosts  from '../components/getPosts';
 import TestGetPostsList from '../components/testGetPostsList';
 
 

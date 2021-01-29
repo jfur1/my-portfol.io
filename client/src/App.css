@@ -95,7 +95,7 @@ table.center {
 /* Container for the "Create New Post" Card */
 .user-posts-container > .card{
   margin-top: 5%;
-  width: 50%;
+  width: 100%;
 }
 
 /* Container of the list of user posts */
