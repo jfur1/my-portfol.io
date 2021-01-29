@@ -32,7 +32,7 @@ class UsersTable extends Component {
     const { list } = this.state;
 
     return (
-      <div className="App">
+        <div className="getDataList">
         <a href="/home"><img className="logostyle" src="/mp-logo.png" alt="logo"/></a>
         <h1>List of Items</h1>
         {/* Check to see if any items are found*/}
@@ -62,7 +62,7 @@ class UsersTable extends Component {
           </div>
         )
       }
-      </div>
+    </div>
     );
   }
 }

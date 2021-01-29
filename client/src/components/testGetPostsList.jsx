@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Post } from '../views/post';
 
-class GetPosts extends Component {
+class TestGetPostsList extends Component {
   // Initialize the state
   constructor(props){
     super(props);
@@ -37,22 +37,16 @@ class GetPosts extends Component {
 
     return (
       <div className="posts">
-        {/* Check to see if any items are found*/}
+          
         {list.length ? (
           <div>
-            {/* Render the list of items */}
-            <table className="center">
-              <tbody>
+
             {list.map((sublist, idx) => {
               return(
-                    <tr key={idx}>
-                      <th>{sublist["body"]}</th>
-                      <th>{sublist["date_created"]}</th>
-                    </tr>
+                    <Post data={sublist} />
               );
             })}
-              </tbody>
-            </table>
+
           </div>
         ) : (
           <div>
@@ -66,4 +60,4 @@ class GetPosts extends Component {
   }
 }
 
-export default GetPosts;
+export default TestGetPostsList;

@@ -1,18 +1,6 @@
 .App {
-  text-align: center;
-}
-
-.card-container{
-  margin-top: 5%;
+  text-align: left;
   display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.card-container > .alert-container{
-  margin-top: 5%;
-  margin-bottom: 5px;
-  display: inline-block;
 }
 
 .App-logo {
@@ -69,4 +57,68 @@ table.center {
     margin-top: 2%;
     margin-bottom: 2%;
     height: 100px;
+}
+
+/* Container for login */ 
+.App > .login-container {
+  text-align: center;
+  margin: auto auto;
+  justify-content: center;
+  margin-top: 5%;
+}
+
+.App > .getDataList {
+  text-align: center;
+  margin: auto auto;
+  justify-content: center;
+  margin-top: 5%;
+}
+
+/* Default parent styling for .card-container*/
+.card-container{
+  display: flex;
+  margin-top: 3%;
+}
+
+/* Container for user profile card */
+.profile-container > .card{
+  margin-left: 5%;
+  height: 75%;
+}
+
+/* Card for the right side of user dashboard */
+.card-container > .user-posts-container{
+  width: 75%;
+  margin: 0% 0% 0% 10%;
+}
+
+/* Container for the "Create New Post" Card */
+.user-posts-container > .card{
+  margin-top: 5%;
+  width: 50%;
+}
+
+/* Container of the list of user posts */
+.user-posts-container > .post-list-container{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 15%;
+}
+
+/* Container for individual posts */
+.post-container{
+  width: auto;
+  margin-right: auto;
+  margin-top: 3%;
+  background-color: #DADED4;
+  padding: 3%;
+}
+
+/* Alert */
+.card-container > .alert-container{
+  margin-top: 5%;
+  margin-bottom: 5px;
+  display: inline-block;
 }
