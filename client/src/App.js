@@ -5,13 +5,13 @@ import './App.css';
 
 // Components
 import { Welcome } from "./views/welcome";
-import { Dashboard } from './oldCode/dashboard';
+import { Profile } from './views/profile';
 import { ProtectedRoute } from './components/protectedRoute';
 import { Login } from './views/login';
 import { Register } from './views/register';
 
-import { Profile } from './views/profile';
 import  UsersTable  from  './oldCode/getData';
+import { Dashboard } from './oldCode/dashboard';
 
 function App() {
   return (

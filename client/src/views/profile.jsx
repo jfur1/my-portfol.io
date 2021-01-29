@@ -55,7 +55,6 @@ export const Profile = props => {
                 <div className="user-posts-container">
                     <Card>
                         <Card.Body>
-                            <br></br>
                             <Card.Title><h3>New Post</h3></Card.Title>
 
                             <div className="form-group">

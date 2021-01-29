@@ -100,7 +100,6 @@ table.center {
 /* Container for user profile card */
 .profile-container > .card{
   margin-left: 5%;
-  height: 75%;
 }
 
 /* Card for the right side of user dashboard */
