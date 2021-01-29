@@ -30,7 +30,6 @@ class UsersTable extends Component {
 
   render() {
     const { list } = this.state;
-    console.log("List: ", list);
 
     return (
       <div className="App">

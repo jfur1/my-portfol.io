@@ -11,19 +11,15 @@ export const ProtectedRoute = ({
         <Route 
             {...rest} 
             render={ (props) => {
-                if(auth.isAuthenticated()){
-                    return <Component {...props} />;
+
+                if(auth.isAuthenticated() || props.location.state){
+                    return <Component {...props}/>;
                 }
                 else{
-                    console.log(props);
                     return <Redirect to={
                         {
                         pathname: '/login',
-                        state: {
-                            from: props.history.location,
-                            type: "error",
-                            msg: "Failure to Authenticate!"
-                        }
+                        state: props.history.state   
                     }} />    
                 }
             }

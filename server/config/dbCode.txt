@@ -22,7 +22,7 @@ INSERT INTO users(user_id, first_name, last_name, username, email, password)
     (6,'Fred', 'Frankerson', '@freddyF', 'franky.frank@hotmail.com', 'frankrules');
 
 CREATE TABLE IF NOT EXISTS post (
-  pid SERIAL PRIMARY KEY,
+  pid INT NOT NULL PRIMARY KEY,
   body VARCHAR CONSTRAINT tbl_col_len CHECK (length(body) < 240),
   uid INT REFERENCES users(user_id),
   author VARCHAR REFERENCES users(username),
@@ -31,9 +31,9 @@ CREATE TABLE IF NOT EXISTS post (
   likes INT DEFAULT 0
 );
 
-INSERT INTO post(body, uid, author)
-VALUES('This is an example of a body for a post! We don''t need to insert post_id because they are auto incremented by postgres!', 8, '@dopamine'),
-('I love football so much!', 7, 'tristanhanna');
+INSERT INTO post(pid, body, uid, author)
+VALUES(1, 'This is an example of a body for a post! We don''t need to insert post_id because they are auto incremented by postgres!', 8, '@dopamine'),
+(2, 'I love football so much!', 7, 'tristanhanna');
 
 
 CREATE TABLE IF NOT EXISTS profile (

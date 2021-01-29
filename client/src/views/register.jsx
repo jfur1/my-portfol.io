@@ -76,7 +76,7 @@ export const Register = props => {
                                 } else{
                                     props.history.push({
                                         pathname: '/login',
-                                        state: {isRegistered: true, failedAttempt: false, errors: []}
+                                        state: {newlyRegistered: true}
                                     });
                                 }
                             }   

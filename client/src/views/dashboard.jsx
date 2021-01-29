@@ -2,12 +2,13 @@ import React, { useState } from 'react';
 import { Card } from 'react-bootstrap';
 import auth from '../components/auth';
 import { createPost } from '../components/createPost';
-import GetPosts from '../components/getPosts';
+import GetPosts  from '../components/getPosts';
 
 
 export const Dashboard = props => {
     const [newPost, setNewPost] = useState("");
-
+    
+    
     console.log("Props.Location.State: ", props.location.state);
 
     // Fetch User Data
@@ -15,7 +16,7 @@ export const Dashboard = props => {
 
     return (
         <div className="card-container">
-            <Card style={{width: '35rem'}}>
+            <Card style={{width: '25rem'}}>
                 <Card.Body>
 
                     <img className="logostyle" src="/mp-logo.png" alt="logo"/>
@@ -30,32 +31,46 @@ export const Dashboard = props => {
                     <p><b>Email: </b>{user.email}</p>
                     
                     <button className="btn btn-primary btn-lg btn-block" onClick={() => {
-                        props.history.push("/getData");
-                    }}> View Database </button>
+                        props.history.push({
+                            pathname: "/getData",
+                            state: {auth: true}
+                        });
+                    }}> View All Users </button>
 
                     <button className="btn btn-danger btn-lg btn-block" onClick={() => {
                         auth.logout(() => {
-                            props.history.push("/login");
+                            props.history.push({
+                                pathname:"/login",
+                                state: {loggedOut: true}
+                            });
                         });
                     }}> Logout</button>
 
                 </Card.Body>
             </Card>
-            <Card style={{width: '35rem'}}>
+            <Card style={{width: '25rem'}}>
                 <Card.Body>
                     <br></br>
-                    <Card.Title>Feed</Card.Title>
-                    <br></br>
+                    <Card.Title><h3>New Post</h3></Card.Title>
+
                     <div className="form-group">
-                        <input type="text" className="form-control" placeholder="Share your shit." name="newPost" id="newPost" onChange={e => setNewPost(e.target.value)}/>
+                        <input type="text" className="form-control" placeholder="What's on your mind?" name="newPost" id="newPost" onChange={e => setNewPost(e.target.value)}/>
                     </div>
                     <button className="btn btn-danger btn-lg btn-block" onClick={() => {
-                        createPost({newPost}, (res) => {
-                            console.log(res);
-                            props.history.push("/dashboard");
+                        createPost({newPost}, user, () => {
+                            props.history.push({
+                                pathname: "/newPost",
+                                state: user,
+                            });
                         });
                     }}> Add New Post</button>
-                    <GetPosts/>
+
+                </Card.Body>
+            </Card>
+            <Card style={{width: '25rem'}}>
+                <Card.Body>
+                    <h3>Your Posts:</h3>
+                    <GetPosts user={user}/>
                 </Card.Body>
             </Card>
         </div>

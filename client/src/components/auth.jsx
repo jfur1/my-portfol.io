@@ -21,11 +21,11 @@ class Auth {
         .then(data => data.json())
         .then(user => {
 
-            console.log("User Recieved by /auth : ", user);
+            //console.log("User Recieved by /auth : ", user);
 
-            if(typeof(user) === undefined || !user.authenticated){
+            if(!(typeof user !== 'undefined') || !user["authenticated"]){
                 this.authenticated = false;
-                return next({error: "Failure to Authneticate!"});
+                return next({error: true});
             }
     
             // Only authenticate a user upon JSON response: {authenticated: true}

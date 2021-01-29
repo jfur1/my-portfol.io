@@ -66,7 +66,7 @@ passport.deserializeUser((user_id, done) => {
         return t.one('SELECT * FROM users WHERE \'' + user_id + '\' = user_id;');
     })
     .then((res) => {
-        console.log("Deserialized User");
+        //console.log("Deserialized User");
         done(null, res);
     })
     .catch((err) => {
@@ -81,7 +81,7 @@ app.use(session({
     saveUninitialized: false,
     cookie: {
         secure: false,
-        maxAge: 60*1000
+        maxAge: 60*60*1000
     }
 }));
 
@@ -226,7 +226,51 @@ function ensureAuthenticated(req, res, next) {
     console.log(req.session);
 
     res.json({authenticated: false});
-  }
+}
+
+app.post('/createPost', (req, res) => {
+
+    const {
+        user_id,
+        username,
+        post
+    } = req.body;
+
+    db.task(async t => {
+        const max_id = await t.one('SELECT MAX(pid) FROM post;');
+        
+        if(max_id !== null){
+            const newPostId = max_id.max + 1;
+            const logs = await t.none('INSERT INTO post (pid, body, uid, author) VALUES ($1, $2, $3, $4)', 
+            [newPostId, post, user_id, username]);
+            return {status: "success"};
+        }
+        else{
+            return {status: "failed"};
+        }
+    })
+    .then(() => {
+        return;
+    })
+    .catch((err) => console.log(err));
+});
+
+app.get('/getPosts', (req, res, next) => {
+    //console.log("User Trying to Make Get Request: ", req.user);
+    
+    if(typeof req.user !== 'undefined'){
+        db.tx(t => {
+            return t.any('SELECT * FROM post WHERE \''+ req.user.user_id +'\' = uid;');
+        })
+        .then((posts) => {
+            return res.json(posts);
+        })
+        .catch((err) => console.log(err));
+    } else{
+        res.json({error: true});
+        return next();
+    }
+})
 
 const PORT = process.env.PORT || 5000;
 

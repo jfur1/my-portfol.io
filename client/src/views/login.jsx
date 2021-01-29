@@ -9,15 +9,21 @@ export const Login = props => {
 
     let alert;
 
-    if(props.history.location.state == null){
+    console.log("Props at Login: ", props);
+
+    if(!(typeof(props.location.state) !== 'undefined')){
         alert = null;
     }
-    // Check for Redirect from Successful Registration
-    else if(props.location.state.isRegistered && !props.location.state.failedAttempt){
+    // Alert for successful logout
+    else if(typeof props.location.state["loggedOut"] !== 'undefined'){
+        alert = AlertMsg("success", "You were successfully logged out!");
+    }
+    // Alert for successful registration
+    else if(typeof props.location.state["newlyRegistered"] !== 'undefined'){
         alert = AlertMsg("success", "You were successfully registered!");
     }
     // Check for failed login attempt
-    else if(props.history.location.state){
+    else if(typeof props.location.state["failedAttempt"] !== 'undefined'){
         alert = AlertMsg("error", "Invalid Email or Password!");
     }
 
@@ -45,14 +51,21 @@ export const Login = props => {
                         onClick={() => { 
                             auth.login(email, password, 
                                 (res) => { 
-                                    props.history.push({
-                                        pathname: '/dashboard',
-                                        state: res
-                                    });
+                                    if(typeof res["error"] !== 'undefined'){
+                                        props.history.push({
+                                            pathname: '/login',
+                                            state: {failedAttempt: true}
+                                        });
+                                    }
+                                    else{
+                                        props.history.push({
+                                            pathname: '/dashboard',
+                                            state: res
+                                        });
+                                    }
                                 })
                             }
                         }>Login</button>
-
                 </Card.Body>
             </Card>
         </div>

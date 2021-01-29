@@ -5,7 +5,7 @@ class GetPosts extends Component {
   constructor(props){
     super(props);
     this.state = {
-      list: []
+      list: [],
     }
   }
 
@@ -20,12 +20,14 @@ class GetPosts extends Component {
           method: 'GET',
           mode: 'cors',
           credentials: 'include',
-          withCredentials: true
+          withCredentials: true,
         })
         .then(function(response){
-            return response.json();
+          console.log("Get Posts Response: ", response);
+          return response.json();
         })
-        .then(list => this.setState({ list }))
+        .then(list => {this.setState({ list })
+        })
     }
 
   render() {
@@ -44,8 +46,8 @@ class GetPosts extends Component {
               return(
                 // <div key={idx}>
                     <tr key={idx}>
-                      <th>{sublist.post}</th>
-                      <th>{sublist.date}</th>
+                      <th>{sublist["body"]}</th>
+                      <th>{sublist["date_created"]}</th>
                     </tr>
                 // </div>
               );
@@ -56,7 +58,7 @@ class GetPosts extends Component {
         ) : (
           <div>
             {/* Comment Out: Avoids the temporary "No items found" img upon our initial render (looks smoother).*/}
-            <h2>No List Items Found</h2>
+            <h2>No Posts Found</h2>
           </div>
         )
       }
