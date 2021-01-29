@@ -104,7 +104,7 @@ table.center {
 
 /* Card for the right side of user dashboard */
 .card-container > .user-posts-container{
-  width: 75%;
+  width: auto;
   margin: 0% 0% 0% 10%;
 }
 

@@ -11,7 +11,7 @@ import { Login } from './views/login';
 import { Register } from './views/register';
 
 import  UsersTable  from  './oldCode/getData';
-import { Dashboard } from './oldCode/dashboard';
+
 
 function App() {
   return (
@@ -29,5 +29,3 @@ function App() {
 }
 
 export default App;
-
-/* <Route> and <ProtectedRoute> pass a 'history' attribute onto props * NOTE: Will not work with react Components!! */
