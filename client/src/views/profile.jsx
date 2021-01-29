@@ -21,8 +21,7 @@ export const Profile = props => {
           console.log("Get Posts Response: ", response);
           return response.json();
         })
-        .then(list => {setPostsList(list)
-        })
+        .then(list => {setPostsList(list)})
     }
 
     useEffect(() => {
