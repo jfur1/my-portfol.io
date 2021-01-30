@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Card } from 'react-bootstrap';
 import auth from '../components/auth';
 import { createPost } from '../components/createPost';
-import { Post } from '../views/post';
+import { Post } from './post';
 
 export const Profile = props => {
     const [newPost, setNewPost] = useState("");
@@ -105,7 +105,6 @@ export const Profile = props => {
                                     </div>
                                 ) : (
                                 <div>
-                                    {/* Comment Out: Avoids the temporary "No items found" img upon our initial render (looks smoother).*/}
                                     <h2>No Posts Found</h2>
                                 </div>
                                 )
