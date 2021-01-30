@@ -6,7 +6,7 @@ import auth from '../components/auth';
 import { Portfolio } from '../views/portfolio';
 import { Post } from '../views/post';
 
-class Profile2 extends Component{
+class Profile extends Component{
     constructor(props){
         super(props);
         this.state = {
@@ -195,4 +195,4 @@ class Profile2 extends Component{
 
 }
 
-export default Profile2;
+export default Profile;

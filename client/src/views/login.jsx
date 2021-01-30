@@ -9,7 +9,7 @@ export const Login = props => {
 
     let alert;
 
-    console.log("Props at Login: ", props);
+    { /* console.log("Props at Login: ", props); */ }
 
     if(!(typeof(props.location.state) !== 'undefined')){
         alert = null;
