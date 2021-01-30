@@ -97,21 +97,10 @@ table.center {
   margin-top: 3%;
 }
 
-/* Container for user profile card */
-.profile-container > .card{
-  margin-left: 5%;
-}
-
-/* Card for the right side of user dashboard */
-.card-container > .user-posts-container{
-  width: auto;
-  margin: 0% 0% 0% 10%;
-}
-
 /* Container for the "Create New Post" Card */
-.user-posts-container > .card{
+.user-posts-container {
   margin-top: 5%;
-  width: 50%;
+  width: auto;
 }
 
 /* Container of the list of user posts */
@@ -121,12 +110,11 @@ table.center {
   align-items: center;
   justify-content: center;
   margin-top: 15%;
+  width: auto;
 }
 
 /* Container for individual posts */
 .post-container{
-  width: auto;
-  margin-right: auto;
   margin-top: 3%;
   background-color: #DADED4;
   padding: 3%;
@@ -137,4 +125,31 @@ table.center {
   margin-top: 5%;
   margin-bottom: 5px;
   display: inline-block;
+}
+
+.info-container{
+  width:80%;
+  margin: 0 auto;
+}
+
+.profile-nav{
+  width:50%;
+  margin: 0 auto;
+  align-items: center;
+  text-align: center;
+  display:flex;
+  flex-direction:row;
+  justify-content:space-around;
+}
+
+.container{
+  display:flex;
+  flex-direction: column;
+}
+
+.user-container{
+  display:flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin:5% 5% 2% 5%;
 }

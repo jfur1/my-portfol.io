@@ -58,6 +58,7 @@ export const Login = props => {
                                         });
                                     }
                                     else{
+                                        res["toggleMap"] = [true, false, false, false];
                                         props.history.push({
                                             pathname: '/dashboard',
                                             state: res
