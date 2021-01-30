@@ -11,6 +11,7 @@ import { Login } from './views/login';
 import { Register } from './views/register';
 
 import  UsersTable  from  './oldCode/getData';
+import { Demo } from './components/demo';
 
 
 function App() {
@@ -18,6 +19,8 @@ function App() {
     <div className="App">
       <Switch>
         <Route exact path="/" component={Welcome} />
+
+        <Route exact path="/demo" component={Demo} />
         <Route exact path="/login" component={Login} />
         <Route exact path="/register" component={Register} />
         <ProtectedRoute exact path="/dashboard" component={Profile} />
