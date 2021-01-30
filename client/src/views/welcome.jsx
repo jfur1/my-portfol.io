@@ -9,7 +9,7 @@ export const Welcome = props => {
                 <img className="logostyle" src="/mp-new-logo-beta.png" alt="logo"/>
 
                 <br></br>
-                <Card.Title>Create an account or login</Card.Title>
+                <Card.Title>Create an account or login.</Card.Title>
                 <br></br>
 
                 <button className="btn btn-success btn-lg btn-block" onClick={() => {

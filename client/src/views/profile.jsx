@@ -147,7 +147,7 @@ export const Profile = props => {
                                     <div className="posts">
 
                                     {postsList.length ? (
-                                        <div>
+                                        <div className="post-list">
                                             {postsList.map((sublist, idx) => {
                                             return(
                                                 <Post data={sublist} key={idx} />
