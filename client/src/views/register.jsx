@@ -38,7 +38,7 @@ export const Register = props => {
         <div className="register-container">
             <Card style={{width: '35rem'}}>
                 <Card.Body>
-                    <img className="logostyle" src="/mp-logo.png" alt="logo"/>
+                    <img className="logostyle" src="/mp-new-logo.png" alt="logo"/>
                     <Card.Title><h1>Register</h1></Card.Title>
                     
                     <div className="alert-container mb-2">
@@ -61,7 +61,7 @@ export const Register = props => {
 
                     <input type={hidden ? 'password' : 'text'} className="form-control" placeholder="Confirm Password" name="passwordCheck" id="passwordCheck" onChange={e => setPasswordCheck(e.target.value)}/>
 
-                    <button className="btn btn-danger btn-lg btn-block" onClick={() => { 
+                    <button className="btn btn-success btn-lg btn-block" onClick={() => { 
                         registerUser({firstname, lastname, username, email, password, passwordCheck}, {props},
                             (res) => { 
                                 setCount(count + 1);

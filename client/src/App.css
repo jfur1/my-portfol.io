@@ -1,6 +1,7 @@
 .App {
   text-align: left;
-  display: flex;
+  display:flex;
+  width:auto;
 }
 
 .App-logo {
@@ -56,7 +57,7 @@ table.center {
     margin-right: auto;
     margin-top: 2%;
     margin-bottom: 2%;
-    height: 100px;
+    height: 50px;
 }
 
 /* Container for login */ 
@@ -153,3 +154,8 @@ table.center {
   justify-content: space-between;
   margin:5% 5% 2% 5%;
 }
+
+button{
+  background:lightgreen;
+}
+

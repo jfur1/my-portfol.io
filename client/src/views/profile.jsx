@@ -54,7 +54,7 @@ export const Profile = props => {
         <>
             <div className="container">
                 <Navbar>
-                    <Navbar.Brand href="/dashboard"><img style={{height: "50px"}} src="/mp-logo.png" alt="logo"/></Navbar.Brand>
+                    <Navbar.Brand href="/dashboard"><img style={{height: "30px"}} src="/mp-new-logo.png" alt="logo"/></Navbar.Brand>
                     <Navbar.Toggle />
                     <Navbar.Collapse className="justify-content-end">
                         <Navbar.Text>
@@ -97,14 +97,14 @@ export const Profile = props => {
                                 <p><b>Email: </b>{user.email}</p>
                                 <br></br>
                                 
-                                <button className="btn btn-primary btn-lg btn-block" onClick={() => {
+                                <button className="btn btn-success btn-lg btn-block" onClick={() => {
                                     props.history.push({
                                         pathname: "/getData",
                                         state: {auth: true}
                                     });
                                 }}> View All Users </button>
 
-                                <button className="btn btn-danger btn-lg btn-block" onClick={() => {
+                                <button className="btn btn-success btn-lg btn-block" onClick={() => {
                                     auth.logout(() => {
                                         props.history.push({
                                             pathname:"/login",
@@ -118,8 +118,8 @@ export const Profile = props => {
                     </div> : null }
                     
                     { hiddenPosts ?  
-                    <div>
-                        <div className="user-posts-container">
+                    <div style={{overflow: 'scroll', height: '500px'}}>
+                        <div className="profile-container">
                             <Card>
                                 <Card.Body>
                                     <Card.Title><h3>New Post</h3></Card.Title>
@@ -150,7 +150,7 @@ export const Profile = props => {
                                         <div>
                                             {postsList.map((sublist, idx) => {
                                             return(
-                                                <Post data={sublist} key={idx}/>
+                                                <Post data={sublist} key={idx} />
                                             );
                                         })}
                                         </div>

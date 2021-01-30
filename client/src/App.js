@@ -15,7 +15,7 @@ import  UsersTable  from  './oldCode/getData';
 
 function App() {
   return (
-    <div className="App">
+    <div className="App" style={{backgroundImage: 'url("/geo-bg.png")', backgroundSize: 'cover', backgroundAttachment: 'scroll', height: '100vh'}}>
       <Switch>
         <Route exact path="/" component={Welcome} />
         <Route exact path="/login" component={Login} />
