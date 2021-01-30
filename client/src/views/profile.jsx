@@ -116,7 +116,7 @@ export const Profile = props => {
                             </Card.Body>
                         </Card>
                     </div> : null }
-                
+                    
                     { hiddenPosts ?  
                     <div>
                         <div className="user-posts-container">
