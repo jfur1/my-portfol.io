@@ -16,7 +16,7 @@ import { Demo } from './components/demo';
 
 function App() {
   return (
-    <div className="App">
+    <div className="App" style={{backgroundImage: 'url("/geo-bg.png")', backgroundSize: 'cover', backgroundAttachment: 'scroll', height: '100vh'}}>
       <Switch>
         <Route exact path="/" component={Welcome} />
 
