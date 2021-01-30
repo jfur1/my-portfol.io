@@ -54,7 +54,7 @@ export const Profile = props => {
         <>
             <div className="container">
                 <Navbar>
-                    <Navbar.Brand href="/dashboard"><img style={{height: "30px"}} src="/mp-new-logo.png" alt="logo"/></Navbar.Brand>
+                    <Navbar.Brand href="/dashboard"><img style={{height: "30px"}} src="/mp-new-logo-beta.png" alt="logo"/></Navbar.Brand>
                     <Navbar.Toggle />
                     <Navbar.Collapse className="justify-content-end">
                         <Navbar.Text>

@@ -33,7 +33,7 @@ class UsersTable extends Component {
 
     return (
         <div className="getDataList">
-        <a href="/home"><img className="logostyle" src="/mp-logo.png" alt="logo"/></a>
+        <a href="/home"><img className="logostyle" src="/mp-new-logo-beta.png" alt="logo"/></a>
         <h1>List of Items</h1>
         {/* Check to see if any items are found*/}
         {list.length ? (

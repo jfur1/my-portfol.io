@@ -38,7 +38,7 @@ export const Register = props => {
         <div className="register-container">
             <Card style={{width: '35rem'}}>
                 <Card.Body>
-                    <img className="logostyle" src="/mp-new-logo.png" alt="logo"/>
+                    <img className="logostyle" src="/mp-new-logo-beta.png" alt="logo"/>
                     <Card.Title><h1>Register</h1></Card.Title>
                     
                     <div className="alert-container mb-2">
