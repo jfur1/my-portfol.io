@@ -1,16 +1,17 @@
 import React from 'react';
-import { Switch, Route, Redirect } from "react-router-dom";
+import { Switch, Route } from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 
 // Components
 import { Welcome } from "./views/welcome";
-import { Dashboard } from './views/dashboard';
+import { Profile } from './views/profile';
 import { ProtectedRoute } from './components/protectedRoute';
 import { Login } from './views/login';
 import { Register } from './views/register';
 
 import  UsersTable  from  './oldCode/getData';
+
 
 function App() {
   return (
@@ -19,8 +20,7 @@ function App() {
         <Route exact path="/" component={Welcome} />
         <Route exact path="/login" component={Login} />
         <Route exact path="/register" component={Register} />
-        <Redirect from="/newPost" to="dashboard" />
-        <ProtectedRoute exact path="/dashboard" component={Dashboard} />
+        <ProtectedRoute exact path="/dashboard" component={Profile} />
         <ProtectedRoute exact path="/getData" component={UsersTable} />
         <Route path="*" component={() => "404 Not Found"} />
       </Switch>
@@ -29,5 +29,3 @@ function App() {
 }
 
 export default App;
-
-/* <Route> and <ProtectedRoute> pass a 'history' attribute onto props * NOTE: Will not work with react Components!! */

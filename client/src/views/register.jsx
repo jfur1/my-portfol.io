@@ -35,7 +35,7 @@ export const Register = props => {
 
 
     return(
-        <div className="card-container">
+        <div className="register-container">
             <Card style={{width: '35rem'}}>
                 <Card.Body>
                     <img className="logostyle" src="/mp-logo.png" alt="logo"/>

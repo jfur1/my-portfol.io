@@ -67,6 +67,23 @@ table.center {
   margin-top: 5%;
 }
 
+/* Container for splash */ 
+.App > .splash-container {
+  text-align: center;
+  margin: auto auto;
+  justify-content: center;
+  margin-top: 5%;
+}
+
+/* Container for register */ 
+.App > .register-container {
+  text-align: center;
+  margin: auto auto;
+  justify-content: center;
+  margin-top: 5%;
+}
+
+/* Container for list of users */ 
 .App > .getDataList {
   text-align: center;
   margin: auto auto;
@@ -83,12 +100,11 @@ table.center {
 /* Container for user profile card */
 .profile-container > .card{
   margin-left: 5%;
-  height: 75%;
 }
 
 /* Card for the right side of user dashboard */
 .card-container > .user-posts-container{
-  width: 75%;
+  width: auto;
   margin: 0% 0% 0% 10%;
 }
 

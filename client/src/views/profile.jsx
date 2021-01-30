@@ -1,19 +1,35 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card } from 'react-bootstrap';
 import auth from '../components/auth';
 import { createPost } from '../components/createPost';
-//import GetPosts  from '../components/getPosts';
-import TestGetPostsList from '../components/testGetPostsList';
+import { Post } from '../views/post';
 
-
-export const Dashboard = props => {
+export const Profile = props => {
     const [newPost, setNewPost] = useState("");
-    
-    
-    console.log("Props.Location.State: ", props.location.state);
+    const [user, setUser] = useState(props.location.state);
+    const [postsList, setPostsList] = useState("");
 
-    // Fetch User Data
-    const user = props.location.state;
+    // Retrieves the list of items from the Express app
+    const getPosts = async () => {
+        fetch('http://localhost:5000/getPosts',{
+          method: 'GET',
+          mode: 'cors',
+          credentials: 'include',
+          withCredentials: true,
+        })
+        .then(response => {
+          console.log("Get Posts Response: ", response);
+          return response.json();
+        })
+        .then(list => {setPostsList(list)})
+    }
+
+    useEffect(() => {
+        getPosts();
+        console.log("Posts: ", postsList);
+        return () => {}
+    }, []);
+
 
     return (
         <>
@@ -26,7 +42,7 @@ export const Dashboard = props => {
                         <img className="logostyle" src="/mp-logo.png" alt="logo"/>
 
                         <br></br>
-                        <Card.Title><b>Protected</b> Dashboard</Card.Title>
+                        <Card.Title><b>Protected</b> Profile</Card.Title>
                         <br></br>
 
                         <h3>Welcome {user.firstname} {user.lastname} </h3>
@@ -60,19 +76,15 @@ export const Dashboard = props => {
                 <div className="user-posts-container">
                     <Card>
                         <Card.Body>
-                            <br></br>
                             <Card.Title><h3>New Post</h3></Card.Title>
 
                             <div className="form-group">
                                 <input type="text" className="form-control" placeholder="What's on your mind?" name="newPost" id="newPost" onChange={e => setNewPost(e.target.value)}/>
                             </div>
                             <button className="btn btn-success btn-md btn-block" onClick={() => {
-                                createPost({newPost}, user, () => {
-                                    props.history.push({
-                                        pathname: "/newPost",
-                                        state: user,
-                                    });
-                                });
+                                createPost({newPost}, user, (res) => {
+                                    window.location.reload();
+                                })
                             }}> Add New Post</button>
                         </Card.Body>
                     </Card>
@@ -81,9 +93,25 @@ export const Dashboard = props => {
                         <Card>
                             <Card.Body>
                                 <h3>Your Posts:</h3>
-                                {/* <GetPosts user={user}/> */}
-                                <TestGetPostsList user={user} />
-                            
+                                <div className="posts">
+
+                                {postsList.length ? (
+                                    <div>
+                                        {postsList.map((sublist, idx) => {
+                                        return(
+                                            <Post data={sublist} key={idx}/>
+                                        );
+                                    })}
+                                    </div>
+                                ) : (
+                                <div>
+                                    {/* Comment Out: Avoids the temporary "No items found" img upon our initial render (looks smoother).*/}
+                                    <h2>No Posts Found</h2>
+                                </div>
+                                )
+                                }
+                                </div>
+                                  
                             </Card.Body>
                         </Card>
                     </div>

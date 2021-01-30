@@ -243,10 +243,10 @@ app.post('/createPost', (req, res) => {
             const newPostId = max_id.max + 1;
             const logs = await t.none('INSERT INTO post (pid, body, uid, author) VALUES ($1, $2, $3, $4)', 
             [newPostId, post, user_id, username]);
-            return {status: "success"};
+            res.json({status: "success"});
         }
         else{
-            return {status: "failed"};
+            res.json({status: "failed"});
         }
     })
     .then(() => {
