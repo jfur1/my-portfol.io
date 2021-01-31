@@ -41,8 +41,11 @@ class Profile extends Component{
         console.log("Profile Component Recieved User Data: ", data);
 
         // If no profile found, redirect back to splash page
-        if(!(typeof data !== 'undefined')){
-            this.props.history.push('/');
+        if((typeof data !== 'undefined') && data["error"]){
+            this.props.history.push({
+                pathname: '/',
+                errorMsg: `Could not find profile: ${pathname}`
+            });
         }
         // User stored in this.state 
         // Will always have a user (otherwise redirect to splash) -- question is whether or not they can edit

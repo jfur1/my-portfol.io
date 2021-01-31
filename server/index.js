@@ -249,7 +249,10 @@ app.get('/getUserData', (req, res) => {
             });
         }
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+        console.log(err);
+        res.json({error: true})
+    });
 })
 
 app.post('/createPost', (req, res) => {
