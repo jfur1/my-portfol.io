@@ -24,9 +24,10 @@ class Profile extends Component{
         var pathname = window.location.pathname.substr(1, window.location.pathname.length);
         console.log("URI: ", pathname);
         // Careful: Someone may be authenticated (logged in), but may be on someone else's profile page
-        //console.log("Authentication Status: ", auth.isAuthenticated());
 
         //this.getPosts();
+
+        // Try and GET user data for the given profile
         const response  = await fetch('http://localhost:5000/getUserData', {
             method: 'GET',
             headers: {username: pathname}, 
@@ -40,15 +41,14 @@ class Profile extends Component{
 
         console.log("Profile Component Recieved User Data: ", data);
 
-        // If no profile found, redirect back to splash page
+        // If no profile found, redirect back to splash page w/ error msg
         if((typeof data !== 'undefined') && data["error"]){
             this.props.history.push({
                 pathname: '/',
                 errorMsg: `Could not find profile: ${pathname}`
             });
         }
-        // User stored in this.state 
-        // Will always have a user (otherwise redirect to splash) -- question is whether or not they can edit
+        // If user was found => Store in state
         this.setState({user: data});
 
         // Regardless of whether the current user matches the profile, a user must always be logged-in in order to edit their profile
@@ -56,12 +56,6 @@ class Profile extends Component{
             console.log("Profile owned by user!");
             this.setState({ownedByUser: true});
         }
-        // Check for previous key
-        if(typeof this.props.location.state !== 'undefined' && typeof this.props.location.state["key"] !== 'undefined'){
-            // If there was a previous key that doesnt match default render key of home, then set state to reflect previous key (in props)'
-            this.setState({key: this.props.location.state["key"]});
-        }
-        console.log("State:", this.state);
     }
 
     // Retrieves the list of user's posts
@@ -118,6 +112,7 @@ class Profile extends Component{
                 <Navbar>
                     <Navbar.Brand><img style={{height: "30px"}} src="/mp-new-logo-beta.png" alt="logo"/></Navbar.Brand>
                     <Navbar.Collapse className="justify-content-end">
+                    
                     {this.state.ownedByUser ? <>
                         <Navbar.Text>
                             Signed in as: <a>{this.state.user["firstname"]} {this.state.user["lastname"]}</a>
@@ -137,7 +132,7 @@ class Profile extends Component{
                             <a href="/login">Login</a>
                         </Navbar.Text>}
 
-                        <Nav.Link href="#"><Gear size={50}/></Nav.Link>
+                        <Nav.Link href="#"><Gear size={30}/></Nav.Link>
                     </Navbar.Collapse>
                 </Navbar>
 
@@ -172,14 +167,6 @@ class Profile extends Component{
                                 <p><b>Email: </b>{this.state.user["email"]}</p>
                                 <br></br></> 
                                 : null }
-                                {/* <button className="btn btn-success btn-lg btn-block" onClick={() => {
-                                    this.props.history.push({
-                                        pathname: "/getData",
-                                        state: {auth: true}
-                                    });
-                                }}> View All Users </button> */}
-
-                                
                             </Card.Body>
                         </Card>
                     </div> : null }
@@ -211,24 +198,20 @@ class Profile extends Component{
                                 <Card.Body>
                                     <h3>Your Posts:</h3>
                                     <div className="posts">
-
-                                    {this.state.postsList.length ? (
-                                        <div className="post-list">
-                                            {this.state.postsList.map((sublist, idx) => {
-                                            return(
-                                                <Post data={sublist} key={idx} />
-                                            );
-                                        })}
+                                        {this.state.postsList.length ? (
+                                            <div className="post-list">
+                                                {this.state.postsList.map((sublist, idx) => {
+                                                return(
+                                                    <Post data={sublist} key={idx} />
+                                                );
+                                            })}
+                                            </div>
+                                        ) : (
+                                        <div>
+                                            <h2>No Posts Found</h2>
                                         </div>
-                                    ) : (
-                                    <div>
-                                        {/* Comment Out: Avoids the temporary "No items found" img upon our initial render (looks smoother).*/}
-                                        <h2>No Posts Found</h2>
+                                        )}
                                     </div>
-                                    )
-                                    }
-                                    </div>
-                                    
                                 </Card.Body>
                             </Card>
                         </div>
