@@ -57,9 +57,12 @@ export const Login = props => {
                                     }
                                     else{
                                         res["toggleMap"] = [true, false, false, false];
+                                        res["ownedByUser"] = true;
                                         props.history.push({
-                                            pathname: '/dashboard',
-                                            state: res
+                                            pathname: `/${res.username}`,
+                                            state: {
+                                                user: res
+                                            }
                                         });
                                     }
                                 })

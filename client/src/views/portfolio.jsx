@@ -1,6 +1,6 @@
 export const Portfolio = props => {
-    //console.log("Portfolio: ", props);
-    const user = props.location.state;
+    console.log("Portfolio: ", props);
+    const user = props.location.state.user;
 
     return(
         <>

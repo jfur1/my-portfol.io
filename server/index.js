@@ -226,6 +226,32 @@ function ensureAuthenticated(req, res, next) {
     res.json({authenticated: false});
 }
 
+app.get('/getUserData', (req, res) => {
+    const username = req.headers.username;
+
+    console.log("Server recieved header:", username);
+    db.tx(t => {
+        return t.oneOrNone('SELECT * FROM users WHERE \'' + username + '\' = username;');
+    })
+    .then((user) => {
+        if(!(typeof user !== 'undefined')){
+            console.log("Could find user: ", username);
+            return res.json({error: true});
+        }
+        else{
+            //console.log("server returning user: ", user)
+            return res.json({
+                user_id: user.user_id,
+                firstname: user.first_name,
+                lastname: user.last_name,
+                username: user.username,
+                email: user.email,
+            });
+        }
+    })
+    .catch((err) => console.log(err));
+})
+
 app.post('/createPost', (req, res) => {
 
     const {
@@ -269,6 +295,8 @@ app.get('/getPosts', (req, res, next) => {
         return next();
     }
 })
+
+
 
 const PORT = process.env.PORT || 5000;
 
