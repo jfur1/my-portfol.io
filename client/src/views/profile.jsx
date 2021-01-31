@@ -17,12 +17,13 @@ class Profile2 extends Component{
         }
     }
 
+    // GET posts whenever we render -- TODO: implement conditional rendering
     componentDidMount(){
         console.log("Component Mounted. Getting posts now...")
         this.getPosts();
     }
 
-    // Retrieves the list of items from the Express app
+    // Retrieves the list of user's posts
     getPosts = async () => {
         await fetch('http://localhost:5000/getPosts',{
             method: 'GET',
@@ -37,8 +38,8 @@ class Profile2 extends Component{
         .then(list => {this.setState({postsList: list})})
     }
 
+    // Keeps track of what tab we're on, in the event of user refresh
     componentDidUpdate(){
-
         if(this.state["key"] !== this.props.location.state["key"]){
             console.log("Saving a new Key: ", this.state["key"]);
             
@@ -52,8 +53,6 @@ class Profile2 extends Component{
             return;
         }
     }
-
-
       
     render(){
         const user = this.props.location.state;
@@ -85,14 +84,11 @@ class Profile2 extends Component{
                     activeKey={this.state.key}
                     onSelect={(k) => this.setState({key: k})}
                         >
-                        <Tab eventKey="home" title="Home">
-                        </Tab>
-                        <Tab eventKey="posts" title="Posts">
-                        </Tab>
-                        <Tab eventKey="portfolio" title="Portfolio">
-                        </Tab>
-                        <Tab eventKey="contact" title="Contact">
-                        </Tab>
+                        <Tab eventKey="home" title="Home" />
+                        <Tab eventKey="posts" title="Posts" />
+                        <Tab eventKey="portfolio" title="Portfolio" />
+                        <Tab eventKey="contact" title="Contact" />
+                        <Tab eventKey="edit" title="Edit" />
                     </Tabs>
                 </div>
 
@@ -186,6 +182,9 @@ class Profile2 extends Component{
 
                     { this.state["key"] === "contact" ?
                     <div className="resume-container"><p>Contact Page</p></div> : null}
+
+                    { this.state["key"] === "edit" ?
+                    <div className="resume-container"><p>Edit Profile</p></div> : null}
 
             </div>
 
