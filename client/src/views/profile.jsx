@@ -113,11 +113,11 @@ class Profile extends Component{
         return(
             <div className="container">
                 <Navbar>
-                    <Navbar.Brand href="/dashboard"><img style={{height: "30px"}} src="/mp-new-logo-beta.png" alt="logo"/></Navbar.Brand>
+                    <Navbar.Brand><img style={{height: "30px"}} src="/mp-new-logo-beta.png" alt="logo"/></Navbar.Brand>
                     <Navbar.Collapse className="justify-content-end">
                     {this.state.ownedByUser ? <>
                         <Navbar.Text>
-                            Signed in as: <a href="/dashboard">{this.state.user["firstname"]} {this.state.user["lastname"]}</a>
+                            Signed in as: <a>{this.state.user["firstname"]} {this.state.user["lastname"]}</a>
                         </Navbar.Text>
                         <br/>
                         <Nav.Link onClick={() => {
