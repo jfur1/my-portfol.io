@@ -10,10 +10,13 @@ class Profile extends Component{
         super(props);
         this.state = {
             user: (typeof this.props.location.state !== "undefined" && typeof this.props.location.state["user"] !== 'undefined') ? this.props.location.state["user"] : null,
+            
             key: (typeof this.props.location.state !== "undefined" && typeof this.props.location.state["key"] !== 'undefined') ? this.props.location.state["key"] : "home",
+            
+            ownedByUser: (typeof this.props.location.state !== "undefined" && typeof this.props.location.state["ownedByUser"] !== 'undefined') ? this.props.location.state["ownedByUser"] : false,
+            
             newPost: "",
             postsList: [],
-            ownedByUser: (typeof this.props.location.state !== "undefined" && typeof this.props.location.state["ownedByUser"] !== 'undefined') ? this.props.location.state["ownedByUser"] : false,
         }
     }
 
@@ -223,7 +226,6 @@ class Profile extends Component{
                     { this.state["key"] === "contact" ?
                     <div className="resume-container"><p>Contact Page</p></div> : null}
 
-                    
                     { this.state["key"] === "edit" && this.state.ownedByUser ?
                     <div className="resume-container"><p>Edit Profile</p></div> : null}
 
