@@ -299,7 +299,50 @@ app.get('/getPosts', (req, res, next) => {
     }
 })
 
+app.get('/about', (req, res) => {
+    
+    if(typeof req.user !== 'undefined'){
+        db.tx(t => {
+            return t.oneOrNone('SELECT * FROM profile WHERE \''+ req.user.user_id +'\' = uid;');
+        })
+        .then((about) => {
+            return res.json(about);
+        })
+        .catch((err) => console.log(err));
+    } else{
+        return res.json({error: true});
+    }
+})
 
+app.get('/portfolio', (req, res) => {
+
+    if(typeof req.user !== 'undefined'){
+        db.tx(t => {
+            return t.oneOrNone('SELECT * FROM portfolio WHERE \''+ req.user.user_id +'\' = uid;');
+        })
+        .then((portfolio) => {
+            return res.json(portfolio);
+        })
+        .catch((err) => console.log(err));
+    } else{
+        return res.json({error: true});
+    }
+})
+
+app.get('/links', (req, res) => {
+
+    if(typeof req.user !== 'undefined'){
+        db.tx(t => {
+            return t.oneOrNone('SELECT * FROM links WHERE \''+ req.user.user_id +'\' = uid;');
+        })
+        .then((links) => {
+            return res.json(links);
+        })
+        .catch((err) => console.log(err));
+    } else{
+        return res.json({error: true});
+    }
+})
 
 const PORT = process.env.PORT || 5000;
 
