@@ -33,7 +33,7 @@ class UsersTable extends Component {
 
     return (
         <div className="getDataList">
-        <a href="/home"><img className="logostyle" src="/mp-logo.png" alt="logo"/></a>
+        <a href="/home"><img className="logostyle" src="/mp-new-logo-beta.png" alt="logo"/></a>
         <h1>List of Items</h1>
         {/* Check to see if any items are found*/}
         {list.length ? (
@@ -43,13 +43,11 @@ class UsersTable extends Component {
               <tbody>
             {list.map((sublist, idx) => {
               return(
-                // <div key={idx}>
-                    <tr key={idx}>
-                      <th>{sublist.user_id}</th>
-                      <th>{sublist.first_name}  {sublist.last_name}</th>
-                      <th>{sublist.email}</th>
-                    </tr>
-                // </div>
+                <tr key={idx}>
+                  <th>{sublist.user_id}</th>
+                  <th>{sublist.first_name}  {sublist.last_name}</th>
+                  <th>{sublist.email}</th>
+                </tr>
               );
             })}
               </tbody>
@@ -57,8 +55,7 @@ class UsersTable extends Component {
           </div>
         ) : (
           <div>
-            {/* Comment Out: Avoids the temporary "No items found" img upon our initial render (looks smoother).
-            <h2>No List Items Found</h2> */}
+            <h2>No List Items Found</h2> 
           </div>
         )
       }

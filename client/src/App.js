@@ -5,22 +5,21 @@ import './App.css';
 
 // Components
 import { Welcome } from "./views/welcome";
-import { Profile } from './views/profile';
+import Profile from './views/profile';
 import { ProtectedRoute } from './components/protectedRoute';
 import { Login } from './views/login';
 import { Register } from './views/register';
 
 import  UsersTable  from  './oldCode/getData';
 
-
 function App() {
   return (
-    <div className="App">
+    <div className="App" style={{backgroundImage: 'url("/geo-bg.png")', backgroundSize: 'cover', backgroundAttachment: 'scroll', height: '100vh'}}>
       <Switch>
         <Route exact path="/" component={Welcome} />
         <Route exact path="/login" component={Login} />
         <Route exact path="/register" component={Register} />
-        <ProtectedRoute exact path="/dashboard" component={Profile} />
+        <Route exact path="/:username" component={Profile} />
         <ProtectedRoute exact path="/getData" component={UsersTable} />
         <Route path="*" component={() => "404 Not Found"} />
       </Switch>

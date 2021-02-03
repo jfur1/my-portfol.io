@@ -24,7 +24,7 @@ export const Register = props => {
     if(count === 0){
         alert = null;
     }
-    else if(props.location.state["data"].failedAttempt && props.location.state["errors"]){
+    else if(typeof props.location.state["errors"] !== 'undefined'){
         alert = AlertMsg("warning", props.location.state["errors"][0]);
         props.location.state["errors"].pop();
     }
@@ -38,7 +38,7 @@ export const Register = props => {
         <div className="register-container">
             <Card style={{width: '35rem'}}>
                 <Card.Body>
-                    <img className="logostyle" src="/mp-logo.png" alt="logo"/>
+                    <img className="logostyle" src="/mp-new-logo-beta.png" alt="logo"/>
                     <Card.Title><h1>Register</h1></Card.Title>
                     
                     <div className="alert-container mb-2">
@@ -52,7 +52,7 @@ export const Register = props => {
                     <input type="text" className="form-control" placeholder="Enter Email" name="email" id="email" onChange={e => setEmail(e.target.value)}/>
 
                     <div className="form-group"><input type="text" className="form-control" placeholder="Enter a Username" name="username" id="username" onChange={e => setUserName(e.target.value)}/></div>
-                    
+                    {console.log("Username: ", username)}
                     <div className="form-group">
                         <input type="checkbox" onClick={toggleHidden}/> Show Password
                     </div>
@@ -61,7 +61,7 @@ export const Register = props => {
 
                     <input type={hidden ? 'password' : 'text'} className="form-control" placeholder="Confirm Password" name="passwordCheck" id="passwordCheck" onChange={e => setPasswordCheck(e.target.value)}/>
 
-                    <button className="btn btn-danger btn-lg btn-block" onClick={() => { 
+                    <button className="btn btn-success btn-lg btn-block" onClick={() => { 
                         registerUser({firstname, lastname, username, email, password, passwordCheck}, {props},
                             (res) => { 
                                 setCount(count + 1);

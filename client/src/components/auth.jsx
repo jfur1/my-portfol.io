@@ -1,6 +1,13 @@
 class Auth {
     constructor(){
         this.authenticated = false;
+        this.user = {
+            user_id: null,
+            firstname: null,
+            lastname: null,
+            email: null,
+            username: null,
+        }
     }
 
     login(email, password, next){
@@ -22,15 +29,17 @@ class Auth {
         .then(user => {
 
             //console.log("User Recieved by /auth : ", user);
-
+            
             if(!(typeof user !== 'undefined') || !user["authenticated"]){
                 this.authenticated = false;
                 return next({error: true});
             }
-    
-            // Only authenticate a user upon JSON response: {authenticated: true}
-            this.authenticated = true;
-            return next(user.data);
+            else{
+                // Only authenticate a user upon JSON response: {authenticated: true}
+                this.authenticated = true;
+                this.user = user.data;
+                return next(user.data);
+            }
         })
         .catch((err) => console.log(err));
     }

@@ -9,8 +9,6 @@ export const Login = props => {
 
     let alert;
 
-    console.log("Props at Login: ", props);
-
     if(!(typeof(props.location.state) !== 'undefined')){
         alert = null;
     }
@@ -31,7 +29,7 @@ export const Login = props => {
         <div className="login-container">
             <Card style={{width: '35rem'}}>
                 <Card.Body>
-                    <img className="logostyle" src="/mp-logo.png" alt="logo"/>
+                    <img className="logostyle" src="/mp-new-logo-beta.png" alt="logo"/>
 
                     <Card.Title><h1>Login</h1></Card.Title>
                     
@@ -47,7 +45,7 @@ export const Login = props => {
                         <input type="password" className="form-control" placeholder="Enter Password" name="password" id="password" onChange={e => setPassword(e.target.value)}/>
                     </div>
 
-                    <button className="btn btn-danger btn-lg btn-block" 
+                    <button className="btn btn-success btn-lg btn-block" 
                         onClick={() => { 
                             auth.login(email, password, 
                                 (res) => { 
@@ -58,9 +56,13 @@ export const Login = props => {
                                         });
                                     }
                                     else{
+                                        res["toggleMap"] = [true, false, false, false];
+                                        res["ownedByUser"] = true;
                                         props.history.push({
-                                            pathname: '/dashboard',
-                                            state: res
+                                            pathname: `/${res.username}`,
+                                            state: {
+                                                user: res
+                                            }
                                         });
                                     }
                                 })
