@@ -125,7 +125,7 @@ class Profile extends Component{
                     {this.state.loggedIn ? 
                         <Nav.Item>
                             <Navbar.Text className="mr-sm-2">
-                                Signed in as: <a href="/dashboard">{this.state.user["firstname"]} {this.state.user["lastname"]} </a> 
+                                Signed in as: <a href="/dashboard">{auth.firstname} {auth.lastname} </a> 
                             </Navbar.Text>
                         </Nav.Item>
                         : null}
@@ -185,13 +185,13 @@ class Profile extends Component{
                                 <Card.Title>Home</Card.Title>
                                 <br></br>
 
-                                
+                                {this.state.user !== null ? 
                                 <><h3>{this.state.user["firstname"]} {this.state.user["lastname"]} </h3>
                                 <br></br>
                                 <p><b>Username:</b> {this.state.user["username"]}</p>
                                 <p><b>Email: </b>{this.state.user["email"]}</p>
                                 <br></br></> 
-                                
+                                : null}
                             </Card.Body>
                         </Card>
                     </div> : null }
