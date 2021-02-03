@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { Nav, Navbar, Card, Tabs, Tab } from 'react-bootstrap'
-import { Gear } from 'react-bootstrap-icons';
+import { Nav, Navbar, Card, Tabs, Tab, Dropdown } from 'react-bootstrap'
+import { PersonCircle } from 'react-bootstrap-icons';
 import { createPost } from '../components/createPost';
 import auth from '../components/auth';
 import { Portfolio } from '../views/portfolio';
+import { Contact } from '../views/contact';
 import { Post } from '../views/post';
 
 class Profile2 extends Component{
@@ -57,25 +58,39 @@ class Profile2 extends Component{
       
     render(){
         const user = this.props.location.state;
+
         return(
             <div className="container">
                 <Navbar>
                     <Navbar.Brand href="/dashboard"><img style={{height: "30px"}} src="/mp-new-logo-beta.png" alt="logo"/></Navbar.Brand>
+                    <Navbar.Toggle aria-controls="responsive-navbar-nav" />
                     <Navbar.Collapse className="justify-content-end">
-                        <Navbar.Text>
-                            Signed in as: <a href="/dashboard">{user.firstname} {user.lastname}</a>
-                        </Navbar.Text>
-                        <br/>
-                        <Nav.Link onClick={() => {
-                            auth.logout(() => {
-                                this.props.history.push({
-                                    pathname:"/login",
-                                    state: {loggedOut: true}
-                                });
-                            });
-                        }}>Logout</Nav.Link>
-                        <br/>
-                        <Nav.Link href="#"><Gear size={50}/></Nav.Link>
+                        <Nav.Item>
+                            <Navbar.Text className="mr-sm-2">
+                                Signed in as: <a href="/dashboard">{user.firstname} {user.lastname} </a>
+                            </Navbar.Text>
+                        </Nav.Item>
+                        <Nav.Item>
+                        <Dropdown id="collapsible-nav-dropdown">
+                            <Dropdown.Toggle className="bg-transparent text-dark" id="dropdown-custom-components">
+                                <PersonCircle size={50}/>
+                            </Dropdown.Toggle>
+                            <Dropdown.Menu>
+                                {/*Could use eventKey to trigger edit profile modal/component*/}
+                                <Dropdown.Item><Nav.Link>Edit Profile</Nav.Link></Dropdown.Item>
+                                <Dropdown.Item>
+                                    <Nav.Link onClick={() => {
+                                        auth.logout(() => {
+                                            this.props.history.push({
+                                                pathname:"/login",
+                                                state: {loggedOut: true}
+                                            });
+                                        });
+                                    }}>Logout</Nav.Link>
+                                </Dropdown.Item>
+                            </Dropdown.Menu>
+                        </Dropdown></Nav.Item>
+                        
                     </Navbar.Collapse>
                 </Navbar>
 
@@ -185,7 +200,7 @@ class Profile2 extends Component{
                     <div className="portfolio-container"><Portfolio {...this.props} /></div> : null}
 
                     { this.state["key"] === "contact" ?
-                    <div className="resume-container"><p>Contact Page</p></div> : null}
+                    <div className="resume-container"><Contact {...this.props} /></div> : null}
 
             </div>
 
