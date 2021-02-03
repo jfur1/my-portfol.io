@@ -4,6 +4,7 @@ import { Gear } from 'react-bootstrap-icons';
 import { createPost } from '../components/createPost';
 import auth from '../components/auth';
 import { Post } from '../views/post';
+import UploadProfilePicture from './uploadProfilePic';
 
 class Profile extends Component{
     constructor(props){
@@ -146,7 +147,7 @@ class Profile extends Component{
                     onSelect={(k) => this.setState({key: k})}
                         >
                         <Tab eventKey="home" title="Home" />
-                        <Tab eventKey="posts" title="Posts" />
+                        <Tab eventKey="about" title="About" />
                         <Tab eventKey="portfolio" title="Portfolio" />
                         <Tab eventKey="contact" title="Contact" />
                         {/* {this.state.ownedByUser ? <Tab eventKey="edit" title="Edit" /> : null} */}
@@ -160,7 +161,7 @@ class Profile extends Component{
                         <Card>
                             <Card.Body>
                                 <br></br>
-                                <Card.Title>Profile</Card.Title>
+                                <Card.Title>Home</Card.Title>
                                 <br></br>
 
                                 {this.state.ownedByUser ? 
@@ -174,7 +175,7 @@ class Profile extends Component{
                         </Card>
                     </div> : null }
 
-                    { this.state["key"] === "posts" ?  
+                    { this.state["key"] === "about" ?  
                     <div style={{overflow: 'scroll', height: '500px'}}>
                         <div className="profile-container">
                             <Card>
@@ -224,7 +225,9 @@ class Profile extends Component{
                     <div className="resume-container"><p>Portfolio Page</p></div> : null}
 
                     { this.state["key"] === "contact" ?
-                    <div className="resume-container"><p>Contact Page</p></div> : null}
+                    <div className="resume-container">
+                        {/* <UploadProfilePicture {...this.props}/> */}
+                    </div> : null}
 
                     { this.state["key"] === "edit" && this.state.ownedByUser ?
                     <div className="resume-container"><p>Edit Profile</p></div> : null}
