@@ -246,6 +246,7 @@ app.get('/getUserData', (req, res) => {
                 lastname: user.last_name,
                 username: user.username,
                 email: user.email,
+                requestedBy: req.user
             });
         }
     })

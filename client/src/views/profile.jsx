@@ -20,7 +20,9 @@ class Profile extends Component{
             
             newPost: "",
             postsList: [],
-            loggedIn: (typeof this.props.location.state !== "undefined" && typeof this.props.location.state["loggedIn"] !== "undefined") ? this.props.location.state["loggedIn"] : auth.isAuthenticated() 
+            loggedIn: (typeof this.props.location.state !== "undefined" && typeof this.props.location.state["loggedIn"] !== "undefined") ? this.props.location.state["loggedIn"] : false,
+
+            requestedBy: (typeof this.props.location.state !== "undefined" && typeof this.props.location.state["requestedBy"] !== "undefined") ? this.props.location.state["requestedBy"] : null
         }
     }
 
@@ -63,6 +65,10 @@ class Profile extends Component{
             console.log("Profile owned by user!");
             this.setState({ownedByUser: true});
         }
+
+        if(typeof this.state.user.requestedBy !== null){
+            this.setState({loggedIn: true});
+        }
     }
 
     // Retrieves the list of user's posts
@@ -96,7 +102,8 @@ class Profile extends Component{
                         user: this.state["user"],
                         key: this.state["key"],
                         ownedByUser: this.state["ownedByUser"],
-                        loggedIn: this.state["loggedIn"]
+                        loggedIn: this.state["loggedIn"],
+                        requestedBy: this.state.user.requestedBy
                     }
                 })
                 return;
@@ -107,7 +114,9 @@ class Profile extends Component{
                 state: {
                     user: this.state["user"],
                     key: "home",
-                    ownedByUser: this.state["ownedByUser"]
+                    ownedByUser: this.state["ownedByUser"],
+                    loggedIn: this.state.loggedIn,
+                    requestedBy: this.state.user.requestedBy
                 }
             })
         }
@@ -125,7 +134,7 @@ class Profile extends Component{
                     {this.state.loggedIn ? 
                         <Nav.Item>
                             <Navbar.Text className="mr-sm-2">
-                                Signed in as: <a href="/dashboard">{auth.firstname} {auth.lastname} </a> 
+                                Signed in as: <b>{this.state.user.requestedBy.first_name} {this.state.user.requestedBy.last_name}</b>
                             </Navbar.Text>
                         </Nav.Item>
                         : null}
