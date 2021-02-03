@@ -35,37 +35,99 @@ INSERT INTO post(pid, body, uid, author)
 VALUES(1, 'This is an example of a body for a post! We don''t need to insert post_id because they are auto incremented by postgres!', 8, '@dopamine'),
 (2, 'I love football so much!', 7, 'tristanhanna');
 
+--------------------------------------------------------------------
 
-CREATE TABLE IF NOT EXISTS profile (
-  profile_id INT NOT NULL,
-  user_id INT NOT NULL,
-  bio VARCHAR(240) NULL,
-  links VARCHAR(500) NULL,
-  city VARCHAR(45) NULL,
-  state VARCHAR(45) NULL,
-  country VARCHAR(45) NULL,
-  date_registered DATE NOT NULL DEFAULT CURRENT_DATE,
-  PRIMARY KEY (profile_id, user_id),
-  CONSTRAINT fk_profile_user
-    foreign key(user_id)
-    REFERENCES users (user_id)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION
+CREATE TABLE IF NOT EXISTS profile(
+  profile_id INT NOT NULL PRIMARY KEY,
+  uid INT REFERENCES users(user_id),
+  bio VARCHAR,
+  location VARCHAR(64)
 );
 
-// Not scalable in the long run, but allows users to have more than one account 
-// Helps resolve future headaches for creating groups/events
+INSERT INTO profile(profile_id, uid, bio, location)
+VALUES(1, 8, 'bios give me anxiety', 'Boulder, CO'),
+(2, 7, 'I love football!', 'Denver, CO'),
+(3, 4, 'I don''t know what to put here :(', NULL);
 
-// Insert Test Data
-INSERT INTO profile(profile_id, user_id, bio, links, city, state, country)
-  VALUES(1, 1, 'I love football', '', 'Dallas', 'TX', ''),
-  (2, 2, 'Biographies give me anxiety', 'https://my-portfol.io', 'Boulder', 'CO', 'USA'),
-  (3, 3, 'Made you look!', 'https://google.com/images/cats', 'New York', 'NY', '');
+--------------------------------------------------------------------
 
-// Test Query: What is the email of the most recently created profile?
-SELECT email FROM users WHERE user_id=(
-  SELECT MAX(profile_id) FROM profile
+CREATE TABLE IF NOT EXISTS hobbies(
+  hobby_id INT NOT NULL PRIMARY KEY,
+  uid INT REFERENCES users(user_id),
+  hobby VARCHAR(64) NOT NULL
 );
+
+INSERT INTO hobbies(hobby_id, uid, hobby)
+VALUES(1, 8, 'Skateboarding'),
+(2, 7, 'Running'),
+(3, 8, 'Snowboarding'),
+(4, 7, 'Watching football'),
+(5, 4, 'Long walks on the beach');
+
+--------------------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS skills(
+  skill_id INT NOT NULL PRIMARY KEY,
+  uid INT REFERENCES users(user_id),
+  skill VARCHAR(64) NOT NULL
+);
+
+INSERT INTO skills(skill_id, uid, skill)
+VALUES(1, 8, 'Fast Learner'),
+(2, 7, 'React.js'),
+(3, 8, 'Interpersonal Communication'),
+(4, 7, 'Team Player');
+
+--------------------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS links(
+  link_id INT NOT NULL PRIMARY KEY,
+  uid INT REFERENCES users(user_id),
+  link VARCHAR(255) NOT NULL
+);
+
+INSERT INTO links(link_id, uid, link)
+VALUES(1, 8, 'https://github.com/jfur1'),
+(2, 7, 'https://github.com/tristanhanna'),
+(3, 4, 'www.google.com'),
+(4, 8, 'http://jfur1.github.io/sorting-visualizer/'),
+(5, 7, 'https://www.tristanhanna.com/');
+
+--------------------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS education(
+  education_id INT NOT NULL PRIMARY KEY,
+  uid INT REFERENCES users(user_id),
+  organization VARCHAR(255),
+  education VARCHAR(255) NOT NULL,
+  from_when DATE,
+  to_when DATE
+);
+
+INSERT INTO education(education_id, uid, organization, education, from_when, to_when)
+VALUES(1, 8, 'University of Colorado Boulder', 'B.A. Computer Science', '2016-07-01', '2020-12-23'),
+(2, 7, 'University of Colorado Boulder', 'T.A.M.', '2016-07-01', '2020-05-01'),
+(3, 8, NULL, 'Google I.T. Support Certification', NULL, NULL),
+(4, 7, NULL, 'C.P.R. Certified', NULL, NULL);
+
+--------------------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS portfolio(
+  portfolio_id INT NOT NULL PRIMARY KEY,
+  uid INT REFERENCES users(user_id),
+  occupation VARCHAR(255) NOT NULL,
+  organization VARCHAR(255),
+  from_when DATE,
+  to_when DATE
+);
+
+INSERT INTO portfolio(portfolio_id, uid, occupation, organization, from_when, to_when)
+VALUES(1, 8, 'Server', 'Eureka!', '2019-09-01', '2020-04-01'),
+(2, 7, 'Front End Web Development', 'Google', '2016-05-01', '2018-03-01'),
+(3, 8, 'Line Cook', 'Dilly''s Restaurant', '2013-05-01', '2016-04-01'),
+(4, 7, 'Full Stack Web Developer', 'Google', '2016-05-01', '2020-04-01');
+
+
 
 
 

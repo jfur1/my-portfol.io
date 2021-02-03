@@ -1,7 +1,18 @@
 import React from 'react';
 import { Card } from 'react-bootstrap';
+import { AlertMsg } from '../components/alerts';
 
 export const Welcome = props => {
+    let alert;
+    console.log(props)
+    if(!(typeof(props.location) !== 'undefined')){
+        alert = null;
+    }
+    // Alert for successful logout
+    else if(typeof props.location["errorMsg"] !== 'undefined'){
+        console.log(props.location["errorMsg"]);
+        alert = AlertMsg("error", props.location["errorMsg"]);
+    }
     return (
         <div className="splash-container">
             <Card style={{width: '35rem'}}>
@@ -10,7 +21,11 @@ export const Welcome = props => {
 
                 <br></br>
                 <Card.Title>Create an account or login.</Card.Title>
-                <br></br>
+
+                <div className="alert-container mb-2">
+                    {alert}
+                </div>
+
 
                 <button className="btn btn-success btn-lg btn-block" onClick={() => {
                     props.history.push({

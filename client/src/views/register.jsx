@@ -24,7 +24,7 @@ export const Register = props => {
     if(count === 0){
         alert = null;
     }
-    else if(props.location.state["data"].failedAttempt && props.location.state["errors"]){
+    else if(typeof props.location.state["errors"] !== 'undefined'){
         alert = AlertMsg("warning", props.location.state["errors"][0]);
         props.location.state["errors"].pop();
     }
@@ -52,7 +52,7 @@ export const Register = props => {
                     <input type="text" className="form-control" placeholder="Enter Email" name="email" id="email" onChange={e => setEmail(e.target.value)}/>
 
                     <div className="form-group"><input type="text" className="form-control" placeholder="Enter a Username" name="username" id="username" onChange={e => setUserName(e.target.value)}/></div>
-                    
+                    {console.log("Username: ", username)}
                     <div className="form-group">
                         <input type="checkbox" onClick={toggleHidden}/> Show Password
                     </div>

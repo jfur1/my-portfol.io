@@ -9,8 +9,6 @@ export const Login = props => {
 
     let alert;
 
-    { /* console.log("Props at Login: ", props); */ }
-
     if(!(typeof(props.location.state) !== 'undefined')){
         alert = null;
     }
@@ -59,9 +57,12 @@ export const Login = props => {
                                     }
                                     else{
                                         res["toggleMap"] = [true, false, false, false];
+                                        res["ownedByUser"] = true;
                                         props.history.push({
-                                            pathname: '/dashboard',
-                                            state: res
+                                            pathname: `/${res.username}`,
+                                            state: {
+                                                user: res
+                                            }
                                         });
                                     }
                                 })

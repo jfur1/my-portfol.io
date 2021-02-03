@@ -2,8 +2,6 @@ const express = require("express");
 var cors = require('cors');
 const bcrypt = require('bcryptjs');
 var db = require("./config/db");
-const path = require('path');
-const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
@@ -228,6 +226,35 @@ function ensureAuthenticated(req, res, next) {
     res.json({authenticated: false});
 }
 
+app.get('/getUserData', (req, res) => {
+    const username = req.headers.username;
+
+    console.log("Server recieved header:", username);
+    db.tx(t => {
+        return t.oneOrNone('SELECT * FROM users WHERE \'' + username + '\' = username;');
+    })
+    .then((user) => {
+        if(!(typeof user !== 'undefined')){
+            console.log("Could find user: ", username);
+            return res.json({error: true});
+        }
+        else{
+            //console.log("server returning user: ", user)
+            return res.json({
+                user_id: user.user_id,
+                firstname: user.first_name,
+                lastname: user.last_name,
+                username: user.username,
+                email: user.email,
+            });
+        }
+    })
+    .catch((err) => {
+        console.log(err);
+        res.json({error: true})
+    });
+})
+
 app.post('/createPost', (req, res) => {
 
     const {
@@ -269,6 +296,51 @@ app.get('/getPosts', (req, res, next) => {
     } else{
         res.json({error: true});
         return next();
+    }
+})
+
+app.get('/about', (req, res) => {
+    
+    if(typeof req.user !== 'undefined'){
+        db.tx(t => {
+            return t.oneOrNone('SELECT * FROM profile WHERE \''+ req.user.user_id +'\' = uid;');
+        })
+        .then((about) => {
+            return res.json(about);
+        })
+        .catch((err) => console.log(err));
+    } else{
+        return res.json({error: true});
+    }
+})
+
+app.get('/portfolio', (req, res) => {
+
+    if(typeof req.user !== 'undefined'){
+        db.tx(t => {
+            return t.oneOrNone('SELECT * FROM portfolio WHERE \''+ req.user.user_id +'\' = uid;');
+        })
+        .then((portfolio) => {
+            return res.json(portfolio);
+        })
+        .catch((err) => console.log(err));
+    } else{
+        return res.json({error: true});
+    }
+})
+
+app.get('/links', (req, res) => {
+
+    if(typeof req.user !== 'undefined'){
+        db.tx(t => {
+            return t.oneOrNone('SELECT * FROM links WHERE \''+ req.user.user_id +'\' = uid;');
+        })
+        .then((links) => {
+            return res.json(links);
+        })
+        .catch((err) => console.log(err));
+    } else{
+        return res.json({error: true});
     }
 })
 
