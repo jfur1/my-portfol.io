@@ -159,3 +159,8 @@ table.center {
   display:flex;
   flex-direction: column-reverse;
 }
+
+#collapsible-nav-dropdown:active{
+  background: none;
+  color:black;
+}
