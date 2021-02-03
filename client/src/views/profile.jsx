@@ -20,6 +20,7 @@ class Profile extends Component{
             
             newPost: "",
             postsList: [],
+            loggedIn: (typeof this.props.location.state !== "undefined" && typeof this.props.location.state["loggedIn"] !== "undefined") ? this.props.location.state["loggedIn"] : auth.isAuthenticated() 
         }
     }
 
@@ -94,7 +95,8 @@ class Profile extends Component{
                     state: {
                         user: this.state["user"],
                         key: this.state["key"],
-                        ownedByUser: this.state["ownedByUser"]
+                        ownedByUser: this.state["ownedByUser"],
+                        loggedIn: this.state["loggedIn"]
                     }
                 })
                 return;
@@ -120,16 +122,19 @@ class Profile extends Component{
                     <Navbar.Brand href="/dashboard"><img style={{height: "30px"}} src="/mp-new-logo-beta.png" alt="logo"/></Navbar.Brand>
                     <Navbar.Toggle aria-controls="responsive-navbar-nav" />
                     <Navbar.Collapse className="justify-content-end">
+                    {this.state.loggedIn ? 
                         <Nav.Item>
                             <Navbar.Text className="mr-sm-2">
-                                Signed in as: <a href="/dashboard">{user.firstname} {user.lastname} </a>
+                                Signed in as: <a href="/dashboard">{this.state.user["firstname"]} {this.state.user["lastname"]} </a> 
                             </Navbar.Text>
                         </Nav.Item>
+                        : null}
                         <Nav.Item>
                         <Dropdown id="collapsible-nav-dropdown">
                             <Dropdown.Toggle className="bg-transparent text-dark" id="dropdown-custom-components">
                                 <PersonCircle size={50}/>
                             </Dropdown.Toggle>
+                            {this.state.loggedIn ?
                             <Dropdown.Menu>
                                 {/*Could use eventKey to trigger edit profile modal/component*/}
                                 <Dropdown.Item><Nav.Link>Edit Profile</Nav.Link></Dropdown.Item>
@@ -144,6 +149,13 @@ class Profile extends Component{
                                     }}>Logout</Nav.Link>
                                 </Dropdown.Item>
                             </Dropdown.Menu>
+                            :         
+                            <Dropdown.Menu>
+                                <Dropdown.Item>                          
+                                <Nav.Link onClick={() => {this.props.history.push("/login");
+                                }}>Login</Nav.Link>
+                                </Dropdown.Item>
+                            </Dropdown.Menu>  }
                         </Dropdown></Nav.Item>
                         
                     </Navbar.Collapse>
@@ -173,13 +185,13 @@ class Profile extends Component{
                                 <Card.Title>Home</Card.Title>
                                 <br></br>
 
-                                {this.state.ownedByUser ? 
+                                
                                 <><h3>{this.state.user["firstname"]} {this.state.user["lastname"]} </h3>
                                 <br></br>
                                 <p><b>Username:</b> {this.state.user["username"]}</p>
                                 <p><b>Email: </b>{this.state.user["email"]}</p>
                                 <br></br></> 
-                                : null }
+                                
                             </Card.Body>
                         </Card>
                     </div> : null }
