@@ -149,7 +149,7 @@ class Profile extends Component{
                         <Tab eventKey="posts" title="Posts" />
                         <Tab eventKey="portfolio" title="Portfolio" />
                         <Tab eventKey="contact" title="Contact" />
-                        {this.state.ownedByUser ? <Tab eventKey="edit" title="Edit" /> : null}
+                        {/* {this.state.ownedByUser ? <Tab eventKey="edit" title="Edit" /> : null} */}
                         
                     </Tabs>
                 </div>
