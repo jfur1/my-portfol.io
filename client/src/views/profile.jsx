@@ -19,7 +19,9 @@ class Profile extends Component{
             ownedByUser: (typeof this.props.location.state !== "undefined" && typeof this.props.location.state["ownedByUser"] !== 'undefined') ? this.props.location.state["ownedByUser"] : false,
             
             newPost: "",
+
             postsList: [],
+
             loggedIn: (typeof this.props.location.state !== "undefined" && typeof this.props.location.state["loggedIn"] !== "undefined") ? this.props.location.state["loggedIn"] : false,
 
             requestedBy: (typeof this.props.location.state !== "undefined" && typeof this.props.location.state["requestedBy"] !== "undefined") ? this.props.location.state["requestedBy"] : null
@@ -28,6 +30,7 @@ class Profile extends Component{
 
     // GET profile data, then determine if the user owns this profile
     async componentDidMount(){
+        console.log("Auth.isAuthenitcated(): ", auth.isAuthenticated());
         console.log("Component Mounted with STATE:", this.state);
         console.log("Component Mounted with PROPS:", this.props.location.state);
         var pathname = window.location.pathname.substr(1, window.location.pathname.length);
@@ -49,13 +52,20 @@ class Profile extends Component{
         const data = json;
 
         console.log("Profile Component Recieved User Data: ", data);
+        console.log("STATE: ", this.state);
+        console.log("PROPS: ", this.props.location.state);
 
         // If no profile found, redirect back to splash page w/ error msg
-        if((typeof data !== 'undefined') && data["error"]){
-            this.props.history.push({
-                pathname: '/',
-                errorMsg: `Could not find profile: ${pathname}`
-            });
+        if((typeof data !== 'undefined') && data["error"] && typeof this.state.requestedBy !== 'undefined'){
+            // this.props.history.push({
+            //     pathname: `/`,
+            //     errorMsg: `Could not find profile: ${pathname}`,
+            //     state: {
+                    
+            //     }
+            // });
+            alert("could not find that user!");
+            return;
         }
         // If user was found => Store in state
         this.setState({user: data});
