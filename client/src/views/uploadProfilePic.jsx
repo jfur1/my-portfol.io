@@ -1,6 +1,6 @@
-import React from 'react'
-import ReactDOM from 'react-dom'
-import Avatar from 'react-avatar-edit'
+import React from 'react';
+import ReactDOM from 'react-dom';
+import Avatar from 'react-avatar-edit';
 
 class UploadProfilePicture extends React.Component{
     constructor(props) {
