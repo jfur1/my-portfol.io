@@ -246,12 +246,23 @@ app.get('/getUserData', (req, res) => {
                 lastname: user.last_name,
                 username: user.username,
                 email: user.email,
+                requestedBy: req.user
             });
         }
     })
     .catch((err) => {
         console.log(err);
-        res.json({error: true})
+        res.json({
+            error: true,
+            user: {
+                user_id: user.user_id,
+                firstname: user.first_name,
+                lastname: user.last_name,
+                username: user.username,
+                email: user.email,
+            },
+            requestedBy: req.user
+        })
     });
 })
 

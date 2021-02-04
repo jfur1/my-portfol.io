@@ -19,13 +19,18 @@ class Profile extends Component{
             ownedByUser: (typeof this.props.location.state !== "undefined" && typeof this.props.location.state["ownedByUser"] !== 'undefined') ? this.props.location.state["ownedByUser"] : false,
             
             newPost: "",
+
             postsList: [],
-            loggedIn: (typeof this.props.location.state !== "undefined" && typeof this.props.location.state["loggedIn"] !== "undefined") ? this.props.location.state["loggedIn"] : auth.isAuthenticated() 
+
+            loggedIn: (typeof this.props.location.state !== "undefined" && typeof this.props.location.state["loggedIn"] !== "undefined") ? this.props.location.state["loggedIn"] : false,
+
+            requestedBy: (typeof this.props.location.state !== "undefined" && typeof this.props.location.state["requestedBy"] !== "undefined") ? this.props.location.state["requestedBy"] : null
         }
     }
 
     // GET profile data, then determine if the user owns this profile
     async componentDidMount(){
+        console.log("Auth.isAuthenitcated(): ", auth.isAuthenticated());
         console.log("Component Mounted with STATE:", this.state);
         console.log("Component Mounted with PROPS:", this.props.location.state);
         var pathname = window.location.pathname.substr(1, window.location.pathname.length);
@@ -47,13 +52,20 @@ class Profile extends Component{
         const data = json;
 
         console.log("Profile Component Recieved User Data: ", data);
+        console.log("STATE: ", this.state);
+        console.log("PROPS: ", this.props.location.state);
 
         // If no profile found, redirect back to splash page w/ error msg
-        if((typeof data !== 'undefined') && data["error"]){
-            this.props.history.push({
-                pathname: '/',
-                errorMsg: `Could not find profile: ${pathname}`
-            });
+        if((typeof data !== 'undefined') && data["error"] && typeof this.state.requestedBy !== 'undefined'){
+            // this.props.history.push({
+            //     pathname: `/`,
+            //     errorMsg: `Could not find profile: ${pathname}`,
+            //     state: {
+                    
+            //     }
+            // });
+            alert("could not find that user!");
+            return;
         }
         // If user was found => Store in state
         this.setState({user: data});
@@ -62,6 +74,10 @@ class Profile extends Component{
         if(auth.isAuthenticated() && auth.user["firstname"] === this.state.user["firstname"]){
             console.log("Profile owned by user!");
             this.setState({ownedByUser: true});
+        }
+
+        if(typeof this.state.user.requestedBy !== null){
+            this.setState({loggedIn: true});
         }
     }
 
@@ -96,7 +112,8 @@ class Profile extends Component{
                         user: this.state["user"],
                         key: this.state["key"],
                         ownedByUser: this.state["ownedByUser"],
-                        loggedIn: this.state["loggedIn"]
+                        loggedIn: this.state["loggedIn"],
+                        requestedBy: this.state.user.requestedBy
                     }
                 })
                 return;
@@ -107,7 +124,9 @@ class Profile extends Component{
                 state: {
                     user: this.state["user"],
                     key: "home",
-                    ownedByUser: this.state["ownedByUser"]
+                    ownedByUser: this.state["ownedByUser"],
+                    loggedIn: this.state.loggedIn,
+                    requestedBy: this.state.user.requestedBy
                 }
             })
         }
@@ -125,7 +144,7 @@ class Profile extends Component{
                     {this.state.loggedIn ? 
                         <Nav.Item>
                             <Navbar.Text className="mr-sm-2">
-                                Signed in as: <a href="/dashboard">{auth.firstname} {auth.lastname} </a> 
+                                Signed in as: <b>{this.state.user.requestedBy.first_name} {this.state.user.requestedBy.last_name}</b>
                             </Navbar.Text>
                         </Nav.Item>
                         : null}
