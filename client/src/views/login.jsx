@@ -1,12 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Card } from 'react-bootstrap';
 import auth from '../components/auth';
 import { AlertMsg } from '../components/alerts';
+import { UserContext, AuthContext } from '../components/utils/context';
+import { Redirect } from 'react-router-dom';
 
 export const Login = props => {
     const [email, setEmail] = useState();
-    const [password, setPassword] = useState();
-
+    const [password, setPassword] = useState(); 
+    const { user, setUser } = useContext(UserContext);
+    const { authState, setAuthState } = useContext(AuthContext);
+ 
     let alert;
 
     if(!(typeof(props.location.state) !== 'undefined')){
@@ -27,7 +31,7 @@ export const Login = props => {
 
     return(
         <div className="login-container">
-            <Card style={{width: '35rem'}}>
+            <Card style={{width: '35rem'}}> 
                 <Card.Body>
                     <img className="logostyle" src="/mp-new-logo-beta.png" alt="logo"/>
 
@@ -49,6 +53,7 @@ export const Login = props => {
                         onClick={() => { 
                             auth.login(email, password, 
                                 (res) => { 
+
                                     if(typeof res["error"] !== 'undefined'){
                                         props.history.push({
                                             pathname: '/login',
@@ -58,6 +63,8 @@ export const Login = props => {
                                     else{
                                         res["toggleMap"] = [true, false, false, false];
                                         res["ownedByUser"] = true;
+                                        setUser(JSON.stringify(res));
+                                        setAuthState(JSON.stringify(auth));
                                         props.history.push({
                                             pathname: `/${res.username}`,
                                             state: {

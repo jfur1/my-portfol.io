@@ -28,7 +28,7 @@ class Auth {
         .then(data => data.json())
         .then(user => {
 
-            //console.log("User Recieved by /auth : ", user);
+            console.log("User Recieved by /auth : ", user);
             
             if(!(typeof user !== 'undefined') || !user["authenticated"]){
                 this.authenticated = false;

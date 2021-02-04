@@ -191,6 +191,7 @@ app.post('/login', (req, res, next) => {
     })
     .catch(err => {
       console.log(err);
+      return res.json({errors: true});
     });
 });
 
