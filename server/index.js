@@ -228,8 +228,8 @@ function ensureAuthenticated(req, res, next) {
 
 app.get('/getUserData', (req, res) => {
     const username = req.headers.username;
+    //console.log("Server recieved header:", username);
 
-    console.log("Server recieved header:", username);
     db.tx(t => {
         return t.oneOrNone('SELECT * FROM users WHERE \'' + username + '\' = username;');
     })
@@ -288,21 +288,21 @@ app.post('/createPost', (req, res) => {
     .catch((err) => console.log(err));
 });
 
-app.get('/getPosts', (req, res, next) => {
-    //console.log("User Trying to Make Get Request: ", req.user);
-    
-    if(typeof req.user !== 'undefined'){
-        db.tx(t => {
-            return t.any('SELECT * FROM post WHERE \''+ req.user.user_id +'\' = uid;');
-        })
-        .then((posts) => {
-            return res.json(posts);
-        })
-        .catch((err) => console.log(err));
-    } else{
+app.get('/getPosts', (req, res) => {
+    const username = req.headers.username;
+    //console.log("Attempting to get posts for user:", username);
+
+    db.tx(t => {
+        return t.any('SELECT * FROM post WHERE \''+ username +'\' = author;');
+    })
+    .then((posts) => {
+        return res.json({posts});
+    })
+    .catch((err) => {
+        console.log(err);
         res.json({error: true});
-        return next();
-    }
+    });
+    
 })
 
 app.get('/about', (req, res) => {

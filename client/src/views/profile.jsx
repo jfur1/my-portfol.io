@@ -36,7 +36,7 @@ class Profile extends Component{
         console.log("URI: ", pathname);
         // Careful: Someone may be authenticated (logged in), but may be on someone else's profile page
 
-        //this.getPosts();
+        //const post = await this.getPosts();
 
         // Try and GET user data for the given profile
         const response  = await fetch('http://localhost:5000/getUserData', {
@@ -89,25 +89,25 @@ class Profile extends Component{
 
         console.log("STATE: ", this.state);
         console.log("PROPS: ", this.props.location.state);
+        console.log("POSTS:", this.state.postsList);
     }
 
     // Retrieves the list of user's posts
     getPosts = async () => {
-        if(auth.isAuthenticated()){
-            await fetch('http://localhost:5000/getPosts',{
-                method: 'GET',
-                mode: 'cors',
-                credentials: 'include',
-                withCredentials: true,
-            })
-            .then(response => {
-                //console.log("Get Posts Response: ", response);
-                return response.json();
-            })
-            .then(list => {this.setState({postsList: list})})
-        } else{
-            return;
-        }
+        var pathname = window.location.pathname.substr(1, window.location.pathname.length);
+
+        await fetch('http://localhost:5000/getPosts',{
+            method: 'GET',
+            headers: {username: pathname}, 
+            mode: 'cors',
+            credentials: 'include',
+            withCredentials: true,
+        })
+        .then(response => {
+            //console.log("Get Posts Response: ", response);
+            return response.json();
+        })
+        .then(list => {this.setState({postsList: list})});
     }
 
     // Keeps track of what tab we're on, in the event of user refresh
