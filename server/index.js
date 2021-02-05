@@ -241,11 +241,13 @@ app.get('/getUserData', (req, res) => {
         else{
             //console.log("server returning user: ", user)
             return res.json({
-                user_id: user.user_id,
-                firstname: user.first_name,
-                lastname: user.last_name,
-                username: user.username,
-                email: user.email,
+                user: {
+                    user_id: user.user_id,
+                    firstname: user.first_name,
+                    lastname: user.last_name,
+                    username: user.username,
+                    email: user.email,
+                },
                 requestedBy: req.user
             });
         }
@@ -254,13 +256,6 @@ app.get('/getUserData', (req, res) => {
         console.log(err);
         res.json({
             error: true,
-            user: {
-                user_id: user.user_id,
-                firstname: user.first_name,
-                lastname: user.last_name,
-                username: user.username,
-                email: user.email,
-            },
             requestedBy: req.user
         })
     });
