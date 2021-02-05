@@ -110,7 +110,7 @@ class Profile extends Component{
         .then(list => {this.setState({postsList: list})});
     }
 
-    // Keeps track of what tab we're on, in the event of user refresh
+    // Keeps track of what tab we're on, for the event of user refresh
     componentDidUpdate(){
         if(typeof this.props.location.state !== 'undefined' && typeof this.props.location.state.key !== 'undefined'){
             if(this.state.key !== this.props.location.state.key){
