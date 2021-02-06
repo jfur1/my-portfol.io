@@ -1,10 +1,14 @@
 import React, { Component } from 'react';
-import { Nav, Navbar, Card, Tabs, Tab, Dropdown } from 'react-bootstrap'
-import { PersonCircle } from 'react-bootstrap-icons';
-import { createPost } from '../components/createPost';
+import { Tabs, Tab } from 'react-bootstrap'
 import auth from '../components/auth';
-import { Post } from '../views/post';
 import { AlertMsg } from '../components/alerts';
+
+// Import Components
+import { NavBar } from './navbar';
+import { Home } from './home';
+import { About } from './about';
+import { Portfolio } from './portfolio';
+import { Contact } from './contact';
 
 
 class Profile extends Component{
@@ -17,9 +21,7 @@ class Profile extends Component{
             
             ownedByUser: (typeof this.props.location.state !== 'undefined' && typeof this.props.location.state.ownedByUser !== 'undefined') ? this.props.location.state.ownedByUser : false,
             
-            newPost: "",
-
-            postsList: [],
+            alert: null,
 
             loggedIn: (typeof this.props.location.state !== 'undefined' && typeof this.props.location.state.loggedIn !== 'undefined') ? this.props.location.state.loggedIn : false,
 
@@ -35,8 +37,6 @@ class Profile extends Component{
         var pathname = window.location.pathname.substr(1, window.location.pathname.length);
         console.log("URI: ", pathname);
         // Careful: Someone may be authenticated (logged in), but may be on someone else's profile page
-
-        //const post = await this.getPosts();
 
         // Try and GET user data for the given profile
         const response  = await fetch('http://localhost:5000/getUserData', {
@@ -69,45 +69,26 @@ class Profile extends Component{
 
         }else{
             // If user was found => Store in state
+            console.log("Found user: ", data.user);
             this.setState({user: data.user, requestedBy: data.requestedBy});
         }
 
         // Regardless of whether the current user matches the profile, a user must always be logged-in in order to edit their profile
-        if(typeof this.state.requestedBy !== null && typeof this.state.user !== null && this.state.requestedBy.user_id == this.state.user.user_id){
+        if(typeof this.state.requestedBy !== 'undefined' && typeof this.state.user !== 'undefined' && this.state.requestedBy.user_id === this.state.user.user_id){
             console.log("Profile owned by user!");
             this.setState({ownedByUser: true});
         }
 
-        if(typeof this.state.requestedBy !== null){
+        if(this.state.requestedBy !== null){
             this.setState({loggedIn: true});
         }
 
-        let alert;
         if(typeof this.props.location.state.errorMsg !== 'undefined'){
-            alert = AlertMsg("error", this.props.location.state.errorMsg);  
+            this.setState({alert: AlertMsg("error", this.props.location.state.errorMsg)}); 
         }
 
         console.log("STATE: ", this.state);
         console.log("PROPS: ", this.props.location.state);
-        console.log("POSTS:", this.state.postsList);
-    }
-
-    // Retrieves the list of user's posts
-    getPosts = async () => {
-        var pathname = window.location.pathname.substr(1, window.location.pathname.length);
-
-        await fetch('http://localhost:5000/getPosts',{
-            method: 'GET',
-            headers: {username: pathname}, 
-            mode: 'cors',
-            credentials: 'include',
-            withCredentials: true,
-        })
-        .then(response => {
-            //console.log("Get Posts Response: ", response);
-            return response.json();
-        })
-        .then(list => {this.setState({postsList: list})});
     }
 
     // Keeps track of what tab we're on, for the event of user refresh
@@ -143,55 +124,12 @@ class Profile extends Component{
     }
       
     render(){
-        const user = this.props.location.state;
 
         return(
             <div className="container">
-                <Navbar>
-                    <Navbar.Brand href="/dashboard"><img style={{height: "30px"}} src="/mp-new-logo-beta.png" alt="logo"/></Navbar.Brand>
-                    <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-                    <Navbar.Collapse className="justify-content-end">
-                    {this.state.loggedIn ? 
-                        <Nav.Item>
-                            <Navbar.Text className="mr-sm-2">
-                                Signed in as: <b>{this.state.requestedBy.first_name} {this.state.requestedBy.last_name}</b>
-                            </Navbar.Text>
-                        </Nav.Item>
-                        : null}
-                        <Nav.Item>
-                            <Dropdown id="collapsible-nav-dropdown">
-                                <Dropdown.Toggle className="bg-transparent text-dark" id="dropdown-custom-components">
-                                    <PersonCircle size={50}/>
-                                </Dropdown.Toggle>
-                                {this.state.loggedIn ?
-                                <Dropdown.Menu>
-                                    {/*Could use eventKey to trigger edit profile modal/component*/}
-                                    <Dropdown.Item><Nav.Link>Edit Profile</Nav.Link></Dropdown.Item>
-                                    <Dropdown.Item>
-                                        <Nav.Link onClick={() => {
-                                            auth.logout(() => {
-                                                this.props.history.push({
-                                                    pathname:"/login",
-                                                    state: {loggedOut: true}
-                                                });
-                                            });
-                                        }}>Logout</Nav.Link>
-                                    </Dropdown.Item>
-                                </Dropdown.Menu>
-                                :         
-                                <Dropdown.Menu>
-                                    <Dropdown.Item>                          
-                                    <Nav.Link onClick={() => {this.props.history.push("/login");
-                                    }}>Login</Nav.Link>
-                                    </Dropdown.Item>
-                                </Dropdown.Menu>  }
-                            </Dropdown>
-                        </Nav.Item>
-                        
-                    </Navbar.Collapse>
-                </Navbar>
+                <NavBar {...this.props} data={this.state}/>
                 {alert}
-                {/* Make a tab-container later for styling */}
+
                 <div className="user-container">
                     <Tabs
                     activeKey={this.state.key}
@@ -201,87 +139,29 @@ class Profile extends Component{
                         <Tab eventKey="about" title="About" />
                         <Tab eventKey="portfolio" title="Portfolio" />
                         <Tab eventKey="contact" title="Contact" />
-                        {/* {this.state.ownedByUser ? <Tab eventKey="edit" title="Edit" /> : null} */}
-                        
                     </Tabs>
                 </div>
 
                 <div className="info-container">
                     { this.state.key === "home" ? 
                     <div className="profile-container">
-                        <Card>
-                            <Card.Body>
-                                <br></br>
-                                <Card.Title>Home</Card.Title>
-                                <br></br>
-
-                                {this.state.user !== null && typeof this.state.user !== 'undefined'? 
-                                <><h3>{this.state.user.firstname} {this.state.user.lastname} </h3>
-                                <br></br>
-                                <p><b>Username:</b> {this.state.user.username}</p>
-                                <p><b>Email: </b>{this.state.user.email}</p>
-                                <br></br></> 
-                                : null}
-                            </Card.Body>
-                        </Card>
+                        <Home {...this.props} data={this.state} />
                     </div> : null }
 
                     { this.state.key === "about" ?  
-                    <div style={{overflow: 'scroll', height: '500px'}}>
-                        <div className="profile-container">
-                            <Card>
-                                <Card.Body>
-                                    <Card.Title><h3>New Post</h3></Card.Title>
-
-                                    <div className="form-group">
-                                        <input type="text" className="form-control" placeholder="What's on your mind?" name="newPost" id="newPost" onChange={e => this.setState({newPost: e.target.value})}/>
-                                    </div>
-                                    <button className="btn btn-success btn-md btn-block" onClick={() => {
-                                        createPost(this.state.newPost, this.state.user, (res) => {
-                                            this.props.history.push({
-                                                pathname: `/${this.state.user.username}`,
-                                                state: this.state
-                                            })
-                                            window.location.reload();
-                                        })
-                                    }}> Add New Post</button>
-                                </Card.Body>
-                            </Card>
-                        </div>
-                        <div className="post-list-container">
-                            <Card>
-                                <Card.Body>
-                                    <h3>Your Posts:</h3>
-                                    <div className="posts">
-                                        {this.state.postsList.length ? (
-                                            <div className="post-list">
-                                                {this.state.postsList.map((sublist, idx) => {
-                                                return(
-                                                    <Post data={sublist} key={idx} />
-                                                );
-                                            })}
-                                            </div>
-                                        ) : (
-                                        <div>
-                                            <h2>No Posts Found</h2>
-                                        </div>
-                                        )}
-                                    </div>
-                                </Card.Body>
-                            </Card>
-                        </div>
+                    <div className="resume-container">
+                        <About {...this.props} data={this.state}/>
                     </div> : null}
 
                     { this.state.key === "portfolio" ?
-                    <div className="resume-container"><p>Portfolio Page</p></div> : null}
+                    <div className="resume-container">
+                        <Portfolio {...this.props} data={this.state}/>
+                    </div> : null}
 
                     { this.state.key === "contact" ?
                     <div className="resume-container">
-                        {/* <UploadProfilePicture {...this.props}/> */}
+                        <Contact {...this.props} data={this.state}/>
                     </div> : null}
-
-                    { this.state.key === "edit" && this.state.ownedByUser ?
-                    <div className="resume-container"><p>Edit Profile</p></div> : null}
 
             </div>
 
