@@ -31,12 +31,10 @@ class Profile extends Component{
 
     // GET profile data, then determine if the user owns this profile
     async componentDidMount(){
-        console.log("Auth.isAuthenitcated(): ", auth.isAuthenticated());
+        //console.log("Auth.isAuthenitcated(): ", auth.isAuthenticated());
         console.log("Component Mounted with STATE:", this.state);
         console.log("Component Mounted with PROPS:", this.props.location.state);
         var pathname = window.location.pathname.substr(1, window.location.pathname.length);
-        console.log("URI: ", pathname);
-        // Careful: Someone may be authenticated (logged in), but may be on someone else's profile page
 
         // Try and GET user data for the given profile
         const response  = await fetch('http://localhost:5000/getUserData', {
@@ -50,36 +48,42 @@ class Profile extends Component{
         const json = await response.json();
         const data = json;
 
-        console.log("Profile Component Recieved User Data: ", data);
+        console.log("Profile Recieved Server Response: ", data);
 
         // If no profile found, redirect back to splash page w/ error msg
         if((typeof data !== 'undefined') && data["error"]){
-            this.props.history.push({
-                pathname: `/${data.requestedBy.username}`,
-                errorMsg: `Could not find profile: ${pathname}`,
-                state: {
-                    user: data.requestedBy,
-                    key: "home",
-                    ownedByUser: this.state.ownedByUser,
-                    loggedIn: this.state.loggedIn,
-                    requestedBy: data.requestedBy
-                }
-            })
-            window.location.reload();
-
+            if(!(typeof data.requestedBy !== 'undefined')){
+                return this.props.history.push({
+                    pathname: '/',
+                    errorMsg: `Unable to locate user: ${pathname}`,
+                })
+            }else{
+                this.props.history.push({
+                    pathname: `/${data.requestedBy.username}`,
+                    errorMsg: `Unable to locate user: ${pathname}`,
+                    state: {
+                        user: data.requestedBy,
+                        key: "home",
+                        ownedByUser: this.state.ownedByUser,
+                        loggedIn: this.state.loggedIn,
+                        requestedBy: data.requestedBy
+                    }
+                })
+                window.location.reload();
+            }
         }else{
             // If user was found => Store in state
-            console.log("Found user: ", data.user);
+            //console.log("Found user: ", data.user);
             this.setState({user: data.user, requestedBy: data.requestedBy});
         }
 
         // Regardless of whether the current user matches the profile, a user must always be logged-in in order to edit their profile
-        if(typeof this.state.requestedBy !== 'undefined' && typeof this.state.user !== 'undefined' && this.state.requestedBy.user_id === this.state.user.user_id){
+        if(typeof this.state.requestedBy !== 'undefined' && typeof this.state.user !== 'undefined' && this.state.requestedBy !== null && this.state.user !== null && this.state.requestedBy.user_id === this.state.user.user_id){
             console.log("Profile owned by user!");
             this.setState({ownedByUser: true});
         }
 
-        if(this.state.requestedBy !== null){
+        if(typeof this.state.requestedBy !== 'undefined'){
             this.setState({loggedIn: true});
         }
 
@@ -89,6 +93,7 @@ class Profile extends Component{
 
         console.log("STATE: ", this.state);
         console.log("PROPS: ", this.props.location.state);
+        console.log(this.props);
     }
 
     // Keeps track of what tab we're on, for the event of user refresh

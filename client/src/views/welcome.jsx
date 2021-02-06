@@ -13,6 +13,7 @@ export const Welcome = props => {
         console.log(props.location["errorMsg"]);
         alert = AlertMsg("error", props.location["errorMsg"]);
     }
+
     return (
         <div className="splash-container">
             <Card style={{width: '35rem'}}>
