@@ -7,9 +7,6 @@ export const Portfolio = props => {
     const [stateLocal, setStateLocal] 
     = useState({ 
         fetched: false, 
-        bio: null, 
-        location: null,
-        user: null,
         data: null,
     })
 

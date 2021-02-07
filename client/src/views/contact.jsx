@@ -1,7 +1,15 @@
+import { useEffect, useState } from "react";
 import {useSpring, animated, interpolate} from 'react-spring';
 
 export const Contact = props => {
-    const user = props.location.state;
+    console.log("Contact Recieved Props: ", props);
+    const user = props.location.state.user;
+    
+    const [stateLocal, setStateLocal] 
+    = useState({ 
+        fetched: false, 
+        data: null,
+    })
 
     const {o, xyz, color} = useSpring({
     from: {o: 0, xyz: [0, 0, 0], color: 'black'},
@@ -9,6 +17,27 @@ export const Contact = props => {
     xyz: [10, 20, 5],
     color: 'black'
     });
+
+    useEffect(() => {
+        if(props.location.state && !stateLocal.fetched){
+            // Try and GET user profile data for the given profile
+            fetch('http://localhost:5000/contact', {
+                method: 'GET',
+                headers: {user_id: user.user_id}, 
+                mode: 'cors',
+                credentials: 'include',
+                withCredentials: true,
+            })
+            .then(response => response.json())
+            .then(data => {
+                setStateLocal({
+                    data: data,
+                    fetched: true,
+                });
+                console.log("Contact Component Recieved Response: ", data);
+            })
+        }
+    },[stateLocal, props.location])
 
     return(
         <>
@@ -33,6 +62,17 @@ export const Contact = props => {
         >
             <h2>{user.firstname} {user.lastname}</h2>
             <p>Welcome to your personalized contact page!</p>
+
+            <p><b>Email: </b>{user.email}</p>
+            <br></br>
+            {stateLocal.data 
+            ? stateLocal.data.map((row) => 
+                <div>
+                    <p><b>Link:</b> {row.link}</p>
+                    <br></br>
+                </div>
+            )
+            : null } 
         </animated.div>
         </>
     );

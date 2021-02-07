@@ -333,19 +333,17 @@ app.get('/portfolio', (req, res) => {
 
 })
 
-app.get('/links', (req, res) => {
+app.get('/contact', (req, res) => {
+    const user_id = req.headers.user_id;
 
-    if(typeof req.user !== 'undefined'){
-        db.tx(t => {
-            return t.oneOrNone('SELECT * FROM links WHERE \''+ req.user.user_id +'\' = uid;');
-        })
-        .then((links) => {
-            return res.json(links);
-        })
-        .catch((err) => console.log(err));
-    } else{
-        return res.json({error: true});
-    }
+    db.tx(t => {
+        return t.any('SELECT * FROM links WHERE \''+ user_id +'\' = uid;');
+    })
+    .then((links) => {
+        return res.json(links);
+    })
+    .catch((err) => console.log(err));
+
 })
 
 const PORT = process.env.PORT || 5000;
