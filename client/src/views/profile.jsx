@@ -25,6 +25,12 @@ class Profile extends Component{
             loggedIn: (typeof this.props.location.state !== 'undefined' && typeof this.props.location.state.loggedIn !== 'undefined') ? this.props.location.state.loggedIn : false,
 
             requestedBy: (typeof this.props.location.state !== 'undefined' && typeof this.props.location.state.requestedBy !== 'undefined') ? this.props.location.state.requestedBy : null,
+
+            about: (typeof this.props.location.about !== 'undefined') ? this.props.location.state.about : null,
+
+            portfolio: (typeof this.props.location.portfolio !== 'undefined') ? this.props.location.state.portfolio : null,
+
+            contact: (typeof this.props.location.contact !== 'undefined') ? this.props.location.state.contact : null
         }
     }
 
@@ -36,16 +42,54 @@ class Profile extends Component{
         var pathname = window.location.pathname.substr(1, window.location.pathname.length);
 
         // Try and GET user data for the given profile
-        const response  = await fetch('http://localhost:5000/getUserData', {
-            method: 'GET',
-            headers: {username: pathname}, 
-            mode: 'cors',
-            credentials: 'include',
-            withCredentials: true,
-        });
+        // const response  = await fetch('http://localhost:5000/getUserData', {
+        //     method: 'GET',
+        //     headers: {username: pathname}, 
+        //     mode: 'cors',
+        //     credentials: 'include',
+        //     withCredentials: true,
+        // });
 
-        const json = await response.json();
-        const data = json;
+        // const json = await response.json();
+        // const data = json;
+        
+
+        let [home, about, portfolio, contact] = await Promise.all([
+            fetch('http://localhost:5000/getUserData', {
+                method: 'GET',
+                headers: {username: pathname}, 
+                mode: 'cors',
+                credentials: 'include',
+                withCredentials: true,
+            }).then((res) => res.json()),
+            fetch('http://localhost:5000/about', {
+                method: 'GET',
+                headers: {username: pathname}, 
+                mode: 'cors',
+                credentials: 'include',
+                withCredentials: true,
+            }).then((res) => res.json()),
+            fetch('http://localhost:5000/portfolio', {
+                method: 'GET',
+                headers: {username: pathname}, 
+                mode: 'cors',
+                credentials: 'include',
+                withCredentials: true,
+            }).then((res) => res.json()),
+            fetch('http://localhost:5000/contact', {
+                method: 'GET',
+                headers: {username: pathname}, 
+                mode: 'cors',
+                credentials: 'include',
+                withCredentials: true,
+            }).then((res) => res.json())
+        ])
+
+        
+        const data = home;
+        const aboutTab = about;
+        const portfolioTab = portfolio;
+        const contactTab = contact;
 
         console.log("Profile Recieved Server Response: ", data);
 
@@ -65,7 +109,10 @@ class Profile extends Component{
                         key: "home",
                         ownedByUser: this.state.ownedByUser,
                         loggedIn: this.state.loggedIn,
-                        requestedBy: data.requestedBy
+                        requestedBy: data.requestedBy,
+                        about: this.state.about,
+                        portfolio: this.state.portfolio,
+                        contact: this.state.contact
                     }
                 })
                 window.location.reload();
@@ -73,7 +120,13 @@ class Profile extends Component{
         }else{
             // If user was found => Store in state
             //console.log("Found user: ", data.user);
-            this.setState({user: data.user, requestedBy: data.requestedBy});
+            this.setState({
+                user: data.user, 
+                requestedBy: data.requestedBy,
+                about: aboutTab,
+                portfolio: portfolioTab,
+                contact: contactTab
+            });
         }
 
         // Regardless of whether the current user matches the profile, a user must always be logged-in in order to edit their profile
@@ -108,7 +161,10 @@ class Profile extends Component{
                         key: this.state.key,
                         ownedByUser: this.state.ownedByUser,
                         loggedIn: this.state.loggedIn,
-                        requestedBy: this.state.requestedBy
+                        requestedBy: this.state.requestedBy,
+                        about: this.state.about,
+                        portfolio: this.state.portfolio,
+                        contact: this.state.contact
                     }
                 })
                 return;
@@ -121,7 +177,10 @@ class Profile extends Component{
                     key: "home",
                     ownedByUser: this.state.ownedByUser,
                     loggedIn: this.state.loggedIn,
-                    requestedBy: this.state.requestedBy
+                    requestedBy: this.state.requestedBy,
+                    about: this.state.about,
+                    portfolio: this.state.portfolio,
+                    contact: this.state.contact
                 }
             })
         }

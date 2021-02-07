@@ -4,12 +4,7 @@ import {useSpring, animated, interpolate} from 'react-spring';
 export const Contact = props => {
     console.log("Contact Recieved Props: ", props);
     const user = props.location.state.user;
-    
-    const [stateLocal, setStateLocal] 
-    = useState({ 
-        fetched: false, 
-        data: null,
-    })
+    const info = props.location.state.contact;
 
     const {o, xyz, color} = useSpring({
     from: {o: 0, xyz: [0, 0, 0], color: 'black'},
@@ -18,26 +13,6 @@ export const Contact = props => {
     color: 'black'
     });
 
-    useEffect(() => {
-        if(props.location.state && !stateLocal.fetched){
-            // Try and GET user profile data for the given profile
-            fetch('http://localhost:5000/contact', {
-                method: 'GET',
-                headers: {user_id: user.user_id}, 
-                mode: 'cors',
-                credentials: 'include',
-                withCredentials: true,
-            })
-            .then(response => response.json())
-            .then(data => {
-                setStateLocal({
-                    data: data,
-                    fetched: true,
-                });
-                console.log("Contact Component Recieved Response: ", data);
-            })
-        }
-    },[stateLocal, props.location])
 
     return(
         <>
@@ -65,8 +40,8 @@ export const Contact = props => {
 
             <p><b>Email: </b>{user.email}</p>
             <br></br>
-            {stateLocal.data 
-            ? stateLocal.data.map((row) => 
+            {info 
+            ? info.map((row) => 
                 <div>
                     <p><b>Link:</b> {row.link}</p>
                     <br></br>
