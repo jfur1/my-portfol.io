@@ -318,11 +318,10 @@ app.get('/about', (req, res) => {
 })
 
 app.get('/portfolio', (req, res) => {
-    const username = req.headers.username;
+    const user_id = req.headers.user_id;
     
-    db.task(async t => {
-        const user = await t.oneOrNone('SELECT user_id FROM users WHERE \''+ username +'\' = username;');
-        return t.any('SELECT * FROM portfolio WHERE uid = $1', user.user_id);
+    db.tx(t => {
+        return t.any('SELECT * FROM portfolio WHERE uid = $1', user_id);
     })
     .then((portfolio) => {
         return res.json(portfolio);
