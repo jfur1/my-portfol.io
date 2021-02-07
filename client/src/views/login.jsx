@@ -61,7 +61,8 @@ export const Login = props => {
                                         props.history.push({
                                             pathname: `/${res.username}`,
                                             state: {
-                                                user: res
+                                                user: res,
+                                                requestedBy: res
                                             }
                                         });
                                     }

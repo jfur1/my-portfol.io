@@ -2,7 +2,7 @@ export const createPost = (post, user, next) => {
     //console.log(post);
     // Clean data -- so we can send as one JSON object
     user["post"] = post["newPost"];
-    //console.log(user);
+    console.log(user);
     fetch('http://localhost:5000/createPost', {
         method: 'POST',
         headers: {
