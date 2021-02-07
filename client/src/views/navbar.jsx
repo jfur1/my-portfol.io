@@ -29,7 +29,9 @@ export const NavBar = (props) => {
                         </Dropdown.Toggle>
                         {loggedIn ?
                         <Dropdown.Menu>
-                            <Dropdown.Item><Nav.Link>Edit Profile</Nav.Link></Dropdown.Item>
+                            <Dropdown.Item><Nav.Link onClick={() => {
+                                props.history.push({pathname:"/editProfile"});
+                            }}>Edit Profile</Nav.Link></Dropdown.Item>
                             <Dropdown.Item>
                                 <Nav.Link onClick={() => {
                                     auth.logout(() => {
