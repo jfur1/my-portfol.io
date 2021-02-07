@@ -309,7 +309,12 @@ app.get('/about', (req, res) => {
     const username = req.headers.username;
     
     db.task(async t => {
-        const user = await t.one('SELECT user_id FROM users WHERE \''+ username + '\' = username;');
+        const user = await t.oneOrNone('SELECT user_id FROM users WHERE \''+ username + '\' = username;');
+
+        if(!user){
+            return res.json({error: true});
+        }
+
         return t.oneOrNone('SELECT * FROM profile WHERE \''+ user.user_id + '\' = uid;');
     })
     .then((about) => {
@@ -323,7 +328,12 @@ app.get('/portfolio', (req, res) => {
     const username = req.headers.username;
     
     db.tx(async t => {
-        const user = await t.one('SELECT user_id FROM users WHERE \''+ username + '\' = username;');
+        const user = await t.oneOrNone('SELECT user_id FROM users WHERE \''+ username + '\' = username;');
+        
+        if(!user){
+            return res.json({error: true});
+        }
+
         return t.any('SELECT * FROM portfolio WHERE uid = $1', user.user_id);
     })
     .then((portfolio) => {
@@ -331,7 +341,7 @@ app.get('/portfolio', (req, res) => {
     })
     .catch((err) => {
         console.log(err);
-        res.json({error: true});
+        //res.json({error: true});
     });
 
 })
@@ -340,7 +350,12 @@ app.get('/contact', (req, res) => {
     const username = req.headers.username;
 
     db.tx(async t => {
-        const user = await t.one('SELECT user_id FROM users WHERE \''+ username + '\' = username;');
+        const user = await t.oneOrNone('SELECT user_id FROM users WHERE \''+ username + '\' = username;');
+
+        if(!user){
+            return res.json({error: true});
+        }
+
         return t.any('SELECT * FROM links WHERE \''+ user.user_id +'\' = uid;');
     })
     .then((links) => {

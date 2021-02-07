@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import {useSpring, animated, interpolate} from 'react-spring';
 
 export const Contact = props => {
@@ -41,8 +40,8 @@ export const Contact = props => {
             <p><b>Email: </b>{user.email}</p>
             <br></br>
             {info 
-            ? info.map((row) => 
-                <div>
+            ? info.map((row, idx) => 
+                <div key={idx}>
                     <p><b>Link:</b> {row.link}</p>
                     <br></br>
                 </div>

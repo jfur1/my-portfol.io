@@ -5,11 +5,11 @@ import { AlertMsg } from '../components/alerts';
 export const Welcome = props => {
     let alert;
     console.log(props)
-    if(!(typeof(props.location) !== 'undefined')){
+    if(!(typeof(props.location) !== 'undefined') || props.errorMsg == null){
         alert = null;
     }
     // Alert for successful logout
-    else if(typeof props.location["errorMsg"] !== 'undefined'){
+    else if(typeof props.location["errorMsg"] !== 'undefined' && props.location["errorMsg"] !== null){
         console.log(props.location["errorMsg"]);
         alert = AlertMsg("error", props.location["errorMsg"]);
     }

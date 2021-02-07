@@ -95,12 +95,14 @@ class Profile extends Component{
 
         // If no profile found, redirect back to splash page w/ error msg
         if((typeof data !== 'undefined') && data["error"]){
+
             if(!(typeof data.requestedBy !== 'undefined')){
                 return this.props.history.push({
                     pathname: '/',
-                    errorMsg: `Unable to locate user: ${pathname}`,
+                    errorMsg: (pathname !== "dashboard") ? `Unable to locate user: ${pathname}` : null,
                 })
-            }else{
+            } 
+            else{
                 this.props.history.push({
                     pathname: `/${data.requestedBy.username}`,
                     errorMsg: `Unable to locate user: ${pathname}`,
