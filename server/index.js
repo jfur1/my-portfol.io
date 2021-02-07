@@ -306,33 +306,32 @@ app.get('/getPosts', (req, res) => {
 })
 
 app.get('/about', (req, res) => {
-    
-    if(typeof req.user !== 'undefined'){
-        db.tx(t => {
-            return t.oneOrNone('SELECT * FROM profile WHERE \''+ req.user.user_id +'\' = uid;');
-        })
-        .then((about) => {
-            return res.json(about);
-        })
-        .catch((err) => console.log(err));
-    } else{
-        return res.json({error: true});
-    }
+    const user_id = req.headers.user_id;
+    db.tx(t => {
+        return t.oneOrNone('SELECT * FROM profile WHERE \''+ user_id +'\' = uid;');
+    })
+    .then((about) => {
+        return res.json(about);
+    })
+    .catch((err) => console.log(err));
+
 })
 
 app.get('/portfolio', (req, res) => {
+    const username = req.headers.username;
+    
+    db.task(async t => {
+        const user = await t.oneOrNone('SELECT user_id FROM users WHERE \''+ username +'\' = username;');
+        return t.any('SELECT * FROM portfolio WHERE uid = $1', user.user_id);
+    })
+    .then((portfolio) => {
+        return res.json(portfolio);
+    })
+    .catch((err) => {
+        console.log(err);
+        res.json({error: true});
+    });
 
-    if(typeof req.user !== 'undefined'){
-        db.tx(t => {
-            return t.oneOrNone('SELECT * FROM portfolio WHERE \''+ req.user.user_id +'\' = uid;');
-        })
-        .then((portfolio) => {
-            return res.json(portfolio);
-        })
-        .catch((err) => console.log(err));
-    } else{
-        return res.json({error: true});
-    }
 })
 
 app.get('/links', (req, res) => {

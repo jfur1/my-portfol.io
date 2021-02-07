@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Tabs, Tab } from 'react-bootstrap'
-import auth from '../components/auth';
 import { AlertMsg } from '../components/alerts';
 
 // Import Components

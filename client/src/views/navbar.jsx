@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Nav, Navbar, Dropdown } from 'react-bootstrap'
 import { PersonCircle } from 'react-bootstrap-icons';
 import auth from '../components/auth';
@@ -30,7 +30,10 @@ export const NavBar = (props) => {
                         {loggedIn ?
                         <Dropdown.Menu>
                             <Dropdown.Item><Nav.Link onClick={() => {
-                                props.history.push({pathname:"/editProfile"});
+                                props.history.push({
+                                    pathname:"/editProfile",
+                                    state: props.location.state
+                                });
                             }}>Edit Profile</Nav.Link></Dropdown.Item>
                             <Dropdown.Item>
                                 <Nav.Link onClick={() => {
