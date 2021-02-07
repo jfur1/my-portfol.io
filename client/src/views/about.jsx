@@ -8,13 +8,18 @@ export const About = props => {
 
     return(
         <>
+        
         <h2>Hey {user.firstname} {user.lastname}</h2>
         <h4>About Page</h4>
         <br></br>
+        <div className="user-container">
         <h4><b>Location:</b> {info.location}</h4>
         <br></br>
         <h4><b>Bio:</b> {info.bio}</h4>
         <br></br>
+        </div>
+
+        <div className="user-container">
         <h4><b>Hobbies:</b>
         {hobbies 
         ? hobbies.map((row, idx) => 
@@ -23,8 +28,6 @@ export const About = props => {
             </div>
         ) 
         : null}</h4>
-        
-        <br></br>
 
         <h4><b>Skills:</b>
         {skills 
@@ -34,6 +37,7 @@ export const About = props => {
             </div>
         ) 
         : null}</h4>
+        </div>
         </>
     );
 }

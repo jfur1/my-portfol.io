@@ -203,23 +203,21 @@ class Profile extends Component{
                     </div> : null }
 
                     { this.state.key === "about" ?  
-                    <div className="resume-container">
+                    <div className="profile-container">
                         <About {...this.props} data={this.state}/>
                     </div> : null}
 
                     { this.state.key === "portfolio" ?
-                    <div className="resume-container">
+                    <div className="profile-container">
                         <Portfolio {...this.props} data={this.state}/>
                     </div> : null}
 
                     { this.state.key === "contact" ?
-                    <div className="resume-container">
+                    <div className="profile-container">
                         <Contact {...this.props} data={this.state}/>
                     </div> : null}
-
+                </div>
             </div>
-
-        </div>
         );
     }
 

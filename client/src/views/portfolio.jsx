@@ -6,9 +6,11 @@ export const Portfolio = props => {
 
     return(
         <>        
+
         <h3>Hey {user.firstname} {user.lastname}</h3>
         <p>Portfolio Page</p>
-        <br></br>
+
+        <div className="user-container">
         <h3>Work Experience:</h3>
         {portfolio
         ? portfolio.map((row, idx) => 
@@ -21,7 +23,8 @@ export const Portfolio = props => {
             </div>
         )
         : null } 
-        
+        </div>
+        <div className="user-container">
         <h3>Education</h3>
         {education 
         ? education.map((row, idx) => 
@@ -33,6 +36,7 @@ export const Portfolio = props => {
             </div>
         )
         : null}
+        </div>
         </>
     );
 }
