@@ -1,15 +1,17 @@
 export const Portfolio = props => {
     console.log("Portfolio Recieved Props: ", props);
     const user = props.location.state.user;
-    const info = props.location.state.portfolio;
+    const portfolio = props.location.state.portfolio;
+    const education = props.location.state.education;
 
     return(
         <>        
         <h3>Hey {user.firstname} {user.lastname}</h3>
         <p>Portfolio Page</p>
         <br></br>
-        {info
-        ? info.map((row, idx) => 
+        <h3>Work Experience:</h3>
+        {portfolio
+        ? portfolio.map((row, idx) => 
             <div key={idx}>
                 <p><b>Occupation:</b> {row.occupation}</p>
                 <p><b>Organization:</b> {row.organization}</p>
@@ -20,7 +22,17 @@ export const Portfolio = props => {
         )
         : null } 
         
-
+        <h3>Education</h3>
+        {education 
+        ? education.map((row, idx) => 
+            <div key={idx}>
+                <p><b>Education: </b>{row.education}</p>
+                <p>{row.organization 
+                ? row.organization : null}</p>
+                <br></br>
+            </div>
+        )
+        : null}
         </>
     );
 }

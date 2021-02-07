@@ -30,7 +30,13 @@ class Profile extends Component{
 
             portfolio: (typeof this.props.location.portfolio !== 'undefined') ? this.props.location.state.portfolio : null,
 
-            contact: (typeof this.props.location.contact !== 'undefined') ? this.props.location.state.contact : null
+            contact: (typeof this.props.location.contact !== 'undefined') ? this.props.location.state.contact : null,
+
+            education: (typeof this.props.location.education !== 'undefined') ? this.props.location.state.education : null,
+
+            hobbies: (typeof this.props.location.hobbies !== 'undefined') ? this.props.location.state.hobbies : null,
+
+            skills: (typeof this.props.location.skills !== 'undefined') ? this.props.location.state.skills : null,
         }
     }
 
@@ -40,62 +46,34 @@ class Profile extends Component{
         console.log("Component Mounted with STATE:", this.state);
         console.log("Component Mounted with PROPS:", this.props.location.state);
         var pathname = window.location.pathname.substr(1, window.location.pathname.length);
-
-        // Try and GET user data for the given profile
-        // const response  = await fetch('http://localhost:5000/getUserData', {
-        //     method: 'GET',
-        //     headers: {username: pathname}, 
-        //     mode: 'cors',
-        //     credentials: 'include',
-        //     withCredentials: true,
-        // });
-
-        // const json = await response.json();
-        // const data = json;
         
+        const urls = [
+            'http://localhost:5000/getUserData',
+            'http://localhost:5000/about',
+            'http://localhost:5000/portfolio',
+            'http://localhost:5000/contact',
+            'http://localhost:5000/education',
+            'http://localhost:5000/hobbies',
+            'http://localhost:5000/skills',
+        ];
 
-        let [home, about, portfolio, contact] = await Promise.all([
-            fetch('http://localhost:5000/getUserData', {
+        let [data, about, portfolio, contact, education, hobbies, skills] = await 
+        Promise.all(urls.map(url => 
+            fetch(url, {
                 method: 'GET',
                 headers: {username: pathname}, 
                 mode: 'cors',
                 credentials: 'include',
                 withCredentials: true,
-            }).then((res) => res.json()),
-            fetch('http://localhost:5000/about', {
-                method: 'GET',
-                headers: {username: pathname}, 
-                mode: 'cors',
-                credentials: 'include',
-                withCredentials: true,
-            }).then((res) => res.json()),
-            fetch('http://localhost:5000/portfolio', {
-                method: 'GET',
-                headers: {username: pathname}, 
-                mode: 'cors',
-                credentials: 'include',
-                withCredentials: true,
-            }).then((res) => res.json()),
-            fetch('http://localhost:5000/contact', {
-                method: 'GET',
-                headers: {username: pathname}, 
-                mode: 'cors',
-                credentials: 'include',
-                withCredentials: true,
-            }).then((res) => res.json())
-        ])
-
-        
-        const data = home;
-        const aboutTab = about;
-        const portfolioTab = portfolio;
-        const contactTab = contact;
+            })
+            .then((res) => res.json())
+        ))
 
         console.log("Profile Recieved Server Response: ", data);
 
         // If no profile found, redirect back to splash page w/ error msg
         if((typeof data !== 'undefined') && data["error"]){
-
+            
             if(!(typeof data.requestedBy !== 'undefined')){
                 return this.props.history.push({
                     pathname: '/',
@@ -114,7 +92,10 @@ class Profile extends Component{
                         requestedBy: data.requestedBy,
                         about: this.state.about,
                         portfolio: this.state.portfolio,
-                        contact: this.state.contact
+                        contact: this.state.contact,
+                        education: this.state.education,
+                        hobbies: this.state.hobbies,
+                        skills: this.state.skills
                     }
                 })
                 window.location.reload();
@@ -125,9 +106,12 @@ class Profile extends Component{
             this.setState({
                 user: data.user, 
                 requestedBy: data.requestedBy,
-                about: aboutTab,
-                portfolio: portfolioTab,
-                contact: contactTab
+                about: about,
+                portfolio: portfolio,
+                contact: contact,
+                education: education,
+                hobbies: hobbies,
+                skills: skills
             });
         }
 
@@ -147,7 +131,6 @@ class Profile extends Component{
 
         console.log("STATE: ", this.state);
         console.log("PROPS: ", this.props.location.state);
-        console.log(this.props);
     }
 
     // Keeps track of what tab we're on, for the event of user refresh
@@ -166,7 +149,10 @@ class Profile extends Component{
                         requestedBy: this.state.requestedBy,
                         about: this.state.about,
                         portfolio: this.state.portfolio,
-                        contact: this.state.contact
+                        contact: this.state.contact,
+                        education: this.state.education,
+                        hobbies: this.state.hobbies,
+                        skills: this.state.skills
                     }
                 })
                 return;
@@ -182,7 +168,10 @@ class Profile extends Component{
                     requestedBy: this.state.requestedBy,
                     about: this.state.about,
                     portfolio: this.state.portfolio,
-                    contact: this.state.contact
+                    contact: this.state.contact,
+                    education: this.state.education,
+                    hobbies: this.state.hobbies,
+                    skills: this.state.skills
                 }
             })
         }

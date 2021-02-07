@@ -365,6 +365,61 @@ app.get('/contact', (req, res) => {
 
 })
 
+app.get('/education', (req, res) => {
+    const username = req.headers.username;
+
+    db.tx(async t => {
+        const user = await t.oneOrNone('SELECT user_id FROM users WHERE \''+ username + '\' = username;');
+
+        if(!user){
+            return res.json({error: true});
+        }
+
+        return t.any('SELECT * FROM education WHERE \''+ user.user_id +'\' = uid;');
+    })
+    .then((eduaction) => {
+        return res.json(eduaction);
+    })
+    .catch((err) => console.log(err));
+})
+
+app.get('/hobbies', (req, res) => {
+    const username = req.headers.username;
+
+    db.tx(async t => {
+        const user = await t.oneOrNone('SELECT user_id FROM users WHERE \''+ username + '\' = username;');
+
+        if(!user){
+            return res.json({error: true});
+        }
+
+        return t.any('SELECT * FROM hobbies WHERE \''+ user.user_id +'\' = uid;');
+    })
+    .then((hobbies) => {
+        return res.json(hobbies);
+    })
+    .catch((err) => console.log(err));
+})
+
+app.get('/skills', (req, res) => {
+    const username = req.headers.username;
+
+    db.tx(async t => {
+        const user = await t.oneOrNone('SELECT user_id FROM users WHERE \''+ username + '\' = username;');
+
+        if(!user){
+            return res.json({error: true});
+        }
+
+        return t.any('SELECT * FROM skills WHERE \''+ user.user_id +'\' = uid;');
+    })
+    .then((skills) => {
+        return res.json(skills);
+    })
+    .catch((err) => console.log(err));
+})
+
+
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, console.log('Server started on port ' + PORT));
