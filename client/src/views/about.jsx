@@ -21,7 +21,6 @@ export const About = props => {
         
         <h2>{user.firstname} {user.lastname}</h2>
         <p>About Page</p>
-        <br></br>
 
         {props.data.ownedByUser 
         ? <PencilFill size={25} onClick={handleShow}/> 
@@ -36,19 +35,19 @@ export const About = props => {
             centered
             scrollable={true}
         >
-        <Modal.Header closeButton>
-            <Modal.Title id="contained-modal-title-vcenter">
-              Edit About
-            </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          I will not close if you click outside me. Don't even try to press
-          escape key.
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="success" onClick={handleClose}>Save Changes</Button>
-        </Modal.Footer>
-      </Modal>
+            <Modal.Header closeButton>
+                <Modal.Title id="contained-modal-title-vcenter">
+                    Edit
+                </Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                I will not close if you click outside me. Don't even try to press
+                escape key.
+            </Modal.Body>
+            <Modal.Footer>
+                <Button variant="success" onClick={handleClose}>Save Changes</Button>
+            </Modal.Footer>
+        </Modal>
 
         <div className="info-container">
         <h4><b>Location:</b> {info.location}</h4>
