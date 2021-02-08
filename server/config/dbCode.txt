@@ -41,7 +41,8 @@ CREATE TABLE IF NOT EXISTS profile(
   profile_id INT NOT NULL PRIMARY KEY,
   uid INT REFERENCES users(user_id),
   bio VARCHAR,
-  location VARCHAR(64)
+  location VARCHAR(64),
+  phone VARCHAR
 );
 
 INSERT INTO profile(profile_id, uid, bio, location)
@@ -118,7 +119,8 @@ CREATE TABLE IF NOT EXISTS portfolio(
   occupation VARCHAR(255) NOT NULL,
   organization VARCHAR(255),
   from_when DATE,
-  to_when DATE
+  to_when DATE,
+  description VARCHAR
 );
 
 INSERT INTO portfolio(portfolio_id, uid, occupation, organization, from_when, to_when)
@@ -127,8 +129,24 @@ VALUES(1, 8, 'Server', 'Eureka!', '2019-09-01', '2020-04-01'),
 (3, 8, 'Line Cook', 'Dilly''s Restaurant', '2013-05-01', '2016-04-01'),
 (4, 7, 'Full Stack Web Developer', 'Google', '2016-05-01', '2020-04-01');
 
+--------------------------------------------------------------------
 
+CREATE TABLE IF NOT EXISTS projects(
+  project_id INT NOT NULL PRIMARY KEY,
+  uid INT REFERENCES users(user_id),
+  title VARCHAR(64) NOT NULL,
+  description VARCHAR(255),
+  organization VARCHAR(64),
+  from_when DATE,
+  to_when DATE,
+  link VARCHAR(255)
+);
 
+INSERT INTO projects(project_id, uid, title, description, organization, from_when, to_when, link)
+VALUES(1, 8, 'Pathfinding Visualizer', 'Created a React app to visualize various pathfinding algorithms', NULL, '2019-09-01', '2020-04-01', 'https://jfur1.github.io/pathfinding/'),
+(2, 7, 'Google Search', 'Created algorithm for indexing web pages with my roommate Larry', 'Google', '1998-07-04', NULL, 'https://www.google.com/'),
+(3, 8, 'my-portfol.io', 'Created a full stack application originally for my friends to host their portfolios on', 'my-portfol.io', '2021-01-01', NULL, 'my-portfol.io'),
+(4, 7, 'my-portfol.io', 'Created a full stack application originally for my friends to host their portfolios on', 'my-portfol.io' ,'2021-01-01', NULL, 'my-portfol.io');
 
 
 ----------------------------------- WAIT TO ADD THESE TABLES -----------------------------

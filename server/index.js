@@ -419,6 +419,23 @@ app.get('/skills', (req, res) => {
     .catch((err) => console.log(err));
 })
 
+app.get('/projects', (req, res) => {
+    const username = req.headers.username;
+
+    db.tx(async t => {
+        const user = await t.oneOrNone('SELECT user_id FROM users WHERE \''+ username + '\' = username;');
+
+        if(!user){
+            return res.json({error: true});
+        }
+
+        return t.any('SELECT * FROM projects WHERE \''+ user.user_id +'\' = uid;');
+    })
+    .then((skills) => {
+        return res.json(skills);
+    })
+    .catch((err) => console.log(err));
+})
 
 const PORT = process.env.PORT || 5000;
 
