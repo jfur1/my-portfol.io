@@ -15,6 +15,11 @@ export const About = props => {
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
+    // const handleSave()
+
+    const [edited, setEdited] = useState(false);
+    const [location, setLocation] = useState(info.location);
+
 
     return(
         <div className="tab-container">
@@ -42,7 +47,23 @@ export const About = props => {
             </Modal.Header>
             <Modal.Body>
                 I will not close if you click outside me. Don't even try to press
-                escape key.
+                escape key!
+                <form>
+                    <div className="form-group">
+                        <label for="location"><b>Location</b></label>
+                        <input type="text" className="form-control" id="location" defaultValue={location} onChange={e => setLocation(e.target.value)}></input>
+                    </div>
+                    <div className="form-group">
+                        <label for="hobbies"><b>Hobbies</b></label>
+                        <input type="text" className="form-control" id="hobby" defaultValue={hobbies[0].hobby}></input>
+                        <input type="text" className="form-control" id="hobby" defaultValue={hobbies[1].hobby}></input>
+                    </div>
+                    <div className="form-group">
+                        <label for="skills"><b>Skills</b></label>
+                        <input type="text" className="form-control" id="hobby" defaultValue={skills[0].skill}></input>
+                        <input type="text" className="form-control" id="hobby" defaultValue={skills[1].skill}></input>
+                    </div>
+                </form>             
             </Modal.Body>
             <Modal.Footer>
                 <Button variant="success" onClick={handleClose}>Save Changes</Button>
@@ -50,31 +71,32 @@ export const About = props => {
         </Modal>
 
         <div className="info-container">
-        <h4><b>Location:</b> {info.location}</h4>
-        <br></br>
-        <h4><b>Bio:</b> {info.bio}</h4>
-        <br></br>
+            <h4><b>Edited? :</b> {edited ? "True" : "False"}</h4>
+            <h4><b>Location:</b> {location}</h4>
+            <br></br>
+            <h4><b>Bio:</b> {info.bio}</h4>
+            <br></br>
         </div>
 
-        <div className="info-container">
-        <h4><b>Hobbies:</b>
-        {hobbies 
-        ? hobbies.map((row, idx) => 
-            <div key={idx}>
-                <p>{row.hobby}</p>
-            </div>
-        ) 
-        : null}</h4>
+            <div className="info-container">
+                <h4><b>Hobbies:</b>
+                {hobbies 
+                ? hobbies.map((row, idx) => 
+                    <div key={idx}>
+                        <p>{row.hobby}</p>
+                    </div>
+                ) 
+                : null}</h4>
 
-        <h4><b>Skills:</b>
-        {skills 
-        ? skills.map((row, idx) => 
-            <div key={idx}>
-                <p>{row.skill}</p>
+                <h4><b>Skills:</b>
+                {skills 
+                ? skills.map((row, idx) => 
+                    <div key={idx}>
+                        <p>{row.skill}</p>
+                    </div>
+                ) 
+                : null}</h4>
             </div>
-        ) 
-        : null}</h4>
-        </div>
         </div>
     );
 }
