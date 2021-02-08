@@ -43,15 +43,15 @@ export const About = props => {
     const [bio, setBio] = useState(info.bio);
 
     const [hobbies, setHobbies] = useState({values: hobbiesData});
-    const [skills, setSkills] = useState(skillsData);
-    console.log("Hobbies Data:", hobbiesData);
-    console.log("Hobbies State:", hobbies);
+    const [skills, setSkills] = useState({values: skillsData});
+    // console.log("Hobbies Data:", hobbiesData);
+    // console.log("Hobbies State:", hobbies);
 
     const renderHobbiesForm = () => {
         return hobbies.values.map((row, idx) =>
             <div className="form-group row" key={idx}>
                 {console.log(row)}
-                <input type="text" className="form-control" style={{width: '40%'}} value={row.hobby || ''} onChange={e => {handleHobbyChange(e, idx)}}/>
+                <input type="text" className="form-control" style={{width: '70%'}} value={row.hobby || ''} onChange={e => {handleHobbyChange(e, idx)}}/>
                 <input type="button" value="Delete" onClick={() => removeHobby(idx)}/>
             </div>
         )
@@ -76,6 +76,35 @@ export const About = props => {
         let tmpHobbies = [...hobbies.values];
         tmpHobbies.splice(idx, 1);
         setHobbies({values: tmpHobbies});
+    }
+
+    const renderSkillsForm = () => {
+        return skills.values.map((row, idx) =>
+            <div className="form-group row" key={idx}>
+                {console.log(row)}
+                <input type="text" className="form-control" style={{width: '70%'}} value={row.skill || ''} onChange={e => {handleSkillChange(e, idx)}}/>
+                <input type="button" value="Delete" onClick={() => removeSkill(idx)}/>
+            </div>
+        )
+    }
+    const handleSkillChange = (event, idx) => {
+        let tmpSkills = [...skills.values];
+        tmpSkills[idx] = {
+            skill_id: skills.values[idx].hobby_id, 
+            uid: skills.values[idx].uid ,
+            skill: event.target.value
+        };
+        setSkills({values: tmpSkills});
+        setEdited(true);
+    }
+    const addSkill = () => {
+        setSkills({values: [...skills.values, '']});
+    }
+
+    const removeSkill = (idx) => {
+        let tmpSkills = [...skills.values];
+        tmpSkills.splice(idx, 1);
+        setSkills({values: tmpSkills});
     }
 
     return(
@@ -114,19 +143,22 @@ export const About = props => {
                         <label htmlFor="bio"><b>Bio</b></label>
                         <textarea className="form-control" rows="5" id="bio" defaultValue={bio} onChange={e => {setBio(e.target.value); setEdited(true);}}></textarea>
                     </div>
-                    <div className="form-group col">
-                        <label htmlFor="hobbies"><b>Hobbies</b></label>
-                        {renderHobbiesForm()}
-
-                        {hobbies.values.length < 6
-                        ? <input type='button' value="Add Hobby" onClick={() => addHobby()}/>  
-                        : null }
-                        
-                    </div>  
-                    <div className="form-group">
-                        <label htmlFor="skills"><b>Skills</b></label>
-                        <input type="text" className="form-control" id="hobby" defaultValue={skills[0].skill}></input>
-                        <input type="text" className="form-control" id="hobby" defaultValue={skills[1].skill}></input>
+                    
+                    <div className="form-group row ml-4">
+                        <div className="form-group col">
+                            <label htmlFor="hobbies"><b>Hobbies</b></label>
+                            {renderHobbiesForm()}
+                            {hobbies.values.length < 6
+                            ? <input type='button' value="Add Hobby" onClick={() => addHobby()}/>  
+                            : null }
+                        </div>  
+                        <div className="form-group col">
+                            <label htmlFor="skills"><b>Skills</b></label>
+                            {renderSkillsForm()}
+                            {skills.values.length < 6
+                            ? <input type='button' value="Add Skill" onClick={() => addSkill()}/>  
+                            : null }
+                        </div>  
                     </div>
                 </form>             
             </Modal.Body>
@@ -155,7 +187,7 @@ export const About = props => {
 
                 <h4><b>Skills:</b>
                 {skills 
-                ? skills.map((row, idx) => 
+                ? skills.values.map((row, idx) => 
                     <div key={idx}>
                         <p>{row.skill}</p>
                     </div>
