@@ -18,7 +18,9 @@ export const NavBar = (props) => {
             {loggedIn ? 
                 <Nav.Item>
                     <Navbar.Text className="mr-sm-2">
-                        Signed in as: <b>{requestedBy.first_name} {requestedBy.last_name}</b>
+                        Signed in as: <a href={requestedBy.username}>
+                            <b>{requestedBy.first_name} {requestedBy.last_name}</b>
+                        </a>
                     </Navbar.Text>
                 </Nav.Item>
                 : null}
@@ -29,12 +31,15 @@ export const NavBar = (props) => {
                         </Dropdown.Toggle>
                         {loggedIn ?
                         <Dropdown.Menu>
-                            <Dropdown.Item><Nav.Link onClick={() => {
-                                props.history.push({
-                                    pathname:"/editProfile",
-                                    state: props.location.state
-                                });
-                            }}>Edit Profile</Nav.Link></Dropdown.Item>
+                            <Dropdown.Item>
+                                <Nav.Link onClick={() => {
+                                    props.history.push({
+                                        pathname:"/editProfile",
+                                        state: props.location.state
+                                    });
+                                }}>Edit Profile
+                                </Nav.Link>
+                            </Dropdown.Item>
                             <Dropdown.Item>
                                 <Nav.Link onClick={() => {
                                     auth.logout(() => {

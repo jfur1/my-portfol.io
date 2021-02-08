@@ -1,5 +1,7 @@
 import {useSpring, animated, interpolate} from 'react-spring';
 
+import { PencilFill } from 'react-bootstrap-icons';
+
 export const Contact = props => {
     console.log("Contact Recieved Props: ", props);
     const user = props.location.state.user;
@@ -35,8 +37,8 @@ export const Contact = props => {
             }}
         >
             <h2>{user.firstname} {user.lastname}</h2>
+            {props.data.ownedByUser ? <PencilFill size={25} onClick={() => console.log("click")}/> : null}
             <p>Welcome to your personalized contact page!</p>
-
             <p><b>Email: </b>{user.email}</p>
             <br></br>
             {info 

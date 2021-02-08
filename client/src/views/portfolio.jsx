@@ -1,3 +1,5 @@
+import { PencilFill } from 'react-bootstrap-icons';
+
 export const Portfolio = props => {
     console.log("Portfolio Recieved Props: ", props);
     const user = props.location.state.user;
@@ -9,7 +11,7 @@ export const Portfolio = props => {
 
         <h3>Hey {user.firstname} {user.lastname}</h3>
         <p>Portfolio Page</p>
-
+        {props.data.ownedByUser ? <PencilFill size={25} onClick={() => console.log("click")}/> : null}
         <div className="user-container">
         <h3>Work Experience:</h3>
         {portfolio
