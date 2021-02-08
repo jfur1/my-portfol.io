@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { PencilFill } from 'react-bootstrap-icons';
 import { Modal, Button } from 'react-bootstrap';
 
@@ -49,18 +49,16 @@ export const About = props => {
 
     const renderHobbiesForm = () => {
         return hobbies.values.map((row, idx) =>
-            <div className="form-group col" key={idx}>
-                <div className="form-group row ml-1">
-                <input type="text" className="form-control" style={{width: '40%'}} defaultValue={row.hobby || ''} onChange={e => {handleHobbyChange(e, idx)}}/>
-                <input type="button" className="" value="Delete" onClick={() => removeHobby()}/>
-                </div>
+            <div className="form-group row" key={idx}>
+                {console.log(row)}
+                <input type="text" className="form-control" style={{width: '40%'}} value={row.hobby || ''} onChange={e => {handleHobbyChange(e, idx)}}/>
+                <input type="button" value="Delete" onClick={() => removeHobby(idx)}/>
             </div>
         )
     }
 
     const handleHobbyChange = (event, idx) => {
         let tmpHobbies = [...hobbies.values];
-        console.log(tmpHobbies);
         tmpHobbies[idx] = {
             hobby_id: hobbies.values[idx].hobby_id, 
             uid: hobbies.values[idx].uid ,
@@ -116,15 +114,14 @@ export const About = props => {
                         <label htmlFor="bio"><b>Bio</b></label>
                         <textarea className="form-control" rows="5" id="bio" defaultValue={bio} onChange={e => {setBio(e.target.value); setEdited(true);}}></textarea>
                     </div>
-                    <div className="form-group">
+                    <div className="form-group col">
                         <label htmlFor="hobbies"><b>Hobbies</b></label>
                         {renderHobbiesForm()}
 
-                        {hobbies.values.length < 7
-                        ?   <div>
-                                <input type='button' value="Add Hobby" onClick={() => addHobby()}/>
-                            </div> 
+                        {hobbies.values.length < 6
+                        ? <input type='button' value="Add Hobby" onClick={() => addHobby()}/>  
                         : null }
+                        
                     </div>  
                     <div className="form-group">
                         <label htmlFor="skills"><b>Skills</b></label>
