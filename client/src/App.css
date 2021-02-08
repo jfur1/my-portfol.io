@@ -119,6 +119,7 @@ table.center {
 .tab-container{
   background-color: #eaf8fc;
   padding: 3%;
+  border-radius: 25px;
 }
 
 /* Alert */

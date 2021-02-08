@@ -7,17 +7,26 @@ export const Home = (props) => {
 
     return(
         <div className="tab-container"> 
-
-            <h2>{user.firstname} {user.lastname} </h2>
-            <p>Home</p>
-
-            {props.data.ownedByUser ? <PencilFill size={25} onClick={() => console.log("click")}/> : null}
             
-            <div className="info-container">
+            {(user !== null && typeof user !== 'undefined')
+            ? 
+                <>
+                <h3>
+                    {user.firstname} {user.lastname} 
+                    
+                    {props.data.ownedByUser 
+                    ? <PencilFill size={25}/> 
+                    : null}
+                </h3>
 
-            <p><b>Username:</b> {user.username}</p>
-            <p><b>Email: </b>{user.email}</p>
-            </div>
+                <br></br>
+
+                <p><b>Username:</b> {user.username}</p>
+                <p><b>Email: </b>{user.email}</p>
+                <br></br>
+                </> 
+
+            : null}
 
         </div>
     )
