@@ -8,17 +8,25 @@ export const About = props => {
     // User Data
     const info = (props.location.state.about !== null) ? props.location.state.about : props.data.about;
     const user = (props.location.state.user !== null) ? props.location.state.user : props.data.user;
-    const hobbies = (props.location.state.hobbies !== null) ? props.location.state.hobbies : props.data.hobbies;
-    const skills = (props.location.state.skills !== null) ? props.location.state.skills : props.data.skills;
+    const hobbiesData = (props.location.state.hobbies !== null) ? props.location.state.hobbies : props.data.hobbies;
+    const skillsData = (props.location.state.skills !== null) ? props.location.state.skills : props.data.skills;
 
     // Edit Data
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
-    // const handleSave()
+    // const handleSave = () => {
+    //  if(edited){
+    //      
+    //  }
+    //}
 
     const [edited, setEdited] = useState(false);
     const [location, setLocation] = useState(info.location);
+    const [bio, setBio] = useState(info.bio);
+
+    const [hobbies, setHobbies] = useState(hobbiesData);
+    const [skills, setSkills] = useState(skillsData);
 
 
     return(
@@ -50,16 +58,20 @@ export const About = props => {
                 escape key!
                 <form>
                     <div className="form-group">
-                        <label for="location"><b>Location</b></label>
-                        <input type="text" className="form-control" id="location" defaultValue={location} onChange={e => setLocation(e.target.value)}></input>
+                        <label htmlFor="location"><b>Location</b></label>
+                        <input type="text" className="form-control" id="location" defaultValue={location} onChange={e => {setLocation(e.target.value); setEdited(true);}}></input>
                     </div>
                     <div className="form-group">
-                        <label for="hobbies"><b>Hobbies</b></label>
-                        <input type="text" className="form-control" id="hobby" defaultValue={hobbies[0].hobby}></input>
+                        <label htmlFor="bio"><b>Bio</b></label>
+                        <textarea className="form-control" rows="5" id="bio" defaultValue={bio} onChange={e => {setBio(e.target.value); setEdited(true);}}></textarea>
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="hobbies"><b>Hobbies</b></label>
+                        <input type="text" className="form-control" id="hobby" defaultValue={hobbies[0].hobby} ></input>
                         <input type="text" className="form-control" id="hobby" defaultValue={hobbies[1].hobby}></input>
                     </div>
                     <div className="form-group">
-                        <label for="skills"><b>Skills</b></label>
+                        <label htmlFor="skills"><b>Skills</b></label>
                         <input type="text" className="form-control" id="hobby" defaultValue={skills[0].skill}></input>
                         <input type="text" className="form-control" id="hobby" defaultValue={skills[1].skill}></input>
                     </div>
@@ -74,7 +86,7 @@ export const About = props => {
             <h4><b>Edited? :</b> {edited ? "True" : "False"}</h4>
             <h4><b>Location:</b> {location}</h4>
             <br></br>
-            <h4><b>Bio:</b> {info.bio}</h4>
+            <h4><b>Bio:</b> {bio}</h4>
             <br></br>
         </div>
 
