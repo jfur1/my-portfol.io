@@ -15,9 +15,26 @@ export const About = props => {
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
+
     // const handleSave = () => {
     //  if(edited){
+    //      await fetch(...)
+    //      setShow(false);
+    //      setEdited(false);
+    //  } else{
+    //      setShow(false);    
+    //  }
+    //}
+
+    // const handleClose = () => {
+    //  if(edited){
+    //      AlertMsg("warning", "You have unsaved changes! Are you sure you want to exit?")
+    //      if(yes) => setShow(false);
+    //      else => (closeMsg);
     //      
+    //      setEdited(false);
+    //  } else{
+    //      setShow(false);    
     //  }
     //}
 
@@ -25,9 +42,43 @@ export const About = props => {
     const [location, setLocation] = useState(info.location);
     const [bio, setBio] = useState(info.bio);
 
-    const [hobbies, setHobbies] = useState(hobbiesData);
+    const [hobbies, setHobbies] = useState({values: hobbiesData});
     const [skills, setSkills] = useState(skillsData);
+    console.log("Hobbies Data:", hobbiesData);
+    console.log("Hobbies State:", hobbies);
 
+    const renderHobbiesForm = () => {
+        return hobbies.values.map((row, idx) =>
+            <div className="form-group col" key={idx}>
+                <div className="form-group row ml-1">
+                <input type="text" className="form-control" style={{width: '40%'}} defaultValue={row.hobby || ''} onChange={e => {handleHobbyChange(e, idx)}}/>
+                <input type="button" className="" value="Delete" onClick={() => removeHobby()}/>
+                </div>
+            </div>
+        )
+    }
+
+    const handleHobbyChange = (event, idx) => {
+        let tmpHobbies = [...hobbies.values];
+        console.log(tmpHobbies);
+        tmpHobbies[idx] = {
+            hobby_id: hobbies.values[idx].hobby_id, 
+            uid: hobbies.values[idx].uid ,
+            hobby: event.target.value
+        };
+        setHobbies({values: tmpHobbies});
+        setEdited(true);
+    }
+
+    const addHobby = () => {
+        setHobbies({values: [...hobbies.values, '']});
+    }
+
+    const removeHobby = (idx) => {
+        let tmpHobbies = [...hobbies.values];
+        tmpHobbies.splice(idx, 1);
+        setHobbies({values: tmpHobbies});
+    }
 
     return(
         <div className="tab-container">
@@ -67,9 +118,14 @@ export const About = props => {
                     </div>
                     <div className="form-group">
                         <label htmlFor="hobbies"><b>Hobbies</b></label>
-                        <input type="text" className="form-control" id="hobby" defaultValue={hobbies[0].hobby} ></input>
-                        <input type="text" className="form-control" id="hobby" defaultValue={hobbies[1].hobby}></input>
-                    </div>
+                        {renderHobbiesForm()}
+
+                        {hobbies.values.length < 7
+                        ?   <div>
+                                <input type='button' value="Add Hobby" onClick={() => addHobby()}/>
+                            </div> 
+                        : null }
+                    </div>  
                     <div className="form-group">
                         <label htmlFor="skills"><b>Skills</b></label>
                         <input type="text" className="form-control" id="hobby" defaultValue={skills[0].skill}></input>
@@ -93,7 +149,7 @@ export const About = props => {
             <div className="info-container">
                 <h4><b>Hobbies:</b>
                 {hobbies 
-                ? hobbies.map((row, idx) => 
+                ? hobbies.values.map((row, idx) => 
                     <div key={idx}>
                         <p>{row.hobby}</p>
                     </div>
