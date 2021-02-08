@@ -37,6 +37,8 @@ class Profile extends Component{
             hobbies: (typeof this.props.location.hobbies !== 'undefined') ? this.props.location.state.hobbies : null,
 
             skills: (typeof this.props.location.skills !== 'undefined') ? this.props.location.state.skills : null,
+
+            projects: (typeof this.props.location.projects !== 'undefined') ? this.props.location.state.projects : null,
         }
     }
 
@@ -55,9 +57,10 @@ class Profile extends Component{
             'http://localhost:5000/education',
             'http://localhost:5000/hobbies',
             'http://localhost:5000/skills',
+            'http://localhost:5000/projects'
         ];
 
-        let [data, about, portfolio, contact, education, hobbies, skills] = await 
+        let [data, about, portfolio, contact, education, hobbies, skills, projects] = await 
         Promise.all(urls.map(url => 
             fetch(url, {
                 method: 'GET',
@@ -95,7 +98,8 @@ class Profile extends Component{
                         contact: this.state.contact,
                         education: this.state.education,
                         hobbies: this.state.hobbies,
-                        skills: this.state.skills
+                        skills: this.state.skills,
+                        projects: this.state.projects
                     }
                 })
                 window.location.reload();
@@ -111,7 +115,8 @@ class Profile extends Component{
                 contact: contact,
                 education: education,
                 hobbies: hobbies,
-                skills: skills
+                skills: skills,
+                projects: projects
             });
         }
 
@@ -152,7 +157,8 @@ class Profile extends Component{
                         contact: this.state.contact,
                         education: this.state.education,
                         hobbies: this.state.hobbies,
-                        skills: this.state.skills
+                        skills: this.state.skills,
+                        projects: this.state.projects
                     }
                 })
                 return;
@@ -171,7 +177,8 @@ class Profile extends Component{
                     contact: this.state.contact,
                     education: this.state.education,
                     hobbies: this.state.hobbies,
-                    skills: this.state.skills
+                    skills: this.state.skills,
+                    projects: this.state.projects
                 }
             })
         }
@@ -198,24 +205,20 @@ class Profile extends Component{
 
                 <div className="info-container">
                     { this.state.key === "home" ? 
-                    <div className="profile-container">
                         <Home {...this.props} data={this.state} />
-                    </div> : null }
+                    : null }
 
                     { this.state.key === "about" ?  
-                    <div className="profile-container">
                         <About {...this.props} data={this.state}/>
-                    </div> : null}
+                    : null }
 
                     { this.state.key === "portfolio" ?
-                    <div className="profile-container">
                         <Portfolio {...this.props} data={this.state}/>
-                    </div> : null}
+                    : null }
 
                     { this.state.key === "contact" ?
-                    <div className="profile-container">
                         <Contact {...this.props} data={this.state}/>
-                    </div> : null}
+                    : null }
                 </div>
             </div>
         );

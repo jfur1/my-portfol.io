@@ -9,20 +9,22 @@ export const About = props => {
     const skills = (props.location.state.skills !== null) ? props.location.state.skills : props.data.skills;
 
     return(
-        <>
+        <div className="tab-container">
         
-        <h2>Hey {user.firstname} {user.lastname}</h2>
-        <h4>About Page</h4>
+        <h2>{user.firstname} {user.lastname}</h2>
+        <p>About Page</p>
         <br></br>
+
         {props.data.ownedByUser ? <PencilFill size={25} onClick={() => console.log("click")}/> : null}
-        <div className="user-container">
+
+        <div className="info-container">
         <h4><b>Location:</b> {info.location}</h4>
         <br></br>
         <h4><b>Bio:</b> {info.bio}</h4>
         <br></br>
         </div>
 
-        <div className="user-container">
+        <div className="info-container">
         <h4><b>Hobbies:</b>
         {hobbies 
         ? hobbies.map((row, idx) => 
@@ -41,6 +43,6 @@ export const About = props => {
         ) 
         : null}</h4>
         </div>
-        </>
+        </div>
     );
 }

@@ -93,9 +93,10 @@ table.center {
 }
 
 /* Default parent styling for .card-container*/
-.card-container{
+.card{
   display: flex;
   margin-top: 3%;
+  background-color: grey;
 }
 
 /* Container for the "Create New Post" Card */
@@ -115,9 +116,8 @@ table.center {
 }
 
 /* Container for individual posts */
-.post-container{
-  margin-top: 3%;
-  background-color: #DADED4;
+.tab-container{
+  background-color: #eaf8fc;
   padding: 3%;
 }
 
