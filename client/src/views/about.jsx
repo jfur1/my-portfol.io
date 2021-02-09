@@ -16,7 +16,7 @@ export const About = props => {
     const [show, setShow] = useState(false);
     //const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
-
+    const handleSave = () => setShow(false);
     // const handleSave = () => {
     //  if(edited){
     //      await fetch(...)
@@ -26,9 +26,9 @@ export const About = props => {
     //      setShow(false);    
     //  }
     //}
+    const [showAlert, setShowAlert] = useState(false); 
     function AlertDismissible() {
-        const [showAlert, setShowAlert] = useState(true); 
-      
+        
         return (
           <>
             <Alert bsPrefix="edit-alert" show={showAlert} variant="warning">
@@ -38,10 +38,10 @@ export const About = props => {
               </p>
               <hr />
               <div className="d-flex justify-content-center">
-                <Button onClick={() => setShowAlert(false)} variant="outline-success">
+                <Button onClick={() => {setShow(false); handleSave(); setEdited(false); setShowAlert(false);}} variant="outline-success">
                     Save Changes
                 </Button>
-                <Button onClick={() => setShowAlert(false)} variant="outline-danger">
+                <Button onClick={() => {setShow(false); setEdited(false); setShowAlert(false);}} variant="outline-danger">
                     Exit
                 </Button>
               </div>
@@ -54,9 +54,7 @@ export const About = props => {
         if(edited){
             //if(yes) => setShow(false);
             //else => (closeMsg);
-            
-            setShow(false); 
-            setEdited(false);
+            setShowAlert(true);
         } else{
             setShow(false);    
         }
@@ -187,12 +185,12 @@ export const About = props => {
                 </form>             
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="success" onClick={handleClose}>Save Changes</Button>
+                <Button variant="success" onClick={handleSave}>Save Changes</Button>
             </Modal.Footer>
         </Modal>
 
         <div className="info-container">
-            <h4><b>Edited? :</b> {edited ? "True" : "False"}</h4>
+            {/* <h4><b>Edited? :</b> {edited ? "True" : "False"}</h4> */}
             <h4><b>Location:</b> {location}</h4>
             <br></br>
             <h4><b>Bio:</b> {bio}</h4>
