@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { PencilFill } from 'react-bootstrap-icons';
 import { Modal, Button } from 'react-bootstrap';
 import Alert from 'react-bootstrap/Alert'
@@ -14,21 +14,17 @@ export const About = props => {
 
     // Edit Data
     const [show, setShow] = useState(false);
-    //const handleClose = () => setShow(false);
+    const [edited, setEdited] = useState(false);
+    const [showAlert, setShowAlert] = useState(false); 
+    const [location, setLocation] = useState(info.location);
+    const [bio, setBio] = useState(info.bio);
+    const [hobbies, setHobbies] = useState({values: hobbiesData});
+    const [skills, setSkills] = useState({values: skillsData});
+    
     const handleShow = () => setShow(true);
     const handleSave = () => setShow(false);
 
-    // Replace state with original data
-    const discardChanges = () => {
-        setLocation(info.location);
-        setBio(info.bio);
-        setHobbies({values: hobbiesData});
-        setSkills({values: skillsData});
-    }
-
-    const [showAlert, setShowAlert] = useState(false); 
     function AlertDismissible() {
-        
         return (
           <>
             <Alert bsPrefix="edit-alert" show={showAlert} variant="warning">
@@ -60,27 +56,12 @@ export const About = props => {
         );
     }
 
-    const handleClose = () => {
-        if(edited){
-            setShowAlert(true);
-        } else{
-            setShow(false);    
-        }
-    }
-
-    const [edited, setEdited] = useState(false);
-
-    const [location, setLocation] = useState(info.location);
-    const [bio, setBio] = useState(info.bio);
-    const [hobbies, setHobbies] = useState({values: hobbiesData});
-    const [skills, setSkills] = useState({values: skillsData});
-
     const renderHobbiesForm = () => {
         return hobbies.values.map((row, idx) =>
             <div className="form-group row" key={idx}>
                 {console.log(row)}
                 <input type="text" className="form-control" style={{width: '70%'}} value={row.hobby || ''} onChange={e => {handleHobbyChange(e, idx)}}/>
-                <input type="button" value="Delete" onClick={() => removeHobby(idx)}/>
+                <Button onClick={() => removeHobby(idx)} variant="outline-danger" size="sm">Delete</Button>
             </div>
         )
     }
@@ -111,10 +92,11 @@ export const About = props => {
             <div className="form-group row" key={idx}>
                 {console.log(row)}
                 <input type="text" className="form-control" style={{width: '70%'}} value={row.skill || ''} onChange={e => {handleSkillChange(e, idx)}}/>
-                <input type="button" value="Delete" onClick={() => removeSkill(idx)}/>
+                <Button onClick={() => removeSkill(idx)} variant="outline-danger" size="sm">Delete</Button>
             </div>
         )
     }
+
     const handleSkillChange = (event, idx) => {
         let tmpSkills = [...skills.values];
         tmpSkills[idx] = {
@@ -125,6 +107,7 @@ export const About = props => {
         setSkills({values: tmpSkills});
         setEdited(true);
     }
+
     const addSkill = () => {
         setSkills({values: [...skills.values, '']});
     }
@@ -135,6 +118,23 @@ export const About = props => {
         setSkills({values: tmpSkills});
     }
 
+    const handleClose = () => {
+        if(edited){
+            setShowAlert(true);
+        } else{
+            setShow(false);    
+        }
+    }
+
+    // Replace state with original data
+    const discardChanges = () => {
+        setLocation(info.location);
+        setBio(info.bio);
+        setHobbies({values: hobbiesData});
+        setSkills({values: skillsData});
+    }
+    
+    
     return(
         <div className="tab-container">
         
@@ -173,18 +173,18 @@ export const About = props => {
                     </div>
                     
                     <div className="form-group row ml-4">
-                        <div className="form-group col">
+                        <div className="form-group col text-center">
                             <label htmlFor="hobbies"><b>Hobbies</b></label>
                             {renderHobbiesForm()}
                             {hobbies.values.length < 6
-                            ? <input type='button' value="Add Hobby" onClick={() => addHobby()}/>  
+                            ? <Button onClick={() => addHobby()} variant="outline-success" size="sm">Add Hobby</Button>
                             : null }
                         </div>  
-                        <div className="form-group col">
+                        <div className="form-group col text-center">
                             <label htmlFor="skills"><b>Skills</b></label>
                             {renderSkillsForm()}
                             {skills.values.length < 6
-                            ? <input type='button' value="Add Skill" onClick={() => addSkill()}/>  
+                            ? <Button onClick={() => addSkill()} variant="outline-success" size="sm">Add Skill</Button>  
                             : null }
                         </div>  
                     </div>
@@ -201,32 +201,31 @@ export const About = props => {
         </Modal>
 
         <div className="info-container">
-            {/* <h4><b>Edited? :</b> {edited ? "True" : "False"}</h4> */}
             <h4><b>Location:</b> {location}</h4>
             <br></br>
             <h4><b>Bio:</b> {bio}</h4>
             <br></br>
         </div>
 
-            <div className="info-container">
-                <h4><b>Hobbies:</b>
-                {hobbies 
-                ? hobbies.values.map((row, idx) => 
-                    <div key={idx}>
-                        <p>{row.hobby}</p>
-                    </div>
-                ) 
-                : null}</h4>
+        <div className="info-container">
+            <h4><b>Hobbies:</b>
+            {hobbies 
+            ? hobbies.values.map((row, idx) => 
+                <div key={idx}>
+                    <p>{row.hobby}</p>
+                </div>
+            ) 
+            : null}</h4>
 
-                <h4><b>Skills:</b>
-                {skills 
-                ? skills.values.map((row, idx) => 
-                    <div key={idx}>
-                        <p>{row.skill}</p>
-                    </div>
-                ) 
-                : null}</h4>
-            </div>
+            <h4><b>Skills:</b>
+            {skills 
+            ? skills.values.map((row, idx) => 
+                <div key={idx}>
+                    <p>{row.skill}</p>
+                </div>
+            ) 
+            : null}</h4>
         </div>
+    </div>
     );
 }
