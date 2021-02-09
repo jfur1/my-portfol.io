@@ -23,8 +23,6 @@ export const About = props => {
 
     const [hobbiesToDelete, setHobbyToDelete] = useState([]);
     const [skillsToDelete, setSkillToDelete] = useState([]);
-    const [hobbiesToUpdate, setHobbyToUpdate] = useState([]);
-    const [skillsToUpdate, setSkillsToUpdate] = useState([]);
 
     // Create staging area 
     //const [changes, setChanges] = useState({create: {}, update: {}, delete: {}});
@@ -47,17 +45,19 @@ export const About = props => {
         hobbies.values.forEach((row, idx) => {
             if( !(typeof(row.hobby_id) !== 'undefined')){
                 console.log(`** CREATE New Hobby: ${row.hobby}`);
+            } else if(typeof(row.updated) !== 'undefined'){
+                console.log(`** UPDATE Hobby from "${hobbiesData[idx].hobby}" to: "${row.hobby}"`);
             }
         })
         skills.values.forEach((row, idx) => {
             if( !(typeof(row.skill_id) !== 'undefined')){
                 console.log(`** CREATE New Skill: ${row.skill}`);
+            } else if(typeof(row.updated) !== 'undefined'){
+                console.log(`** UPDATE Skill from: "${skillsData[idx].skill}" to "${row.skill}"`)
             }
         })
         console.log(`** DELETE Skills with ID: ${skillsToDelete}`);
         console.log(`** DELETE Hobbies with ID: ${hobbiesToDelete}`);
-        console.log(`** UPDATE Skills (id, updated_text): ${skillsToUpdate}`);
-        console.log(`** UPDATE Hobbies (id, updated_text): ${hobbiesToUpdate}`);
 
         setShow(false);
     };
@@ -117,12 +117,11 @@ export const About = props => {
             console.log(`CREATE New Hobby: ${tmpHobbies[idx].hobby}`);
             
         }
-        // If hobby_id exists, then UPDATE existing
+        // If hobby_id exists, then UPDATE existing and add updated_flag
         else{
-            console.log(`UPDATE Existing Hobby from: "${hobbiesData[idx].hobby}" to: "${tmpHobbies[idx].hobby}"`)
-            let obj = {};
-            obj[hobbiesData[idx].hobby_id] = tmpHobbies[idx].hobby;
-            setHobbyToUpdate([...hobbiesToUpdate, obj]);
+            //console.log(`UPDATE Existing Hobby from: "${hobbiesData[idx].hobby}" to: "${tmpHobbies[idx].hobby}"`)
+            //setHobbyToUpdate([...hobbiesToUpdate, hobbiesData[idx].hobby_id]);
+            tmpHobbies[idx].updated = true;
         }
 
         setHobbies({values: tmpHobbies});
@@ -174,8 +173,9 @@ export const About = props => {
         }
         // If skill_id exists, then UPDATE
         else{
-            console.log(`UPDATE Existing Skill from: "${skillsData[idx].skill}" to: "${tmpSkills[idx].skill}"`);
-            setSkillsToUpdate([...skillsToUpdate, [skillsData[idx].skill_id, tmpSkills[idx].skill]])
+            //console.log(`UPDATE Existing Skill from: "${skillsData[idx].skill}" to: "${tmpSkills[idx].skill}"`);
+            //setSkillsToUpdate([...skillsToUpdate, [skillsData[idx].skill_id, tmpSkills[idx].skill]])
+            tmpSkills[idx].updated = true;
         }
 
         setSkills({values: tmpSkills});
