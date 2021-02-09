@@ -24,8 +24,6 @@ export const About = props => {
     const [hobbiesToDelete, setHobbyToDelete] = useState([]);
     const [skillsToDelete, setSkillToDelete] = useState([]);
 
-    // Create staging area 
-    //const [changes, setChanges] = useState({create: {}, update: {}, delete: {}});
     
     const handleShow = () => setShow(true);
 
