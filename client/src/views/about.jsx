@@ -91,6 +91,7 @@ export const About = props => {
         let tmpHobbies = [...hobbies.values];
         tmpHobbies.splice(idx, 1);
         setHobbies({values: tmpHobbies});
+        setEdited(true);
     }
 
     const renderSkillsForm = () => {
@@ -121,6 +122,7 @@ export const About = props => {
         let tmpSkills = [...skills.values];
         tmpSkills.splice(idx, 1);
         setSkills({values: tmpSkills});
+        setEdited(true);
     }
 
     const handleClose = () => {
