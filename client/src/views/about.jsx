@@ -4,7 +4,7 @@ import { Modal, Button } from 'react-bootstrap';
 import Alert from 'react-bootstrap/Alert'
 
 export const About = props => {
-    console.log("About Recieved Props: ", props);
+    //console.log("About Recieved Props: ", props);
     
     // User Data
     const info = (props.location.state.about !== null) ? props.location.state.about : props.data.about;
@@ -21,15 +21,47 @@ export const About = props => {
     const [hobbies, setHobbies] = useState({values: hobbiesData});
     const [skills, setSkills] = useState({values: skillsData});
 
+    const [hobbiesToDelete, setHobbyToDelete] = useState([]);
+    const [skillsToDelete, setSkillToDelete] = useState([]);
+    const [hobbiesToUpdate, setHobbyToUpdate] = useState([]);
+    const [skillsToUpdate, setSkillsToUpdate] = useState([]);
+
     // Create staging area 
-    const [changes, setChanges] = useState({create: [], update: [], delete: []});
+    //const [changes, setChanges] = useState({create: {}, update: {}, delete: {}});
     
     const handleShow = () => setShow(true);
+
     const handleSave = () => {
+        
+        if(info.location === null && location){
+            console.log("** CREATE location: ", location);
+        } else if(info.location !== location){
+            console.log(`** UPDATE location from: "${info.location}" to "${location}"`)
+        }
+
+        if(info.bio === null && bio){
+            console.log("** CREATE bio:", bio);
+        } else if(info.bio !== bio){
+            console.log(`** UPDATE bio from: "${info.bio}" to "${bio}"`)
+        }
+        hobbies.values.forEach((row, idx) => {
+            if( !(typeof(row.hobby_id) !== 'undefined')){
+                console.log(`** CREATE New Hobby: ${row.hobby}`);
+            }
+        })
+        skills.values.forEach((row, idx) => {
+            if( !(typeof(row.skill_id) !== 'undefined')){
+                console.log(`** CREATE New Skill: ${row.skill}`);
+            }
+        })
+        console.log(`** DELETE Skills with ID: ${skillsToDelete}`);
+        console.log(`** DELETE Hobbies with ID: ${hobbiesToDelete}`);
+        console.log(`** UPDATE Skills (id, updated_text): ${skillsToUpdate}`);
+        console.log(`** UPDATE Hobbies (id, updated_text): ${hobbiesToUpdate}`);
+
         setShow(false);
     };
 
-    // const handleSave = () => { Might possible require create, update, and delete simultaneously... "Add hobby/skill" => create, change bio/location => Update, delete-button => Delete }
 
     function AlertDismissible() {
         return (
@@ -79,6 +111,20 @@ export const About = props => {
             uid: hobbies.values[idx].uid ,
             hobby: event.target.value
         };
+
+        // If hobby_id undefined, then CREATE new
+        if( !(typeof(tmpHobbies[idx].hobby_id) !== 'undefined')){
+            console.log(`CREATE New Hobby: ${tmpHobbies[idx].hobby}`);
+            
+        }
+        // If hobby_id exists, then UPDATE existing
+        else{
+            console.log(`UPDATE Existing Hobby from: "${hobbiesData[idx].hobby}" to: "${tmpHobbies[idx].hobby}"`)
+            let obj = {};
+            obj[hobbiesData[idx].hobby_id] = tmpHobbies[idx].hobby;
+            setHobbyToUpdate([...hobbiesToUpdate, obj]);
+        }
+
         setHobbies({values: tmpHobbies});
         setEdited(true);
     }
@@ -89,6 +135,16 @@ export const About = props => {
 
     const removeHobby = (idx) => {
         let tmpHobbies = [...hobbies.values];
+
+        if( !(typeof(tmpHobbies[idx].hobby_id) !== 'undefined')){
+            console.log(`"DELETE" New Hobby: ${tmpHobbies[idx].hobby_id} ${tmpHobbies[idx].hobby}`);
+        }
+        // If the hobby_id exists, then delete from DB
+        else{
+            console.log(`DELETE Existing Hobby: {hobby_id: ${tmpHobbies[idx].hobby_id}, user_id: ${user.user_id}, hobby: "${tmpHobbies[idx].hobby}"}`)
+            setHobbyToDelete([...hobbiesToDelete, tmpHobbies[idx].hobby_id]);
+        }
+
         tmpHobbies.splice(idx, 1);
         setHobbies({values: tmpHobbies});
         setEdited(true);
@@ -110,6 +166,18 @@ export const About = props => {
             uid: skills.values[idx].uid ,
             skill: event.target.value
         };
+        //console.log(`skill_id: ${tmpSkills[idx].skill_id}`)
+
+        // If skill_id undefined, then CREATE
+        if( !(typeof(tmpSkills[idx].skill_id) !== 'undefined')){
+            console.log(`CREATE New Skill: ${tmpSkills[idx].skill}`);
+        }
+        // If skill_id exists, then UPDATE
+        else{
+            console.log(`UPDATE Existing Skill from: "${skillsData[idx].skill}" to: "${tmpSkills[idx].skill}"`);
+            setSkillsToUpdate([...skillsToUpdate, [skillsData[idx].skill_id, tmpSkills[idx].skill]])
+        }
+
         setSkills({values: tmpSkills});
         setEdited(true);
     }
@@ -120,6 +188,17 @@ export const About = props => {
 
     const removeSkill = (idx) => {
         let tmpSkills = [...skills.values];
+
+        // If no id exists when deleting, it's b/c it did not come from the DB
+        if( !(typeof(tmpSkills[idx].skill_id) !== 'undefined')){
+            console.log(`"DELETE" New Skill: ${tmpSkills[idx].skill_id} ${tmpSkills[idx].skill}`);
+        } 
+        // If skill_id does exist, then delete from the DB
+        else{
+            console.log(`DELETE Existing Skill: {skill_id: ${tmpSkills[idx].skill_id}, user_id: ${user.user_id}, skill: "${tmpSkills[idx].skill}"}`);
+            setSkillToDelete([...skillsToDelete, tmpSkills[idx].skill_id]);
+        }
+
         tmpSkills.splice(idx, 1);
         setSkills({values: tmpSkills});
         setEdited(true);
@@ -141,7 +220,7 @@ export const About = props => {
         setSkills({values: skillsData});
     }
     
-    console.log(changes);
+    
     return(
         <div className="tab-container">
         
