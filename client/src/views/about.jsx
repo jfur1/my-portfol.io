@@ -20,9 +20,16 @@ export const About = props => {
     const [bio, setBio] = useState(info.bio);
     const [hobbies, setHobbies] = useState({values: hobbiesData});
     const [skills, setSkills] = useState({values: skillsData});
+
+    // Create staging area 
+    const [changes, setChanges] = useState({create: [], update: [], delete: []});
     
     const handleShow = () => setShow(true);
-    const handleSave = () => setShow(false);
+    const handleSave = () => {
+        setShow(false);
+    };
+
+    // const handleSave = () => { Might possible require create, update, and delete simultaneously... "Add hobby/skill" => create, change bio/location => Update, delete-button => Delete }
 
     function AlertDismissible() {
         return (
@@ -59,7 +66,6 @@ export const About = props => {
     const renderHobbiesForm = () => {
         return hobbies.values.map((row, idx) =>
             <div className="form-group row" key={idx}>
-                {console.log(row)}
                 <input type="text" className="form-control" style={{width: '70%'}} value={row.hobby || ''} onChange={e => {handleHobbyChange(e, idx)}}/>
                 <Button onClick={() => removeHobby(idx)} variant="outline-danger" size="sm">Delete</Button>
             </div>
@@ -90,7 +96,6 @@ export const About = props => {
     const renderSkillsForm = () => {
         return skills.values.map((row, idx) =>
             <div className="form-group row" key={idx}>
-                {console.log(row)}
                 <input type="text" className="form-control" style={{width: '70%'}} value={row.skill || ''} onChange={e => {handleSkillChange(e, idx)}}/>
                 <Button onClick={() => removeSkill(idx)} variant="outline-danger" size="sm">Delete</Button>
             </div>
@@ -100,7 +105,7 @@ export const About = props => {
     const handleSkillChange = (event, idx) => {
         let tmpSkills = [...skills.values];
         tmpSkills[idx] = {
-            skill_id: skills.values[idx].hobby_id, 
+            skill_id: skills.values[idx].skill_id, 
             uid: skills.values[idx].uid ,
             skill: event.target.value
         };
@@ -134,7 +139,7 @@ export const About = props => {
         setSkills({values: skillsData});
     }
     
-    
+    console.log(changes);
     return(
         <div className="tab-container">
         
