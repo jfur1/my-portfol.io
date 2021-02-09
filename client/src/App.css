@@ -129,6 +129,18 @@ table.center {
   display: inline-block;
 }
 
+.edit-alert{
+  color: #856404;
+  background-color: #fff3cd;
+  border-color: #ffeeba;
+  position: relative;
+  padding: 0.75rem 1.25rem;
+  margin-bottom: 1rem;
+  border: 1px solid transparent;
+  border-radius: 0.25rem;
+  margin-left: 50px;
+}
+
 .info-container{
   width:80%;
   margin: 0 auto;

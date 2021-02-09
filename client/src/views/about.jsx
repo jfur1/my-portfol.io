@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { PencilFill } from 'react-bootstrap-icons';
 import { Modal, Button } from 'react-bootstrap';
+import Alert from 'react-bootstrap/Alert'
 
 export const About = props => {
     console.log("About Recieved Props: ", props);
@@ -13,7 +14,7 @@ export const About = props => {
 
     // Edit Data
     const [show, setShow] = useState(false);
-    const handleClose = () => setShow(false);
+    //const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
     // const handleSave = () => {
@@ -25,18 +26,41 @@ export const About = props => {
     //      setShow(false);    
     //  }
     //}
+    function AlertDismissible() {
+        const [showAlert, setShowAlert] = useState(true); 
+      
+        return (
+          <>
+            <Alert bsPrefix="edit-alert" show={showAlert} variant="warning">
+            <Alert.Heading style={{textAlign: 'center'}}>Attention!</Alert.Heading>
+              <p style={{textAlign: 'center'}}>
+                You have unsaved changes! Are you sure you want to exit?
+              </p>
+              <hr />
+              <div className="d-flex justify-content-center">
+                <Button onClick={() => setShowAlert(false)} variant="outline-success">
+                    Save Changes
+                </Button>
+                <Button onClick={() => setShowAlert(false)} variant="outline-danger">
+                    Exit
+                </Button>
+              </div>
+            </Alert>
+          </>
+        );
+    }
 
-    // const handleClose = () => {
-    //  if(edited){
-    //      AlertMsg("warning", "You have unsaved changes! Are you sure you want to exit?")
-    //      if(yes) => setShow(false);
-    //      else => (closeMsg);
-    //      
-    //      setEdited(false);
-    //  } else{
-    //      setShow(false);    
-    //  }
-    //}
+    const handleClose = () => {
+        if(edited){
+            //if(yes) => setShow(false);
+            //else => (closeMsg);
+            
+            setShow(false); 
+            setEdited(false);
+        } else{
+            setShow(false);    
+        }
+    }
 
     const [edited, setEdited] = useState(false);
     const [location, setLocation] = useState(info.location);
@@ -129,11 +153,11 @@ export const About = props => {
             <Modal.Header closeButton>
                 <Modal.Title id="contained-modal-title-vcenter">
                     Edit
+                    <AlertDismissible/>
                 </Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                I will not close if you click outside me. Don't even try to press
-                escape key!
+
                 <form>
                     <div className="form-group">
                         <label htmlFor="location"><b>Location</b></label>
