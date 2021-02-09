@@ -17,15 +17,15 @@ export const About = props => {
     //const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
     const handleSave = () => setShow(false);
-    // const handleSave = () => {
-    //  if(edited){
-    //      await fetch(...)
-    //      setShow(false);
-    //      setEdited(false);
-    //  } else{
-    //      setShow(false);    
-    //  }
-    //}
+
+    // Replace state with original data
+    const discardChanges = () => {
+        setLocation(info.location);
+        setBio(info.bio);
+        setHobbies({values: hobbiesData});
+        setSkills({values: skillsData});
+    }
+
     const [showAlert, setShowAlert] = useState(false); 
     function AlertDismissible() {
         
@@ -38,10 +38,20 @@ export const About = props => {
               </p>
               <hr />
               <div className="d-flex justify-content-center">
-                <Button onClick={() => {setShow(false); handleSave(); setEdited(false); setShowAlert(false);}} variant="outline-success">
+                <Button onClick={() => {
+                    setShow(false); 
+                    handleSave(); 
+                    setEdited(false); 
+                    setShowAlert(false);
+                }} variant="outline-success">
                     Save Changes
                 </Button>
-                <Button onClick={() => {setShow(false); setEdited(false); setShowAlert(false);}} variant="outline-danger">
+                <Button onClick={() => {
+                    setShow(false); 
+                    discardChanges();
+                    setEdited(false); 
+                    setShowAlert(false);
+                }} variant="outline-danger">
                     Exit
                 </Button>
               </div>
@@ -52,8 +62,6 @@ export const About = props => {
 
     const handleClose = () => {
         if(edited){
-            //if(yes) => setShow(false);
-            //else => (closeMsg);
             setShowAlert(true);
         } else{
             setShow(false);    
@@ -61,13 +69,11 @@ export const About = props => {
     }
 
     const [edited, setEdited] = useState(false);
+
     const [location, setLocation] = useState(info.location);
     const [bio, setBio] = useState(info.bio);
-
     const [hobbies, setHobbies] = useState({values: hobbiesData});
     const [skills, setSkills] = useState({values: skillsData});
-    // console.log("Hobbies Data:", hobbiesData);
-    // console.log("Hobbies State:", hobbies);
 
     const renderHobbiesForm = () => {
         return hobbies.values.map((row, idx) =>
@@ -185,7 +191,12 @@ export const About = props => {
                 </form>             
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="success" onClick={handleSave}>Save Changes</Button>
+                <Button variant="success" onClick={() => {
+                    setShow(false); 
+                    handleSave(); 
+                    setEdited(false); 
+                    setShowAlert(false);
+                }}>Save Changes</Button>
             </Modal.Footer>
         </Modal>
 
