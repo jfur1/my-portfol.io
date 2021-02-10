@@ -471,15 +471,15 @@ app.post('/insertSkill', (req, res) => {
     })
 })
 
-app.post('/insertHobby', (req, res) => {
-    const {user_id, hobby} = req.body;
+app.post('/createHobby', (req, res) => {
+    const {user_id, hobby} = req.headers;
 
     db.tx(async t => {
         const max_id = await t.one('SELECT MAX(hobby_id) FROM hobbies;');
         let newId = max_id.max;
         newId++;
 
-        return t.none('INSERT INTO hobbies (hobby_id, uid, hobby) VALUES($1, $2, $3)', 
+        return t.one('INSERT INTO hobbies (hobby_id, uid, hobby) VALUES($1, $2, $3)RETURNING hobby_id, uid, hobby', 
         [
             newId,
             user_id,
@@ -487,7 +487,7 @@ app.post('/insertHobby', (req, res) => {
         ]);
     })
     .then((data) => {
-        return res.json({data});
+        return res.json(data);
     })
     .catch((err) => {
         console.log(err);
@@ -570,13 +570,13 @@ app.post('/updateSkill', (req, res) => {
 
 
 app.post('/deleteHobby', (req, res) => {
-    const hobby_id = req.body;
+    const {hobby_id} = req.headers;
 
     db.tx(async t => {
         return t.none('DELETE FROM hobbies WHERE hobby_id = \'' + hobby_id + '\';');
     })
     .then((data) => {
-        return res.json({data});
+        return res.json({errors: false});
     })
     .catch((err) => {
         console.log(err);

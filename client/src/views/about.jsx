@@ -105,7 +105,6 @@ export const About = props => {
           </>
         );
     }
-
     const renderHobbiesForm = () => {
         return hobbies.values.map((row, idx) =>
             <div className="form-group row" key={idx}>
@@ -114,7 +113,6 @@ export const About = props => {
             </div>
         )
     }
-
     const handleHobbyChange = (event, idx) => {
         let tmpHobbies = [...hobbies.values];
         tmpHobbies[idx] = {
@@ -122,31 +120,24 @@ export const About = props => {
             uid: hobbies.values[idx].uid ,
             hobby: event.target.value
         };
-
         if((typeof(tmpHobbies[idx].hobby_id) !== 'undefined')){
             tmpHobbies[idx].updated = true;
         }
-
         setHobbies({values: tmpHobbies});
         setEdited(true);
     }
-
     const addHobby = () => {
         setHobbies({values: [...hobbies.values, '']});
     }
-
     const removeHobby = (idx) => {
         let tmpHobbies = [...hobbies.values];
-
         if((typeof(tmpHobbies[idx].hobby_id) !== 'undefined')){
             setHobbyToDelete([...hobbiesToDelete, tmpHobbies[idx].hobby_id]);
         }
-
         tmpHobbies.splice(idx, 1);
         setHobbies({values: tmpHobbies});
         setEdited(true);
     }
-
     const renderSkillsForm = () => {
         return skills.values.map((row, idx) =>
             <div className="form-group row" key={idx}>
@@ -155,7 +146,6 @@ export const About = props => {
             </div>
         )
     }
-
     const handleSkillChange = (event, idx) => {
         let tmpSkills = [...skills.values];
         tmpSkills[idx] = {
@@ -163,32 +153,24 @@ export const About = props => {
             uid: skills.values[idx].uid ,
             skill: event.target.value
         };
-
         if((typeof(tmpSkills[idx].skill_id) !== 'undefined')){
             tmpSkills[idx].updated = true;
         }
-
         setSkills({values: tmpSkills});
         setEdited(true);
     }
-
     const addSkill = () => {
         setSkills({values: [...skills.values, '']});
     }
-
     const removeSkill = (idx) => {
         let tmpSkills = [...skills.values];
-
-
         if((typeof(tmpSkills[idx].skill_id) !== 'undefined')){
             setSkillToDelete([...skillsToDelete, tmpSkills[idx].skill_id]);
         } 
-
         tmpSkills.splice(idx, 1);
         setSkills({values: tmpSkills});
         setEdited(true);
     }
-
     const handleClose = () => {
         if(edited){
             setShowAlert(true);
@@ -196,7 +178,6 @@ export const About = props => {
             setShow(false);    
         }
     }
-
     // Replace state with original data
     const discardChanges = () => {
         setLocation(info.location);
@@ -204,9 +185,7 @@ export const About = props => {
         setHobbies({values: hobbiesData});
         setSkills({values: skillsData});
     }
-
     useEffect(() => {
-
         if(locationToUpdate.length){
             //console.log(`** UPDATE Location: ${locationToUpdate}`);
             //console.log(`UserID: ${user}`)
@@ -229,12 +208,9 @@ export const About = props => {
                 props.updateHobby(row.hobby_id, row.hobby, user.user_id, rowIdx);
             })
         };
-
         if(hobbiesToDelete.length) {
             console.log(`** DELETE Hobbies with ID: ${hobbiesToDelete}`);
         };
-
-
         if(skillsToCreate.length) {
             console.log(`** CREATE Skills: ${skillsToCreate}`);
         };
@@ -250,23 +226,16 @@ export const About = props => {
         if(skillsToDelete.length) {
             console.log(`** DELETE Skills with ID: ${skillsToDelete}`);
         };
-
         //console.log(`** UserID for fetch requests: ${user.user_id}`);
-
-
-
     }, [showLogs])
-
     return(
         <div className="tab-container">
         
         <h2>{user.firstname} {user.lastname}</h2>
         <p>About Page</p>
-
         {props.data.ownedByUser 
         ? <PencilFill size={25} onClick={handleShow}/> 
         : null}
-
         <Modal
             show={show}
             onHide={handleClose}
@@ -283,7 +252,6 @@ export const About = props => {
                 </Modal.Title>
             </Modal.Header>
             <Modal.Body>
-
                 <form>
                     <div className="form-group">
                         <label htmlFor="location"><b>Location</b></label>
@@ -321,14 +289,12 @@ export const About = props => {
                 }}>Save Changes</Button>
             </Modal.Footer>
         </Modal>
-
         <div className="info-container">
             <h4><b>Location:</b> {info.location}</h4>
             <br></br>
             <h4><b>Bio:</b> {info.bio}</h4>
             <br></br>
         </div>
-
         <div className="info-container">
             <h4><b>Hobbies:</b>
             {hobbies 
@@ -338,7 +304,6 @@ export const About = props => {
                 </div>
             ) 
             : null}</h4>
-
             <h4><b>Skills:</b>
             {skills 
             ? skillsData.map((row, idx) => 
