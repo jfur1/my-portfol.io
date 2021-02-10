@@ -516,13 +516,15 @@ app.post('/updateLocation', (req, res) => {
 })
 
 app.post('/updateBio', (req, res) => {
-    const {user_id, bio} = req.body;
+    const {user_id, bio} = req.headers;
+    console.log("Server recieved user_id:", user_id);
+    console.log("Server recieved bio:", bio);
 
     db.tx(async t => {
-        return t.none('UPDATE profile SET bio = \'' + bio + '\' WHERE uid = \'' + user_id + '\';');
+        return t.one('UPDATE profile SET bio = \'' + bio + '\' WHERE uid = \'' + user_id + '\' RETURNING bio;');
     })
     .then((data) => {
-        return res.json({data});
+        return res.json(data.bio);
     })
     .catch((err) => {
         console.log(err);
@@ -531,16 +533,16 @@ app.post('/updateBio', (req, res) => {
 })
 
 app.post('/updateHobby', (req, res) => {
-    const {
-        user_id, 
-        hobby_id, 
-        hobby} = req.body;
+    const {hobby_id, hobby, user_id} = req.headers;
+    console.log("Server recieved user_id:", user_id);
+    console.log("Server recieved hobby:", hobby)
+    console.log("Server recieved hobby_id:", hobby_id);
 
     db.tx(async t => {
-        return t.none('UPDATE hobbies SET hobby = \'' + hobby + '\' WHERE uid = \'' + user_id + '\' AND hobby_id = \'' + hobby_id + '\';');
+        return t.one('UPDATE hobbies SET hobby = \'' + hobby + '\' WHERE uid = \'' + user_id + '\' AND hobby_id = \'' + hobby_id + '\' RETURNING hobby;');
     })
     .then((data) => {
-        return res.json({data});
+        return res.json(data.hobby);
     })
     .catch((err) => {
         console.log(err);
@@ -555,7 +557,7 @@ app.post('/updateSkill', (req, res) => {
         skill} = req.body;
 
     db.tx(async t => {
-        return t.none('UPDATE skills SET skill = \'' + skill + '\' WHERE uid = \'' + user_id + '\' AND skill_id = \'' + skill_id + '\';');
+        return t.one('UPDATE skills SET skill = \'' + skill + '\' WHERE uid = \'' + user_id + '\' AND skill_id = \'' + skill_id + '\';');
     })
     .then((data) => {
         return res.json({data});

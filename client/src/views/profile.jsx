@@ -204,7 +204,53 @@ class Profile extends Component{
         });
         console.log(this.state.about);
     }
-      
+
+    updateBio = async(bioToUpdate, user_id) => {
+        const response = await fetch('http://localhost:5000/updateBio',  {
+            method: 'POST', 
+            mode: 'cors',
+            credentials: 'include',
+            withCredentials: true,
+            headers: {
+                user_id: user_id, 
+                bio: bioToUpdate}
+        });
+        const data = await response.json();
+        console.log("Client Recieved Response: ", data);
+        this.setState({
+            about: {
+                ...this.state.about,
+                bio: data
+            }
+        });
+        console.log(this.state.about);
+    }
+    
+    updateHobby = async(hobby_id, hobby, user_id, rowIdx) => {
+        const response = await fetch('http://localhost:5000/updateHobby',  {
+            method: 'POST', 
+            mode: 'cors',
+            credentials: 'include',
+            withCredentials: true,
+            headers: {
+                hobby_id: hobby_id, 
+                hobby: hobby,
+                user_id: user_id
+            }
+        });
+        const data = await response.json();
+        console.log("Client Recieved Response: ", data);
+
+        let tmpHobbies = [...this.state.hobbies];
+        let row = {...tmpHobbies[rowIdx]};
+        row.hobby = data;
+        tmpHobbies[rowIdx] = row;
+        this.setState({hobbies: tmpHobbies});
+
+        console.log(this.state.hobbies);
+    }
+
+
     render(){
 
         return(
@@ -230,7 +276,12 @@ class Profile extends Component{
                     : null }
 
                     { this.state.key === "about" ?  
-                        <About {...this.props} data={this.state} updateLocation={this.updateLocation}/>
+                        <About {...this.props} 
+                            data={this.state} 
+                            updateLocation={this.updateLocation}
+                            updateBio={this.updateBio}
+                            updateHobby={this.updateHobby}
+                        />
                     : null }
 
                     { this.state.key === "portfolio" ?

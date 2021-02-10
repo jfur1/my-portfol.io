@@ -57,7 +57,7 @@ export const About = props => {
             if( !(typeof(row.hobby_id) !== 'undefined')){
                 setHobbiesToCreate(hobbiesToCreate => [...hobbiesToCreate, row.hobby]);
             } else if(typeof(row.updated) !== 'undefined'){
-                setHobbiesToUpdate(hobbiesToUpdate => [...hobbiesToUpdate, row.hobby_id, row.hobby]);
+                setHobbiesToUpdate(hobbiesToUpdate => [...hobbiesToUpdate, {hobby_id: row.hobby_id, hobby: row.hobby}]);
             }
         })
         skills.values.forEach((row, idx) => {
@@ -213,28 +213,36 @@ export const About = props => {
             props.updateLocation(locationToUpdate, user.user_id);
         }
         if(bioToUpdate.length) {
-            console.log(`** UPDATE Bio: ${bioToUpdate}`)
-        };
-        
-        if(skillsToCreate.length) {
-            console.log(`** CREATE Skills: ${skillsToCreate}`)
-        };
-        if(skillsToUpdate.length) {
-            console.log(`** UPDATE Skills: ${skillsToUpdate}`)
-        };
-        if(skillsToDelete.length) {
-            console.log(`** DELETE Skills with ID: ${skillsToDelete}`)
+            //console.log(`** UPDATE Bio: ${bioToUpdate}`);
+            props.updateBio(bioToUpdate, user.user_id);
         };
         
         if(hobbiesToCreate.length) {
-            console.log(`** CREATE Hobbies: ${hobbiesToCreate}`)
+            console.log(`** CREATE Hobbies: ${hobbiesToCreate}`);
         };
         if(hobbiesToUpdate.length) {
-            console.log(`** UPDATE Hobbies: ${hobbiesToUpdate}`)
+            //console.log(`** UPDATE Hobbies: ${hobbiesToUpdate}`);
+            hobbiesToUpdate.forEach((row, rowIdx) => {
+                console.log("Hobby Row Idx:", rowIdx);
+                console.log("Hobby ID:", row.hobby_id);
+                console.log("Hobby:", row.hobby);
+                props.updateHobby(row.hobby_id, row.hobby, user.user_id, rowIdx);
+            })
         };
 
         if(hobbiesToDelete.length) {
-            console.log(`** DELETE Hobbies with ID: ${hobbiesToDelete}`)
+            console.log(`** DELETE Hobbies with ID: ${hobbiesToDelete}`);
+        };
+
+
+        if(skillsToCreate.length) {
+            console.log(`** CREATE Skills: ${skillsToCreate}`);
+        };
+        if(skillsToUpdate.length) {
+            console.log(`** UPDATE Skills: ${skillsToUpdate}`);
+        };
+        if(skillsToDelete.length) {
+            console.log(`** DELETE Skills with ID: ${skillsToDelete}`);
         };
 
         //console.log(`** UserID for fetch requests: ${user.user_id}`);
@@ -318,7 +326,7 @@ export const About = props => {
         <div className="info-container">
             <h4><b>Hobbies:</b>
             {hobbies 
-            ? hobbies.values.map((row, idx) => 
+            ? hobbiesData.map((row, idx) => 
                 <div key={idx}>
                     <p>{row.hobby}</p>
                 </div>
