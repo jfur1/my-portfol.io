@@ -202,7 +202,7 @@ class Profile extends Component{
                 location: data
             }
         });
-        console.log("Updated Location. this.state.about:",this.state.about);
+        console.log("Profile.jsx Updated Location. this.state.about:",this.state.about);
     }
 
     updateBio = async(bioToUpdate, user_id) => {
@@ -223,7 +223,7 @@ class Profile extends Component{
                 bio: data
             }
         });
-        console.log("Updated Bio. this.state.about:", this.state.about);
+        console.log("Profile.jsx Updated Bio. this.state.about:", this.state.about);
     }
     
     updateHobby = async(hobby_id, hobby, user_id, rowIdx) => {
@@ -247,7 +247,7 @@ class Profile extends Component{
         tmpHobbies[rowIdx] = row;
         this.setState({hobbies: tmpHobbies});
 
-        console.log("this.state.hobbies:",this.state.hobbies);
+        console.log("Profile.jsx Updated the hobby. this.state.hobbies:",this.state.hobbies);
     }
 
     updateSkill = async(skill_id, skill, user_id, rowIdx) => {
@@ -271,7 +271,7 @@ class Profile extends Component{
         tmpSkills[rowIdx] = row;
         this.setState({skills: tmpSkills});
 
-        console.log("this.state.skills",this.state.skills);
+        console.log("Profile.jsx Updated the skill. this.state.skills",this.state.skills);
     }
 
 
