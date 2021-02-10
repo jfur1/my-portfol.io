@@ -247,7 +247,7 @@ class Profile extends Component{
         tmpHobbies[rowIdx] = row;
         this.setState({hobbies: tmpHobbies});
 
-        //console.log(this.state.hobbies);
+        console.log(this.state.hobbies);
     }
 
     updateSkill = async(skill_id, skill, user_id, rowIdx) => {

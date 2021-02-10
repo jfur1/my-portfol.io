@@ -12,7 +12,7 @@ export const About = props => {
     const hobbiesData = (props.data.hobbies !== null) ? props.data.hobbies : props.location.state.hobbies;
     const skillsData = (props.data.skills !== null) ? props.data.skills : props.location.state.skills;
 
-    // Edit States
+    // Hooks used to keep track of current edits
     const [show, setShow] = useState(false);
     const [edited, setEdited] = useState(false);
     const [showAlert, setShowAlert] = useState(false); 
@@ -21,7 +21,7 @@ export const About = props => {
     const [hobbies, setHobbies] = useState({values: hobbiesData});
     const [skills, setSkills] = useState({values: skillsData});
 
-    // Post Data
+    // Hooks used to format final onClick data for POST request
     const [locationToCreate, setLocationToCreate] = useState([]);
     const [bioToCreate, setBioToCreate] = useState([]);
     
@@ -38,8 +38,25 @@ export const About = props => {
 
     const [showLogs, setShowLogs] = useState(false);
 
+    // Toggle Modal
     const handleShow = () => setShow(true);
+    const handleClose = () => {
+        if(edited){
+            setShowAlert(true);
+        } else{
+            setShow(false);    
+        }
+    }
 
+    // Replace state with original data
+    const discardChanges = () => {
+        setLocation(info.location);
+        setBio(info.bio);
+        setHobbies({values: hobbiesData});
+        setSkills({values: skillsData});
+    }
+
+    // Format edit hooks to be sent in POST request
     const handleSave = () => {
         
         if(info.location === null && location){
@@ -54,10 +71,11 @@ export const About = props => {
             setBioToUpdate([...bioToUpdate, bio]);
         }
         hobbies.values.forEach((row, idx) => {
+            console.log(`Row: ${row.hobby}, IDX: ${idx}`);
             if( !(typeof(row.hobby_id) !== 'undefined')){
                 setHobbiesToCreate(hobbiesToCreate => [...hobbiesToCreate, row.hobby]);
             } else if(typeof(row.updated) !== 'undefined'){
-                setHobbiesToUpdate(hobbiesToUpdate => [...hobbiesToUpdate, {hobby_id: row.hobby_id, hobby: row.hobby}]);
+                setHobbiesToUpdate(hobbiesToUpdate => [...hobbiesToUpdate, {hobby_id: row.hobby_id, hobby: row.hobby, rowIdx: idx}]);
             }
         })
         skills.values.forEach((row, idx) => {
@@ -105,6 +123,7 @@ export const About = props => {
           </>
         );
     }
+
     const renderHobbiesForm = () => {
         return hobbies.values.map((row, idx) =>
             <div className="form-group row" key={idx}>
@@ -138,6 +157,8 @@ export const About = props => {
         setHobbies({values: tmpHobbies});
         setEdited(true);
     }
+
+
     const renderSkillsForm = () => {
         return skills.values.map((row, idx) =>
             <div className="form-group row" key={idx}>
@@ -171,20 +192,7 @@ export const About = props => {
         setSkills({values: tmpSkills});
         setEdited(true);
     }
-    const handleClose = () => {
-        if(edited){
-            setShowAlert(true);
-        } else{
-            setShow(false);    
-        }
-    }
-    // Replace state with original data
-    const discardChanges = () => {
-        setLocation(info.location);
-        setBio(info.bio);
-        setHobbies({values: hobbiesData});
-        setSkills({values: skillsData});
-    }
+
     useEffect(() => {
         if(locationToUpdate.length){
             //console.log(`** UPDATE Location: ${locationToUpdate}`);
@@ -202,10 +210,10 @@ export const About = props => {
         if(hobbiesToUpdate.length) {
             //console.log(`** UPDATE Hobbies: ${hobbiesToUpdate}`);
             hobbiesToUpdate.forEach((row, rowIdx) => {
-                console.log("Hobby Row Idx:", rowIdx);
+                console.log("Hobby Row Idx:", row.rowIdx);
                 console.log("Hobby ID:", row.hobby_id);
                 console.log("Hobby:", row.hobby);
-                props.updateHobby(row.hobby_id, row.hobby, user.user_id, rowIdx);
+                props.updateHobby(row.hobby_id, row.hobby, user.user_id, row.rowIdx);
             })
         };
         if(hobbiesToDelete.length) {
@@ -217,7 +225,7 @@ export const About = props => {
         if(skillsToUpdate.length) {
             //console.log(`** UPDATE Skills: ${skillsToUpdate}`);
             skillsToUpdate.forEach((row, rowIdx) => {
-                console.log("Skill Row Idx:", rowIdx);
+                console.log("Skill Row Idx:", row.rowIdx);
                 console.log("Skill ID:", row.skill_id);
                 console.log("Skill:", row.skill);
                 props.updateSkill(row.skill_id, row.skill, user.user_id, rowIdx);
@@ -226,8 +234,10 @@ export const About = props => {
         if(skillsToDelete.length) {
             console.log(`** DELETE Skills with ID: ${skillsToDelete}`);
         };
-        //console.log(`** UserID for fetch requests: ${user.user_id}`);
+
     }, [showLogs])
+
+
     return(
         <div className="tab-container">
         
@@ -297,7 +307,7 @@ export const About = props => {
         </div>
         <div className="info-container">
             <h4><b>Hobbies:</b>
-            {hobbies 
+            {hobbiesData 
             ? hobbiesData.map((row, idx) => 
                 <div key={idx}>
                     <p>{row.hobby}</p>
@@ -305,7 +315,7 @@ export const About = props => {
             ) 
             : null}</h4>
             <h4><b>Skills:</b>
-            {skills 
+            {skillsData 
             ? skillsData.map((row, idx) => 
                 <div key={idx}>
                     <p>{row.skill}</p>
