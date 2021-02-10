@@ -4,7 +4,7 @@ import { Modal, Button } from 'react-bootstrap';
 import Alert from 'react-bootstrap/Alert'
 
 export const About = props => {
-    //console.log("About Recieved Parent Props: ", props);
+    console.log("About Recieved Parent Props: ", props);
     
     // User Data
     const info = (props.data.about !== null) ? props.data.about : props.location.state.about;
@@ -71,7 +71,7 @@ export const About = props => {
             setBioToUpdate([...bioToUpdate, bio]);
         }
         hobbies.values.forEach((row, idx) => {
-            console.log(`Row: ${row.hobby}, IDX: ${idx}`);
+            //console.log(`Row: ${row.hobby}, IDX: ${idx}`);
             if( !(typeof(row.hobby_id) !== 'undefined')){
                 setHobbiesToCreate(hobbiesToCreate => [...hobbiesToCreate, row.hobby]);
             } else if(typeof(row.updated) !== 'undefined'){
@@ -79,10 +79,11 @@ export const About = props => {
             }
         })
         skills.values.forEach((row, idx) => {
+            //console.log(`Row: ${row.skill}, IDX: ${idx}`);
             if( !(typeof(row.skill_id) !== 'undefined')){
                 setSkillsToCreate(skillsToCreate => [...skillsToCreate, row.skill]);
             } else if(typeof(row.updated) !== 'undefined'){
-                setSkillsToUpdate(skillsToUpdate => [...skillsToUpdate, {skill_id: row.skill_id, skill: row.skill}]);
+                setSkillsToUpdate(skillsToUpdate => [...skillsToUpdate, {skill_id: row.skill_id, skill: row.skill, rowIdx: idx}]);
             }
         })
         
@@ -198,10 +199,12 @@ export const About = props => {
             //console.log(`** UPDATE Location: ${locationToUpdate}`);
             //console.log(`UserID: ${user}`)
             props.updateLocation(locationToUpdate, user.user_id);
+            console.log("Finished Updating Location.", locationToUpdate);
         }
         if(bioToUpdate.length) {
             //console.log(`** UPDATE Bio: ${bioToUpdate}`);
             props.updateBio(bioToUpdate, user.user_id);
+            console.log("Finished Updating Bio.", bioToUpdate)
         };
         
         if(hobbiesToCreate.length) {
@@ -214,6 +217,7 @@ export const About = props => {
                 console.log("Hobby ID:", row.hobby_id);
                 console.log("Hobby:", row.hobby);
                 props.updateHobby(row.hobby_id, row.hobby, user.user_id, row.rowIdx);
+                console.log("Finished updating hobbie(s).", hobbiesToUpdate);
             })
         };
         if(hobbiesToDelete.length) {
@@ -228,12 +232,15 @@ export const About = props => {
                 console.log("Skill Row Idx:", row.rowIdx);
                 console.log("Skill ID:", row.skill_id);
                 console.log("Skill:", row.skill);
-                props.updateSkill(row.skill_id, row.skill, user.user_id, rowIdx);
+                props.updateSkill(row.skill_id, row.skill, user.user_id, row.rowIdx);
+                console.log("Finished Updating Skill(s).", skillsToUpdate);
             })
         };
         if(skillsToDelete.length) {
             console.log(`** DELETE Skills with ID: ${skillsToDelete}`);
         };
+
+        // Reset all POST forms after any updates -- stops recalling?
 
     }, [showLogs])
 

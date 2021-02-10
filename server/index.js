@@ -499,8 +499,8 @@ app.post('/createHobby', (req, res) => {
 app.post('/updateLocation', (req, res) => {
     //console.log("Req.headers:", req.headers);
     const {user_id, location} = req.headers;
-    console.log("Server recieved user_id:", user_id);
-    console.log("Server recieved location:", location);
+    //console.log("Server recieved user_id:", user_id);
+    //console.log("Server recieved location:", location);
 
     db.tx(async t => {
         return t.one('UPDATE profile SET location = \'' + location + '\' WHERE uid = \'' + user_id + '\' RETURNING location;');
@@ -517,8 +517,8 @@ app.post('/updateLocation', (req, res) => {
 
 app.post('/updateBio', (req, res) => {
     const {user_id, bio} = req.headers;
-    console.log("Server recieved user_id:", user_id);
-    console.log("Server recieved bio:", bio);
+    //console.log("Server recieved user_id:", user_id);
+    //console.log("Server recieved bio:", bio);
 
     db.tx(async t => {
         return t.one('UPDATE profile SET bio = \'' + bio + '\' WHERE uid = \'' + user_id + '\' RETURNING bio;');
@@ -534,9 +534,9 @@ app.post('/updateBio', (req, res) => {
 
 app.post('/updateHobby', (req, res) => {
     const {hobby_id, hobby, user_id} = req.headers;
-    console.log("Server recieved user_id:", user_id);
-    console.log("Server recieved hobby:", hobby)
-    console.log("Server recieved hobby_id:", hobby_id);
+    //console.log("Server recieved user_id:", user_id);
+    //console.log("Server recieved hobby:", hobby)
+    //console.log("Server recieved hobby_id:", hobby_id);
 
     db.tx(async t => {
         return t.one('UPDATE hobbies SET hobby = \'' + hobby + '\' WHERE uid = \'' + user_id + '\' AND hobby_id = \'' + hobby_id + '\' RETURNING hobby;');
@@ -552,9 +552,9 @@ app.post('/updateHobby', (req, res) => {
 
 app.post('/updateSkill', (req, res) => {
     const {skill_id, skill, user_id} = req.headers;
-    console.log("Server recieved user_id:", user_id);
-    console.log("Server recieved skill:", skill)
-    console.log("Server recieved skill_id:", skill_id);
+    //console.log("Server recieved user_id:", user_id);
+    //console.log("Server recieved skill:", skill)
+    //console.log("Server recieved skill_id:", skill_id);
 
     db.tx(async t => {
         return t.one('UPDATE skills SET skill = \'' + skill + '\' WHERE uid = \'' + user_id + '\' AND skill_id = \'' + skill_id + '\' RETURNING skill;');
