@@ -247,7 +247,31 @@ class Profile extends Component{
         tmpHobbies[rowIdx] = row;
         this.setState({hobbies: tmpHobbies});
 
-        console.log(this.state.hobbies);
+        //console.log(this.state.hobbies);
+    }
+
+    updateSkill = async(skill_id, skill, user_id, rowIdx) => {
+        const response = await fetch('http://localhost:5000/updateSkill',  {
+            method: 'POST', 
+            mode: 'cors',
+            credentials: 'include',
+            withCredentials: true,
+            headers: {
+                skill_id: skill_id, 
+                skill: skill,
+                user_id: user_id
+            }
+        });
+        const data = await response.json();
+        console.log("Client Recieved Response: ", data);
+
+        let tmpSkills = [...this.state.skills];
+        let row = {...tmpSkills[rowIdx]};
+        row.skill = data;
+        tmpSkills[rowIdx] = row;
+        this.setState({skills: tmpSkills});
+
+        console.log(this.state.skills);
     }
 
 
@@ -281,6 +305,7 @@ class Profile extends Component{
                             updateLocation={this.updateLocation}
                             updateBio={this.updateBio}
                             updateHobby={this.updateHobby}
+                            updateSkill={this.updateSkill}
                         />
                     : null }
 

@@ -551,16 +551,16 @@ app.post('/updateHobby', (req, res) => {
 })
 
 app.post('/updateSkill', (req, res) => {
-    const {
-        user_id, 
-        skill_id, 
-        skill} = req.body;
+    const {skill_id, skill, user_id} = req.headers;
+    console.log("Server recieved user_id:", user_id);
+    console.log("Server recieved skill:", skill)
+    console.log("Server recieved skill_id:", skill_id);
 
     db.tx(async t => {
-        return t.one('UPDATE skills SET skill = \'' + skill + '\' WHERE uid = \'' + user_id + '\' AND skill_id = \'' + skill_id + '\';');
+        return t.one('UPDATE skills SET skill = \'' + skill + '\' WHERE uid = \'' + user_id + '\' AND skill_id = \'' + skill_id + '\' RETURNING skill;');
     })
     .then((data) => {
-        return res.json({data});
+        return res.json(data.skill);
     })
     .catch((err) => {
         console.log(err);

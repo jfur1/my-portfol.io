@@ -10,7 +10,7 @@ export const About = props => {
     const info = (props.data.about !== null) ? props.data.about : props.location.state.about;
     const user = (props.location.state.user !== null) ? props.location.state.user : props.data.user;
     const hobbiesData = (props.data.hobbies !== null) ? props.data.hobbies : props.location.state.hobbies;
-    const skillsData = (props.location.state.skills !== null) ? props.location.state.skills : props.data.skills;
+    const skillsData = (props.data.skills !== null) ? props.data.skills : props.location.state.skills;
 
     // Edit States
     const [show, setShow] = useState(false);
@@ -64,7 +64,7 @@ export const About = props => {
             if( !(typeof(row.skill_id) !== 'undefined')){
                 setSkillsToCreate(skillsToCreate => [...skillsToCreate, row.skill]);
             } else if(typeof(row.updated) !== 'undefined'){
-                setSkillsToUpdate(skillsToUpdate => [...skillsToUpdate, row.skill_id, row.skill]);
+                setSkillsToUpdate(skillsToUpdate => [...skillsToUpdate, {skill_id: row.skill_id, skill: row.skill}]);
             }
         })
         
@@ -239,7 +239,13 @@ export const About = props => {
             console.log(`** CREATE Skills: ${skillsToCreate}`);
         };
         if(skillsToUpdate.length) {
-            console.log(`** UPDATE Skills: ${skillsToUpdate}`);
+            //console.log(`** UPDATE Skills: ${skillsToUpdate}`);
+            skillsToUpdate.forEach((row, rowIdx) => {
+                console.log("Skill Row Idx:", rowIdx);
+                console.log("Skill ID:", row.skill_id);
+                console.log("Skill:", row.skill);
+                props.updateSkill(row.skill_id, row.skill, user.user_id, rowIdx);
+            })
         };
         if(skillsToDelete.length) {
             console.log(`** DELETE Skills with ID: ${skillsToDelete}`);
@@ -335,7 +341,7 @@ export const About = props => {
 
             <h4><b>Skills:</b>
             {skills 
-            ? skills.values.map((row, idx) => 
+            ? skillsData.map((row, idx) => 
                 <div key={idx}>
                     <p>{row.skill}</p>
                 </div>
