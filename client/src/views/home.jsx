@@ -4,7 +4,7 @@ import { PencilFill } from 'react-bootstrap-icons';
 import { Modal, Button } from 'react-bootstrap';
 
 export const Home = (props) => {
-    console.log("Home Component Recieved Props: ", props);
+    //console.log("Home Component Recieved Props: ", props);
     const user = props.data.user;
 
     // Edit Data

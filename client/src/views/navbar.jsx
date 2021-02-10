@@ -4,7 +4,7 @@ import { PersonCircle } from 'react-bootstrap-icons';
 import auth from '../components/auth';
 
 export const NavBar = (props) => {
-    console.log("NavBar Component Recieved Props: ", props);
+    //console.log("NavBar Component Recieved Props: ", props);
     const loggedIn = (props.data.loggedIn !== null) ? props.data.loggedIn : false;
     const requestedBy = (props.data.requestedBy !== null) ? props.data.requestedBy : null;
 

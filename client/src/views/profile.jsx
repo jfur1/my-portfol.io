@@ -45,8 +45,8 @@ class Profile extends Component{
     // GET profile data, then determine if the user owns this profile
     async componentDidMount(){
         //console.log("Auth.isAuthenitcated(): ", auth.isAuthenticated());
-        console.log("Component Mounted with STATE:", this.state);
-        console.log("Component Mounted with PROPS:", this.props.location.state);
+        //console.log("Component Mounted with STATE:", this.state);
+        //console.log("Component Mounted with PROPS:", this.props.location.state);
         var pathname = window.location.pathname.substr(1, window.location.pathname.length);
         
         const urls = [
@@ -72,7 +72,7 @@ class Profile extends Component{
             .then((res) => res.json())
         ))
 
-        console.log("Profile Recieved Server Response: ", data);
+        //console.log("Profile Recieved Server Response: ", data);
 
         // If no profile found, redirect back to splash page w/ error msg
         if((typeof data !== 'undefined') && data["error"]){
@@ -183,6 +183,27 @@ class Profile extends Component{
             })
         }
     }
+    
+    updateLocation = async (locationToUpdate, user_id) => {
+        const response = await fetch('http://localhost:5000/updateLocation',  {
+            method: 'POST', 
+            mode: 'cors',
+            credentials: 'include',
+            withCredentials: true,
+            headers: {
+                user_id: user_id, 
+                location: locationToUpdate}
+        });
+        const data = await response.json();
+        console.log("Client Recieved Response: ", data);
+        this.setState({
+            about: {
+                ...this.state.about,
+                location: data
+            }
+        });
+        console.log(this.state.about);
+    }
       
     render(){
 
@@ -209,7 +230,7 @@ class Profile extends Component{
                     : null }
 
                     { this.state.key === "about" ?  
-                        <About {...this.props} data={this.state}/>
+                        <About {...this.props} data={this.state} updateLocation={this.updateLocation}/>
                     : null }
 
                     { this.state.key === "portfolio" ?

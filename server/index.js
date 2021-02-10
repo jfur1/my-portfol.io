@@ -437,8 +437,168 @@ app.get('/projects', (req, res) => {
     .catch((err) => console.log(err));
 })
 
+// ----------- [BEGIN] Edit About Tab -----------
+
+app.post('/insertLocation', (req, res) => {
+
+})
+
+app.post('/insertBio', (req, res) => {
+
+})
+
+app.post('/insertSkill', (req, res) => {
+    const {user_id, skill} = req.body;
+
+    db.tx(async t => {
+        const max_id = await t.one('SELECT MAX(skill_id) FROM skills;');
+        let newId = max_id.max;
+        newId++;
+
+        return t.none('INSERT INTO skills (skill_id, uid, skill) VALUES($1, $2, $3)', 
+        [
+            newId,
+            user_id,
+            skill
+        ]);
+    })
+    .then((data) => {
+        return res.json({data});
+    })
+    .catch((err) => {
+        console.log(err);
+        res.json({error: true})
+    })
+})
+
+app.post('/insertHobby', (req, res) => {
+    const {user_id, hobby} = req.body;
+
+    db.tx(async t => {
+        const max_id = await t.one('SELECT MAX(hobby_id) FROM hobbies;');
+        let newId = max_id.max;
+        newId++;
+
+        return t.none('INSERT INTO hobbies (hobby_id, uid, hobby) VALUES($1, $2, $3)', 
+        [
+            newId,
+            user_id,
+            hobby
+        ]);
+    })
+    .then((data) => {
+        return res.json({data});
+    })
+    .catch((err) => {
+        console.log(err);
+        res.json({error: true})
+    })
+})
 
 
+app.post('/updateLocation', (req, res) => {
+    //console.log("Req.headers:", req.headers);
+    const {user_id, location} = req.headers;
+    console.log("Server recieved user_id:", user_id);
+    console.log("Server recieved location:", location);
+
+    db.tx(async t => {
+        return t.one('UPDATE profile SET location = \'' + location + '\' WHERE uid = \'' + user_id + '\' RETURNING location;');
+    })
+    .then((data) => {
+        return res.json(data.location);
+    })
+    .catch((err) => {
+        console.log(err);
+        res.json({error: true})
+    })
+
+})
+
+app.post('/updateBio', (req, res) => {
+    const {user_id, bio} = req.body;
+
+    db.tx(async t => {
+        return t.none('UPDATE profile SET bio = \'' + bio + '\' WHERE uid = \'' + user_id + '\';');
+    })
+    .then((data) => {
+        return res.json({data});
+    })
+    .catch((err) => {
+        console.log(err);
+        res.json({error: true})
+    })
+})
+
+app.post('/updateHobby', (req, res) => {
+    const {
+        user_id, 
+        hobby_id, 
+        hobby} = req.body;
+
+    db.tx(async t => {
+        return t.none('UPDATE hobbies SET hobby = \'' + hobby + '\' WHERE uid = \'' + user_id + '\' AND hobby_id = \'' + hobby_id + '\';');
+    })
+    .then((data) => {
+        return res.json({data});
+    })
+    .catch((err) => {
+        console.log(err);
+        res.json({error: true})
+    })
+})
+
+app.post('/updateSkill', (req, res) => {
+    const {
+        user_id, 
+        skill_id, 
+        skill} = req.body;
+
+    db.tx(async t => {
+        return t.none('UPDATE skills SET skill = \'' + skill + '\' WHERE uid = \'' + user_id + '\' AND skill_id = \'' + skill_id + '\';');
+    })
+    .then((data) => {
+        return res.json({data});
+    })
+    .catch((err) => {
+        console.log(err);
+        res.json({error: true})
+    })
+})
+
+
+app.post('/deleteHobby', (req, res) => {
+    const hobby_id = req.body;
+
+    db.tx(async t => {
+        return t.none('DELETE FROM hobbies WHERE hobby_id = \'' + hobby_id + '\';');
+    })
+    .then((data) => {
+        return res.json({data});
+    })
+    .catch((err) => {
+        console.log(err);
+        res.json({error: true})
+    })
+})
+
+app.post('/deleteSkill', (req, res) => {
+    const skill_id = req.body;
+
+    db.tx(async t => {
+        return t.none('DELETE FROM skills WHERE skill_id = \'' + skill_id + '\';');
+    })
+    .then((data) => {
+        return res.json({data});
+    })
+    .catch((err) => {
+        console.log(err);
+        res.json({error: true})
+    })
+})
+
+
+// ----------- [END] Edit About Tab -----------
 
 
 const PORT = process.env.PORT || 5000;
