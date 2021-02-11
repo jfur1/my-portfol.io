@@ -331,7 +331,7 @@ export const About = props => {
         <div className="tab-container">
         
         <h2>{user.firstname} {user.lastname}</h2>
-        <p>About Page</p>
+        <p>About</p>
         {props.data.ownedByUser 
         ? <PencilFill size={25} onClick={handleShow}/> 
         : null}
@@ -394,7 +394,7 @@ export const About = props => {
             <h4><b>Bio:</b> {info.bio}</h4>
             <br></br>
         </div>
-        <div className="info-container">
+        <div className="user-container">
             <h4><b>Hobbies:</b>
             {hobbiesData 
             ? hobbiesData.map((row, idx) => 
@@ -403,6 +403,7 @@ export const About = props => {
                 </div>
             ) 
             : null}</h4>
+            <br></br>
             <h4><b>Skills:</b>
             {skillsData 
             ? skillsData.map((row, idx) => 

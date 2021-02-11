@@ -164,8 +164,14 @@ table.center {
 .user-container{
   display:flex;
   flex-direction: row;
-  justify-content: space-between;
-  margin:5% 5% 2% 5%;
+  justify-content: space-evenly;
+  margin-top: 3%
+}
+
+.links-container{
+  display: grid;
+  grid-template-columns: auto auto;
+  margin: 2% 10% 2% 10%;
 }
 
 .post-list{

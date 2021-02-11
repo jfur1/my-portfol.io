@@ -75,7 +75,7 @@ class Profile extends Component{
         //console.log("Profile Recieved Server Response: ", data);
 
         // If no profile found, redirect back to splash page w/ error msg
-        if((typeof data !== 'undefined') && data["error"]){
+        if((typeof data !== 'undefined') && data["error"] && window.location.hostname === 'localhost'){
             
             if(!(typeof data.requestedBy !== 'undefined')){
                 return this.props.history.push({
