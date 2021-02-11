@@ -711,6 +711,46 @@ app.post('/deleteLink', (req, res) => {
         res.json({error: true})
     })
 })
+// ----------- [END] Edit Contact Tab -----------
+
+//------------ [BEGIN] Edit Portfolio Tab ----------
+
+app.post('/createProject', (req, res) => {
+    
+})
+
+app.post('/updateProject', (req, res) => {
+
+})
+
+app.post('/deleteProject', (req, res) => {
+
+})
+
+app.post('/createWorkExperience', (req, res) => {
+
+})
+
+app.post('/updateWorkExperience', (req, res) => {
+
+})
+
+app.post('/deleteWorkExperience', (req, res) => {
+
+})
+
+app.post('/createEducation', (req, res) => {
+
+})
+
+app.post('/updateEducation', (req,res) => {
+
+})
+
+app.post('/deleteEducation', (req, res) => {
+
+})
+
 
 const PORT = process.env.PORT || 5000;
 

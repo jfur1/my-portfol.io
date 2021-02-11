@@ -520,7 +520,6 @@ class Profile extends Component{
                             updateLink={this.updateLink}
                             deleteLink={this.deleteLink}
                             setCreatedLinks={this.setCreatedLinks}
-                            updateLink={this.updateLink}
                         />
                     : null }
                 </div>

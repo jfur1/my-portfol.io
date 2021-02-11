@@ -334,20 +334,20 @@ export const Contact = (props) => {
                 {linksData 
                 ? linksData.map((row, idx) => 
                     <div key={idx}>
-                        <p>
-                            {row.title 
-                            ? <b>{row.title}: </b>
-                            : <b>Link: </b> }
-                            <br/>
+                        
+                        {row.title 
+                        ? <b>{row.title}: </b>
+                        : <b>Link: </b> }
+                        <br/>
 
-                            <a href={row.link} target="_blank">{row.link}</a>
+                        <a href={row.link} target="_blank">{row.link}</a>
 
-                            <br/>
+                        <br/>
 
-                            {row.description 
-                            ? <section>{row.description}</section>
-                            : null }
-                        </p>
+                        {row.description 
+                        ? <section>{row.description}</section>
+                        : null }
+                        
                     </div>
                     )
                 : null }
