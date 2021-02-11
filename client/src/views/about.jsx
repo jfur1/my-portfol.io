@@ -44,6 +44,15 @@ export const About = props => {
     useEffect(() => {
         setHobbies({values: hobbiesData});
         setSkills({values: skillsData});
+        setHobbiesToCreate([]);
+        setSkillsToCreate([]);
+        setHobbyToDelete([]);
+        setSkillToDelete([]);
+        setLocationToCreate([]);
+        setBioToCreate([]);
+        //console.log(`[About.jsx] Updated Hobbies: ${JSON.stringify(hobbies)}`);
+        //console.log(`[About.jsx] Updated Skills: ${JSON.stringify(skills)}`);
+        //console.log(`[About.jsx] Updated hobbiesToCreate: ${JSON.stringify(hobbiesToCreate)}`);
     }, [hobbiesData, skillsData]);
 
     // Toggle Modal
@@ -63,49 +72,6 @@ export const About = props => {
         setHobbies({values: hobbiesData});
         setSkills({values: skillsData});
     }
-
-    // Format edit hooks to be sent in POST request
-    const handleSave = () => {
-        // Location
-        if(info.location === null && location){
-            setLocationToCreate([location]);
-        } else if(info.location !== location){
-            setLocationToUpdate([...locationToUpdate, location]);
-        }
-        // Bio
-        if(info.bio === null && bio){
-            setBioToCreate([bio]);
-        } else if(info.bio !== bio){
-            setBioToUpdate([...bioToUpdate, bio]);
-        }
-        // Hobbies: 
-        // No ID? => CREATE new hobby
-        // Existing ID? => UPDATE existing hobby
-        hobbies.values.forEach((row, idx) => {
-            //console.log(`Row: ${row.hobby}, IDX: ${idx}`);
-            if( !(typeof(row.hobby_id) !== 'undefined')){
-                setHobbiesToCreate(hobbiesToCreate => [...hobbiesToCreate, row.hobby]);
-            } else if(typeof(row.updated) !== 'undefined'){
-                setHobbiesToUpdate(hobbiesToUpdate => [...hobbiesToUpdate, {hobby_id: row.hobby_id, hobby: row.hobby, rowIdx: idx}]);
-            }
-        })
-        // Skills: 
-        // No ID? => CREATE new skill
-        // Existing ID? => UPDATE existing skill
-        skills.values.forEach((row, idx) => {
-            //console.log(`Row: ${row.skill}, IDX: ${idx}`);
-            if( !(typeof(row.skill_id) !== 'undefined')){
-                setSkillsToCreate(skillsToCreate => [...skillsToCreate, row.skill]);
-            } else if(typeof(row.updated) !== 'undefined'){
-                setSkillsToUpdate(skillsToUpdate => [...skillsToUpdate, {skill_id: row.skill_id, skill: row.skill, rowIdx: idx}]);
-            }
-        })
-
-        setShow(false);
-        // Bad, but working method for triggering useEffect
-        return showLogs ? setShowLogs(false) : setShowLogs(true);
-    };
-
 
     function AlertDismissible() {
         return (
@@ -168,7 +134,7 @@ export const About = props => {
         let tmpHobbies = [...hobbies.values];
         // Trying to delete hobby with an existing ID? => stage hobby to be deleted
         if((typeof(tmpHobbies[idx].hobby_id) !== 'undefined')){
-            setHobbyToDelete([...hobbiesToDelete, tmpHobbies[idx].hobby_id]);
+            setHobbyToDelete([...hobbiesToDelete, {hobby_id: tmpHobbies[idx].hobby_id}]);
         }
         tmpHobbies.splice(idx, 1);
         setHobbies({values: tmpHobbies});
@@ -207,7 +173,7 @@ export const About = props => {
         let tmpSkills = [...skills.values];
         // Trying to delete skill with an existing ID? => stage skill to be deleted
         if((typeof(tmpSkills[idx].skill_id) !== 'undefined')){
-            setSkillToDelete([...skillsToDelete, tmpSkills[idx].skill_id]);
+            setSkillToDelete([...skillsToDelete, {skill_id: tmpSkills[idx].skill_id}]);
         } 
         tmpSkills.splice(idx, 1);
         setSkills({values: tmpSkills});
@@ -216,8 +182,52 @@ export const About = props => {
 
     // ----------- [END] Skill Handlers -------------------
 
+    // Format edit hooks to be sent in POST request
+    const handleSave = () => {
+        // Location
+        if(info.location === null && location){
+            setLocationToCreate([location]);
+        } else if(info.location !== location){
+            setLocationToUpdate([...locationToUpdate, location]);
+        }
+        // Bio
+        if(info.bio === null && bio){
+            setBioToCreate([bio]);
+        } else if(info.bio !== bio){
+            setBioToUpdate([...bioToUpdate, bio]);
+        }
+        // Hobbies: 
+        // No ID? => CREATE new hobby
+        // Existing ID? => UPDATE existing hobby
+        hobbies.values.forEach((row, idx) => {
+            //console.log(`Row: ${row.hobby}, IDX: ${idx}`);
+            if( !(typeof(row.hobby_id) !== 'undefined')){
+                setHobbiesToCreate(hobbiesToCreate => [...hobbiesToCreate, {hobby: row.hobby, rowIdx: idx}]);
+            } else if(typeof(row.updated) !== 'undefined'){
+                setHobbiesToUpdate(hobbiesToUpdate => [...hobbiesToUpdate, {hobby_id: row.hobby_id, hobby: row.hobby, rowIdx: idx}]);
+            }
+        })
+        // Skills: 
+        // No ID? => CREATE new skill
+        // Existing ID? => UPDATE existing skill
+        skills.values.forEach((row, idx) => {
+            //console.log(`Row: ${row.skill}, IDX: ${idx}`);
+            if( !(typeof(row.skill_id) !== 'undefined')){
+                setSkillsToCreate(skillsToCreate => [...skillsToCreate, {skill: row.skill, rowIdx: idx}]);
+            } else if(typeof(row.updated) !== 'undefined'){
+                setSkillsToUpdate(skillsToUpdate => [...skillsToUpdate, {skill_id: row.skill_id, skill: row.skill, rowIdx: idx}]);
+            }
+        })
+
+        setShow(false);
+        // Bad, but working method for triggering useEffect
+        return showLogs ? setShowLogs(false) : setShowLogs(true);
+    };
+
+
     // Handle POST requests for elements that have been staged
     useEffect(() => {
+
         if(locationToUpdate.length){
             //console.log(`** UPDATE Location: ${locationToUpdate}`);
             //console.log(`UserID: ${user}`)
@@ -225,36 +235,61 @@ export const About = props => {
             // Not actually updated here, yet
             setLocationToUpdate([]);
             console.log("Removed locationToUpdate. Sending to profile.jsx now...");
+        } else if(locationToCreate.length){
+
         }
+
+
         if(bioToUpdate.length) {
             //console.log(`** UPDATE Bio: ${bioToUpdate}`);
             props.updateBio(bioToUpdate, user.user_id);
             setBioToUpdate([]);
             console.log("Removed bioToUpdate. Sending to profile.jsx now...")
-        };
+        } else if(bioToCreate.length){
+
+        }
         
+
         if(hobbiesToCreate.length) {
-            console.log(`** CREATE Hobbies: ${hobbiesToCreate}`);
-        };
+            const createHobbies = async() => {
+                var newHobbies = [];
+                for await (let hobbyToCreate of hobbiesToCreate){
+                    const data = await props.createHobby(user.user_id, hobbyToCreate.hobby, hobbyToCreate.rowIdx);
+                    //console.log("About.jsx Recieved Data from Profile.jsx:", data);
+                    newHobbies.push(data);
+                }
+                //console.log("[About.jsx] Newly Created Hobbies: ", newHobbies);
+                props.setCreatedHobbies(newHobbies);
+            }
+            createHobbies();
+        }
         if(hobbiesToUpdate.length) {
             //console.log(`** UPDATE Hobbies: ${hobbiesToUpdate}`);
             hobbiesToUpdate.forEach((row, rowIdx) => {
-                console.log("Hobby Row Idx:", row.rowIdx);
-                console.log("Hobby ID:", row.hobby_id);
-                console.log("Hobby:", row.hobby);
+                // console.log("Hobby Row Idx:", row.rowIdx);
+                // console.log("Hobby ID:", row.hobby_id);
+                // console.log("Hobby:", row.hobby);
                 props.updateHobby(row.hobby_id, row.hobby, user.user_id, row.rowIdx);
-                // Remove the hobbyToUpdate from staging area of hobbiesToUpdate
-
             })
             setHobbiesToUpdate([]);
             console.log("HobbiesToUpdate:", hobbiesToUpdate);
         };
-        if(hobbiesToDelete.length) {
-            console.log(`** DELETE Hobbies with ID: ${hobbiesToDelete}`);
-        };
+
+
         if(skillsToCreate.length) {
-            console.log(`** CREATE Skills: ${skillsToCreate}`);
-        };
+            //console.log(`** CREATE Skills: ${skillsToCreate}`);
+            const createSkills = async() => {
+                var newSkills = [];
+                for await (let skillToCreate of skillsToCreate){
+                    const data = await props.createSkill(user.user_id, skillToCreate.skill, skillToCreate.rowIdx);
+                    //console.log("About.jsx Recieved Data from Profile.jsx:", data);
+                    newSkills.push(data);
+                }
+                //console.log("[About.jsx] Newly Created skills: ", newSkills);
+                props.setCreatedSkills(newSkills);
+            }
+            createSkills();
+        }
         if(skillsToUpdate.length) {
             //console.log(`** UPDATE Skills: ${skillsToUpdate}`);
             skillsToUpdate.forEach((row, rowIdx) => {
@@ -266,9 +301,26 @@ export const About = props => {
             setSkillsToUpdate([]);
             console.log("HobbiesToUpdate:", skillsToUpdate);
         };
+
+
         if(skillsToDelete.length) {
-            console.log(`** DELETE Skills with ID: ${skillsToDelete}`);
+            //console.log(`** DELETE Skills with ID: ${skillsToDelete}`);
+            const deleteSkills = async() => {
+                for await (let skillToDelete of skillsToDelete){
+                    await props.deleteSkill(skillToDelete.skill_id);
+                }
+            }
+            deleteSkills();
         };
+        if(hobbiesToDelete.length) {
+            //console.log(`** DELETE Hobbies with ID: ${hobbiesToDelete}`);
+            const deleteHobbies = async() => {
+                for await (let hobbyToDelete of hobbiesToDelete){
+                    await props.deleteHobby(hobbyToDelete.hobby_id);
+                }
+            }
+            deleteHobbies();
+        }
 
         // Reset all POST forms after any updates -- stops recalling?
 

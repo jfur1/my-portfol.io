@@ -447,23 +447,25 @@ app.post('/insertBio', (req, res) => {
 
 })
 
-app.post('/insertSkill', (req, res) => {
-    const {user_id, skill} = req.body;
+app.post('/createHobby', (req, res) => {
+    const {user_id, hobby} = req.headers;
 
-    db.tx(async t => {
-        const max_id = await t.one('SELECT MAX(skill_id) FROM skills;');
+    db.task(async t => {
+        const max_id = await t.one('SELECT MAX(hobby_id) FROM hobbies;');
         let newId = max_id.max;
         newId++;
+        console.log(`NewID: ${newId}`);
 
-        return t.none('INSERT INTO skills (skill_id, uid, skill) VALUES($1, $2, $3)', 
+        return t.one('INSERT INTO hobbies (hobby_id, uid, hobby) VALUES($1, $2, $3)RETURNING hobby_id, uid, hobby', 
         [
             newId,
             user_id,
-            skill
-        ]);
+            hobby
+        ])
     })
     .then((data) => {
-        return res.json({data});
+        console.log("Inserted!");
+        return res.json(data);
     })
     .catch((err) => {
         console.log(err);
@@ -471,19 +473,19 @@ app.post('/insertSkill', (req, res) => {
     })
 })
 
-app.post('/createHobby', (req, res) => {
-    const {user_id, hobby} = req.headers;
+app.post('/createSkill', (req, res) => {
+    const {user_id, skill} = req.headers;
 
     db.tx(async t => {
-        const max_id = await t.one('SELECT MAX(hobby_id) FROM hobbies;');
+        const max_id = await t.one('SELECT MAX(skill_id) FROM skills;');
         let newId = max_id.max;
         newId++;
 
-        return t.one('INSERT INTO hobbies (hobby_id, uid, hobby) VALUES($1, $2, $3)RETURNING hobby_id, uid, hobby', 
+        return t.one('INSERT INTO skills (skill_id, uid, skill) VALUES($1, $2, $3) RETURNING skill_id, uid, skill', 
         [
             newId,
             user_id,
-            hobby
+            skill
         ]);
     })
     .then((data) => {
@@ -494,7 +496,6 @@ app.post('/createHobby', (req, res) => {
         res.json({error: true})
     })
 })
-
 
 app.post('/updateLocation', (req, res) => {
     //console.log("Req.headers:", req.headers);
@@ -585,13 +586,13 @@ app.post('/deleteHobby', (req, res) => {
 })
 
 app.post('/deleteSkill', (req, res) => {
-    const skill_id = req.body;
+    const {skill_id} = req.headers;
 
     db.tx(async t => {
         return t.none('DELETE FROM skills WHERE skill_id = \'' + skill_id + '\';');
     })
     .then((data) => {
-        return res.json({data});
+        return res.json({errors: false});
     })
     .catch((err) => {
         console.log(err);

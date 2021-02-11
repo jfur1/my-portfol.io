@@ -274,6 +274,79 @@ class Profile extends Component{
         console.log("Profile.jsx Updated the skill. this.state.skills",this.state.skills);
     }
 
+    createHobby = async(user_id, hobby, rowIdx) => {
+        const response = await fetch('http://localhost:5000/createHobby',  {
+            method: 'POST', 
+            mode: 'cors',
+            credentials: 'include',
+            withCredentials: true,
+            headers: {
+                user_id: user_id,
+                hobby: hobby
+            }
+        });
+        const data = await response.json();
+        console.log("Client Recieved Response: ", data);
+        return data;
+    } 
+    // Wait to set state until all promises are fulfilled
+    setCreatedHobbies = (createdHobbiesToSet) => {
+        console.log("Profile.jsx recieved hobbies to set:", createdHobbiesToSet);
+        this.setState({hobbies: [...this.state.hobbies, ...createdHobbiesToSet]});
+    }
+
+    createSkill = async(user_id, skill) => {
+        const response = await fetch('http://localhost:5000/createSkill',  {
+            method: 'POST', 
+            mode: 'cors',
+            credentials: 'include',
+            withCredentials: true,
+            headers: {
+                user_id: user_id,
+                skill: skill
+            }
+        });
+        const data = await response.json();
+        console.log("Client Recieved Response: ", data);
+        return data;
+    }
+    // Wait to set state until all promises are fulfilled
+    setCreatedSkills = (createdSkillsToSet) => {
+        console.log("Profile.jsx recieved skills to set:", createdSkillsToSet);
+        this.setState({skills: [...this.state.skills, ...createdSkillsToSet]});
+    }
+
+    deleteHobby = async(hobby_id) => {
+        const response = await fetch('http://localhost:5000/deleteHobby',  {
+            method: 'POST', 
+            mode: 'cors',
+            credentials: 'include',
+            withCredentials: true,
+            headers: {
+                hobby_id: hobby_id
+            }
+        });
+        const data = await response.json();
+        console.log("Client Recieved Response: ", data);
+        //return data;
+        window.location.reload();
+    }
+
+    deleteSkill = async(skill_id) => {
+        const response = await fetch('http://localhost:5000/deleteSkill',  {
+            method: 'POST', 
+            mode: 'cors',
+            credentials: 'include',
+            withCredentials: true,
+            headers: {
+                skill_id: skill_id
+            }
+        });
+        const data = await response.json();
+        console.log("Client Recieved Response: ", data);
+        //return data;
+        window.location.reload();
+    }
 
     render(){
 
@@ -306,6 +379,12 @@ class Profile extends Component{
                             updateBio={this.updateBio}
                             updateHobby={this.updateHobby}
                             updateSkill={this.updateSkill}
+                            createHobby={this.createHobby}
+                            setCreatedHobbies={this.setCreatedHobbies}
+                            createSkill={this.createSkill}
+                            setCreatedSkills={this.setCreatedSkills}
+                            deleteHobby={this.deleteHobby}
+                            deleteSkill={this.deleteSkill}
                         />
                     : null }
 
