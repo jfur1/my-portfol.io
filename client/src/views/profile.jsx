@@ -28,6 +28,8 @@ class Profile extends Component{
 
             about: (typeof this.props.location.about !== 'undefined') ? this.props.location.state.about : null,
 
+            profile: (typeof this.props.location.profile !== 'undefined') ? this.props.location.state.profile : null,
+
             portfolio: (typeof this.props.location.portfolio !== 'undefined') ? this.props.location.state.portfolio : null,
 
             contact: (typeof this.props.location.contact !== 'undefined') ? this.props.location.state.contact : null,
@@ -52,6 +54,7 @@ class Profile extends Component{
         const urls = [
             'http://localhost:5000/getUserData',
             'http://localhost:5000/about',
+            'http://localhost:5000/profile',
             'http://localhost:5000/portfolio',
             'http://localhost:5000/contact',
             'http://localhost:5000/education',
@@ -60,7 +63,7 @@ class Profile extends Component{
             'http://localhost:5000/projects'
         ];
 
-        let [data, about, portfolio, contact, education, hobbies, skills, projects] = await 
+        let [data, about, profile, portfolio, contact, education, hobbies, skills, projects] = await 
         Promise.all(urls.map(url => 
             fetch(url, {
                 method: 'GET',
@@ -99,7 +102,8 @@ class Profile extends Component{
                         education: this.state.education,
                         hobbies: this.state.hobbies,
                         skills: this.state.skills,
-                        projects: this.state.projects
+                        projects: this.state.projects,
+                        profile: this.state.profile
                     }
                 })
                 window.location.reload();
@@ -111,12 +115,13 @@ class Profile extends Component{
                 user: data.user, 
                 requestedBy: data.requestedBy,
                 about: about,
+                profile: profile,
                 portfolio: portfolio,
                 contact: contact,
                 education: education,
                 hobbies: hobbies,
                 skills: skills,
-                projects: projects
+                projects: projects,
             });
         }
 
@@ -153,6 +158,7 @@ class Profile extends Component{
                         loggedIn: this.state.loggedIn,
                         requestedBy: this.state.requestedBy,
                         about: this.state.about,
+                        profile: this.state.profile,
                         portfolio: this.state.portfolio,
                         contact: this.state.contact,
                         education: this.state.education,
@@ -173,6 +179,7 @@ class Profile extends Component{
                     loggedIn: this.state.loggedIn,
                     requestedBy: this.state.requestedBy,
                     about: this.state.about,
+                    profile: this.state.profile,
                     portfolio: this.state.portfolio,
                     contact: this.state.contact,
                     education: this.state.education,
@@ -348,6 +355,119 @@ class Profile extends Component{
         window.location.reload();
     }
 
+    updateEmail = async(user_id, public_email) => {
+        const response = await fetch('http://localhost:5000/updatePublicEmail',  {
+            method: 'POST', 
+            mode: 'cors',
+            credentials: 'include',
+            withCredentials: true,
+            headers: {
+                user_id: user_id, 
+                public_email: public_email
+            }
+        });
+        const data = await response.json();
+        console.log("Client Recieved Response: ", data);
+        
+        // Update public_email in state -- create copy and update
+        let tmpProfile = [...this.state.profile];
+        tmpProfile[0].public_email = data;
+
+        this.setState({
+            profile: tmpProfile
+        });
+        console.log("Profile.jsx Updated Public Email. this.state.profile:", this.state.profile);
+    }
+
+    updatePhone = async(user_id, phone) => {
+        const response = await fetch('http://localhost:5000/updatePhone',  {
+            method: 'POST', 
+            mode: 'cors',
+            credentials: 'include',
+            withCredentials: true,
+            headers: {
+                user_id: user_id, 
+                phone: phone
+            }
+        });
+        const data = await response.json();
+        console.log("Client Recieved Response: ", data);
+        
+        // Update public_email in state -- create copy and update
+        let tmpProfile = [...this.state.profile];
+        tmpProfile[0].phone = data;
+
+        this.setState({
+            profile: tmpProfile
+        });
+        console.log("Profile.jsx Updated Public Email. this.state.profile:", this.state.profile);
+    }
+
+    createLink = async(user_id, link) =>{
+        console.log("[Profile.jsx] Recieved Link:", link);
+        const response = await fetch('http://localhost:5000/createLink',  {
+            method: 'POST', 
+            mode: 'cors',
+            credentials: 'include',
+            withCredentials: true,
+            headers: {
+                user_id: user_id,
+                title: link.title,
+                link: link.link,
+                description: link.description
+            }
+        });
+        const data = await response.json();
+        console.log("Client Recieved Response: ", data);
+        return data;
+    }
+    setCreatedLinks = (createdLinksToSet) => {
+        console.log("Profile.jsx recieved links to set:", createdLinksToSet);
+        this.setState({contact: [...this.state.contact, ...createdLinksToSet]});
+    }
+
+    updateLink = async(link_id, link, title, description, user_id, rowIdx) => {
+        const response = await fetch('http://localhost:5000/updateLink',  {
+            method: 'POST', 
+            mode: 'cors',
+            credentials: 'include',
+            withCredentials: true,
+            headers: {
+                link_id: link_id, 
+                link: link,
+                title: title,
+                description: description,
+                user_id: user_id
+            }
+        });
+        const data = await response.json();
+        console.log("Client Recieved Response: ", data);
+
+        let tmpLinks = [...this.state.contact];
+        let row = {...tmpLinks[rowIdx]};
+        row = data;
+        tmpLinks[rowIdx] = row;
+        this.setState({contact: tmpLinks});
+
+        console.log("Profile.jsx Updated the Link. this.state.contact",this.state.contact);
+    }
+
+    deleteLink = async(link_id) => {
+        const response = await fetch('http://localhost:5000/deleteLink',  {
+            method: 'POST', 
+            mode: 'cors',
+            credentials: 'include',
+            withCredentials: true,
+            headers: {
+                link_id: link_id
+            }
+        });
+        const data = await response.json();
+        console.log("Client Recieved Response: ", data);
+        //return data;
+        window.location.reload();
+    }
+
     render(){
 
         return(
@@ -393,7 +513,15 @@ class Profile extends Component{
                     : null }
 
                     { this.state.key === "contact" ?
-                        <Contact {...this.props} data={this.state}/>
+                        <Contact {...this.props} data={this.state}
+                            updateEmail={this.updateEmail}
+                            updatePhone={this.updatePhone}
+                            createLink={this.createLink}
+                            updateLink={this.updateLink}
+                            deleteLink={this.deleteLink}
+                            setCreatedLinks={this.setCreatedLinks}
+                            updateLink={this.updateLink}
+                        />
                     : null }
                 </div>
             </div>

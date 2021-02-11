@@ -324,6 +324,27 @@ app.get('/about', (req, res) => {
 
 })
 
+app.get('/profile', (req, res) => {
+    const username = req.headers.username;
+    
+    db.tx(async t => {
+        const user = await t.oneOrNone('SELECT user_id FROM users WHERE \''+ username + '\' = username;');
+        
+        if(!user){
+            return res.json({error: true});
+        }
+
+        return t.any('SELECT * FROM profile WHERE uid = $1', user.user_id);
+    })
+    .then((profile) => {
+        return res.json(profile);
+    })
+    .catch((err) => {
+        console.log(err);
+        //res.json({error: true});
+    });
+})
+
 app.get('/portfolio', (req, res) => {
     const username = req.headers.username;
     
@@ -603,6 +624,93 @@ app.post('/deleteSkill', (req, res) => {
 
 // ----------- [END] Edit About Tab -----------
 
+//------------ [BEGIN] Edit Contact Tab ----------
+
+app.post('/updatePublicEmail', (req, res) => {
+    const {user_id, public_email} = req.headers;
+
+    db.tx(async t => {
+        return t.one('UPDATE profile SET public_email = \'' + public_email + '\' WHERE uid = \'' + user_id + '\' RETURNING public_email;');
+    })
+    .then((data) => {
+        return res.json(data.public_email);
+    })
+    .catch((err) => {
+        console.log(err);
+        res.json({error: true})
+    })
+})
+
+app.post('/updatePhone', (req, res) => {
+    const {user_id, phone} = req.headers;
+
+    db.tx(async t => {
+        return t.one('UPDATE profile SET phone = \'' + phone + '\' WHERE uid = \'' + user_id + '\' RETURNING phone;');
+    })
+    .then((data) => {
+        return res.json(data.phone);
+    })
+    .catch((err) => {
+        console.log(err);
+        res.json({error: true})
+    })
+})
+
+app.post('/createLink', (req, res) => {
+    const {user_id, title, link, description} = req.headers;
+
+    db.tx(async t => {
+        const max_id = await t.one('SELECT MAX(link_id) FROM links;');
+        let newId = max_id.max;
+        newId++;
+
+        return t.one('INSERT INTO links (link_id, uid, link, title, description) VALUES($1, $2, $3, $4, $5) RETURNING link_id, uid, link, title, description', 
+        [
+            newId,
+            user_id,
+            link, 
+            title,
+            description
+        ]);
+    })
+    .then((data) => {
+        return res.json(data);
+    })
+    .catch((err) => {
+        console.log(err);
+        res.json({error: true})
+    })
+})
+
+app.post('/updateLink', (req, res) => {
+    const {link_id, link, title, description, user_id} = req.headers;
+
+    db.tx(async t => {
+        return t.one('UPDATE links SET link = \'' + link + '\', title = \'' + title + '\', description = \'' + description + '\'WHERE uid = \'' + user_id + '\' AND link_id = \'' + link_id + '\' RETURNING link_id, uid, link, title, description;');
+    })
+    .then((data) => {
+        return res.json(data);
+    })
+    .catch((err) => {
+        console.log(err);
+        res.json({error: true})
+    })
+})
+
+app.post('/deleteLink', (req, res) => {
+    const {link_id} = req.headers;
+
+    db.tx(async t => {
+        return t.none('DELETE FROM links WHERE link_id = \'' + link_id + '\';');
+    })
+    .then((data) => {
+        return res.json({errors: false});
+    })
+    .catch((err) => {
+        console.log(err);
+        res.json({error: true})
+    })
+})
 
 const PORT = process.env.PORT || 5000;
 
