@@ -137,8 +137,8 @@ CREATE TABLE IF NOT EXISTS projects(
   title VARCHAR(64) NOT NULL,
   description VARCHAR(255),
   organization VARCHAR(64),
-  from_when DATE,
-  to_when DATE,
+  from_when DATE NULL,
+  to_when DATE NULL,
   link VARCHAR(255)
 );
 

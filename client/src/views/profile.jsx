@@ -468,6 +468,74 @@ class Profile extends Component{
         window.location.reload();
     }
 
+    createProject = async(user_id, project) => {
+        //console.log("[Profile.jsx] Recieved project:", project);
+        const response = await fetch('http://localhost:5000/createProject',  {
+            method: 'POST', 
+            mode: 'cors',
+            credentials: 'include',
+            withCredentials: true,
+            headers: {
+                user_id: user_id,
+                title: project.title,
+                description: project.description,
+                organization: project.organization,
+                from_when: project.from_when,
+                to_when: project.to_when,
+                link: project.link
+            }
+        });
+        const data = await response.json();
+        console.log("Client Recieved Response: ", data);
+        return data;
+    }
+    setCreatedProjects = (createdProjectsToSet) => {
+        console.log("Profile.jsx recieved projects to set:", createdProjectsToSet);
+        this.setState({projects: [...this.state.projects, ...createdProjectsToSet]});
+    }
+
+    updateProject = async(user_id, project, rowIdx) => {
+        const response = await fetch('http://localhost:5000/updateProject',  {
+            method: 'POST', 
+            mode: 'cors',
+            credentials: 'include',
+            withCredentials: true,
+            headers: {
+                project_id: project.project_id, 
+                user_id: user_id,
+                title: project.title,
+                description: project.description,
+                organization: project.organization,
+                from_when: project.from_when,
+                to_when: project.to_when,
+                link: project.link
+            }
+        });
+        const data = await response.json();
+        console.log("Client Recieved Response: ", data);
+
+        let tmpProjects = [...this.state.projects];
+        tmpProjects[rowIdx] = data;
+        this.setState({projects: tmpProjects});
+        console.log("Profile.jsx Updated the Link. this.state.projects",this.state.projects);
+    }
+    
+    deleteProject = async(project_id) => {
+        const response = await fetch('http://localhost:5000/deleteProject',  {
+            method: 'POST', 
+            mode: 'cors',
+            credentials: 'include',
+            withCredentials: true,
+            headers: {
+                project_id: project_id
+            }
+        });
+        const data = await response.json();
+        console.log("Client Recieved Response: ", data);
+        //return data;
+        window.location.reload();
+    }
+
     render(){
 
         return(
@@ -509,7 +577,12 @@ class Profile extends Component{
                     : null }
 
                     { this.state.key === "portfolio" ?
-                        <Portfolio {...this.props} data={this.state}/>
+                        <Portfolio {...this.props} data={this.state}
+                            createProject={this.createProject}
+                            setCreatedProjects={this.setCreatedProjects}
+                            updateProject={this.updateProject}
+                            deleteProject={this.deleteProject}
+                        />
                     : null }
 
                     { this.state.key === "contact" ?

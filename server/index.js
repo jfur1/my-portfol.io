@@ -355,7 +355,7 @@ app.get('/portfolio', (req, res) => {
             return res.json({error: true});
         }
 
-        return t.any('SELECT * FROM portfolio WHERE uid = $1', user.user_id);
+        return t.any('SELECT portfolio_id, uid, occupation, organization, from_when::varchar, to_when::varchar, description FROM portfolio WHERE uid = $1', user.user_id);
     })
     .then((portfolio) => {
         return res.json(portfolio);
@@ -396,7 +396,7 @@ app.get('/education', (req, res) => {
             return res.json({error: true});
         }
 
-        return t.any('SELECT * FROM education WHERE \''+ user.user_id +'\' = uid;');
+        return t.any('SELECT education_id, uid, organization, education, from_when::varchar, to_when::varchar, description FROM education WHERE \''+ user.user_id +'\' = uid;');
     })
     .then((eduaction) => {
         return res.json(eduaction);
@@ -450,7 +450,7 @@ app.get('/projects', (req, res) => {
             return res.json({error: true});
         }
 
-        return t.any('SELECT * FROM projects WHERE \''+ user.user_id +'\' = uid;');
+        return t.any('SELECT project_id, uid, title, description, organization, from_when::varchar, to_when::varchar, link FROM projects WHERE \''+ user.user_id +'\' = uid;');
     })
     .then((skills) => {
         return res.json(skills);
@@ -716,15 +716,83 @@ app.post('/deleteLink', (req, res) => {
 //------------ [BEGIN] Edit Portfolio Tab ----------
 
 app.post('/createProject', (req, res) => {
-    
+    const {
+        user_id, 
+        title, 
+        description,
+        organization,
+        from_when,
+        to_when,
+        link
+    } = req.headers;
+
+    db.tx(async t => {
+        const max_id = await t.one('SELECT MAX(project_id) FROM projects;');
+        let newId = max_id.max;
+        newId++;
+
+        return t.one('INSERT INTO projects (project_id, uid, title, description, organization, from_when, to_when, link) VALUES($1, $2, $3, $4, $5, $6, $7, $8) RETURNING project_id, uid, title, description, organization, from_when::varchar, to_when::varchar, link', 
+        [
+            newId,
+            user_id,
+            title, 
+            description,
+            organization,
+            from_when, 
+            to_when,
+            link
+        ]);
+    })
+    .then((data) => {
+        return res.json(data);
+    })
+    .catch((err) => {
+        console.log(err);
+        res.json({error: true})
+    })
 })
 
 app.post('/updateProject', (req, res) => {
+    let {
+        project_id, 
+        user_id, 
+        title, 
+        description, 
+        organization, 
+        from_when, 
+        to_when, 
+        link
+    } = req.headers;
 
+    //console.log(description, organization, from_when, to_when, link)
+    if(to_when == "null") to_when = "infinity";
+    if(from_when == "null") from_when = "infinity";
+
+    db.tx(async t => {
+        return t.one('UPDATE projects SET title = \'' + title + '\', description = \'' + description + '\', organization = \'' + organization + '\', from_when = \'' + from_when + '\', to_when = \'' + to_when + '\', link = \'' + link + '\' WHERE uid = \'' + user_id + '\' AND project_id = \'' + project_id + '\' RETURNING project_id, uid, title, description, organization, from_when::varchar, to_when::varchar, link;');
+    })
+    .then((data) => {
+        return res.json(data);
+    })
+    .catch((err) => {
+        console.log(err);
+        res.json({error: true})
+    })
 })
 
 app.post('/deleteProject', (req, res) => {
+    const {project_id} = req.headers;
 
+    db.tx(async t => {
+        return t.none('DELETE FROM projects WHERE project_id = \'' + project_id + '\';');
+    })
+    .then((data) => {
+        return res.json({errors: false});
+    })
+    .catch((err) => {
+        console.log(err);
+        res.json({error: true})
+    })
 })
 
 app.post('/createWorkExperience', (req, res) => {
