@@ -10,6 +10,7 @@ export const Contact = (props) => {
     const user = (props.location.state.user !== null) ? props.location.state.user : props.data.user;
     const profile = (props.data.profile !== null) ? props.data.profile : props.location.state.profile;
     const linksData = (props.data.contact !== null) ? props.data.contact : props.location.state.contact;
+    const isLoading = (props.data.loading !== null) ? props.data.loading : props.location.state.loading;
 
     // Display Toggles
     const [show, setShow] = useState(false);
@@ -62,6 +63,7 @@ export const Contact = (props) => {
 
 
     const handleSave = () => {
+
         console.log("'Saving' Changes:");
 
         console.log("Email to Update:", emailToUpdate);
@@ -251,6 +253,7 @@ export const Contact = (props) => {
                             handleSave={handleSave}
                             discardChanges={discardChanges}
                         />
+
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>

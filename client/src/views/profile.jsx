@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Tabs, Tab } from 'react-bootstrap'
+import { Tabs, Tab, Spinner } from 'react-bootstrap'
 import { AlertMsg } from '../components/alerts';
 
 // Import Components
@@ -41,6 +41,8 @@ class Profile extends Component{
             skills: (typeof this.props.location.skills !== 'undefined') ? this.props.location.state.skills : null,
 
             projects: (typeof this.props.location.projects !== 'undefined') ? this.props.location.state.projects : null,
+
+            loading: true
         }
     }
 
@@ -141,6 +143,7 @@ class Profile extends Component{
 
         console.log("STATE: ", this.state);
         console.log("PROPS: ", this.props.location.state);
+        this.setState({loading: false});
     }
 
     // Keeps track of what tab we're on, for the event of user refresh
@@ -191,7 +194,10 @@ class Profile extends Component{
         }
     }
     
+    // About Tab
+
     updateLocation = async (locationToUpdate, user_id) => {
+        this.setState({loading: true});
         const response = await fetch('http://localhost:5000/updateLocation',  {
             method: 'POST', 
             mode: 'cors',
@@ -207,13 +213,15 @@ class Profile extends Component{
         this.setState({
             about: {
                 ...this.state.about,
-                location: data
-            }
+                location: data,
+            },
+            loading: false
         });
         console.log("Profile.jsx Updated Location. this.state.about:",this.state.about);
     }
 
     updateBio = async(bioToUpdate, user_id) => {
+        this.setState({loading: true});
         const response = await fetch('http://localhost:5000/updateBio',  {
             method: 'POST', 
             mode: 'cors',
@@ -229,13 +237,15 @@ class Profile extends Component{
         this.setState({
             about: {
                 ...this.state.about,
-                bio: data
-            }
+                bio: data,
+            },
+            loading: false
         });
         console.log("Profile.jsx Updated Bio. this.state.about:", this.state.about);
     }
     
     updateHobby = async(hobby_id, hobby, user_id, rowIdx) => {
+        this.setState({loading: true});
         const response = await fetch('http://localhost:5000/updateHobby',  {
             method: 'POST', 
             mode: 'cors',
@@ -254,12 +264,13 @@ class Profile extends Component{
         let row = {...tmpHobbies[rowIdx]};
         row.hobby = data;
         tmpHobbies[rowIdx] = row;
-        this.setState({hobbies: tmpHobbies});
+        this.setState({hobbies: tmpHobbies, loading: false});
 
         console.log("Profile.jsx Updated the hobby. this.state.hobbies:",this.state.hobbies);
     }
 
     updateSkill = async(skill_id, skill, user_id, rowIdx) => {
+        this.setState({loading: true});
         const response = await fetch('http://localhost:5000/updateSkill',  {
             method: 'POST', 
             mode: 'cors',
@@ -278,12 +289,13 @@ class Profile extends Component{
         let row = {...tmpSkills[rowIdx]};
         row.skill = data;
         tmpSkills[rowIdx] = row;
-        this.setState({skills: tmpSkills});
+        this.setState({skills: tmpSkills, loading: false});
 
         console.log("Profile.jsx Updated the skill. this.state.skills",this.state.skills);
     }
 
     createHobby = async(user_id, hobby, rowIdx) => {
+        this.setState({loading: true});
         const response = await fetch('http://localhost:5000/createHobby',  {
             method: 'POST', 
             mode: 'cors',
@@ -301,10 +313,14 @@ class Profile extends Component{
     // Wait to set state until all promises are fulfilled
     setCreatedHobbies = (createdHobbiesToSet) => {
         console.log("Profile.jsx recieved hobbies to set:", createdHobbiesToSet);
-        this.setState({hobbies: [...this.state.hobbies, ...createdHobbiesToSet]});
+        this.setState({
+            hobbies: [...this.state.hobbies, ...createdHobbiesToSet],
+            loading: false
+        });
     }
 
     createSkill = async(user_id, skill) => {
+        this.setState({loading: true});
         const response = await fetch('http://localhost:5000/createSkill',  {
             method: 'POST', 
             mode: 'cors',
@@ -322,10 +338,13 @@ class Profile extends Component{
     // Wait to set state until all promises are fulfilled
     setCreatedSkills = (createdSkillsToSet) => {
         console.log("Profile.jsx recieved skills to set:", createdSkillsToSet);
-        this.setState({skills: [...this.state.skills, ...createdSkillsToSet]});
+        this.setState({
+            skills: [...this.state.skills, ...createdSkillsToSet],
+            loading: false});
     }
 
     deleteHobby = async(hobby_id) => {
+        this.setState({loading: true});
         const response = await fetch('http://localhost:5000/deleteHobby',  {
             method: 'POST', 
             mode: 'cors',
@@ -340,9 +359,8 @@ class Profile extends Component{
         return data;
     }
 
-
-
     deleteSkill = async(skill_id) => {
+        this.setState({loading: true});
         const response = await fetch('http://localhost:5000/deleteSkill',  {
             method: 'POST', 
             mode: 'cors',
@@ -357,7 +375,10 @@ class Profile extends Component{
         return data;
     }
 
+    // Contact Tab
+
     updateEmail = async(user_id, public_email) => {
+        this.setState({loading: true});
         const response = await fetch('http://localhost:5000/updatePublicEmail',  {
             method: 'POST', 
             mode: 'cors',
@@ -376,12 +397,14 @@ class Profile extends Component{
         tmpProfile[0].public_email = data;
 
         this.setState({
-            profile: tmpProfile
+            profile: tmpProfile,
+            loading: false
         });
         console.log("Profile.jsx Updated Public Email. this.state.profile:", this.state.profile);
     }
 
     updatePhone = async(user_id, phone) => {
+        this.setState({loading: true});
         const response = await fetch('http://localhost:5000/updatePhone',  {
             method: 'POST', 
             mode: 'cors',
@@ -400,12 +423,14 @@ class Profile extends Component{
         tmpProfile[0].phone = data;
 
         this.setState({
-            profile: tmpProfile
+            profile: tmpProfile,
+            loading: false
         });
         console.log("Profile.jsx Updated Public Email. this.state.profile:", this.state.profile);
     }
 
     createLink = async(user_id, link) =>{
+        this.setState({loading: true});
         console.log("[Profile.jsx] Recieved Link:", link);
         const response = await fetch('http://localhost:5000/createLink',  {
             method: 'POST', 
@@ -425,10 +450,14 @@ class Profile extends Component{
     }
     setCreatedLinks = (createdLinksToSet) => {
         console.log("Profile.jsx recieved links to set:", createdLinksToSet);
-        this.setState({contact: [...this.state.contact, ...createdLinksToSet]});
+        this.setState({
+            contact: [...this.state.contact, ...createdLinksToSet],
+            loading: false
+        });
     }
 
     updateLink = async(link_id, link, title, description, user_id, rowIdx) => {
+        this.setState({loading: true});
         const response = await fetch('http://localhost:5000/updateLink',  {
             method: 'POST', 
             mode: 'cors',
@@ -449,12 +478,13 @@ class Profile extends Component{
         let row = {...tmpLinks[rowIdx]};
         row = data;
         tmpLinks[rowIdx] = row;
-        this.setState({contact: tmpLinks});
+        this.setState({contact: tmpLinks, loading: false});
 
         console.log("Profile.jsx Updated the Link. this.state.contact",this.state.contact);
     }
 
     deleteLink = async(link_id) => {
+        this.setState({loading: true});
         const response = await fetch('http://localhost:5000/deleteLink',  {
             method: 'POST', 
             mode: 'cors',
@@ -473,7 +503,7 @@ class Profile extends Component{
     // Portfolio Tab
 
     createProject = async(user_id, project) => {
-        //console.log("[Profile.jsx] Recieved project:", project);
+        this.setState({loading: true});
         const response = await fetch('http://localhost:5000/createProject',  {
             method: 'POST', 
             mode: 'cors',
@@ -495,10 +525,14 @@ class Profile extends Component{
     }
     setCreatedProjects = (createdProjectsToSet) => {
         console.log("Profile.jsx recieved projects to set:", createdProjectsToSet);
-        this.setState({projects: [...this.state.projects, ...createdProjectsToSet]});
+        this.setState({
+            projects: [...this.state.projects, ...createdProjectsToSet],
+            loading: false
+        });
     }
 
     updateProject = async(user_id, project, rowIdx) => {
+        this.setState({loading: true});
         const response = await fetch('http://localhost:5000/updateProject',  {
             method: 'POST', 
             mode: 'cors',
@@ -520,11 +554,12 @@ class Profile extends Component{
 
         let tmpProjects = [...this.state.projects];
         tmpProjects[rowIdx] = data;
-        this.setState({projects: tmpProjects});
+        this.setState({projects: tmpProjects, loading: false});
         console.log("Profile.jsx Updated the Link. this.state.projects",this.state.projects);
     }
     
     deleteProject = async(project_id) => {
+        this.setState({loading: true});
         const response = await fetch('http://localhost:5000/deleteProject',  {
             method: 'POST', 
             mode: 'cors',
@@ -541,7 +576,7 @@ class Profile extends Component{
     }
 
     createWorkExperience = async(user_id, workExperience) => {
-        //console.log("[Profile.jsx] Recieved project:", project);
+        this.setState({loading: true});
         const response = await fetch('http://localhost:5000/createWorkExperience',  {
             method: 'POST', 
             mode: 'cors',
@@ -562,10 +597,14 @@ class Profile extends Component{
     }
     setCreatedWorkExperience = (createdWorkExperienceToSet) => {
         console.log("Profile.jsx recieved Work to set:", createdWorkExperienceToSet);
-        this.setState({portfolio: [...this.state.portfolio, ...createdWorkExperienceToSet]});
+        this.setState({
+            portfolio: [...this.state.portfolio, ...createdWorkExperienceToSet],
+            loading: false
+        });
     }
 
     updateWorkExperience = async(user_id, workExperience, rowIdx) => {
+        this.setState({loading: true});
         const response = await fetch('http://localhost:5000/updateWorkExperience',  {
             method: 'POST', 
             mode: 'cors',
@@ -586,11 +625,12 @@ class Profile extends Component{
 
         let tmpPortfolio = [...this.state.portfolio];
         tmpPortfolio[rowIdx] = data;
-        this.setState({portfolio: tmpPortfolio});
+        this.setState({portfolio: tmpPortfolio, loading: false});
         console.log("Profile.jsx Updated the portfolio. this.state.portfolio",this.state.portfolio);
     }
 
     deleteWorkExperience = async(portfolio_id) => {
+        this.setState({loading: true});
         const response = await fetch('http://localhost:5000/deleteWorkExperience',  {
             method: 'POST', 
             mode: 'cors',
@@ -602,11 +642,11 @@ class Profile extends Component{
         });
         const data = await response.json();
         console.log("Client Recieved Response: ", data);
-        //return data;
-        window.location.reload();
+        return data;
     }
 
     createEducation = async(user_id, education) => {
+        this.setState({loading: true});
         const response = await fetch('http://localhost:5000/createEducation',  {
             method: 'POST', 
             mode: 'cors',
@@ -627,10 +667,14 @@ class Profile extends Component{
     }
     setCreatedEducation = async(createdEducationToSet) => {
         console.log("Profile.jsx recieved education to set:", createdEducationToSet);
-        this.setState({education: [...this.state.education, ...createdEducationToSet]});
+        this.setState({
+            education: [...this.state.education, ...createdEducationToSet],
+            loading: false
+        });
     }
 
     updateEducation = async(user_id, education, rowIdx) => {
+        this.setState({loading: true});
         const response = await fetch('http://localhost:5000/updateEducation',  {
             method: 'POST', 
             mode: 'cors',
@@ -651,11 +695,12 @@ class Profile extends Component{
 
         let tmpEducation = [...this.state.education];
         tmpEducation[rowIdx] = data;
-        this.setState({education: tmpEducation});
+        this.setState({education: tmpEducation, loading: false});
         console.log("Profile.jsx Updated the education. this.state.education",this.state.education);
     }
 
     deleteEducation = async(education_id) => {
+        this.setState({loading: true});
         const response = await fetch('http://localhost:5000/deleteEducation',  {
             method: 'POST', 
             mode: 'cors',
@@ -667,8 +712,7 @@ class Profile extends Component{
         });
         const data = await response.json();
         console.log("Client Recieved Response: ", data);
-        //return data;
-        window.location.reload();
+        return data;
     }
 
     reloadProfile = () => {
@@ -678,10 +722,14 @@ class Profile extends Component{
     render(){
 
         return(
+            
             <div className="container">
-                <NavBar {...this.props} data={this.state}/>
-                {/* {alert} */}
-
+                {this.state.loading
+                
+                ? <><Spinner animation="border" variant="success" /></>
+                
+                : <><NavBar {...this.props} data={this.state}/>
+                
                 <div className="user-container">
                     <Tabs
                     activeKey={this.state.key}
@@ -745,7 +793,8 @@ class Profile extends Component{
                             reloadProfile={this.reloadProfile}
                         />
                     : null }
-                </div>
+                </div> 
+                </>}
             </div>
         );
     }
