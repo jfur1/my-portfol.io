@@ -470,6 +470,8 @@ class Profile extends Component{
         window.location.reload();
     }
 
+    // Portfolio Tab
+
     createProject = async(user_id, project) => {
         //console.log("[Profile.jsx] Recieved project:", project);
         const response = await fetch('http://localhost:5000/createProject',  {
@@ -559,7 +561,7 @@ class Profile extends Component{
         return data;
     }
     setCreatedWorkExperience = (createdWorkExperienceToSet) => {
-        console.log("Profile.jsx recieved projects to set:", createdWorkExperienceToSet);
+        console.log("Profile.jsx recieved Work to set:", createdWorkExperienceToSet);
         this.setState({portfolio: [...this.state.portfolio, ...createdWorkExperienceToSet]});
     }
 

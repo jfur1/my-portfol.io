@@ -124,15 +124,15 @@ app.post('/newUser', async(req, res) => {
             console.log('Generated hashed password: ');
             console.log(hashedPassword);
 
-            return t.none('INSERT INTO users (user_id, first_name, last_name, username, email, password) VALUES($1, $2, $3, $4, $5, $6)', 
-            [
+            return t.none('INSERT INTO users (user_id, first_name, last_name, username, email, password) VALUES(${newUserId}, ${firstname}, ${lastname}, ${username}, ${email}, ${hashedPassword})', 
+            {
                 newUserId,
                 firstname,
                 lastname,
                 username,
                 email,
                 hashedPassword
-            ])
+            })
         }
     })
     .then(data => {
@@ -155,7 +155,7 @@ app.post('/login', (req, res, next) => {
     
     let errors = [];
     db.tx(t => {
-        return t.oneOrNone('SELECT * FROM users WHERE \'' + email + '\' = email;');
+        return t.oneOrNone('SELECT * FROM users WHERE ${email} = email;', {email});
     })
     .then((data) => {
 
@@ -477,12 +477,12 @@ app.post('/createHobby', (req, res) => {
         newId++;
         console.log(`NewID: ${newId}`);
 
-        return t.one('INSERT INTO hobbies (hobby_id, uid, hobby) VALUES($1, $2, $3)RETURNING hobby_id, uid, hobby', 
-        [
+        return t.one('INSERT INTO hobbies (hobby_id, uid, hobby) VALUES(${newId}, ${user_id}, ${hobby}) RETURNING hobby_id, uid, hobby', 
+        {
             newId,
             user_id,
             hobby
-        ])
+        })
     })
     .then((data) => {
         console.log("Inserted!");
@@ -502,12 +502,12 @@ app.post('/createSkill', (req, res) => {
         let newId = max_id.max;
         newId++;
 
-        return t.one('INSERT INTO skills (skill_id, uid, skill) VALUES($1, $2, $3) RETURNING skill_id, uid, skill', 
-        [
+        return t.one('INSERT INTO skills (skill_id, uid, skill) VALUES(${newId}, ${user_id}, ${skill}) RETURNING skill_id, uid, skill', 
+        {
             newId,
             user_id,
             skill
-        ]);
+        });
     })
     .then((data) => {
         return res.json(data);
@@ -525,7 +525,7 @@ app.post('/updateLocation', (req, res) => {
     //console.log("Server recieved location:", location);
 
     db.tx(async t => {
-        return t.one('UPDATE profile SET location = \'' + location + '\' WHERE uid = \'' + user_id + '\' RETURNING location;');
+        return t.one('UPDATE profile SET location = ${location} WHERE uid = \'' + user_id + '\' RETURNING location;', {location: location});
     })
     .then((data) => {
         return res.json(data.location);
@@ -541,9 +541,11 @@ app.post('/updateBio', (req, res) => {
     const {user_id, bio} = req.headers;
     //console.log("Server recieved user_id:", user_id);
     //console.log("Server recieved bio:", bio);
+    console.log("Bio Data Type:", typeof(bio))
 
     db.tx(async t => {
-        return t.one('UPDATE profile SET bio = \'' + bio + '\' WHERE uid = \'' + user_id + '\' RETURNING bio;');
+        // return t.one('UPDATE profile SET bio = \'' + bio + '\' WHERE uid = \'' + user_id + '\' RETURNING bio;');
+        return t.one('UPDATE profile SET bio = ${bio} WHERE uid = \'' + user_id + '\' RETURNING bio;', {bio: bio});
     })
     .then((data) => {
         return res.json(data.bio);
@@ -561,7 +563,7 @@ app.post('/updateHobby', (req, res) => {
     //console.log("Server recieved hobby_id:", hobby_id);
 
     db.tx(async t => {
-        return t.one('UPDATE hobbies SET hobby = \'' + hobby + '\' WHERE uid = \'' + user_id + '\' AND hobby_id = \'' + hobby_id + '\' RETURNING hobby;');
+        return t.one('UPDATE hobbies SET hobby = ${hobby} WHERE uid = \'' + user_id + '\' AND hobby_id = \'' + hobby_id + '\' RETURNING hobby;', {hobby: hobby});
     })
     .then((data) => {
         return res.json(data.hobby);
@@ -579,7 +581,7 @@ app.post('/updateSkill', (req, res) => {
     //console.log("Server recieved skill_id:", skill_id);
 
     db.tx(async t => {
-        return t.one('UPDATE skills SET skill = \'' + skill + '\' WHERE uid = \'' + user_id + '\' AND skill_id = \'' + skill_id + '\' RETURNING skill;');
+        return t.one('UPDATE skills SET skill = ${skill} WHERE uid = \'' + user_id + '\' AND skill_id = \'' + skill_id + '\' RETURNING skill;', {skill:skill});
     })
     .then((data) => {
         return res.json(data.skill);
@@ -630,7 +632,7 @@ app.post('/updatePublicEmail', (req, res) => {
     const {user_id, public_email} = req.headers;
 
     db.tx(async t => {
-        return t.one('UPDATE profile SET public_email = \'' + public_email + '\' WHERE uid = \'' + user_id + '\' RETURNING public_email;');
+        return t.one('UPDATE profile SET public_email = ${public_email} WHERE uid = \'' + user_id + '\' RETURNING public_email;', {public_email});
     })
     .then((data) => {
         return res.json(data.public_email);
@@ -645,7 +647,7 @@ app.post('/updatePhone', (req, res) => {
     const {user_id, phone} = req.headers;
 
     db.tx(async t => {
-        return t.one('UPDATE profile SET phone = \'' + phone + '\' WHERE uid = \'' + user_id + '\' RETURNING phone;');
+        return t.one('UPDATE profile SET phone = ${phone} WHERE uid = \'' + user_id + '\' RETURNING phone;', {phone});
     })
     .then((data) => {
         return res.json(data.phone);
@@ -664,14 +666,14 @@ app.post('/createLink', (req, res) => {
         let newId = max_id.max;
         newId++;
 
-        return t.one('INSERT INTO links (link_id, uid, link, title, description) VALUES($1, $2, $3, $4, $5) RETURNING link_id, uid, link, title, description', 
-        [
+        return t.one('INSERT INTO links (link_id, uid, link, title, description) VALUES(${newId}, ${user_id}, ${link}, ${title}, ${description}) RETURNING link_id, uid, link, title, description', 
+        {
             newId,
             user_id,
             link, 
             title,
             description
-        ]);
+        });
     })
     .then((data) => {
         return res.json(data);
@@ -686,7 +688,14 @@ app.post('/updateLink', (req, res) => {
     const {link_id, link, title, description, user_id} = req.headers;
 
     db.tx(async t => {
-        return t.one('UPDATE links SET link = \'' + link + '\', title = \'' + title + '\', description = \'' + description + '\'WHERE uid = \'' + user_id + '\' AND link_id = \'' + link_id + '\' RETURNING link_id, uid, link, title, description;');
+        return t.one('UPDATE links SET link = ${link}, title = ${title}, description = ${description} WHERE uid = ${user_id} AND link_id = ${link_id} RETURNING link_id, uid, link, title, description;', 
+        {
+            link, 
+            title,
+            description,
+            user_id,
+            link_id
+        });
     })
     .then((data) => {
         return res.json(data);
@@ -701,7 +710,10 @@ app.post('/deleteLink', (req, res) => {
     const {link_id} = req.headers;
 
     db.tx(async t => {
-        return t.none('DELETE FROM links WHERE link_id = \'' + link_id + '\';');
+        return t.none('DELETE FROM links WHERE link_id = ${link_id};',
+        {
+            link_id
+        });
     })
     .then((data) => {
         return res.json({errors: false});
@@ -731,8 +743,8 @@ app.post('/createProject', (req, res) => {
         let newId = max_id.max;
         newId++;
 
-        return t.one('INSERT INTO projects (project_id, uid, title, description, organization, from_when, to_when, link) VALUES($1, $2, $3, $4, $5, $6, $7, $8) RETURNING project_id, uid, title, description, organization, from_when::varchar, to_when::varchar, link', 
-        [
+        return t.one('INSERT INTO projects (project_id, uid, title, description, organization, from_when, to_when, link) VALUES(${newId}, ${user_id}, ${title}, ${description}, ${organization}, ${from_when}, ${to_when}, ${link}) RETURNING project_id, uid, title, description, organization, from_when::varchar, to_when::varchar, link', 
+        {
             newId,
             user_id,
             title, 
@@ -741,7 +753,7 @@ app.post('/createProject', (req, res) => {
             from_when, 
             to_when,
             link
-        ]);
+        });
     })
     .then((data) => {
         return res.json(data);
@@ -769,7 +781,17 @@ app.post('/updateProject', (req, res) => {
     if(from_when == "null") from_when = "infinity";
 
     db.tx(async t => {
-        return t.one('UPDATE projects SET title = \'' + title + '\', description = \'' + description + '\', organization = \'' + organization + '\', from_when = \'' + from_when + '\', to_when = \'' + to_when + '\', link = \'' + link + '\' WHERE uid = \'' + user_id + '\' AND project_id = \'' + project_id + '\' RETURNING project_id, uid, title, description, organization, from_when::varchar, to_when::varchar, link;');
+        return t.one('UPDATE projects SET title = ${title}, description = ${description}, organization = ${organization}, from_when = ${from_when}, to_when = ${to_when}, link = ${link} WHERE uid = ${user_id} AND project_id = ${project_id} RETURNING project_id, uid, title, description, organization, from_when::varchar, to_when::varchar, link;',
+        {
+            project_id, 
+            user_id, 
+            title, 
+            description, 
+            organization, 
+            from_when, 
+            to_when, 
+            link
+        });
     })
     .then((data) => {
         return res.json(data);
@@ -784,7 +806,8 @@ app.post('/deleteProject', (req, res) => {
     const {project_id} = req.headers;
 
     db.tx(async t => {
-        return t.none('DELETE FROM projects WHERE project_id = \'' + project_id + '\';');
+        return t.none('DELETE FROM projects WHERE project_id = ${project_id};',
+        {project_id});
     })
     .then((data) => {
         return res.json({errors: false});
@@ -810,8 +833,8 @@ app.post('/createWorkExperience', (req, res) => {
         let newId = max_id.max;
         newId++;
 
-        return t.one('INSERT INTO portfolio (portfolio_id, uid, occupation, organization, from_when, to_when, description) VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING portfolio_id, uid, occupation, organization, from_when::varchar, to_when::varchar, description', 
-        [
+        return t.one('INSERT INTO portfolio (portfolio_id, uid, occupation, organization, from_when, to_when, description) VALUES(${newId}, ${user_id}, ${occupation}, ${organization}, ${from_when}, ${to_when}, ${description}) RETURNING portfolio_id, uid, occupation, organization, from_when::varchar, to_when::varchar, description', 
+        {
             newId,
             user_id,
             occupation, 
@@ -819,7 +842,7 @@ app.post('/createWorkExperience', (req, res) => {
             from_when, 
             to_when,
             description
-        ]);
+        });
     })
     .then((data) => {
         return res.json(data);
@@ -846,7 +869,16 @@ app.post('/updateWorkExperience', (req, res) => {
     if(from_when == "null") from_when = "infinity";
 
     db.tx(async t => {
-        return t.one('UPDATE portfolio SET occupation = \'' + occupation + '\', organization = \'' + organization + '\', from_when = \'' + from_when + '\', to_when = \'' + to_when + '\', description = \'' + description + '\' WHERE uid = \'' + user_id + '\' AND portfolio_id = \'' + portfolio_id + '\' RETURNING portfolio_id, uid, occupation, description, organization, from_when::varchar, to_when::varchar, description;');
+        return t.one('UPDATE portfolio SET occupation = ${occupation}, organization = ${organization}, from_when = ${from_when}, to_when = ${to_when}, description = ${description} WHERE uid = ${user_id} AND portfolio_id = ${portfolio_id} RETURNING portfolio_id, uid, occupation, description, organization, from_when::varchar, to_when::varchar, description;',
+        {
+            occupation, 
+            organization, 
+            from_when, 
+            to_when, 
+            description, 
+            user_id, 
+            portfolio_id
+        });
     })
     .then((data) => {
         return res.json(data);
@@ -888,8 +920,8 @@ app.post('/createEducation', (req, res) => {
         let newId = max_id.max;
         newId++;
 
-        return t.one('INSERT INTO education (education_id, uid, organization, education, from_when, to_when, description) VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING education_id, uid, organization, education, from_when::varchar, to_when::varchar, description', 
-        [
+        return t.one('INSERT INTO education (education_id, uid, organization, education, from_when, to_when, description) VALUES(${newId}, ${user_id}, ${organization}, ${education}, ${from_when}, ${to_when}, ${description}) RETURNING education_id, uid, organization, education, from_when::varchar, to_when::varchar, description', 
+        {
             newId,
             user_id,
             organization,
@@ -897,7 +929,7 @@ app.post('/createEducation', (req, res) => {
             from_when, 
             to_when,
             description
-        ]);
+        });
     })
     .then((data) => {
         return res.json(data);
@@ -924,7 +956,16 @@ app.post('/updateEducation', (req,res) => {
     if(from_when == "null") from_when = "infinity";
 
     db.tx(async t => {
-        return t.one('UPDATE education SET organization = \'' + organization + '\', education = \'' + education + '\', from_when = \'' + from_when + '\', to_when = \'' + to_when + '\', description = \'' + description + '\' WHERE uid = \'' + user_id + '\' AND education_id = \'' + education_id + '\' RETURNING education_id, uid, organization, education, from_when::varchar, to_when::varchar, description;');
+        return t.one('UPDATE education SET organization = ${organization}, education = ${education}, from_when = ${from_when}, to_when = ${to_when}, description = ${description} WHERE uid = ${user_id} AND education_id = ${education_id} RETURNING education_id, uid, organization, education, from_when::varchar, to_when::varchar, description;',
+        {
+            education_id, 
+            user_id, 
+            organization, 
+            education, 
+            from_when, 
+            to_when, 
+            description
+        });
     })
     .then((data) => {
         return res.json(data);
@@ -939,7 +980,7 @@ app.post('/deleteEducation', (req, res) => {
     const {education_id} = req.headers;
 
     db.tx(async t => {
-        return t.none('DELETE FROM education WHERE education_id = \'' + education_id + '\';');
+        return t.none('DELETE FROM education WHERE education_id = ${education_id};', {education_id});
     })
     .then((data) => {
         return res.json({errors: false});
