@@ -508,7 +508,7 @@ export const Portfolio = props => {
                     newEducation.push(data);
                 }
                 console.log("[About.jsx] Newly Created Education: ", newEducation);
-                props.setCreatedWorkExperience(newEducation);
+                props.setCreatedEducation(newEducation);
             }
             createEdu();
         }
