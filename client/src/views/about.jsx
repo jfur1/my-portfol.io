@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { PencilFill } from 'react-bootstrap-icons';
-import { Modal, Button, Spinner } from 'react-bootstrap';
+import { Modal, Button } from 'react-bootstrap';
 import { AlertDismissible } from '../components/alertDismissible';
 
 export const About = props => {
@@ -27,7 +27,6 @@ export const About = props => {
     const [hobbiesToDelete, setHobbyToDelete] = useState([]);
 
     const [showLogs, setShowLogs] = useState(false);
-    const [loading, setLoading] = useState(false);
 
     // After successful post request, profile.jsx updates state with new data
     // New data passed to hobbiesData/skillsData, and is copied into hobbies/skills hooks
@@ -159,7 +158,6 @@ export const About = props => {
 
     // Format edit hooks to be sent in POST request
     const handleSave = () => {
-        setLoading(true);
         // Location
         let locationToCreate = [];
         let locationToUpdate = [];
@@ -330,7 +328,6 @@ export const About = props => {
             deleteHobbies();
         }
 
-        setLoading(false);
         setShow(false);
         // Bad, but working method for triggering useEffect
         return showLogs ? setShowLogs(false) : setShowLogs(true);
