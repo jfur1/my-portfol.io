@@ -796,27 +796,158 @@ app.post('/deleteProject', (req, res) => {
 })
 
 app.post('/createWorkExperience', (req, res) => {
+    const {
+        user_id, 
+        occupation, 
+        organization,
+        from_when,
+        to_when,
+        description
+    } = req.headers;
 
+    db.tx(async t => {
+        const max_id = await t.one('SELECT MAX(portfolio_id) FROM portfolio;');
+        let newId = max_id.max;
+        newId++;
+
+        return t.one('INSERT INTO portfolio (portfolio_id, uid, occupation, organization, from_when, to_when, description) VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING portfolio_id, uid, occupation, organization, from_when::varchar, to_when::varchar, description', 
+        [
+            newId,
+            user_id,
+            occupation, 
+            organization,
+            from_when, 
+            to_when,
+            description
+        ]);
+    })
+    .then((data) => {
+        return res.json(data);
+    })
+    .catch((err) => {
+        console.log(err);
+        res.json({error: true})
+    })
 })
 
 app.post('/updateWorkExperience', (req, res) => {
+    let {
+        portfolio_id, 
+        user_id, 
+        occupation, 
+        organization, 
+        from_when, 
+        to_when, 
+        description
+    } = req.headers;
 
+    //console.log(description, organization, from_when, to_when, link)
+    if(to_when == "null") to_when = "infinity";
+    if(from_when == "null") from_when = "infinity";
+
+    db.tx(async t => {
+        return t.one('UPDATE portfolio SET occupation = \'' + occupation + '\', organization = \'' + organization + '\', from_when = \'' + from_when + '\', to_when = \'' + to_when + '\', description = \'' + description + '\' WHERE uid = \'' + user_id + '\' AND portfolio_id = \'' + portfolio_id + '\' RETURNING portfolio_id, uid, occupation, description, organization, from_when::varchar, to_when::varchar, description;');
+    })
+    .then((data) => {
+        return res.json(data);
+    })
+    .catch((err) => {
+        console.log(err);
+        res.json({error: true})
+    })
 })
 
 app.post('/deleteWorkExperience', (req, res) => {
+    const {portfolio_id} = req.headers;
 
+    db.tx(async t => {
+        return t.none('DELETE FROM portfolio WHERE portfolio_id = \'' + portfolio_id + '\';');
+    })
+    .then((data) => {
+        return res.json({errors: false});
+    })
+    .catch((err) => {
+        console.log(err);
+        res.json({error: true})
+    })
 })
 
-app.post('/createEducation', (req, res) => {
 
+app.post('/createEducation', (req, res) => {
+    const {
+        user_id, 
+        organization, 
+        education,
+        from_when,
+        to_when,
+        description
+    } = req.headers;
+
+    db.tx(async t => {
+        const max_id = await t.one('SELECT MAX(education_id) FROM education;');
+        let newId = max_id.max;
+        newId++;
+
+        return t.one('INSERT INTO education (education_id, uid, organization, education, from_when, to_when, description) VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING education_id, uid, organization, education, from_when::varchar, to_when::varchar, description', 
+        [
+            newId,
+            user_id,
+            organization,
+            education,
+            from_when, 
+            to_when,
+            description
+        ]);
+    })
+    .then((data) => {
+        return res.json(data);
+    })
+    .catch((err) => {
+        console.log(err);
+        res.json({error: true})
+    })
 })
 
 app.post('/updateEducation', (req,res) => {
+    let {
+        education_id, 
+        user_id, 
+        organization, 
+        education, 
+        from_when, 
+        to_when, 
+        description
+    } = req.headers;
 
+    //console.log(description, organization, from_when, to_when, link)
+    if(to_when == "null") to_when = "infinity";
+    if(from_when == "null") from_when = "infinity";
+
+    db.tx(async t => {
+        return t.one('UPDATE education SET organization = \'' + organization + '\', education = \'' + education + '\', from_when = \'' + from_when + '\', to_when = \'' + to_when + '\', description = \'' + description + '\' WHERE uid = \'' + user_id + '\' AND education_id = \'' + education_id + '\' RETURNING education_id, uid, organization, education, from_when::varchar, to_when::varchar, description;');
+    })
+    .then((data) => {
+        return res.json(data);
+    })
+    .catch((err) => {
+        console.log(err);
+        res.json({error: true})
+    })
 })
 
 app.post('/deleteEducation', (req, res) => {
+    const {education_id} = req.headers;
 
+    db.tx(async t => {
+        return t.none('DELETE FROM education WHERE education_id = \'' + education_id + '\';');
+    })
+    .then((data) => {
+        return res.json({errors: false});
+    })
+    .catch((err) => {
+        console.log(err);
+        res.json({error: true})
+    })
 })
 
 

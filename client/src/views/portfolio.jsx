@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { PencilFill } from 'react-bootstrap-icons';
+import { ImageFill, PencilFill } from 'react-bootstrap-icons';
 import { Nav, Tab, Modal, Button, Form, Row, Col } from 'react-bootstrap';
 import { AlertDismissible } from '../components/alertDismissible';
 import DatePicker from 'react-datepicker'
@@ -25,20 +25,22 @@ export const Portfolio = props => {
 
     // Replace state with original data
     const discardChanges = () => {
+        setProjects({values: projectsData});
         setPortfolio({values: portfolioData});
         setEducation({values: educationData});
-        setProjects({values: projectsData});
     }
 
     // Data to be Modified
 
     // Projects
     const [projects, setProjects] = useState({values: projectsData});
-
     const [projectsToDelete, setProjectsToDelete] = useState([]);
 
     const [portfolio, setPortfolio] = useState({values: portfolioData});
+    const [workExperienceToDelete, setWorkExperienceToDelete] = useState([]);
+
     const [education, setEducation] = useState({values: educationData});
+    const [educationToDelete, setEducationToDelete] = useState([]);
 
     // Upon successful POST response, props will change, so reset hooks
     useEffect(() => {
@@ -46,7 +48,10 @@ export const Portfolio = props => {
         setProjectsToDelete([]);
 
         setPortfolio({values: portfolioData});
+        setWorkExperienceToDelete([]);
+
         setEducation({values: educationData});
+        setEducationToDelete([]);
     }, [props])
 
 
@@ -160,8 +165,94 @@ export const Portfolio = props => {
     
     // --------------- Begin Portfolio Event Handling ------------
 
-    const addWorkExperience = () => {
+    const handlePortfolioOccupationChange = (event, idx) => {
+        let tmpPortfolio = [...portfolio.values];
+        tmpPortfolio[idx].occupation = event.target.value;
+        if((typeof(tmpPortfolio[idx].portfolio_id) !== 'undefined')
+        && !(typeof(tmpPortfolio[idx].toUpdate) !== 'undefined')){
+            tmpPortfolio[idx].toUpdate = true;
+        }
+        setPortfolio({values: tmpPortfolio});
+        setEdited(true);
+    }
 
+    const handlePortfolioOrganizationChange = (event, idx) => {
+        let tmpPortfolio = [...portfolio.values];
+        tmpPortfolio[idx].organization = event.target.value;
+        if((typeof(tmpPortfolio[idx].portfolio_id) !== 'undefined')
+        && !(typeof(tmpPortfolio[idx].toUpdate) !== 'undefined')){
+            tmpPortfolio[idx].toUpdate = true;
+        }
+        setPortfolio({values: tmpPortfolio});
+        setEdited(true);
+    }
+
+    const handlePortfolioStartChange = (date, idx) => {
+        if(date !== null){
+            date = date.toISOString().split('T')[0];
+        }
+        let tmpPortfolio = [...portfolio.values];
+        tmpPortfolio[idx].from_when = date;
+        if((typeof(tmpPortfolio[idx].portfolio_id) !== 'undefined')
+        && !(typeof(tmpPortfolio[idx].toUpdate) !== 'undefined')){
+            tmpPortfolio[idx].toUpdate = true;
+        }
+        setPortfolio({values: tmpPortfolio});
+        setEdited(true);
+    }
+
+    const handlePortfolioFinishChange = (date, idx) => {
+        if(date !== null){
+            date = date.toISOString().split('T')[0];
+        }
+        let tmpPortfolio = [...portfolio.values];
+        tmpPortfolio[idx].to_when = date;
+        if((typeof(tmpPortfolio[idx].portfolio_id) !== 'undefined')
+        && !(typeof(tmpPortfolio[idx].toUpdate) !== 'undefined')){
+            tmpPortfolio[idx].toUpdate = true;
+        }
+        setPortfolio({values: tmpPortfolio});
+        setEdited(true);
+    }
+
+    const handlePortfolioDescriptionChange = (event, idx) => {
+        let tmpPortfolio = [...portfolio.values];
+        tmpPortfolio[idx].description = event.target.value;
+        if((typeof(tmpPortfolio[idx].portfolio_id) !== 'undefined')
+        && !(typeof(tmpPortfolio[idx].toUpdate) !== 'undefined')){
+            tmpPortfolio[idx].toUpdate = true;
+        }
+        setPortfolio({values: tmpPortfolio});
+        setEdited(true);
+    }
+
+    const addWorkExperience = () => {
+        setPortfolio({
+            values: [
+                ...portfolio.values, 
+                {
+                    occupation: '',
+                    organization: '',
+                    from_when: "infinity",
+                    to_when: "infinity",
+                    description: ''
+                }
+            ]
+        });
+    }
+
+    const deleteWorkExperience = (idx) => {
+        let tmpPortfolio = [...portfolio.values];
+        if((typeof(tmpPortfolio[idx].portfolio_id) !== 'undefined')){
+            setWorkExperienceToDelete(
+                [
+                    ...workExperienceToDelete, 
+                    {portfolio_id: tmpPortfolio[idx].portfolio_id}
+                ]);
+        }
+        tmpPortfolio.splice(idx, 1);
+        setPortfolio({values: tmpPortfolio});
+        setEdited(true);
     }
 
 
@@ -170,8 +261,94 @@ export const Portfolio = props => {
 
     // --------------- Begin Education Event Handling ------------
 
-    const addEducation = () => {
+    const handleEducationOrganizationChange = (event, idx) => {
+        let tmpEducation = [...education.values];
+        tmpEducation[idx].organization = event.target.value;
+        if((typeof(tmpEducation[idx].education_id) !== 'undefined')
+        && !(typeof(tmpEducation[idx].toUpdate) !== 'undefined')){
+            tmpEducation[idx].toUpdate = true;
+        }
+        setEducation({values: tmpEducation});
+        setEdited(true);
+    }
 
+    const handleEducationChange = (event, idx) => {
+        let tmpEducation = [...education.values];
+        tmpEducation[idx].education = event.target.value;
+        if((typeof(tmpEducation[idx].education_id) !== 'undefined')
+        && !(typeof(tmpEducation[idx].toUpdate) !== 'undefined')){
+            tmpEducation[idx].toUpdate = true;
+        }
+        setEducation({values: tmpEducation});
+        setEdited(true);
+    }
+
+    const handleEducationStartChange = (date, idx) => {
+        if(date !== null){
+            date = date.toISOString().split('T')[0];
+        }
+        let tmpEducation = [...education.values];
+        tmpEducation[idx].from_when = date;
+        if((typeof(tmpEducation[idx].education_id) !== 'undefined')
+        && !(typeof(tmpEducation[idx].toUpdate) !== 'undefined')){
+            tmpEducation[idx].toUpdate = true;
+        }
+        setEducation({values: tmpEducation});
+        setEdited(true);
+    }
+
+    const handleEducationFinishChange = (date, idx) => {
+        if(date !== null){
+            date = date.toISOString().split('T')[0];
+        }
+        let tmpEducation = [...education.values];
+        tmpEducation[idx].to_when = date;
+        if((typeof(tmpEducation[idx].education_id) !== 'undefined')
+        && !(typeof(tmpEducation[idx].toUpdate) !== 'undefined')){
+            tmpEducation[idx].toUpdate = true;
+        }
+        setEducation({values: tmpEducation});
+        setEdited(true);
+    }
+
+    const handleEducationDescriptionChange = (event, idx) => {
+        let tmpEducation = [...education.values];
+        tmpEducation[idx].description = event.target.value;
+        if((typeof(tmpEducation[idx].education_id) !== 'undefined')
+        && !(typeof(tmpEducation[idx].toUpdate) !== 'undefined')){
+            tmpEducation[idx].toUpdate = true;
+        }
+        setEducation({values: tmpEducation});
+        setEdited(true);
+    }
+
+    const addEducation = () => {
+        setEducation({
+            values: [
+                ...education.values, 
+                {
+                    organization: '',
+                    education: '',
+                    from_when: "infinity",
+                    to_when: "infinity",
+                    description: ''
+                }
+            ]
+        });
+    }
+
+    const deleteEducation = (idx) => {
+        let tmpEducation = [...education.values];
+        if((typeof(tmpEducation[idx].education_id) !== 'undefined')){
+            setEducationToDelete(
+                [
+                    ...educationToDelete, 
+                    {education_id: tmpEducation[idx].education_id}
+                ]);
+        }
+        tmpEducation.splice(idx, 1);
+        setEducation({values: tmpEducation});
+        setEdited(true);
     }
 
 
@@ -181,7 +358,8 @@ export const Portfolio = props => {
 
     const handleSave = () => {
         console.log("'Saving' Changes:");
-        
+
+        // ------------------- Begin Projects ----------------------------
         var projectsToCreate = [];
         var projectsToUpdate = [];
 
@@ -222,7 +400,7 @@ export const Portfolio = props => {
             const createProjects = async() => {
                 var newProjects = [];
                 for await (let projectToCreate of projectsToCreate){
-                    const data = await props.createProject(user.user_id, projectToCreate, projectToCreate.rowIdx);
+                    const data = await props.createProject(user.user_id, projectToCreate);
                     newProjects.push(data);
                 }
                 console.log("[About.jsx] Newly Created Projects: ", newProjects);
@@ -236,6 +414,112 @@ export const Portfolio = props => {
                 props.updateProject(user.user_id, row, row.rowIdx);
             })
         }
+        // ------------------- Begin Portfolio ----------------------------
+        var workExperienceToCreate = [];
+        var workExperienceToUpdate = [];
+
+        portfolio.values.forEach((row, idx) => {
+            if(!(typeof(row.portfolio_id) !== 'undefined')){
+                if(row.occupation === ''){
+                    console.log("An occupation is required in order to create!");
+                } else {
+                    workExperienceToCreate.push({
+                        occupation: row.occupation,
+                        organization: row.organization,
+                        from_when: row.from_when,
+                        to_when: row.to_when,
+                        description: row.description
+                    });
+                }
+            } else if(typeof(row.toUpdate) !== 'undefined'){
+                workExperienceToUpdate.push({
+                    portfolio_id: row.portfolio_id,
+                    occupation: row.occupation,
+                    organization: row.organization,
+                    from_when: row.from_when,
+                    to_when: row.to_when,
+                    description: row.description,
+                    rowIdx: idx
+                })
+            }
+        })
+        console.log("Work Experience to Create:", workExperienceToCreate);
+        console.log("Work Experience to Update:", workExperienceToUpdate);
+        console.log("Work Experience to Delete:", workExperienceToDelete);
+
+        if(workExperienceToCreate.length){
+            const createPortfolio = async() => {
+                var newWorkExperiences = [];
+                for await (let workToCreate of workExperienceToCreate){
+                    const data = await props.createWorkExperience(user.user_id, workToCreate);
+                    newWorkExperiences.push(data);
+                }
+                console.log("[About.jsx] Newly Created Portfolio: ", newWorkExperiences);
+                props.setCreatedWorkExperience(newWorkExperiences);
+            }
+            createPortfolio();
+        }
+
+        if(workExperienceToUpdate.length){
+            workExperienceToUpdate.forEach((row, idx) => {
+                props.updateWorkExperience(user.user_id, row, row.rowIdx);
+            })
+        }
+        // ------------------- Begin Projects ----------------------------
+
+        var educationToCreate = [];
+        var educationToUpdate = [];
+
+        education.values.forEach((row, idx) => {
+            if(!(typeof(row.education_id) !== 'undefined')){
+                if(row.education === ''){
+                    console.log("Education Field is required in order to create!");
+                } else {
+                    educationToCreate.push({
+                        organization: row.organization,
+                        education: row.education,
+                        from_when: row.from_when,
+                        to_when: row.to_when,
+                        description: row.description
+                    });
+                }
+            } else if(typeof(row.toUpdate) !== 'undefined'){
+                educationToUpdate.push({
+                    education_id: row.education_id,
+                    organization: row.organization,
+                    education: row.education,
+                    from_when: row.from_when,
+                    to_when: row.to_when,
+                    description: row.description,
+                    rowIdx: idx
+                })
+            }
+        })
+
+        console.log("Education to Create:", educationToCreate);
+        console.log("Education to Update:", educationToUpdate);
+        console.log("Education to Delete:", educationToDelete);
+
+        if(educationToCreate.length){
+            const createEdu = async() => {
+                var newEducation = [];
+                for await (let eduToCreate of educationToCreate){
+                    const data = await props.createEducation(user.user_id, eduToCreate);
+                    newEducation.push(data);
+                }
+                console.log("[About.jsx] Newly Created Education: ", newEducation);
+                props.setCreatedWorkExperience(newEducation);
+            }
+            createEdu();
+        }
+
+        if(educationToUpdate.length){
+            educationToUpdate.forEach((row, idx) => {
+                props.updateEducation(user.user_id, row, row.rowIdx);
+            });
+        }
+
+        // -------------- Handle Deletes ----------------------------
 
         // Possible DELETE ops should come last -- involves forced refresh
         if(projectsToDelete.length) {
@@ -247,6 +531,24 @@ export const Portfolio = props => {
             }
             deleteProjects();
         };
+
+        if(workExperienceToDelete.length){
+            const deleteWork = async() => {
+                for await (let workToDelete of workExperienceToDelete){
+                    await props.deleteWorkExperience(workToDelete.portfolio_id);
+                }
+            }
+            deleteWork();
+        }
+
+        if(educationToDelete.length){
+            const deleteEdu = async() => {
+                for await (let eduToDelete of educationToDelete){
+                    await props.deleteEducation(eduToDelete.education_id);
+                }
+            }
+            deleteEdu();
+        }
 
         setShow(false);
     }
@@ -336,6 +638,7 @@ export const Portfolio = props => {
     }
 
     const renderWorkExperienceForm = () => {
+
         return portfolio.values.map((row, idx) => 
         <Form.Row className='mb-4 ml-3' key={idx}>
             <Form.Row className='mt-1' style={{width: "75%"}}>
@@ -343,34 +646,50 @@ export const Portfolio = props => {
                     Title
                 </Form.Label>
                 <Col>
-                    <Form.Control type="text" value={row.occupation || ''} placeholder={"Occupation Title"} onChange={() => console.log("Placeholder")}/>
+                    <Form.Control type="text" value={row.occupation || ''} placeholder={"Occupation Title"} 
+                        onChange={e => {handlePortfolioOccupationChange(e, idx)}}
+                    />
                 </Col>
             </Form.Row>
+
+            <Col className='mt-1'><Button variant="outline-danger" size="sm"
+                onClick={() => deleteWorkExperience(idx)}
+            >Delete Work</Button></Col>   
 
             <Form.Row className='mt-1' style={{width: "75%"}}>
                 <Form.Label column sm={3}>
                     Organization
                 </Form.Label>
                 <Col>
-                    <Form.Control type="text" id="organization" value={row.organization || ''} placeholder={"Add an organization. (Optional)"} onChange={() => console.log("Placeholder")}></Form.Control>
+                    <Form.Control type="text" id="organization" value={row.organization || ''} placeholder={"Add an organization. (Optional)"} 
+                        onChange={e => {handlePortfolioOrganizationChange(e, idx)}}>
+                    </Form.Control>
                 </Col>
             </Form.Row>
-
-
-            <Col className='mt-1'><Button variant="outline-danger" size="sm">Delete Work</Button></Col>   
         
             <Form.Row className='mt-1' style={{width: "75%"}}>
                 <Form.Label column sm={3}>
                     Start Date
                 </Form.Label>
                 <Col>
-                    <Form.Control type="text" id="work-start-date" value={row.from_when || ''} placeholder={"Add a start date for this job. (Optional)"} onChange={() => console.log("Placeholder")}></Form.Control>
+                    <Form.Control as={ DatePicker } 
+                    selected={(row.from_when !== "infinity" && row.from_when !== null) ? new Date(row.from_when) : ''}   placeholder=
+                    {"Add a start date (Optional)"} 
+                    onChange={ date => {
+                        handlePortfolioStartChange(date, idx);
+                    }}></Form.Control>
                 </Col>
+            </Form.Row>
+            <Form.Row className='mt-1' style={{width: "75%"}}>
                 <Form.Label column sm={3}>
                     Finish Date
                 </Form.Label>
                 <Col>
-                    <Form.Control type="text" id="work-end-date" value={row.to_when || ''} placeholder={"Add a finish date for this job. (Optional)"} onChange={() => console.log("Placeholder")}></Form.Control>
+                    <Form.Control as={ DatePicker } 
+                    selected={(row.to_when !== "infinity" && row.to_when !== null) ? new Date(row.to_when) : ''}  placeholder={"Add a finish date (Optional)"} 
+                    onChange={date => {
+                        handlePortfolioFinishChange(date, idx);
+                    }}></Form.Control>
                 </Col>
             </Form.Row>
 
@@ -379,7 +698,9 @@ export const Portfolio = props => {
                     Description
                 </Form.Label>
                 <Col>
-                    <Form.Control as="textarea" rows="3" value={row.description || ''} placeholder={"Add a description (Optional)"} onChange={() => console.log("Placeholder")}/>
+                    <Form.Control as="textarea" rows="3" value={row.description || ''} placeholder={"Add a description (Optional)"} 
+                        onChange={e => handlePortfolioDescriptionChange(e, idx)}
+                    />
                 </Col>
             </Form.Row>
         </Form.Row>
@@ -394,7 +715,9 @@ export const Portfolio = props => {
                     Education
                 </Form.Label>
                 <Col>
-                    <Form.Control type="text" value={row.education || ''} placeholder={"Education"} />
+                    <Form.Control type="text" value={row.education || ''} placeholder={"Education (Required)"} 
+                        onChange={e => {handleEducationChange(e, idx)}}
+                    />
                 </Col>
             </Form.Row>
 
@@ -403,25 +726,43 @@ export const Portfolio = props => {
                     Organization
                 </Form.Label>
                 <Col>
-                    <Form.Control type="text" id="education-organization" value={row.organization || ''} placeholder={"Add an organization (Optional)"}></Form.Control>
+                    <Form.Control type="text" id="education-organization" value={row.organization || ''} placeholder={"Add an organization (Optional)"}
+                        onChange={e => {handleEducationOrganizationChange(e, idx)}}
+                    ></Form.Control>
                 </Col>
             </Form.Row>
 
 
-            <Col className='mt-1'><Button variant="outline-danger" size="sm">Delete Work</Button></Col>   
+            <Col className='mt-1'>
+                <Button variant="outline-danger" size="sm"
+                    onClick={() => deleteEducation(idx)}
+                >Delete Education</Button>
+            </Col>   
         
             <Form.Row className='mt-1' style={{width: "75%"}}>
                 <Form.Label column sm={3}>
                     Start Date
                 </Form.Label>
                 <Col>
-                    <Form.Control type="text" id="education-start-date" value={row.from_when || ''} placeholder={"Add a start date for this education. (Optional)"}></Form.Control>
+                    <Form.Control as={ DatePicker } 
+                    selected={(row.from_when !== "infinity" && row.from_when !== null) ? new Date(row.from_when) : ''}   placeholder=
+                    {"Add a start date (Optional)"} 
+                    onChange={ date => {
+                        handleEducationStartChange(date, idx)
+                        
+                    }}></Form.Control>
                 </Col>
+            </Form.Row>
+            <Form.Row className='mt-1' style={{width: "75%"}}>
                 <Form.Label column sm={3}>
                     Finish Date
                 </Form.Label>
                 <Col>
-                    <Form.Control type="text" id="education-end-date" value={row.to_when || ''} placeholder={"Add a finish date for this education. (Optional)"}></Form.Control>
+                    <Form.Control as={ DatePicker } 
+                    selected={(row.to_when !== "infinity" && row.to_when !== null) ? new Date(row.to_when) : ''}  placeholder={"Add a finish date (Optional)"} 
+                    onChange={date => {
+                        handleEducationFinishChange(date, idx)
+                    }}></Form.Control>
                 </Col>
             </Form.Row>
 
@@ -430,7 +771,9 @@ export const Portfolio = props => {
                     Description
                 </Form.Label>
                 <Col>
-                    <Form.Control as="textarea" rows="3" value={row.description || ''} placeholder={"Add a description (Optional)"} />
+                    <Form.Control as="textarea" rows="3" value={row.description || ''} placeholder={"Add a description (Optional)"}
+                        onChange={e => {handleEducationDescriptionChange(e, idx)}}
+                    />
                 </Col>
             </Form.Row>
         </Form.Row>
@@ -564,10 +907,17 @@ export const Portfolio = props => {
             <div key={idx}>
                 <p><b>Occupation:</b> {row.occupation}</p>
                 <p><b>Organization:</b> {row.organization}</p>
-                <p><b>From:</b> {row.from_when}</p>
-                <p><b>To:</b> {row.to_when}</p>
+                
+                {(row.from_when && row.from_when !== "infinity")
+                ? <p><b>From:</b> {row.from_when} </p>
+                : null
+                }
+                
+                {(row.to_when && row.to_when !== "infinity")
+                ? <p><b>To:</b> {row.to_when}</p>
+                : <p><b>To:</b> Current</p>}
 
-                {row.description
+                {(row.description)
                 ? <><b>Description: </b>
                     <p>{row.description}</p>
                 </>
@@ -589,13 +939,14 @@ export const Portfolio = props => {
                     ? <><b>Organization:</b><p>{row.organization}</p></>
                     : null}
 
-                    {row.from_when 
-                    ? <><b>Start Date:</b><p>{row.from_when}</p></>
-                    : null}
-
-                    {row.to_when 
-                    ? <><b>Finish Date:</b><p>{row.to_when}</p></>
-                    : null}
+                    {(row.from_when && row.from_when !== "infinity")
+                    ? <p><b>From:</b> {row.from_when} </p>
+                    : null
+                    }
+                    
+                    {(row.to_when && row.to_when !== "infinity")
+                    ? <p><b>To:</b> {row.to_when}</p>
+                    : <p><b>To:</b> Current</p>}
 
                     {row.description
                     ? <><p>{row.description}</p></>

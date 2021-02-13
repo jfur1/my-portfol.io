@@ -43,9 +43,7 @@ export const Home = (props) => {
                 <h3>
                     {user.firstname} {user.lastname} 
                     
-                    {props.data.ownedByUser 
-                    ? <PencilFill size={25} onClick={handleShow}/> 
-                    : null}
+
                 </h3>
 
                 <br></br>

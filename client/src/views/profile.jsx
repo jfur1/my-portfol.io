@@ -536,6 +536,137 @@ class Profile extends Component{
         window.location.reload();
     }
 
+    createWorkExperience = async(user_id, workExperience) => {
+        //console.log("[Profile.jsx] Recieved project:", project);
+        const response = await fetch('http://localhost:5000/createWorkExperience',  {
+            method: 'POST', 
+            mode: 'cors',
+            credentials: 'include',
+            withCredentials: true,
+            headers: {
+                user_id: user_id,
+                occupation: workExperience.occupation,
+                organization: workExperience.organization,
+                from_when: workExperience.from_when,
+                to_when: workExperience.to_when,
+                description: workExperience.description
+            }
+        });
+        const data = await response.json();
+        console.log("Client Recieved Response: ", data);
+        return data;
+    }
+    setCreatedWorkExperience = (createdWorkExperienceToSet) => {
+        console.log("Profile.jsx recieved projects to set:", createdWorkExperienceToSet);
+        this.setState({portfolio: [...this.state.portfolio, ...createdWorkExperienceToSet]});
+    }
+
+    updateWorkExperience = async(user_id, workExperience, rowIdx) => {
+        const response = await fetch('http://localhost:5000/updateWorkExperience',  {
+            method: 'POST', 
+            mode: 'cors',
+            credentials: 'include',
+            withCredentials: true,
+            headers: {
+                portfolio_id: workExperience.portfolio_id, 
+                user_id: user_id,
+                occupation: workExperience.occupation,
+                organization: workExperience.organization,
+                from_when: workExperience.from_when,
+                to_when: workExperience.to_when,
+                description: workExperience.description
+            }
+        });
+        const data = await response.json();
+        console.log("Client Recieved Response: ", data);
+
+        let tmpPortfolio = [...this.state.portfolio];
+        tmpPortfolio[rowIdx] = data;
+        this.setState({portfolio: tmpPortfolio});
+        console.log("Profile.jsx Updated the portfolio. this.state.portfolio",this.state.portfolio);
+    }
+
+    deleteWorkExperience = async(portfolio_id) => {
+        const response = await fetch('http://localhost:5000/deleteWorkExperience',  {
+            method: 'POST', 
+            mode: 'cors',
+            credentials: 'include',
+            withCredentials: true,
+            headers: {
+                portfolio_id: portfolio_id
+            }
+        });
+        const data = await response.json();
+        console.log("Client Recieved Response: ", data);
+        //return data;
+        window.location.reload();
+    }
+
+    createEducation = async(user_id, education) => {
+        const response = await fetch('http://localhost:5000/createEducation',  {
+            method: 'POST', 
+            mode: 'cors',
+            credentials: 'include',
+            withCredentials: true,
+            headers: {
+                user_id: user_id,
+                organization: education.organization,
+                education: education.education,
+                from_when: education.from_when,
+                to_when: education.to_when,
+                description: education.description
+            }
+        });
+        const data = await response.json();
+        console.log("Client Recieved Response: ", data);
+        return data;
+    }
+    setCreatedEducation = async(createdEducationToSet) => {
+        console.log("Profile.jsx recieved education to set:", createdEducationToSet);
+        this.setState({education: [...this.state.education, ...createdEducationToSet]});
+    }
+
+    updateEducation = async(user_id, education, rowIdx) => {
+        const response = await fetch('http://localhost:5000/updateEducation',  {
+            method: 'POST', 
+            mode: 'cors',
+            credentials: 'include',
+            withCredentials: true,
+            headers: {
+                education_id: education.education_id, 
+                user_id: user_id,
+                organization: education.organization,
+                education: education.education,
+                from_when: education.from_when,
+                to_when: education.to_when,
+                description: education.description
+            }
+        });
+        const data = await response.json();
+        console.log("Client Recieved Response: ", data);
+
+        let tmpEducation = [...this.state.education];
+        tmpEducation[rowIdx] = data;
+        this.setState({education: tmpEducation});
+        console.log("Profile.jsx Updated the education. this.state.education",this.state.education);
+    }
+
+    deleteEducation = async(education_id) => {
+        const response = await fetch('http://localhost:5000/deleteEducation',  {
+            method: 'POST', 
+            mode: 'cors',
+            credentials: 'include',
+            withCredentials: true,
+            headers: {
+                education_id: education_id
+            }
+        });
+        const data = await response.json();
+        console.log("Client Recieved Response: ", data);
+        //return data;
+        window.location.reload();
+    }
+
     render(){
 
         return(
@@ -582,6 +713,14 @@ class Profile extends Component{
                             setCreatedProjects={this.setCreatedProjects}
                             updateProject={this.updateProject}
                             deleteProject={this.deleteProject}
+                            createWorkExperience={this.createWorkExperience}
+                            setCreatedWorkExperience={this.setCreatedWorkExperience}
+                            updateWorkExperience={this.updateWorkExperience}
+                            deleteWorkExperience={this.deleteWorkExperience}
+                            createEducation={this.createEducation}
+                            setCreatedEducation={this.setCreatedEducation}
+                            updateEducation={this.updateEducation}
+                            deleteEducation={this.deleteEducation}
                         />
                     : null }
 
