@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
-import { ImageFill, PencilFill } from 'react-bootstrap-icons';
+import { PencilFill } from 'react-bootstrap-icons';
 import { Nav, Tab, Modal, Button, Form, Row, Col } from 'react-bootstrap';
 import { AlertDismissible } from '../components/alertDismissible';
 import DatePicker from 'react-datepicker'
 
 export const Portfolio = props => {
     console.log("Portfolio Recieved Props: ", props);
-    // User Data
+    // Data passed down from Profile through the parent state
     const user = props.location.state.user;
     const portfolioData = (props.data.portfolio !== null) ? props.data.portfolio: props.location.state.portfolio;
     const educationData = (props.data.education !== null) ? props.data.education : props.location.state.education;
@@ -31,8 +31,6 @@ export const Portfolio = props => {
     }
 
     // Data to be Modified
-
-    // Projects
     const [projects, setProjects] = useState({values: projectsData});
     const [projectsToDelete, setProjectsToDelete] = useState([]);
 
@@ -52,7 +50,7 @@ export const Portfolio = props => {
 
         setEducation({values: educationData});
         setEducationToDelete([]);
-    }, [props])
+    }, [props, projectsData, portfolioData, educationData])
 
 
     // --------------- Begin Projects Event Handling --------------
@@ -160,8 +158,6 @@ export const Portfolio = props => {
     };
 
 
-    // --------------- End Projects Event Handling --------------
-
     
     // --------------- Begin Portfolio Event Handling ------------
 
@@ -256,9 +252,6 @@ export const Portfolio = props => {
     }
 
 
-    // --------------- End Portfolio Event Handling --------------
-
-
     // --------------- Begin Education Event Handling ------------
 
     const handleEducationOrganizationChange = (event, idx) => {
@@ -322,6 +315,7 @@ export const Portfolio = props => {
         setEdited(true);
     }
 
+    // Inserting null dates in psql is tricky -- instead use special value "infinity"
     const addEducation = () => {
         setEducation({
             values: [
@@ -363,6 +357,7 @@ export const Portfolio = props => {
         var projectsToCreate = [];
         var projectsToUpdate = [];
 
+        // Determine what needs to be created vs. updated
         projects.values.forEach((row, idx) => {
             
             if(!(typeof(row.project_id) !== 'undefined')){
@@ -418,6 +413,7 @@ export const Portfolio = props => {
         var workExperienceToCreate = [];
         var workExperienceToUpdate = [];
 
+        // Determine what needs to be created vs. updated
         portfolio.values.forEach((row, idx) => {
             if(!(typeof(row.portfolio_id) !== 'undefined')){
                 if(row.occupation === ''){
@@ -470,6 +466,7 @@ export const Portfolio = props => {
         var educationToCreate = [];
         var educationToUpdate = [];
 
+        // Determine what needs to be created vs. updated
         education.values.forEach((row, idx) => {
             if(!(typeof(row.education_id) !== 'undefined')){
                 if(row.education === ''){
@@ -520,8 +517,8 @@ export const Portfolio = props => {
         }
 
         // -------------- Handle Deletes ----------------------------
-
         // Possible DELETE ops should come last -- involves forced refresh
+
         if(projectsToDelete.length) {
             //console.log(`** DELETE Skills with ID: ${skillsToDelete}`);
             const deleteProjects = async() => {
@@ -553,6 +550,7 @@ export const Portfolio = props => {
         setShow(false);
     }
 
+    // Dynamically render list of forms
     const renderProjectsForm = () => {
         return projects.values.map((row, idx) => 
         <Form.Row className='mb-4 ml-1' key={idx}>
@@ -876,9 +874,9 @@ export const Portfolio = props => {
                     <p>{row.description 
                     ? row.description : null}</p>
 
-                    <p>{(row.organization && row.organization !== "null")
+                    {(row.organization && row.organization !== "null")
                     ? <p><b>Organization:</b> {row.organization}</p>
-                    : null}</p>
+                    : null}
 
 
                     {(row.link && row.link !== "null")

@@ -48,7 +48,7 @@ export const Contact = (props) => {
             setEmailToUpdate(publicEmail);
         }
 
-    }, [phone, publicEmail])
+    }, [phone, profile.phone, profile.public_email, publicEmail])
 
     // Upon successful POST response, linksData or aboutData will change, so reset hooks
     useEffect(() => {
@@ -58,7 +58,7 @@ export const Contact = (props) => {
         setPublicEmail(profile.public_email);
         setPhone(profile.phone);
         setLinks({values: linksData})
-    }, [props])
+    }, [props, linksData, profile.publicEmail, profile.phone, profile.public_email])
 
 
     const handleSave = () => {
@@ -340,7 +340,7 @@ export const Contact = (props) => {
                         : <b>Link: </b> }
                         <br/>
 
-                        <a href={row.link} target="_blank">{row.link}</a>
+                        <a href={row.link} target="_blank" rel="noreferrer">{row.link}</a>
 
                         <br/>
 

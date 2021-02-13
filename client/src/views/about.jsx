@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { PencilFill } from 'react-bootstrap-icons';
 import { Modal, Button } from 'react-bootstrap';
-import Alert from 'react-bootstrap/Alert'
+import { AlertDismissible } from '../components/alertDismissible';
 
 export const About = props => {
     //console.log("About Recieved Parent Props: ", props);
@@ -22,18 +22,8 @@ export const About = props => {
     const [skills, setSkills] = useState({values: skillsData});
 
     // Hooks used to format final onClick data for POST request
-    const [locationToCreate, setLocationToCreate] = useState([]);
-    const [bioToCreate, setBioToCreate] = useState([]);
     
-    const [locationToUpdate, setLocationToUpdate] = useState([]);
-    const [bioToUpdate, setBioToUpdate] = useState([]);
-    
-    const [skillsToCreate, setSkillsToCreate] = useState([]);
-    const [skillsToUpdate, setSkillsToUpdate] = useState([]);
     const [skillsToDelete, setSkillToDelete] = useState([]);
-
-    const [hobbiesToCreate, setHobbiesToCreate] = useState([]);
-    const [hobbiesToUpdate, setHobbiesToUpdate] = useState([]);
     const [hobbiesToDelete, setHobbyToDelete] = useState([]);
 
     const [showLogs, setShowLogs] = useState(false);
@@ -42,17 +32,12 @@ export const About = props => {
     // New data passed to hobbiesData/skillsData, and is copied into hobbies/skills hooks
     // where data can be manipulated by user
     useEffect(() => {
+        //setLocationToCreate([]);
+        //setBioToCreate([]);
         setHobbies({values: hobbiesData});
         setSkills({values: skillsData});
-        setHobbiesToCreate([]);
-        setSkillsToCreate([]);
         setHobbyToDelete([]);
         setSkillToDelete([]);
-        setLocationToCreate([]);
-        setBioToCreate([]);
-        //console.log(`[About.jsx] Updated Hobbies: ${JSON.stringify(hobbies)}`);
-        //console.log(`[About.jsx] Updated Skills: ${JSON.stringify(skills)}`);
-        //console.log(`[About.jsx] Updated hobbiesToCreate: ${JSON.stringify(hobbiesToCreate)}`);
     }, [hobbiesData, skillsData]);
 
     // Toggle Modal
@@ -73,37 +58,7 @@ export const About = props => {
         setSkills({values: skillsData});
     }
 
-    function AlertDismissible() {
-        return (
-          <>
-            <Alert bsPrefix="edit-alert" show={showAlert} variant="warning">
-            <Alert.Heading style={{textAlign: 'center'}}>Attention!</Alert.Heading>
-              <p style={{textAlign: 'center'}}>
-                You have unsaved changes! Are you sure you want to exit?
-              </p>
-              <hr />
-              <div className="d-flex justify-content-center">
-                <Button onClick={() => {
-                    setShow(false); 
-                    handleSave(); 
-                    setEdited(false); 
-                    setShowAlert(false);
-                }} variant="outline-success">
-                    Save Changes
-                </Button>
-                <Button onClick={() => {
-                    setShow(false); 
-                    discardChanges();
-                    setEdited(false); 
-                    setShowAlert(false);
-                }} variant="outline-danger">
-                    Exit
-                </Button>
-              </div>
-            </Alert>
-          </>
-        );
-    }
+
 
     // ----------- [BEGIN] Hobby Handlers -------------------
     const renderHobbiesForm = () => {
@@ -121,26 +76,35 @@ export const About = props => {
             uid: hobbies.values[idx].uid ,
             hobby: event.target.value
         };
-        if((typeof(tmpHobbies[idx].hobby_id) !== 'undefined')){
-            tmpHobbies[idx].updated = true;
+        if((typeof(tmpHobbies[idx].hobby_id) !== 'undefined')
+        && !(typeof(tmpHobbies[idx].toUpdate) !== 'undefined')){
+            tmpHobbies[idx].toUpdate = true;
         }
         setHobbies({values: tmpHobbies});
         setEdited(true);
     }
     const addHobby = () => {
-        setHobbies({values: [...hobbies.values, '']});
+        setHobbies({values: 
+            [
+                ...hobbies.values, 
+                {hobby: ''}
+            ]
+        });
     }
     const removeHobby = (idx) => {
         let tmpHobbies = [...hobbies.values];
         // Trying to delete hobby with an existing ID? => stage hobby to be deleted
-        if((typeof(tmpHobbies[idx].hobby_id) !== 'undefined')){
-            setHobbyToDelete([...hobbiesToDelete, {hobby_id: tmpHobbies[idx].hobby_id}]);
+        if(typeof(tmpHobbies[idx].hobby_id) !== 'undefined'){
+            setHobbyToDelete(
+                [
+                    ...hobbiesToDelete,
+                    {hobby_id: tmpHobbies[idx].hobby_id}
+                ]);
         }
         tmpHobbies.splice(idx, 1);
         setHobbies({values: tmpHobbies});
         setEdited(true);
     }
-    // ----------- [END] Hobby Handlers -------------------
 
 
     // ----------- [BEGIN] Skill Handlers ------------------- 
@@ -160,20 +124,30 @@ export const About = props => {
             uid: skills.values[idx].uid ,
             skill: event.target.value
         };
-        if((typeof(tmpSkills[idx].skill_id) !== 'undefined')){
-            tmpSkills[idx].updated = true;
+        if((typeof(tmpSkills[idx].skill_id) !== 'undefined')
+        && !(typeof(tmpSkills[idx].toUpdate) !== 'undefined')){
+            tmpSkills[idx].toUpdate = true;
         }
         setSkills({values: tmpSkills});
         setEdited(true);
     }
     const addSkill = () => {
-        setSkills({values: [...skills.values, '']});
+        setSkills({values: 
+            [
+                ...skills.values,
+                {skill: ''}
+            ]
+        });
     }
     const removeSkill = (idx) => {
         let tmpSkills = [...skills.values];
         // Trying to delete skill with an existing ID? => stage skill to be deleted
-        if((typeof(tmpSkills[idx].skill_id) !== 'undefined')){
-            setSkillToDelete([...skillsToDelete, {skill_id: tmpSkills[idx].skill_id}]);
+        if(typeof(tmpSkills[idx].skill_id) !== 'undefined'){
+            setSkillToDelete( 
+                [
+                    ...skillsToDelete, 
+                    {skill_id: tmpSkills[idx].skill_id}
+                ]);
         } 
         tmpSkills.splice(idx, 1);
         setSkills({values: tmpSkills});
@@ -185,70 +159,109 @@ export const About = props => {
     // Format edit hooks to be sent in POST request
     const handleSave = () => {
         // Location
+        let locationToCreate = [];
+        let locationToUpdate = [];
+        
         if(info.location === null && location){
-            setLocationToCreate([location]);
+            locationToCreate.push(location);
         } else if(info.location !== location){
-            setLocationToUpdate([...locationToUpdate, location]);
+            //console.log(`Set location update from: ${info.location} to: ${location}`);
+            locationToUpdate.push(location);
         }
+
+        let bioToCreate = [];
+        let bioToUpdate = [];
         // Bio
         if(info.bio === null && bio){
-            setBioToCreate([bio]);
+            bioToCreate.push(bio);
         } else if(info.bio !== bio){
-            setBioToUpdate([...bioToUpdate, bio]);
+            //console.log(`Set bio update from: ${info.bio} to: ${bio}`);
+            bioToUpdate.push(bio);
         }
+
+        var hobbiesToCreate = [];
+        var hobbiesToUpdate = [];
         // Hobbies: 
         // No ID? => CREATE new hobby
         // Existing ID? => UPDATE existing hobby
         hobbies.values.forEach((row, idx) => {
             //console.log(`Row: ${row.hobby}, IDX: ${idx}`);
             if( !(typeof(row.hobby_id) !== 'undefined')){
-                setHobbiesToCreate(hobbiesToCreate => [...hobbiesToCreate, {hobby: row.hobby, rowIdx: idx}]);
-            } else if(typeof(row.updated) !== 'undefined'){
-                setHobbiesToUpdate(hobbiesToUpdate => [...hobbiesToUpdate, {hobby_id: row.hobby_id, hobby: row.hobby, rowIdx: idx}]);
+                if(row.hobby === ''){
+                    console.log('A hobby is required to create!');
+                } else{
+                    hobbiesToCreate.push({
+                        hobby: row.hobby,
+                        rowIdx: idx
+                    });
+                }
+            } else if(typeof(row.toUpdate) !== 'undefined'){
+                if(row.hobby === ''){
+                    console.log('A hobby is required to update!');
+                } else{
+                    hobbiesToUpdate.push({
+                        hobby_id: row.hobby_id,
+                        hobby: row.hobby,
+                        rowIdx: idx
+                    })
+                }
             }
         })
+
+        var skillsToCreate = [];
+        var skillsToUpdate = [];
         // Skills: 
         // No ID? => CREATE new skill
         // Existing ID? => UPDATE existing skill
         skills.values.forEach((row, idx) => {
             //console.log(`Row: ${row.skill}, IDX: ${idx}`);
             if( !(typeof(row.skill_id) !== 'undefined')){
-                setSkillsToCreate(skillsToCreate => [...skillsToCreate, {skill: row.skill, rowIdx: idx}]);
-            } else if(typeof(row.updated) !== 'undefined'){
-                setSkillsToUpdate(skillsToUpdate => [...skillsToUpdate, {skill_id: row.skill_id, skill: row.skill, rowIdx: idx}]);
+                if(row.skill === ''){
+                    console.log("A skill is required to create!");
+                } else{
+                    skillsToCreate.push({
+                        skill: row.skill,
+                        rowIdx: idx
+                    })
+                }
+            } else if(typeof(row.toUpdate) !== 'undefined'){
+                if(row.skill === ''){
+                    console.log("A skill is required to updated!");
+                } else{
+                    skillsToUpdate.push({
+                        skill_id: row.skill_id,
+                        skill: row.skill,
+                        rowIdx: idx
+                    })
+                }
             }
         })
-
-        setShow(false);
-        // Bad, but working method for triggering useEffect
-        return showLogs ? setShowLogs(false) : setShowLogs(true);
-    };
-
-
-    // Handle POST requests for elements that have been staged
-    useEffect(() => {
+        
+        console.log("Location to Update:", locationToUpdate);
+        console.log("Bio to Update:", bioToUpdate);
+        console.log("Hobbies to Create", hobbiesToCreate);
+        console.log("Hobbies to Update:", hobbiesToUpdate);
+        console.log("Hobbies to Delete:", hobbiesToDelete);
+        console.log("Skills to Create:", skillsToCreate);
+        console.log("Skills to Update:", skillsToUpdate);
+        console.log("Skills to Delete:", skillsToDelete);
+        
+        
+        // Begin POST requests
 
         if(locationToUpdate.length){
-            //console.log(`** UPDATE Location: ${locationToUpdate}`);
-            //console.log(`UserID: ${user}`)
-            props.updateLocation(locationToUpdate, user.user_id);
-            // Not actually updated here, yet
-            setLocationToUpdate([]);
-            console.log("Removed locationToUpdate. Sending to profile.jsx now...");
+            props.updateLocation(locationToUpdate[0], user.user_id);
+            locationToUpdate = [];
         } else if(locationToCreate.length){
 
         }
 
-
         if(bioToUpdate.length) {
-            //console.log(`** UPDATE Bio: ${bioToUpdate}`);
-            props.updateBio(bioToUpdate, user.user_id);
-            setBioToUpdate([]);
-            console.log("Removed bioToUpdate. Sending to profile.jsx now...")
+            props.updateBio(bioToUpdate[0], user.user_id);
+            bioToUpdate = [];
         } else if(bioToCreate.length){
 
         }
-        
 
         if(hobbiesToCreate.length) {
             const createHobbies = async() => {
@@ -266,15 +279,9 @@ export const About = props => {
         if(hobbiesToUpdate.length) {
             //console.log(`** UPDATE Hobbies: ${hobbiesToUpdate}`);
             hobbiesToUpdate.forEach((row, rowIdx) => {
-                // console.log("Hobby Row Idx:", row.rowIdx);
-                // console.log("Hobby ID:", row.hobby_id);
-                // console.log("Hobby:", row.hobby);
                 props.updateHobby(row.hobby_id, row.hobby, user.user_id, row.rowIdx);
             })
-            setHobbiesToUpdate([]);
-            console.log("HobbiesToUpdate:", hobbiesToUpdate);
         };
-
 
         if(skillsToCreate.length) {
             //console.log(`** CREATE Skills: ${skillsToCreate}`);
@@ -293,12 +300,8 @@ export const About = props => {
         if(skillsToUpdate.length) {
             //console.log(`** UPDATE Skills: ${skillsToUpdate}`);
             skillsToUpdate.forEach((row, rowIdx) => {
-                console.log("Skill Row Idx:", row.rowIdx);
-                console.log("Skill ID:", row.skill_id);
-                console.log("Skill:", row.skill);
                 props.updateSkill(row.skill_id, row.skill, user.user_id, row.rowIdx);
             })
-            setSkillsToUpdate([]);
             console.log("HobbiesToUpdate:", skillsToUpdate);
         };
 
@@ -309,22 +312,27 @@ export const About = props => {
                 for await (let skillToDelete of skillsToDelete){
                     await props.deleteSkill(skillToDelete.skill_id);
                 }
+                props.reloadProfile();
             }
             deleteSkills();
         };
+
         if(hobbiesToDelete.length) {
             //console.log(`** DELETE Hobbies with ID: ${hobbiesToDelete}`);
             const deleteHobbies = async() => {
                 for await (let hobbyToDelete of hobbiesToDelete){
                     await props.deleteHobby(hobbyToDelete.hobby_id);
                 }
+                props.reloadProfile();
             }
             deleteHobbies();
         }
 
-        // Reset all POST forms after any updates -- stops recalling?
-
-    }, [showLogs])
+        
+        setShow(false);
+        // Bad, but working method for triggering useEffect
+        return showLogs ? setShowLogs(false) : setShowLogs(true);
+    };
 
 
     return(
@@ -347,7 +355,14 @@ export const About = props => {
             <Modal.Header closeButton>
                 <Modal.Title id="contained-modal-title-vcenter">
                     Edit
-                    <AlertDismissible/>
+                    <AlertDismissible
+                        setShow={setShow}
+                        setEdited={setEdited}
+                        setShowAlert={setShowAlert}
+                        showAlert={showAlert}
+                        handleSave={handleSave}
+                        discardChanges={discardChanges}
+                    />
                 </Modal.Title>
             </Modal.Header>
             <Modal.Body>

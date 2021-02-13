@@ -199,7 +199,8 @@ class Profile extends Component{
             withCredentials: true,
             headers: {
                 user_id: user_id, 
-                location: locationToUpdate}
+                location: locationToUpdate
+            }
         });
         const data = await response.json();
         console.log("Client Recieved Response: ", data);
@@ -220,7 +221,8 @@ class Profile extends Component{
             withCredentials: true,
             headers: {
                 user_id: user_id, 
-                bio: bioToUpdate}
+                bio: bioToUpdate
+            }
         });
         const data = await response.json();
         console.log("Client Recieved Response: ", data);
@@ -335,9 +337,10 @@ class Profile extends Component{
         });
         const data = await response.json();
         console.log("Client Recieved Response: ", data);
-        //return data;
-        window.location.reload();
+        return data;
     }
+
+
 
     deleteSkill = async(skill_id) => {
         const response = await fetch('http://localhost:5000/deleteSkill',  {
@@ -351,8 +354,7 @@ class Profile extends Component{
         });
         const data = await response.json();
         console.log("Client Recieved Response: ", data);
-        //return data;
-        window.location.reload();
+        return data;
     }
 
     updateEmail = async(user_id, public_email) => {
@@ -667,12 +669,16 @@ class Profile extends Component{
         window.location.reload();
     }
 
+    reloadProfile = () => {
+        window.location.reload();
+    }
+
     render(){
 
         return(
             <div className="container">
                 <NavBar {...this.props} data={this.state}/>
-                {alert}
+                {/* {alert} */}
 
                 <div className="user-container">
                     <Tabs
@@ -704,6 +710,7 @@ class Profile extends Component{
                             setCreatedSkills={this.setCreatedSkills}
                             deleteHobby={this.deleteHobby}
                             deleteSkill={this.deleteSkill}
+                            reloadProfile={this.reloadProfile}
                         />
                     : null }
 
@@ -721,6 +728,7 @@ class Profile extends Component{
                             setCreatedEducation={this.setCreatedEducation}
                             updateEducation={this.updateEducation}
                             deleteEducation={this.deleteEducation}
+                            reloadProfile={this.reloadProfile}
                         />
                     : null }
 
@@ -732,6 +740,7 @@ class Profile extends Component{
                             updateLink={this.updateLink}
                             deleteLink={this.deleteLink}
                             setCreatedLinks={this.setCreatedLinks}
+                            reloadProfile={this.reloadProfile}
                         />
                     : null }
                 </div>
