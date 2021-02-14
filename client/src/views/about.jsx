@@ -58,9 +58,6 @@ export const About = props => {
         setSkills({values: skillsData});
     }
 
-    const handleBioChange = (event) => {
-
-    }
 
     // ----------- [BEGIN] Hobby Handlers -------------------
     const renderHobbiesForm = () => {

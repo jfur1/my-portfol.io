@@ -10,6 +10,7 @@ import { Login } from './views/login';
 import { Register } from './views/register';
 
 
+
 function App() {
   return (
     <div className="App" style={{backgroundImage: 'url("/geo-bg.png")', backgroundSize: 'cover', backgroundAttachment: 'scroll', height: '100vh'}}>

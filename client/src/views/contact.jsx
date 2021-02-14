@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { PencilFill } from 'react-bootstrap-icons';
 import { Modal, Button, Form, Col } from 'react-bootstrap';
 import { AlertDismissible } from '../components/alertDismissible';
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 
 export const Contact = (props) => {
     //console.log("Contact Recieved Props: ", props);
@@ -144,44 +145,57 @@ export const Contact = (props) => {
 
     
     const renderLinksForm = () => {
-        return links.values.map((row, idx) => 
-            <Form.Row className='mb-4 ml-3' key={idx}>
-                <Form.Row className='mt-1' style={{width: "75%"}}>
-                    <Form.Label column sm={3}>
-                        Title
-                    </Form.Label>
-                    <Col>
-                        <Form.Control type="text" value={row.title || ''} placeholder={"Link Title (Optional)"} onChange={e => {handleLinkTitleChange(e, idx)}}/>
-                    </Col>
-                </Form.Row>
-
-                <Form.Row className='mt-1' style={{width: "75%"}}>
-                    <Form.Label column sm={3}>
-                        Link
-                    </Form.Label>
-                    <Col>
-                        <Form.Control type="text" value={row.link} placeholder={"Add your link here (Required)"} onChange={e => {
-                            handleLinkChange(e, idx);
-                        }}/>
-                    </Col>
-                </Form.Row>
-
-                <Col className='mt-1'><Button onClick={() => removeLink(idx)} variant="outline-danger" size="sm">Delete Link</Button></Col>   
+        return (
+            <Droppable>
+            {(provided) => (
+                links.values.map((row, idx) => {
+                    return(
+                        <>
+                        <Form.Row className='draggable-container mb-4 ml-3 mr-3'>
+                            <Form.Row className='mt-1' style={{width: "75%"}}>
+                                <Form.Label column sm={3}>
+                                    Title
+                                </Form.Label>
+                                <Col>
+                                    <Form.Control type="text" value={row.title || ''} placeholder={"Link Title (Optional)"} onChange={e => {handleLinkTitleChange(e, idx)}}/>
+                                </Col>
+                            </Form.Row>
+                            
             
-                <Form.Row className='mt-1' style={{width: "75%"}}>
-                    <Form.Label column sm={3}>
-                        Description
-                    </Form.Label>
-                    <Col>
-                        <Form.Control as="textarea" rows={3} id="link-description" 
-                        value={row.description.replace(/\\n/g, '\n') || ''} 
-                        placeholder={"Add a description for your link! (Optional)"} 
-                        onChange={e => {
-                            handleLinkDescriptionChange(e, idx);
-                        }}></Form.Control>
-                    </Col>
-                </Form.Row>
-            </Form.Row>
+                            <Form.Row className='mt-1 mr-2' style={{"width": "75%"}}>
+                                <Form.Label column sm={3}>
+                                    Link
+                                </Form.Label>
+                                <Col>
+                                    <Form.Control type="text" value={row.link} placeholder={"Add your link here (Required)"} onChange={e => {
+                                        handleLinkChange(e, idx);
+                                    }}/>
+                                </Col>
+                            </Form.Row>
+
+                            <Col className='mt-1' style={{width: "75%"}}>
+                                <Button onClick={() => removeLink(idx)} variant="outline-danger" size="sm">Delete Link</Button>
+                            </Col>   
+                        
+                            <Form.Row className='mt-1' style={{width: "75%"}}>
+                                    <Form.Label column sm={3}>
+                                        Description
+                                    </Form.Label>
+                                    <Col>
+                                        <Form.Control as="textarea" rows={3} id="link-description" 
+                                        value={row.description.replace(/\\n/g, '\n') || ''} 
+                                        placeholder={"Add a description for your link! (Optional)"} 
+                                        onChange={e => {
+                                            handleLinkDescriptionChange(e, idx);
+                                        }}></Form.Control>
+                                    </Col>
+                                </Form.Row>
+                        </Form.Row>
+                        </>
+                    );
+                })
+            )}
+            </Droppable>
         );
     }
 
@@ -242,6 +256,7 @@ export const Contact = (props) => {
 
     return (
         <div className="tab-container"> 
+        
             <Modal
                 show={show}
                 onHide={handleClose}
@@ -303,7 +318,9 @@ export const Contact = (props) => {
                             ? <Button onClick={() => addLink()} variant="outline-success" size="sm">Add Link</Button>  
                             : null }
                         </Form.Label>
-                        {renderLinksForm()}
+
+                            {renderLinksForm()}
+
                     </Form.Group>
                     
 
@@ -365,6 +382,7 @@ export const Contact = (props) => {
                 : null }
                 
             </div>
+            
         </div>
     );
 }

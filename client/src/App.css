@@ -183,3 +183,13 @@ table.center {
   background: none;
   color:black;
 }
+
+.draggable-container {
+  border: 1px solid #282c34!important;
+  padding: 1rem 1rem 1rem 1rem;
+  border-radius: 16px;
+}
+
+.form-row > .col {
+  padding-right: 0%;
+}
