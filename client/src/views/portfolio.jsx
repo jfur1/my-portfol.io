@@ -89,11 +89,19 @@ export const Portfolio = props => {
     }
 
     const handleProjectStartChange = (date, idx) => {
+        let newDate;
         if(date !== null){
-            date = date.toISOString().split('T')[0];
+            const offset = date.getTimezoneOffset();
+            console.log("offset:", offset)
+            if(offset < 0) date.setHours(12, 0, 0);
+            //eslint-disable-next-line
+            newDate = date.toISOString().replace(/-/g, '\/').replace(/T.+/, '');
+            // console.log("Formatted Start Date Object:", date);
+            // console.log("Formatted Start Date String:", newDate);
+            // console.log("\n")
         }
         let tmpProjects = [...projects.values];
-        tmpProjects[idx].from_when = date;
+        tmpProjects[idx].from_when = newDate;
         if((typeof(tmpProjects[idx].project_id) !== 'undefined')
         && !(typeof(tmpProjects[idx].toUpdate) !== 'undefined')){
             tmpProjects[idx].toUpdate = true;
@@ -103,11 +111,15 @@ export const Portfolio = props => {
     }
 
     const handleProjectFinishChange = (date, idx) => {
+        let newDate;
         if(date !== null){
-            date = date.toISOString().split('T')[0];
+            const offset = date.getTimezoneOffset();
+            if(offset < 0) date.setHours(12, 0, 0);
+            //eslint-disable-next-line
+            newDate = date.toISOString().replace(/-/g, '\/').replace(/T.+/, '');
         }
         let tmpProjects = [...projects.values];
-        tmpProjects[idx].to_when = date;
+        tmpProjects[idx].to_when = newDate;
         if((typeof(tmpProjects[idx].project_id) !== 'undefined')
         && !(typeof(tmpProjects[idx].toUpdate) !== 'undefined')){
             tmpProjects[idx].toUpdate = true;
@@ -184,11 +196,15 @@ export const Portfolio = props => {
     }
 
     const handlePortfolioStartChange = (date, idx) => {
+        let newDate;
         if(date !== null){
-            date = date.toISOString().split('T')[0];
+            const offset = date.getTimezoneOffset();
+            if(offset < 0) date.setHours(12, 0, 0);
+            //eslint-disable-next-line
+            newDate = date.toISOString().replace(/-/g, '\/').replace(/T.+/, '');
         }
         let tmpPortfolio = [...portfolio.values];
-        tmpPortfolio[idx].from_when = date;
+        tmpPortfolio[idx].from_when = newDate;
         if((typeof(tmpPortfolio[idx].portfolio_id) !== 'undefined')
         && !(typeof(tmpPortfolio[idx].toUpdate) !== 'undefined')){
             tmpPortfolio[idx].toUpdate = true;
@@ -198,11 +214,15 @@ export const Portfolio = props => {
     }
 
     const handlePortfolioFinishChange = (date, idx) => {
+        let newDate;
         if(date !== null){
-            date = date.toISOString().split('T')[0];
+            const offset = date.getTimezoneOffset();
+            if(offset < 0) date.setHours(12, 0, 0);
+            //eslint-disable-next-line
+            newDate = date.toISOString().replace(/-/g, '\/').replace(/T.+/, '');
         }
         let tmpPortfolio = [...portfolio.values];
-        tmpPortfolio[idx].to_when = date;
+        tmpPortfolio[idx].to_when = newDate;
         if((typeof(tmpPortfolio[idx].portfolio_id) !== 'undefined')
         && !(typeof(tmpPortfolio[idx].toUpdate) !== 'undefined')){
             tmpPortfolio[idx].toUpdate = true;
@@ -277,11 +297,15 @@ export const Portfolio = props => {
     }
 
     const handleEducationStartChange = (date, idx) => {
+        let newDate;
         if(date !== null){
-            date = date.toISOString().split('T')[0];
+            const offset = date.getTimezoneOffset();
+            if(offset < 0) date.setHours(12, 0, 0);
+            //eslint-disable-next-line
+            newDate = date.toISOString().replace(/-/g, '\/').replace(/T.+/, '');
         }
         let tmpEducation = [...education.values];
-        tmpEducation[idx].from_when = date;
+        tmpEducation[idx].from_when = newDate;
         if((typeof(tmpEducation[idx].education_id) !== 'undefined')
         && !(typeof(tmpEducation[idx].toUpdate) !== 'undefined')){
             tmpEducation[idx].toUpdate = true;
@@ -291,11 +315,15 @@ export const Portfolio = props => {
     }
 
     const handleEducationFinishChange = (date, idx) => {
+        let newDate;
         if(date !== null){
-            date = date.toISOString().split('T')[0];
+            const offset = date.getTimezoneOffset();
+            if(offset < 0) date.setHours(12, 0, 0);
+            //eslint-disable-next-line
+            newDate = date.toISOString().replace(/-/g, '\/').replace(/T.+/, '');
         }
         let tmpEducation = [...education.values];
-        tmpEducation[idx].to_when = date;
+        tmpEducation[idx].to_when = newDate;
         if((typeof(tmpEducation[idx].education_id) !== 'undefined')
         && !(typeof(tmpEducation[idx].toUpdate) !== 'undefined')){
             tmpEducation[idx].toUpdate = true;
@@ -347,8 +375,6 @@ export const Portfolio = props => {
 
 
     // --------------- End Education Event Handling --------------
-
-
 
     const handleSave = () => {
         console.log("'Saving' Changes:");
@@ -590,18 +616,21 @@ export const Portfolio = props => {
                     <Form.Control type="text" id="project-organization" value={row.organization || ''} placeholder={"Add an organization (Optional)"} onChange={e => handleProjectOrganizationChange(e, idx)}></Form.Control>
                 </Col>
             </Form.Row>
-
+            {console.log("From When:", row.from_when)}
+                {console.log("From When Type:", typeof(row.from_when))}
             <Form.Row className='mt-1' style={{width: "75%"}}>
                 <Form.Label column sm={3}>
                     Start Date
                 </Form.Label>
                 <Col>
                     <Form.Control as={ DatePicker } 
-                    selected={(row.from_when !== "infinity" && row.from_when !== null) ? new Date(row.from_when) : ''}   placeholder=
-                    {"Add a start date for your project! (Optional)"} 
+                    selected={(row.from_when !== "infinity" && row.from_when !== null) 
+                    //eslint-disable-next-line
+                    ? new Date(row.from_when.replace(/-/g, '\/'))
+                    : ''}
+                    placeholder={"Add a start date for your project! (Optional)"} 
                     onChange={ date => {
                             handleProjectStartChange(date, idx);
-                        
                     }}></Form.Control>
                     
                 </Col>
@@ -612,7 +641,11 @@ export const Portfolio = props => {
                 </Form.Label>
                 <Col>
                     <Form.Control as={ DatePicker } 
-                    selected={(row.to_when !== "infinity" && row.to_when !== null) ? new Date(row.to_when) : ''}  placeholder={"Add a finish date for your project! (Optional)"} 
+                    selected={(row.to_when !== "infinity" && row.to_when !== null) 
+                    //eslint-disable-next-line
+                    ? new Date(row.to_when.replace(/-/g, '\/'))
+                    : ''}  
+                    placeholder={"Add a finish date for your project! (Optional)"} 
                     onChange={date => {
                         handleProjectFinishChange(date, idx);
                     }}></Form.Control>
@@ -670,8 +703,14 @@ export const Portfolio = props => {
                     Start Date
                 </Form.Label>
                 <Col>
+                {console.log("From When:", row.from_when)}
+                {console.log("From When Type:", typeof(row.from_when))}
                     <Form.Control as={ DatePicker } 
-                    selected={(row.from_when !== "infinity" && row.from_when !== null) ? new Date(row.from_when) : ''}   placeholder=
+                    selected={(row.from_when !== "infinity" && row.from_when !== null) 
+                    //eslint-disable-next-line
+                    ? new Date(row.from_when.replace(/-/g, '\/'))
+                    : ''}   
+                    placeholder=
                     {"Add a start date (Optional)"} 
                     onChange={ date => {
                         handlePortfolioStartChange(date, idx);
@@ -684,7 +723,11 @@ export const Portfolio = props => {
                 </Form.Label>
                 <Col>
                     <Form.Control as={ DatePicker } 
-                    selected={(row.to_when !== "infinity" && row.to_when !== null) ? new Date(row.to_when) : ''}  placeholder={"Add a finish date (Optional)"} 
+                    selected={(row.to_when !== "infinity" && row.to_when !== null) 
+                    //eslint-disable-next-line
+                    ? new Date(row.to_when.replace(/-/g, '\/'))
+                    : ''}  
+                    placeholder={"Add a finish date (Optional)"} 
                     onChange={date => {
                         handlePortfolioFinishChange(date, idx);
                     }}></Form.Control>
@@ -743,11 +786,14 @@ export const Portfolio = props => {
                 </Form.Label>
                 <Col>
                     <Form.Control as={ DatePicker } 
-                    selected={(row.from_when !== "infinity" && row.from_when !== null) ? new Date(row.from_when) : ''}   placeholder=
+                    selected={(row.from_when !== "infinity" && row.from_when !== null) 
+                    //eslint-disable-next-line
+                    ? new Date(row.from_when.replace(/-/g, '\/'))
+                    : ''}   
+                    placeholder=
                     {"Add a start date (Optional)"} 
                     onChange={ date => {
                         handleEducationStartChange(date, idx)
-                        
                     }}></Form.Control>
                 </Col>
             </Form.Row>
@@ -757,7 +803,11 @@ export const Portfolio = props => {
                 </Form.Label>
                 <Col>
                     <Form.Control as={ DatePicker } 
-                    selected={(row.to_when !== "infinity" && row.to_when !== null) ? new Date(row.to_when) : ''}  placeholder={"Add a finish date (Optional)"} 
+                    selected={(row.to_when !== "infinity" && row.to_when !== null) 
+                    //eslint-disable-next-line
+                    ? new Date(row.to_when.replace(/-/g, '\/')) 
+                    : ''}  
+                    placeholder={"Add a finish date (Optional)"} 
                     onChange={date => {
                         handleEducationFinishChange(date, idx)
                     }}></Form.Control>
@@ -890,7 +940,7 @@ export const Portfolio = props => {
                     }
                     
                     {(row.to_when && row.to_when !== "infinity")
-                    ? <p><b>To:</b> {row.to_when}</p>
+                    ? <p><b>To:</b> {(row.to_when)}</p>
                     : <p><b>To:</b> Current</p>}
                     <br></br>
                 </div>
