@@ -160,7 +160,7 @@ export const Contact = (props) => {
                         Link
                     </Form.Label>
                     <Col>
-                        <Form.Control type="text" value={row.link} placeholder={"Add your link here!"} onChange={e => {
+                        <Form.Control type="text" value={row.link} placeholder={"Add your link here (Required)"} onChange={e => {
                             handleLinkChange(e, idx);
                         }}/>
                     </Col>

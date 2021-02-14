@@ -194,7 +194,7 @@ class Profile extends Component{
         }
     }
     
-    // About Tab
+    // ABOUT Tab
 
     updateLocation = async (locationToUpdate, user_id) => {
         this.setState({loading: true});
@@ -375,7 +375,7 @@ class Profile extends Component{
         return data;
     }
 
-    // Contact Tab
+    // CONTACT Tab
 
     updateEmail = async(user_id, public_email) => {
         this.setState({loading: true});
@@ -499,7 +499,7 @@ class Profile extends Component{
         return data;
     }
 
-    // Portfolio Tab
+    // PORTFOLIO Tab
 
     createProject = async(user_id, project) => {
         this.setState({loading: true});
@@ -532,6 +532,7 @@ class Profile extends Component{
 
     updateProject = async(user_id, project, rowIdx) => {
         this.setState({loading: true});
+        console.log("Profile.jsx Recieved Project:", project)
         const response = await fetch('http://localhost:5000/updateProject',  {
             method: 'POST', 
             mode: 'cors',

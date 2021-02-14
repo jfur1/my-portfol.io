@@ -403,7 +403,7 @@ export const Portfolio = props => {
                 projectsToUpdate.push({
                     project_id: row.project_id,
                     title: row.title,
-                    description: row.description,
+                    description: JSON.stringify(row.description).replace(/['"]+/g, ''),
                     organization: row.organization,
                     from_when: row.from_when,
                     to_when: row.to_when,
@@ -432,6 +432,7 @@ export const Portfolio = props => {
 
         if(projectsToUpdate.length){
             projectsToUpdate.forEach((row, idx) => {
+                console.log("Row To Update: ", row)
                 props.updateProject(user.user_id, row, row.rowIdx);
             })
         }
@@ -579,6 +580,7 @@ export const Portfolio = props => {
         setShow(false);
     }
 
+
     // Dynamically render list of forms
     const renderProjectsForm = () => {
         return projects.values.map((row, idx) => 
@@ -605,7 +607,7 @@ export const Portfolio = props => {
                     Description
                 </Form.Label>
                 <Col>
-                    <Form.Control as="textarea" rows="3" value={row.description} placeholder={"Add a description for your project!"} 
+                    <Form.Control as="textarea" id="description" rows="3" value={row.description || ''} placeholder={"Add a description for your project!"} 
                         onChange={e => handleProjectDescriptionChange(e, idx)}
                     />
                 </Col>
@@ -828,6 +830,15 @@ export const Portfolio = props => {
         )
     }
 
+    function NewlineText(props) {
+        const text = props.text;
+        console.log("Text:", text);
+        console.log("Type:", typeof(text))
+        return text.split("\\n").map((str, idx) => 
+            <p key={idx}>{str}</p>
+        );
+    }
+
     return(
         <div className="tab-container">        
 
@@ -921,8 +932,9 @@ export const Portfolio = props => {
                 <div key={idx}>
                     <h4><b>{row.title}</b></h4>
                     
-                    <p>{row.description 
-                    ? row.description : null}</p>
+                    {row.description 
+                    ? <><NewlineText text={row.description} key={idx}/></>
+                    : null}
 
                     {(row.organization && row.organization !== "null")
                     ? <p><b>Organization:</b> {row.organization}</p>
