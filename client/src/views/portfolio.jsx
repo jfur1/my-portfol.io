@@ -607,7 +607,7 @@ export const Portfolio = props => {
                     Description
                 </Form.Label>
                 <Col>
-                    <Form.Control as="textarea" id="description" rows="3" value={row.description || ''} placeholder={"Add a description for your project!"} 
+                    <Form.Control as="textarea" id="description" rows="3" value={row.description.replace(/\\n/g, '\n') || ''} placeholder={"Add a description for your project!"} 
                         onChange={e => handleProjectDescriptionChange(e, idx)}
                     />
                 </Col>
@@ -832,10 +832,8 @@ export const Portfolio = props => {
 
     function NewlineText(props) {
         const text = props.text;
-        console.log("Text:", text);
-        console.log("Type:", typeof(text))
         return text.split("\\n").map((str, idx) => 
-            <p key={idx}>{str}</p>
+            <div key={idx}>{str.length === 0 ? <br/> : str}</div>
         );
     }
 
@@ -936,10 +934,11 @@ export const Portfolio = props => {
                     ? <><NewlineText text={row.description} key={idx}/></>
                     : null}
 
+                    <br></br>
+
                     {(row.organization && row.organization !== "null")
                     ? <p><b>Organization:</b> {row.organization}</p>
                     : null}
-
 
                     {(row.link && row.link !== "null")
                     ? <p><b>Link: </b>{row.link}</p>
@@ -979,7 +978,7 @@ export const Portfolio = props => {
 
                 {(row.description)
                 ? <><b>Description: </b>
-                    <p>{row.description}</p>
+                    <><NewlineText text={row.description} key={idx}/></>
                 </>
                 : null}
                 <br></br>
@@ -1009,7 +1008,7 @@ export const Portfolio = props => {
                     : <p><b>To:</b> Current</p>}
 
                     {row.description
-                    ? <><p>{row.description}</p></>
+                    ? <><NewlineText text={row.description} key={idx}/></>
                     : null}
                     <br></br>
                 </div>
