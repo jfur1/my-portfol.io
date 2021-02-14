@@ -616,8 +616,7 @@ export const Portfolio = props => {
                     <Form.Control type="text" id="project-organization" value={row.organization || ''} placeholder={"Add an organization (Optional)"} onChange={e => handleProjectOrganizationChange(e, idx)}></Form.Control>
                 </Col>
             </Form.Row>
-            {console.log("From When:", row.from_when)}
-                {console.log("From When Type:", typeof(row.from_when))}
+
             <Form.Row className='mt-1' style={{width: "75%"}}>
                 <Form.Label column sm={3}>
                     Start Date
@@ -703,8 +702,6 @@ export const Portfolio = props => {
                     Start Date
                 </Form.Label>
                 <Col>
-                {console.log("From When:", row.from_when)}
-                {console.log("From When Type:", typeof(row.from_when))}
                     <Form.Control as={ DatePicker } 
                     selected={(row.from_when !== "infinity" && row.from_when !== null) 
                     //eslint-disable-next-line
