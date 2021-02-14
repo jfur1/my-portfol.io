@@ -551,6 +551,7 @@ export const Portfolio = props => {
                 for await (let projectToDelete of projectsToDelete){
                     await props.deleteProject(projectToDelete.project_id);
                 }
+                props.reloadProfile();
             }
             deleteProjects();
         };
@@ -560,6 +561,7 @@ export const Portfolio = props => {
                 for await (let workToDelete of workExperienceToDelete){
                     await props.deleteWorkExperience(workToDelete.portfolio_id);
                 }
+                props.reloadProfile();
             }
             deleteWork();
         }
@@ -569,6 +571,7 @@ export const Portfolio = props => {
                 for await (let eduToDelete of educationToDelete){
                     await props.deleteEducation(eduToDelete.education_id);
                 }
+                props.reloadProfile();
             }
             deleteEdu();
         }

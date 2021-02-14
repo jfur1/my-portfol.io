@@ -496,8 +496,7 @@ class Profile extends Component{
         });
         const data = await response.json();
         console.log("Client Recieved Response: ", data);
-        //return data;
-        window.location.reload();
+        return data;
     }
 
     // Portfolio Tab
@@ -571,8 +570,7 @@ class Profile extends Component{
         });
         const data = await response.json();
         console.log("Client Recieved Response: ", data);
-        //return data;
-        window.location.reload();
+        return data;
     }
 
     createWorkExperience = async(user_id, workExperience) => {

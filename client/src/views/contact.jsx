@@ -134,6 +134,7 @@ export const Contact = (props) => {
                 for await (let linkToDelete of linksToDelete){
                     await props.deleteLink(linkToDelete.link_id);
                 }
+                props.reloadProfile();
             }
             deleteLinks();
         };
