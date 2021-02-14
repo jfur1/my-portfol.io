@@ -392,7 +392,7 @@ export const Portfolio = props => {
                 } else {
                     projectsToCreate.push({
                         title: row.title,
-                        description: row.description,
+                        description: JSON.stringify(row.description).replace(/['"]+/g, ''),
                         organization: row.organization,
                         from_when: row.from_when,
                         to_when: row.to_when,
@@ -451,7 +451,7 @@ export const Portfolio = props => {
                         organization: row.organization,
                         from_when: row.from_when,
                         to_when: row.to_when,
-                        description: row.description
+                        description: JSON.stringify(row.description).replace(/['"]+/g, '')
                     });
                 }
             } else if(typeof(row.toUpdate) !== 'undefined'){
@@ -461,7 +461,7 @@ export const Portfolio = props => {
                     organization: row.organization,
                     from_when: row.from_when,
                     to_when: row.to_when,
-                    description: row.description,
+                    description: JSON.stringify(row.description).replace(/['"]+/g, ''),
                     rowIdx: idx
                 })
             }
@@ -504,7 +504,7 @@ export const Portfolio = props => {
                         education: row.education,
                         from_when: row.from_when,
                         to_when: row.to_when,
-                        description: row.description
+                        description: JSON.stringify(row.description).replace(/['"]+/g, '')
                     });
                 }
             } else if(typeof(row.toUpdate) !== 'undefined'){
@@ -514,7 +514,7 @@ export const Portfolio = props => {
                     education: row.education,
                     from_when: row.from_when,
                     to_when: row.to_when,
-                    description: row.description,
+                    description: JSON.stringify(row.description).replace(/['"]+/g, ''),
                     rowIdx: idx
                 })
             }
@@ -607,8 +607,10 @@ export const Portfolio = props => {
                     Description
                 </Form.Label>
                 <Col>
-                    <Form.Control as="textarea" id="description" rows="3" value={row.description.replace(/\\n/g, '\n') || ''} placeholder={"Add a description for your project!"} 
-                        onChange={e => handleProjectDescriptionChange(e, idx)}
+                    <Form.Control as="textarea" id="description" rows="3" 
+                    value={row.description.replace(/\\n/g, '\n') || ''} 
+                    placeholder={"Add a description for your project!"} 
+                    onChange={e => handleProjectDescriptionChange(e, idx)}
                     />
                 </Col>
             </Form.Row>
@@ -618,7 +620,10 @@ export const Portfolio = props => {
                     Organization
                 </Form.Label>
                 <Col>
-                    <Form.Control type="text" id="project-organization" value={row.organization || ''} placeholder={"Add an organization (Optional)"} onChange={e => handleProjectOrganizationChange(e, idx)}></Form.Control>
+                    <Form.Control type="text" id="project-organization" 
+                    value={row.organization || ''} 
+                    placeholder={"Add an organization (Optional)"} 
+                    onChange={e => handleProjectOrganizationChange(e, idx)}></Form.Control>
                 </Col>
             </Form.Row>
 
@@ -741,8 +746,10 @@ export const Portfolio = props => {
                     Description
                 </Form.Label>
                 <Col>
-                    <Form.Control as="textarea" rows="3" value={row.description || ''} placeholder={"Add a description (Optional)"} 
-                        onChange={e => handlePortfolioDescriptionChange(e, idx)}
+                    <Form.Control as="textarea" rows="3" 
+                    value={row.description.replace(/\\n/g, '\n') || ''} 
+                    placeholder={"Add a description (Optional)"} 
+                    onChange={e => handlePortfolioDescriptionChange(e, idx)}
                     />
                 </Col>
             </Form.Row>
@@ -821,8 +828,10 @@ export const Portfolio = props => {
                     Description
                 </Form.Label>
                 <Col>
-                    <Form.Control as="textarea" rows="3" value={row.description || ''} placeholder={"Add a description (Optional)"}
-                        onChange={e => {handleEducationDescriptionChange(e, idx)}}
+                    <Form.Control as="textarea" rows="3" 
+                    value={row.description.replace(/\\n/g, '\n') || ''} 
+                    placeholder={"Add a description (Optional)"}
+                    onChange={e => {handleEducationDescriptionChange(e, idx)}}
                     />
                 </Col>
             </Form.Row>
