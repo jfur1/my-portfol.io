@@ -89,7 +89,7 @@ export const Contact = (props) => {
                     linksToCreate.push({
                         title: row.title,
                         link: row.link,
-                        description: row.description
+                        description: JSON.stringify(row.description).replace(/['"]+/g, ''),
                     });
                 }
             } else if((typeof(row.toUpdate) !== 'undefined')){
@@ -97,7 +97,7 @@ export const Contact = (props) => {
                     link_id: row.link_id,
                     title: row.title,
                     link: row.link,
-                    description: row.description, 
+                    description: JSON.stringify(row.description).replace(/['"]+/g, ''),
                     rowIdx: idx
                 });
             }
@@ -173,7 +173,10 @@ export const Contact = (props) => {
                         Description
                     </Form.Label>
                     <Col>
-                        <Form.Control as="textarea" rows={3} id="link-description" value={row.description || ''} placeholder={"Add a description for your link! (Optional)"} onChange={e => {
+                        <Form.Control as="textarea" rows={3} id="link-description" 
+                        value={row.description.replace(/\\n/g, '\n') || ''} 
+                        placeholder={"Add a description for your link! (Optional)"} 
+                        onChange={e => {
                             handleLinkDescriptionChange(e, idx);
                         }}></Form.Control>
                     </Col>
@@ -230,6 +233,12 @@ export const Contact = (props) => {
         setEdited(true);
     }
 
+    function NewlineText(props) {
+        const text = props.text;
+        return text.split("\\n").map((str, idx) => 
+            <div key={idx}>{str.length === 0 ? <br/> : str}</div>
+        );
+    }
 
     return (
         <div className="tab-container"> 
@@ -348,7 +357,7 @@ export const Contact = (props) => {
                         <br/>
 
                         {row.description 
-                        ? <section>{row.description}</section>
+                        ? <><NewlineText text={row.description} key={idx}/></>
                         : null }
                         
                     </div>

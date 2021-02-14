@@ -58,7 +58,9 @@ export const About = props => {
         setSkills({values: skillsData});
     }
 
+    const handleBioChange = (event) => {
 
+    }
 
     // ----------- [BEGIN] Hobby Handlers -------------------
     const renderHobbiesForm = () => {
@@ -176,7 +178,7 @@ export const About = props => {
             bioToCreate.push(bio);
         } else if(info.bio !== bio){
             //console.log(`Set bio update from: ${info.bio} to: ${bio}`);
-            bioToUpdate.push(bio);
+            bioToUpdate.push(JSON.stringify(bio).replace(/['"]+/g, ''));
         }
 
         var hobbiesToCreate = [];
@@ -333,6 +335,12 @@ export const About = props => {
         return showLogs ? setShowLogs(false) : setShowLogs(true);
     };
 
+    function NewlineText(props) {
+        const text = props.text;
+        return text.split("\\n").map((str, idx) => 
+            <div key={idx}>{str.length === 0 ? <br/> : str}</div>
+        );
+    }
 
     return(
         <div className="tab-container">
@@ -342,6 +350,7 @@ export const About = props => {
         {props.data.ownedByUser 
         ? <PencilFill size={25} onClick={handleShow}/> 
         : null}
+
         <Modal
             show={show}
             onHide={handleClose}
@@ -366,13 +375,20 @@ export const About = props => {
             </Modal.Header>
             <Modal.Body>
                 <form>
+                    
                     <div className="form-group">
                         <label htmlFor="location"><b>Location</b></label>
                         <input type="text" className="form-control" id="location" defaultValue={info.location} onChange={e => {setLocation(e.target.value); setEdited(true);}}></input>
                     </div>
+
                     <div className="form-group">
                         <label htmlFor="bio"><b>Bio</b></label>
-                        <textarea className="form-control" rows="5" id="bio" defaultValue={info.bio} onChange={e => {setBio(e.target.value); setEdited(true);}}></textarea>
+                        
+                        <textarea className="form-control" rows="5" id="bio" 
+                        defaultValue={info.bio.replace(/\\n/g, '\n') || ''} 
+                        onChange={e => {setBio(e.target.value); setEdited(true);}}>
+
+                        </textarea>
                     </div>
                     
                     <div className="form-group row ml-4">
@@ -402,10 +418,12 @@ export const About = props => {
                 }}>Save Changes</Button>
             </Modal.Footer>
         </Modal>
+
         <div className="info-container">
             <h4><b>Location:</b> {info.location}</h4>
             <br></br>
-            <h4><b>Bio:</b> {info.bio}</h4>
+            <h4><b>Bio:</b></h4>
+            <><NewlineText text={info.bio}/></>
             <br></br>
         </div>
         <div className="user-container">
