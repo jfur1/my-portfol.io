@@ -625,7 +625,7 @@ export const Portfolio = props => {
                     <Form.Control as={ DatePicker } 
                     selected={(row.from_when !== "infinity" && row.from_when !== null) 
                     //eslint-disable-next-line
-                    ? new Date(row.from_when.replace(/-/g, '\/'))
+                    ? new Date(row.from_when.replace(/-/g, '\/').replace(/T.+/, ''))
                     : ''}
                     placeholder={"Add a start date for your project! (Optional)"} 
                     onChange={ date => {
@@ -642,7 +642,7 @@ export const Portfolio = props => {
                     <Form.Control as={ DatePicker } 
                     selected={(row.to_when !== "infinity" && row.to_when !== null) 
                     //eslint-disable-next-line
-                    ? new Date(row.to_when.replace(/-/g, '\/'))
+                    ? new Date(row.to_when.replace(/-/g, '\/').replace(/T.+/, ''))
                     : ''}  
                     placeholder={"Add a finish date for your project! (Optional)"} 
                     onChange={date => {
@@ -705,7 +705,7 @@ export const Portfolio = props => {
                     <Form.Control as={ DatePicker } 
                     selected={(row.from_when !== "infinity" && row.from_when !== null) 
                     //eslint-disable-next-line
-                    ? new Date(row.from_when.replace(/-/g, '\/'))
+                    ? new Date(row.from_when.replace(/-/g, '\/').replace(/T.+/, ''))
                     : ''}   
                     placeholder=
                     {"Add a start date (Optional)"} 
@@ -722,7 +722,7 @@ export const Portfolio = props => {
                     <Form.Control as={ DatePicker } 
                     selected={(row.to_when !== "infinity" && row.to_when !== null) 
                     //eslint-disable-next-line
-                    ? new Date(row.to_when.replace(/-/g, '\/'))
+                    ? new Date(row.to_when.replace(/-/g, '\/').replace(/T.+/, ''))
                     : ''}  
                     placeholder={"Add a finish date (Optional)"} 
                     onChange={date => {
