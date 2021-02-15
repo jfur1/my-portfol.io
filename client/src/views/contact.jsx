@@ -17,7 +17,9 @@ export const Contact = (props) => {
     const [show, setShow] = useState(false);
     const [edited, setEdited] = useState(false);
     const [showAlert, setShowAlert] = useState(false); 
+    
     const [reordered, setReordered] = useState(false);
+    const [changingOrder, setChangingOrder] = useState(false);
 
     // Data to be Modified
     const [publicEmail, setPublicEmail] = useState('');
@@ -32,8 +34,13 @@ export const Contact = (props) => {
     // Event Handlers
     const handleShow = () => setShow(true);
     const handleClose = () => {
-        if(edited) setShowAlert(true);
-        else setShow(false);
+        if(edited){
+            setShowAlert(true);
+        }
+        else {
+            setShow(false);
+            setChangingOrder(false);
+        }
     }
 
     // Replace state with original data
@@ -41,6 +48,8 @@ export const Contact = (props) => {
         setPublicEmail(profile.public_email);
         setPhone(profile.phone);
         setLinks({values: linksData});
+        setChangingOrder(false);
+        setReordered(false);
     }
 
     // form values change? => stage values to be updated
@@ -131,14 +140,15 @@ export const Contact = (props) => {
         }
 
         if(reordered){
-            // links.values.forEach((row, rowIdx) => {
-            //     console.log("Row:", row);
-            //     console.log("rowIdx:", rowIdx);
-            //     // props.updateLink(row.link_id, row.link, row.title, row.description, user.user_id, rowIdx);
-            //     props.setReorderedLinks
-            // })
+            console.log("Reordered links:")
+            links.values.forEach((row, rowIdx) => {
+                console.log("Row:", row);
+                console.log("rowIdx:", rowIdx);
+                // props.updateLink(row.link_id, row.link, row.title, row.description, user.user_id, rowIdx);
+                //props.setReorderedLinks
+            })
             // 
-            props.setReorderedLinks(links.values);
+            //props.setReorderedLinks(links.values);
             //props.reloadProfile();
         }
 
@@ -204,64 +214,44 @@ export const Contact = (props) => {
             )
         );
     }
-    
-    const RenderLinksForm = () => {
+
+    const ChangeLinksOrder = () => {
         return (
-            <DragDropContext onDragEnd={handleOnDragEnd}>
+            <DragDropContext 
+                onDragEnd={handleOnDragEnd}
+            >
             <Droppable droppableId="links">
             {(provided) => (
-            <div {...provided.droppableProps} ref={provided.innerRef}>
-                {links.values.map((row, idx) => {
-                    return (
-                        <Draggable key={idx} draggableId={row.link} index={idx}>
-                            {(provided) => (
-                            
-                                <Form.Row className='draggable-container mb-4 ml-3 mr-3' ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
-                                    <Form.Row className='mt-1' style={{width: "75%"}}>
-                                        <Form.Label column sm={3}>
-                                            Title
-                                        </Form.Label>
-                                        <Col>
-                                            <Form.Control type="text" value={row.title || ''} placeholder={"Link Title (Optional)"} onChange={e => {handleLinkTitleChange(e, idx)}}/>
-                                        </Col>
-                                    </Form.Row>
-                                    
-                    
-                                    <Form.Row className='mt-1 mr-2' style={{"width": "75%"}}>
-                                        <Form.Label column sm={3}>
-                                            Link
-                                        </Form.Label>
-                                        <Col>
-                                            <Form.Control type="text" value={row.link || ''} placeholder={"Add your link here (Required)"} onChange={e => {
-                                                handleLinkChange(e, idx);
-                                            }}/>
-                                        </Col>
-                                    </Form.Row>
-
-                                    <Col className='mt-1' style={{width: "75%"}}>
-                                        <Button onClick={() => removeLink(idx)} variant="outline-danger" size="sm">Delete Link</Button>
-                                    </Col>   
+                <div {...provided.droppableProps} ref={provided.innerRef}>
+                    {links.values.map((row, idx) => {
+                        return (
+                            <Draggable key={idx} draggableId={row.link} index={idx}>
+                                {(provided) => (
                                 
-                                    <Form.Row className='mt-1' style={{width: "75%"}}>
-                                        <Form.Label column sm={3}>
-                                            Description
-                                        </Form.Label>
-                                        <Col>
-                                            <Form.Control as="textarea" rows={3} id="link-description" 
-                                            value={row.description.replace(/\\n/g, '\n') || ''} 
-                                            placeholder={"Add a description for your link! (Optional)"} 
-                                            onChange={e => {
-                                                handleLinkDescriptionChange(e, idx);
-                                            }}></Form.Control>
-                                        </Col>
-                                    </Form.Row>
-                                </Form.Row>
-                            )}
-                        </Draggable>
-                    );
-                })}
-                {provided.placeholder}
-            </div>
+                                    <div className='draggable-container mb-4 ml-3 mr-3' ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+
+                                    {row.title
+                                        ? row.title
+                                        : null}
+                                        
+                                        <br></br>
+                        
+                                        {row.link
+                                        ? row.link
+                                        : null }
+
+                                        <br></br>
+                                    
+                                        {row.description
+                                        ? row.description
+                                        : null}
+                                    </div>
+                                )}
+                            </Draggable>
+                        );
+                    })}
+                    {provided.placeholder}
+                </div>
             )}
             </Droppable>
             </DragDropContext>
@@ -351,6 +341,7 @@ export const Contact = (props) => {
       items.splice(result.destination.index, 0, reorderedItem);
   
       setReordered(true);
+      setEdited(true);
       setLinks({values: items});
     }
 
@@ -415,11 +406,28 @@ export const Contact = (props) => {
                         <Form.Label className='mt-4'>
                             <h4>Links</h4>
                             {links.values.length < 6
-                            ? <Button onClick={() => addLink()} variant="outline-success" size="sm">Add Link</Button>  
-                            : null }
+                                ? <Button 
+                                onClick={() => addLink()} 
+                                variant="outline-success" 
+                                size="sm" 
+                                disabled={changingOrder}
+                                >Add Link</Button>  
+                                
+                                : null }
+
+                            <Button 
+                                onClick={() => {setChangingOrder(true);}} 
+                                variant="outline-primary" 
+                                size="sm"
+                                
+                            >Change Order</Button>  
+
                         </Form.Label >
-                        {/* {renderLinksForm()} */}
-                        <RenderLinksForm/>
+
+                        {changingOrder 
+                        ? <ChangeLinksOrder></ChangeLinksOrder>
+                        : renderLinksForm()}
+                        {/* <RenderLinksForm/> */}
 
                     </Form.Group>
                 </Form>
@@ -428,7 +436,6 @@ export const Contact = (props) => {
                     <Button variant="success" onClick={handleSave}>Save Changes</Button>
                 </Modal.Footer>
             </Modal>
-
 
             {/* After integrating backend, render original data not tmpHooks */}
             <h3>{user.firstname} {user.lastname}</h3>
