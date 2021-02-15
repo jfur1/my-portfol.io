@@ -497,6 +497,31 @@ class Profile extends Component{
         return data;
     }
 
+    // This will work while user is signed in, but no way around saving ordering in the DB -- hooks will be reset upon logout
+    
+    // setReorderedLinks = (reorderedLinks) => {
+    //     console.log("[Profile.jsx] Recieved reordered links:", reorderedLinks);
+    //     this.props.history.push({
+    //         pathname: `/${this.state.user.username}`,
+    //         state: {
+    //             user: this.state.user,
+    //             key: this.state.key,
+    //             ownedByUser: this.state.ownedByUser,
+    //             loggedIn: this.state.loggedIn,
+    //             requestedBy: this.state.requestedBy,
+    //             about: this.state.about,
+    //             profile: this.state.profile,
+    //             portfolio: this.state.portfolio,
+    //             contact: reorderedLinks,
+    //             education: this.state.education,
+    //             hobbies: this.state.hobbies,
+    //             skills: this.state.skills,
+    //             projects: this.state.projects
+    //         }
+    //     })
+    //     this.setState({contact: reorderedLinks, loading: false})
+    // }
+
     // PORTFOLIO Tab
 
     createProject = async(user_id, project) => {
@@ -787,6 +812,7 @@ class Profile extends Component{
                             deleteLink={this.deleteLink}
                             setCreatedLinks={this.setCreatedLinks}
                             reloadProfile={this.reloadProfile}
+                            setReorderedLinks={this.setReorderedLinks}
                         />
                     : null }
                 </div> 
