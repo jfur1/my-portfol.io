@@ -26,7 +26,7 @@ class Profile extends Component{
 
             requestedBy: (typeof this.props.location.state !== 'undefined' && typeof this.props.location.state.requestedBy !== 'undefined') ? this.props.location.state.requestedBy : null,
 
-            about: (typeof this.props.location.about !== 'undefined') ? this.props.location.state.about : null,
+            about: (typeof this.props.location.about !== 'undefined') ? this.props.location.state.about : [],
 
             profile: (typeof this.props.location.profile !== 'undefined') ? this.props.location.state.profile : null,
 
@@ -195,7 +195,29 @@ class Profile extends Component{
     }
     
     // ABOUT Tab
-
+    createLocation = async(user_id, location) => {
+        this.setState({loading: true});
+        const response = await fetch('http://localhost:5000/createLocation',  {
+            method: 'POST', 
+            mode: 'cors',
+            credentials: 'include',
+            withCredentials: true,
+            headers: {
+                user_id: user_id, 
+                location: location
+            }
+        });
+        const data = await response.json();
+        console.log("Client Recieved Response: ", data);
+        this.setState({
+            about: {
+                ...this.state.about,
+                location: data,
+            },
+            loading: false
+        });
+        console.log("Profile.jsx Created Location. this.state.about:", this.state.about);
+    }
     updateLocation = async (locationToUpdate, user_id) => {
         this.setState({loading: true});
         const response = await fetch('http://localhost:5000/updateLocation',  {
@@ -218,6 +240,30 @@ class Profile extends Component{
             loading: false
         });
         console.log("Profile.jsx Updated Location. this.state.about:",this.state.about);
+    }
+
+    createBio = async(user_id, bio) => {
+        this.setState({loading: true});
+        const response = await fetch('http://localhost:5000/createBio',  {
+            method: 'POST', 
+            mode: 'cors',
+            credentials: 'include',
+            withCredentials: true,
+            headers: {
+                user_id: user_id, 
+                bio: bio
+            }
+        });
+        const data = await response.json();
+        console.log("Client Recieved Response: ", data);
+        this.setState({
+            about: {
+                ...this.state.about,
+                bio: data,
+            },
+            loading: false
+        });
+        console.log("Profile.jsx Created Bio. this.state.about:", this.state.about);
     }
 
     updateBio = async(bioToUpdate, user_id) => {
@@ -771,7 +817,9 @@ class Profile extends Component{
                     { this.state.key === "about" ?  
                         <About {...this.props} 
                             data={this.state} 
+                            createLocation={this.createLocation}
                             updateLocation={this.updateLocation}
+                            createBio={this.createBio}
                             updateBio={this.updateBio}
                             updateHobby={this.updateHobby}
                             updateSkill={this.updateSkill}

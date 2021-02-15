@@ -460,12 +460,54 @@ app.get('/projects', (req, res) => {
 
 // ----------- [BEGIN] Edit About Tab -----------
 
-app.post('/insertLocation', (req, res) => {
+app.post('/createLocation', (req, res) => {
+    const {user_id, location} = req.headers;
 
+    db.task(async t => {
+        const max_id = await t.one('SELECT MAX(profile_id) FROM profile;');
+        let newId = max_id.max;
+        newId++;
+
+        return t.one('INSERT INTO profile (profile_id, uid, location) VALUES(${newId}, ${user_id}, ${location}) RETURNING profile_id, uid, location', 
+        {
+            newId,
+            user_id,
+            location
+        })
+    })
+    .then((data) => {
+        console.log("Inserted!");
+        return res.json(data);
+    })
+    .catch((err) => {
+        console.log(err);
+        res.json({error: true})
+    })
 })
 
-app.post('/insertBio', (req, res) => {
+app.post('/createBio', (req, res) => {
+    const {user_id, bio} = req.headers;
 
+    db.task(async t => {
+        const max_id = await t.one('SELECT MAX(profile_id) FROM profile;');
+        let newId = max_id.max;
+        newId++;
+
+        return t.one('INSERT INTO profile (profile_id, uid, bio) VALUES(${newId}, ${user_id}, ${bio}) RETURNING profile_id, uid, bio', 
+        {
+            newId,
+            user_id,
+            bio
+        })
+    })
+    .then((data) => {
+        console.log("Inserted!");
+        return res.json(data);
+    })
+    .catch((err) => {
+        console.log(err);
+        res.json({error: true})
+    })
 })
 
 app.post('/createHobby', (req, res) => {

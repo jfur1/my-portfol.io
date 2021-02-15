@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { PencilFill } from 'react-bootstrap-icons';
 import { Modal, Button, Form, Col } from 'react-bootstrap';
 import { AlertDismissible } from '../components/alertDismissible';
+import Switch  from '../components/switch';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
 
@@ -11,7 +12,7 @@ export const Contact = (props) => {
     // Original Data from Parent Profile
     const user = (props.location.state.user !== null) ? props.location.state.user : props.data.user;
     const profile = (props.data.profile !== null) ? props.data.profile : props.location.state.profile;
-    const linksData = (props.location.state.contact !== null) ? props.location.state.contact : props.data.contact;
+    const linksData = (props.data.contact !== null) ? props.data.contact : props.location.state.contact;
 
     // Display Toggles
     const [show, setShow] = useState(false);
@@ -144,12 +145,7 @@ export const Contact = (props) => {
             links.values.forEach((row, rowIdx) => {
                 console.log("Row:", row);
                 console.log("rowIdx:", rowIdx);
-                // props.updateLink(row.link_id, row.link, row.title, row.description, user.user_id, rowIdx);
-                //props.setReorderedLinks
             })
-            // 
-            //props.setReorderedLinks(links.values);
-            //props.reloadProfile();
         }
 
         // Possible DELETE ops should come last -- involves forced refresh
@@ -163,7 +159,7 @@ export const Contact = (props) => {
             }
             deleteLinks();
         };
-
+        setChangingOrder(false)
         setShow(false);
     }
     
@@ -405,6 +401,7 @@ export const Contact = (props) => {
                     <Form.Group>
                         <Form.Label className='mt-4'>
                             <h4>Links</h4>
+                            
                             {links.values.length < 6
                                 ? <Button 
                                 onClick={() => addLink()} 
@@ -414,20 +411,21 @@ export const Contact = (props) => {
                                 >Add Link</Button>  
                                 
                                 : null }
+                            <br></br>
 
-                            <Button 
-                                onClick={() => {setChangingOrder(true);}} 
-                                variant="outline-primary" 
-                                size="sm"
-                                
-                            >Change Order</Button>  
+                            {linksData.length > 1
+                            ? <><label>Change Order</label>
+                                <Switch
+                                    isOn={changingOrder}
+                                    handleToggle={() => setChangingOrder(!changingOrder)}
+                                /></>
+                            : null}
 
                         </Form.Label >
 
                         {changingOrder 
                         ? <ChangeLinksOrder></ChangeLinksOrder>
                         : renderLinksForm()}
-                        {/* <RenderLinksForm/> */}
 
                     </Form.Group>
                 </Form>

@@ -16,10 +16,12 @@ export const About = props => {
     const [show, setShow] = useState(false);
     const [edited, setEdited] = useState(false);
     const [showAlert, setShowAlert] = useState(false); 
-    const [location, setLocation] = useState(info.location);
-    const [bio, setBio] = useState(info.bio);
+
+    const [location, setLocation] = useState((info !== null && info.location !== null) ? info.location : null);
+    const [bio, setBio] = useState((info !== null && info.bio !== null) ? info.bio : null);
     const [hobbies, setHobbies] = useState({values: hobbiesData});
     const [skills, setSkills] = useState({values: skillsData});
+
 
     // Hooks used to format final onClick data for POST request
     
@@ -161,18 +163,18 @@ export const About = props => {
         let locationToCreate = [];
         let locationToUpdate = [];
         
-        if(info.location === null && location){
-            locationToCreate.push(location);
+        if(info === null && location){
+            locationToCreate.push(JSON.stringify(location).replace(/['"]+/g, ''));
         } else if(info.location !== location){
             //console.log(`Set location update from: ${info.location} to: ${location}`);
-            locationToUpdate.push(location);
+            locationToUpdate.push(JSON.stringify(location).replace(/['"]+/g, ''));
         }
 
         let bioToCreate = [];
         let bioToUpdate = [];
         // Bio
-        if(info.bio === null && bio){
-            bioToCreate.push(bio);
+        if(info === null && bio){
+            bioToCreate.push(JSON.stringify(bio).replace(/['"]+/g, ''));
         } else if(info.bio !== bio){
             //console.log(`Set bio update from: ${info.bio} to: ${bio}`);
             bioToUpdate.push(JSON.stringify(bio).replace(/['"]+/g, ''));
@@ -236,7 +238,9 @@ export const About = props => {
             }
         })
         
+        console.log("Location to Update:", locationToCreate);
         console.log("Location to Update:", locationToUpdate);
+        console.log("Bio to Create:", bioToCreate);
         console.log("Bio to Update:", bioToUpdate);
         console.log("Hobbies to Create", hobbiesToCreate);
         console.log("Hobbies to Update:", hobbiesToUpdate);
@@ -252,14 +256,26 @@ export const About = props => {
             props.updateLocation(locationToUpdate[0], user.user_id);
             locationToUpdate = [];
         } else if(locationToCreate.length){
-
+            let newLocation = [];
+            const createLocation = async() => {
+                const data = await props.createLocation(user.user_id, locationToCreate[0]);
+                newLocation.push(data);
+            }
+            createLocation();
+            locationToCreate = [];
         }
 
         if(bioToUpdate.length) {
             props.updateBio(bioToUpdate[0], user.user_id);
             bioToUpdate = [];
         } else if(bioToCreate.length){
-
+            let newBio = [];
+            const createBio = async() => {
+                const data = await props.createLocation(user.user_id, locationToCreate[0]);
+                newBio.push(data);
+            }
+            createBio();
+            bioToCreate = [];
         }
 
         if(hobbiesToCreate.length) {
@@ -334,6 +350,7 @@ export const About = props => {
 
     function NewlineText(props) {
         const text = props.text;
+        if(text == null) return null;
         return text.split("\\n").map((str, idx) => 
             <div key={idx}>{str.length === 0 ? <br/> : str}</div>
         );
@@ -375,15 +392,30 @@ export const About = props => {
                     
                     <div className="form-group">
                         <label htmlFor="location"><b>Location</b></label>
-                        <input type="text" className="form-control" id="location" defaultValue={info.location} onChange={e => {setLocation(e.target.value); setEdited(true);}}></input>
+                        <input 
+                            type="text" 
+                            className="form-control" 
+                            id="location" 
+                            defaultValue={(info !== null && info.location !== null) ? info.location : ''} 
+                            onChange={e => 
+                                {setLocation(e.target.value); 
+                                setEdited(true);
+                            }}
+                        ></input>
                     </div>
 
                     <div className="form-group">
                         <label htmlFor="bio"><b>Bio</b></label>
                         
-                        <textarea className="form-control" rows="5" id="bio" 
-                        defaultValue={info.bio.replace(/\\n/g, '\n') || ''} 
-                        onChange={e => {setBio(e.target.value); setEdited(true);}}>
+                        <textarea 
+                            className="form-control" 
+                            rows="5" 
+                            id="bio" 
+                            defaultValue={(info !== null && info.bio !== null) ? info.bio.replace(/\\n/g, '\n') : ''} 
+                            onChange={e => {
+                                setBio(e.target.value); 
+                                setEdited(true);
+                            }}>
 
                         </textarea>
                     </div>
@@ -418,18 +450,22 @@ export const About = props => {
 
         <div className="info-container">
             <div className="draggable-container">
-                <h4><b>Location:</b> {info.location}</h4>
+                <h4><b>Location:</b></h4>
+                    {info !== null 
+                    ? info.location
+                    : null}
             </div>
             <br></br>
             <div className="draggable-container">
                 <h4><b>Bio:</b></h4>
-            <><NewlineText text={info.bio}/></>
+            <><NewlineText text={info !== null ? info.bio : ''}/></>
             </div>
             <br></br>
         </div>
+
         <div className="user-container">
             <h4><b>Hobbies:</b>
-            {hobbiesData 
+            {hobbiesData
             ? hobbiesData.map((row, idx) => 
                 <div className="simple-border" key={idx}>
                     <p>{row.hobby}</p>
