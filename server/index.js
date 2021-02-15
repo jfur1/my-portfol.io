@@ -414,7 +414,7 @@ app.get('/hobbies', (req, res) => {
             return res.json({error: true});
         }
 
-        return t.any('SELECT * FROM hobbies WHERE \''+ user.user_id +'\' = uid;');
+        return t.any('SELECT * FROM hobbies WHERE \''+ user.user_id +'\' = uid ORDER BY position;');
     })
     .then((hobbies) => {
         return res.json(hobbies);
@@ -432,7 +432,7 @@ app.get('/skills', (req, res) => {
             return res.json({error: true});
         }
 
-        return t.any('SELECT * FROM skills WHERE \''+ user.user_id +'\' = uid;');
+        return t.any('SELECT * FROM skills WHERE \''+ user.user_id +'\' = uid ORDER BY position;');
     })
     .then((skills) => {
         return res.json(skills);
@@ -511,7 +511,7 @@ app.post('/createBio', (req, res) => {
 })
 
 app.post('/createHobby', (req, res) => {
-    const {user_id, hobby} = req.headers;
+    const {user_id, hobby, position} = req.headers;
 
     db.task(async t => {
         const max_id = await t.one('SELECT MAX(hobby_id) FROM hobbies;');
@@ -519,11 +519,12 @@ app.post('/createHobby', (req, res) => {
         newId++;
         console.log(`NewID: ${newId}`);
 
-        return t.one('INSERT INTO hobbies (hobby_id, uid, hobby) VALUES(${newId}, ${user_id}, ${hobby}) RETURNING hobby_id, uid, hobby', 
+        return t.one('INSERT INTO hobbies (hobby_id, uid, hobby, position) VALUES(${newId}, ${user_id}, ${hobby}, ${position}) RETURNING hobby_id, uid, hobby, position', 
         {
             newId,
             user_id,
-            hobby
+            hobby,
+            position
         })
     })
     .then((data) => {
@@ -537,18 +538,19 @@ app.post('/createHobby', (req, res) => {
 })
 
 app.post('/createSkill', (req, res) => {
-    const {user_id, skill} = req.headers;
+    const {user_id, skill, position} = req.headers;
 
     db.tx(async t => {
         const max_id = await t.one('SELECT MAX(skill_id) FROM skills;');
         let newId = max_id.max;
         newId++;
 
-        return t.one('INSERT INTO skills (skill_id, uid, skill) VALUES(${newId}, ${user_id}, ${skill}) RETURNING skill_id, uid, skill', 
+        return t.one('INSERT INTO skills (skill_id, uid, skill, position) VALUES(${newId}, ${user_id}, ${skill}), ${position} RETURNING skill_id, uid, skill, position', 
         {
             newId,
             user_id,
-            skill
+            skill,
+            position
         });
     })
     .then((data) => {
@@ -599,16 +601,22 @@ app.post('/updateBio', (req, res) => {
 })
 
 app.post('/updateHobby', (req, res) => {
-    const {hobby_id, hobby, user_id} = req.headers;
+    const {hobby_id, hobby, user_id, position} = req.headers;
     //console.log("Server recieved user_id:", user_id);
     //console.log("Server recieved hobby:", hobby)
-    //console.log("Server recieved hobby_id:", hobby_id);
+    console.log("Server recieved position:", position);
 
     db.tx(async t => {
-        return t.one('UPDATE hobbies SET hobby = ${hobby} WHERE uid = \'' + user_id + '\' AND hobby_id = \'' + hobby_id + '\' RETURNING hobby;', {hobby: hobby});
+        return t.one('UPDATE hobbies SET hobby = ${hobby}, position=${position} WHERE uid = ${user_id} AND hobby_id = ${hobby_id} RETURNING hobby_id, hobby, uid, position;', 
+        {
+            hobby_id,
+            hobby,
+            user_id, 
+            position
+        });
     })
     .then((data) => {
-        return res.json(data.hobby);
+        return res.json(data);
     })
     .catch((err) => {
         console.log(err);
@@ -617,16 +625,22 @@ app.post('/updateHobby', (req, res) => {
 })
 
 app.post('/updateSkill', (req, res) => {
-    const {skill_id, skill, user_id} = req.headers;
+    const {skill_id, skill, user_id, position} = req.headers;
     //console.log("Server recieved user_id:", user_id);
     //console.log("Server recieved skill:", skill)
-    //console.log("Server recieved skill_id:", skill_id);
+    console.log("Server recieved position:", position);
 
     db.tx(async t => {
-        return t.one('UPDATE skills SET skill = ${skill} WHERE uid = \'' + user_id + '\' AND skill_id = \'' + skill_id + '\' RETURNING skill;', {skill:skill});
+        return t.one('UPDATE skills SET skill=${skill}, position=${position} WHERE uid = ${user_id} AND skill_id = ${skill_id} RETURNING skill_id, skill, uid, position;', 
+        {
+            skill_id,
+            skill,
+            user_id, 
+            position
+        });
     })
     .then((data) => {
-        return res.json(data.skill);
+        return res.json(data);
     })
     .catch((err) => {
         console.log(err);
@@ -729,6 +743,7 @@ app.post('/createLink', (req, res) => {
 
 app.post('/updateLink', (req, res) => {
     const {link_id, link, title, description, user_id, position} = req.headers;
+    console.log("Server recieved position: ", position);
 
     db.tx(async t => {
         return t.one('UPDATE links SET link = ${link}, title = ${title}, description = ${description}, position=${position} WHERE uid = ${user_id} AND link_id = ${link_id} RETURNING link_id, uid, link, title, description, position;', 

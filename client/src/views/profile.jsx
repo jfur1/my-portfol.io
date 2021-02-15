@@ -292,6 +292,7 @@ class Profile extends Component{
     
     updateHobby = async(hobby_id, hobby, user_id, rowIdx) => {
         this.setState({loading: true});
+        console.log("[Profile.jsx] Recieved Position:", rowIdx);
         const response = await fetch('http://localhost:5000/updateHobby',  {
             method: 'POST', 
             mode: 'cors',
@@ -300,23 +301,25 @@ class Profile extends Component{
             headers: {
                 hobby_id: hobby_id, 
                 hobby: hobby,
-                user_id: user_id
+                user_id: user_id,
+                position: rowIdx
             }
         });
         const data = await response.json();
         console.log("Client Recieved Response: ", data);
 
-        let tmpHobbies = [...this.state.hobbies];
-        let row = {...tmpHobbies[rowIdx]};
-        row.hobby = data;
-        tmpHobbies[rowIdx] = row;
-        this.setState({hobbies: tmpHobbies, loading: false});
+        // let tmpHobbies = [...this.state.hobbies];
+        // let row = {...tmpHobbies[rowIdx]};
+        // row.hobby = data;
+        // tmpHobbies[rowIdx] = row;
+        // this.setState({hobbies: tmpHobbies, loading: false});
 
-        console.log("Profile.jsx Updated the hobby. this.state.hobbies:",this.state.hobbies);
+        // console.log("Profile.jsx Updated the hobby. this.state.hobbies:",this.state.hobbies);
     }
 
     updateSkill = async(skill_id, skill, user_id, rowIdx) => {
         this.setState({loading: true});
+        console.log("[Profile.jsx] Recieved Position:", rowIdx);
         const response = await fetch('http://localhost:5000/updateSkill',  {
             method: 'POST', 
             mode: 'cors',
@@ -325,22 +328,23 @@ class Profile extends Component{
             headers: {
                 skill_id: skill_id, 
                 skill: skill,
-                user_id: user_id
+                user_id: user_id,
+                position: rowIdx
             }
         });
         const data = await response.json();
         console.log("Client Recieved Response: ", data);
+        
+        // let tmpSkills = [...this.state.skills];
+        // let row = {...tmpSkills[rowIdx]};
+        // row.skill = data;
+        // tmpSkills[rowIdx] = row;
+        // this.setState({skills: tmpSkills, loading: false});
 
-        let tmpSkills = [...this.state.skills];
-        let row = {...tmpSkills[rowIdx]};
-        row.skill = data;
-        tmpSkills[rowIdx] = row;
-        this.setState({skills: tmpSkills, loading: false});
-
-        console.log("Profile.jsx Updated the skill. this.state.skills",this.state.skills);
+        //console.log("Profile.jsx Updated the skill. this.state.skills",this.state.skills);
     }
 
-    createHobby = async(user_id, hobby, rowIdx) => {
+    createHobby = async(user_id, hobby, idx) => {
         this.setState({loading: true});
         const response = await fetch('http://localhost:5000/createHobby',  {
             method: 'POST', 
@@ -349,7 +353,8 @@ class Profile extends Component{
             withCredentials: true,
             headers: {
                 user_id: user_id,
-                hobby: hobby
+                hobby: hobby,
+                position: idx
             }
         });
         const data = await response.json();
@@ -365,7 +370,7 @@ class Profile extends Component{
         });
     }
 
-    createSkill = async(user_id, skill) => {
+    createSkill = async(user_id, skill, idx) => {
         this.setState({loading: true});
         const response = await fetch('http://localhost:5000/createSkill',  {
             method: 'POST', 
@@ -374,7 +379,8 @@ class Profile extends Component{
             withCredentials: true,
             headers: {
                 user_id: user_id,
-                skill: skill
+                skill: skill,
+                position: idx
             }
         });
         const data = await response.json();
@@ -504,6 +510,7 @@ class Profile extends Component{
     }
 
     updateLink = async(link_id, link, title, description, user_id, rowIdx) => {
+        console.log("[Profile.jsx] Recieved Position:", rowIdx);
         this.setState({loading: true});
         const response = await fetch('http://localhost:5000/updateLink',  {
             method: 'POST', 
@@ -545,31 +552,6 @@ class Profile extends Component{
         console.log("Client Recieved Response: ", data);
         return data;
     }
-
-    // This will work while user is signed in, but no way around saving ordering in the DB -- hooks will be reset upon logout
-    
-    // setReorderedLinks = (reorderedLinks) => {
-    //     console.log("[Profile.jsx] Recieved reordered links:", reorderedLinks);
-    //     this.props.history.push({
-    //         pathname: `/${this.state.user.username}`,
-    //         state: {
-    //             user: this.state.user,
-    //             key: this.state.key,
-    //             ownedByUser: this.state.ownedByUser,
-    //             loggedIn: this.state.loggedIn,
-    //             requestedBy: this.state.requestedBy,
-    //             about: this.state.about,
-    //             profile: this.state.profile,
-    //             portfolio: this.state.portfolio,
-    //             contact: reorderedLinks,
-    //             education: this.state.education,
-    //             hobbies: this.state.hobbies,
-    //             skills: this.state.skills,
-    //             projects: this.state.projects
-    //         }
-    //     })
-    //     this.setState({contact: reorderedLinks, loading: false})
-    // }
 
     // PORTFOLIO Tab
 

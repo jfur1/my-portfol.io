@@ -164,7 +164,7 @@ export const Contact = (props) => {
             }
             deleteLinks();
         };
-        setChangingOrder(false)
+        setChangingOrder(false);
         setShow(false);
     }
     
@@ -327,6 +327,7 @@ export const Contact = (props) => {
 
     function NewlineText(props) {
         const text = props.text;
+        if(text == null) return null;
         return text.split("\\n").map((str, idx) => 
             <div key={idx}>{str.length === 0 ? <br/> : str}</div>
         );
@@ -413,7 +414,7 @@ export const Contact = (props) => {
                                 variant="outline-success" 
                                 size="sm" 
                                 disabled={changingOrder}
-                                >Add Link</Button>  
+                                >Add Link</Button>
                                 
                                 : null }
                             <br></br>

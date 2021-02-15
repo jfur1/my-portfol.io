@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import { PencilFill } from 'react-bootstrap-icons';
 import { Nav, Tab, Modal, Button, Form, Row, Col } from 'react-bootstrap';
 import { AlertDismissible } from '../components/alertDismissible';
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import Switch  from '../components/switch';
 import DatePicker from 'react-datepicker'
 
 export const Portfolio = props => {
@@ -16,11 +18,17 @@ export const Portfolio = props => {
     const [show, setShow] = useState(false);
     const [edited, setEdited] = useState(false);
     const [showAlert, setShowAlert] = useState(false); 
+
+    const [reordered, setReordered] = useState(false);
+    const [changingOrder, setChangingOrder] = useState(false);
     
     const handleShow = () => setShow(true);
     const handleClose = () => {
         if(edited) setShowAlert(true);
-        else setShow(false);
+        else{
+            setChangingOrder(false);
+            setShow(false);
+        }
     }
 
     // Replace state with original data
@@ -28,6 +36,7 @@ export const Portfolio = props => {
         setProjects({values: projectsData});
         setPortfolio({values: portfolioData});
         setEducation({values: educationData});
+        setChangingOrder(false);
     }
 
     // Data to be Modified
@@ -710,7 +719,7 @@ export const Portfolio = props => {
             }
             deleteEdu();
         }
-
+        setChangingOrder(false);
         setShow(false);
     }
 
@@ -975,6 +984,7 @@ export const Portfolio = props => {
 
     function NewlineText(props) {
         const text = props.text;
+        if(text == null) return null;
         return text.split("\\n").map((str, idx) => 
             <div key={idx}>{str.length === 0 ? <br/> : str}</div>
         );

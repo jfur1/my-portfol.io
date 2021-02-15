@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import { PencilFill } from 'react-bootstrap-icons';
 import { Modal, Button } from 'react-bootstrap';
 import { AlertDismissible } from '../components/alertDismissible';
+import Switch  from '../components/switch';
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
 export const About = props => {
     //console.log("About Recieved Parent Props: ", props);
@@ -16,6 +18,9 @@ export const About = props => {
     const [show, setShow] = useState(false);
     const [edited, setEdited] = useState(false);
     const [showAlert, setShowAlert] = useState(false); 
+
+    const [reordered, setReordered] = useState(false);
+    const [changingOrder, setChangingOrder] = useState(false);
 
     const [location, setLocation] = useState((info !== null && info.location !== null) ? info.location : null);
     const [bio, setBio] = useState((info !== null && info.bio !== null) ? info.bio : null);
@@ -48,6 +53,7 @@ export const About = props => {
         if(edited){
             setShowAlert(true);
         } else{
+            setChangingOrder(false);
             setShow(false);    
         }
     }
@@ -57,7 +63,9 @@ export const About = props => {
         setLocation(info.location);
         setBio(info.bio);
         setHobbies({values: hobbiesData});
+        setChangingOrder(false);
         setSkills({values: skillsData});
+        setReordered(false);
     }
 
 
@@ -156,7 +164,92 @@ export const About = props => {
     }
 
     // ----------- [END] Skill Handlers -------------------
+    function handleOnDragEnd(result) {
+        console.log(result)
+      if (!result.destination) return;
 
+      // Sorting in same list
+      if(result.source.droppableId === result.destination.droppableId){
+        if(result.source.droppableId === "hobbies"){
+            const items = Array.from(hobbies.values);
+            const [reorderedItem] = items.splice(result.source.index, 1);
+            items.splice(result.destination.index, 0, reorderedItem);
+        
+            setReordered(true);
+            setEdited(true);
+            setHobbies({values: items});
+        } else if(result.source.droppableId === "skills"){
+            const items = Array.from(skills.values);
+            const [reorderedItem] = items.splice(result.source.index, 1);
+            items.splice(result.destination.index, 0, reorderedItem);
+        
+            setReordered(true);
+            setEdited(true);
+            setSkills({values: items});
+        }
+
+      } else{
+          console.log("No sorting between lists!");
+          return;
+      }
+  
+
+    }
+    
+    const ChangeOrder = () => {
+        return (
+            <div style={{ 'display': 'flex' }}>
+            <DragDropContext 
+                onDragEnd={handleOnDragEnd}
+            >
+            <Droppable droppableId="hobbies">
+            {(provided) => (
+                <div {...provided.droppableProps} ref={provided.innerRef}>
+                    {hobbies.values.map((row, idx) => {
+                        return (
+                            <Draggable key={idx} draggableId={row.hobby} index={idx}>
+                                {(provided) => (
+                                
+                                    <div className='draggable-container mb-4 ml-3 mr-3' ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+
+                                    {row.hobby
+                                        ? row.hobby
+                                        : null}
+                                    </div>
+                                )}
+                            </Draggable>
+                        );
+                    })}
+                    {provided.placeholder}
+                </div>
+            )}
+            </Droppable>
+            <Droppable droppableId="skills">
+            {(provided) => (
+                <div {...provided.droppableProps} ref={provided.innerRef}>
+                    {skills.values.map((row, idx) => {
+                        return (
+                            <Draggable key={idx} draggableId={row.skill} index={idx}>
+                                {(provided) => (
+                                
+                                    <div className='draggable-container mb-4 ml-3 mr-3' ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+
+                                    {row.skill
+                                        ? row.skill
+                                        : null}
+                                    </div>
+                                )}
+                            </Draggable>
+                        );
+                    })}
+                    {provided.placeholder}
+                </div>
+            )}
+            </Droppable>
+            </DragDropContext>
+        </div>
+        );
+    }
     // Format edit hooks to be sent in POST request
     const handleSave = () => {
         // Location
@@ -281,10 +374,12 @@ export const About = props => {
         if(hobbiesToCreate.length) {
             const createHobbies = async() => {
                 var newHobbies = [];
+                var idx = 0;
                 for await (let hobbyToCreate of hobbiesToCreate){
-                    const data = await props.createHobby(user.user_id, hobbyToCreate.hobby, hobbyToCreate.rowIdx);
+                    const data = await props.createHobby(user.user_id, hobbyToCreate.hobby, idx);
                     //console.log("About.jsx Recieved Data from Profile.jsx:", data);
                     newHobbies.push(data);
+                    idx++;
                 }
                 //console.log("[About.jsx] Newly Created Hobbies: ", newHobbies);
                 props.setCreatedHobbies(newHobbies);
@@ -302,10 +397,12 @@ export const About = props => {
             //console.log(`** CREATE Skills: ${skillsToCreate}`);
             const createSkills = async() => {
                 var newSkills = [];
+                var idx = 0;
                 for await (let skillToCreate of skillsToCreate){
-                    const data = await props.createSkill(user.user_id, skillToCreate.skill, skillToCreate.rowIdx);
+                    const data = await props.createSkill(user.user_id, skillToCreate.skill, idx);
                     //console.log("About.jsx Recieved Data from Profile.jsx:", data);
                     newSkills.push(data);
+                    idx++;
                 }
                 //console.log("[About.jsx] Newly Created skills: ", newSkills);
                 props.setCreatedSkills(newSkills);
@@ -314,12 +411,30 @@ export const About = props => {
         }
         if(skillsToUpdate.length) {
             //console.log(`** UPDATE Skills: ${skillsToUpdate}`);
+            var idx = 0;
             skillsToUpdate.forEach((row, rowIdx) => {
-                props.updateSkill(row.skill_id, row.skill, user.user_id, row.rowIdx);
+                props.updateSkill(row.skill_id, row.skill, user.user_id, idx);
+                idx++;
             })
             console.log("HobbiesToUpdate:", skillsToUpdate);
         };
 
+
+        if(reordered){
+            console.log("Reordered hobbies:");
+            hobbies.values.forEach((row, rowIdx) => {
+                console.log("Row:", row);
+                console.log("New Position:", rowIdx);
+                props.updateHobby(row.hobby_id, row.hobby, user.user_id, rowIdx);
+            })
+            console.log("Reordered skills:");
+            skills.values.forEach((row, rowIdx) => {
+                console.log("Row:", row);
+                console.log("New Position:", rowIdx);
+                props.updateSkill(row.skill_id, row.skill, user.user_id, rowIdx);
+            })
+            props.reloadProfile();
+        }
 
         if(skillsToDelete.length) {
             //console.log(`** DELETE Skills with ID: ${skillsToDelete}`);
@@ -342,7 +457,8 @@ export const About = props => {
             }
             deleteHobbies();
         }
-
+       
+        setChangingOrder(false);
         setShow(false);
         // Bad, but working method for triggering useEffect
         return showLogs ? setShowLogs(false) : setShowLogs(true);
@@ -372,7 +488,7 @@ export const About = props => {
             keyboard={false}
             size="lg"
             centered
-            scrollable={true}
+            scrollable={false}
         >
             <Modal.Header closeButton>
                 <Modal.Title id="contained-modal-title-vcenter">
@@ -420,7 +536,18 @@ export const About = props => {
                         </textarea>
                     </div>
                     
-                    <div className="form-group row ml-4">
+                    {(hobbiesData.length > 1 || skillsData.length > 1)
+                        ? <><label>Change Order</label>
+                            <Switch
+                                isOn={changingOrder}
+                                handleToggle={() => setChangingOrder(!changingOrder)}
+                            /></>
+                        : null}
+
+                    {changingOrder
+                    ? <ChangeOrder></ChangeOrder>
+                    
+                    : <div className="form-group row ml-4">
                         <div className="form-group col text-center">
                             <label htmlFor="hobbies"><b>Hobbies</b></label>
                             {renderHobbiesForm()}
@@ -429,13 +556,16 @@ export const About = props => {
                             : null }
                         </div>  
                         <div className="form-group col text-center">
+
                             <label htmlFor="skills"><b>Skills</b></label>
                             {renderSkillsForm()}
                             {skills.values.length < 6
-                            ? <Button onClick={() => addSkill()} variant="outline-success" size="sm">Add Skill</Button>  
+                            ? <Button onClick={() => addSkill()} variant="outline-success" size="sm">Add Skill</Button>
                             : null }
+
                         </div>  
                     </div>
+                    }
                 </form>             
             </Modal.Body>
             <Modal.Footer>
