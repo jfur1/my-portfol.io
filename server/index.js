@@ -377,7 +377,7 @@ app.get('/contact', (req, res) => {
             return res.json({error: true});
         }
 
-        return t.any('SELECT * FROM links WHERE \''+ user.user_id +'\' = uid;');
+        return t.any('SELECT * FROM links WHERE \''+ user.user_id +'\' = uid ORDER BY position;');
     })
     .then((links) => {
         return res.json(links);
@@ -701,20 +701,21 @@ app.post('/updatePhone', (req, res) => {
 })
 
 app.post('/createLink', (req, res) => {
-    const {user_id, title, link, description} = req.headers;
+    const {user_id, title, link, description, position} = req.headers;
 
     db.tx(async t => {
         const max_id = await t.one('SELECT MAX(link_id) FROM links;');
         let newId = max_id.max;
         newId++;
 
-        return t.one('INSERT INTO links (link_id, uid, link, title, description) VALUES(${newId}, ${user_id}, ${link}, ${title}, ${description}) RETURNING link_id, uid, link, title, description', 
+        return t.one('INSERT INTO links (link_id, uid, link, title, description, position) VALUES(${newId}, ${user_id}, ${link}, ${title}, ${description}, ${position}) RETURNING link_id, uid, link, title, description, position;', 
         {
             newId,
             user_id,
             link, 
             title,
-            description
+            description,
+            position
         });
     })
     .then((data) => {
@@ -727,16 +728,17 @@ app.post('/createLink', (req, res) => {
 })
 
 app.post('/updateLink', (req, res) => {
-    const {link_id, link, title, description, user_id} = req.headers;
+    const {link_id, link, title, description, user_id, position} = req.headers;
 
     db.tx(async t => {
-        return t.one('UPDATE links SET link = ${link}, title = ${title}, description = ${description} WHERE uid = ${user_id} AND link_id = ${link_id} RETURNING link_id, uid, link, title, description;', 
+        return t.one('UPDATE links SET link = ${link}, title = ${title}, description = ${description}, position=${position} WHERE uid = ${user_id} AND link_id = ${link_id} RETURNING link_id, uid, link, title, description, position;', 
         {
             link, 
             title,
             description,
             user_id,
-            link_id
+            link_id,
+            position
         });
     })
     .then((data) => {

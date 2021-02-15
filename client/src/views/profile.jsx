@@ -475,7 +475,7 @@ class Profile extends Component{
         console.log("Profile.jsx Updated Public Email. this.state.profile:", this.state.profile);
     }
 
-    createLink = async(user_id, link) =>{
+    createLink = async(user_id, link, idx) =>{
         this.setState({loading: true});
         console.log("[Profile.jsx] Recieved Link:", link);
         const response = await fetch('http://localhost:5000/createLink',  {
@@ -487,7 +487,8 @@ class Profile extends Component{
                 user_id: user_id,
                 title: link.title,
                 link: link.link,
-                description: link.description
+                description: link.description,
+                position: idx
             }
         });
         const data = await response.json();
@@ -514,17 +515,19 @@ class Profile extends Component{
                 link: link,
                 title: title,
                 description: description,
-                user_id: user_id
+                user_id: user_id,
+                position: rowIdx
             }
         });
         const data = await response.json();
         console.log("Client Recieved Response: ", data);
 
-        let tmpLinks = [...this.state.contact];
-        tmpLinks[rowIdx] = data;
-        this.setState({contact: tmpLinks, loading: false});
+        // let tmpLinks = [...this.state.contact];
+        // tmpLinks[rowIdx] = data;
+        // this.setState({contact: tmpLinks, loading: false});
 
-        console.log("Profile.jsx Updated the Link. this.state.contact",this.state.contact);
+
+        //console.log("Profile.jsx Updated the Link. this.state.contact",this.state.contact);
     }
 
     deleteLink = async(link_id) => {

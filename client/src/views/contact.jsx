@@ -101,6 +101,7 @@ export const Contact = (props) => {
                         title: row.title,
                         link: row.link,
                         description: JSON.stringify(row.description).replace(/['"]+/g, ''),
+                        position: idx
                     });
                 }
             } else if((typeof(row.toUpdate) !== 'undefined')){
@@ -123,10 +124,12 @@ export const Contact = (props) => {
         if(linksToCreate.length) {
             const createLinks = async() => {
                 var newLinks = [];
+                var idx = 0;
                 for await (let linkToCreate of linksToCreate){
-                    const data = await props.createLink(user.user_id, linkToCreate);
+                    const data = await props.createLink(user.user_id, linkToCreate, idx);
                     //console.log("About.jsx Recieved Data from Profile.jsx:", data);
                     newLinks.push(data);
+                    idx++;
                 }
                 console.log("[About.jsx] Newly Created Links: ", newLinks);
                 props.setCreatedLinks(newLinks);
@@ -144,8 +147,10 @@ export const Contact = (props) => {
             console.log("Reordered links:")
             links.values.forEach((row, rowIdx) => {
                 console.log("Row:", row);
-                console.log("rowIdx:", rowIdx);
+                console.log("New Position:", rowIdx);
+                props.updateLink(row.link_id, row.link, row.title, row.description, user.user_id, rowIdx);
             })
+            props.reloadProfile();
         }
 
         // Possible DELETE ops should come last -- involves forced refresh
