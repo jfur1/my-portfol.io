@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { PencilFill } from 'react-bootstrap-icons';
 import { Modal, Button, Form, Col } from 'react-bootstrap';
 import { AlertDismissible } from '../components/alertDismissible';
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+// import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
 
 export const Contact = (props) => {
@@ -20,8 +20,8 @@ export const Contact = (props) => {
     // const [reordered, setReordered] = useState(false);
 
     // Data to be Modified
-    const [publicEmail, setPublicEmail] = useState(null);
-    const [phone, setPhone] = useState(null);
+    const [publicEmail, setPublicEmail] = useState('');
+    const [phone, setPhone] = useState('');
     const [links, setLinks] = useState({values: linksData});
 
     // POST request hooks
@@ -349,7 +349,7 @@ export const Contact = (props) => {
     //   setLinks({values: items});
     // }
 
-    console.log("Links data:", linksData);
+    //console.log("Links data:", linksData);
     return (
         <div className="tab-container"> 
             <Modal
@@ -457,7 +457,7 @@ export const Contact = (props) => {
                 {linksData 
                 ? linksData.map((row, idx) => 
                 
-                    <div key={idx}>
+                    <div className="draggable-container mb-4 ml-3 mr-3" key={idx}>
                         
                         {row.title 
                         ? <b>{row.title}: </b>

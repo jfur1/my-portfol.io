@@ -338,7 +338,7 @@ export const About = props => {
             <div key={idx}>{str.length === 0 ? <br/> : str}</div>
         );
     }
-    console.log(hobbiesData)
+
     return(
         <div className="tab-container">
         
@@ -417,17 +417,21 @@ export const About = props => {
         </Modal>
 
         <div className="info-container">
-            <h4><b>Location:</b> {info.location}</h4>
+            <div className="draggable-container">
+                <h4><b>Location:</b> {info.location}</h4>
+            </div>
             <br></br>
-            <h4><b>Bio:</b></h4>
+            <div className="draggable-container">
+                <h4><b>Bio:</b></h4>
             <><NewlineText text={info.bio}/></>
+            </div>
             <br></br>
         </div>
         <div className="user-container">
             <h4><b>Hobbies:</b>
             {hobbiesData 
             ? hobbiesData.map((row, idx) => 
-                <div key={idx}>
+                <div className="simple-border" key={idx}>
                     <p>{row.hobby}</p>
                 </div>
             ) 
@@ -436,7 +440,7 @@ export const About = props => {
             <h4><b>Skills:</b>
             {skillsData 
             ? skillsData.map((row, idx) => 
-                <div key={idx}>
+                <div className="simple-border" key={idx}>
                     <p>{row.skill}</p>
                 </div>
             ) 
