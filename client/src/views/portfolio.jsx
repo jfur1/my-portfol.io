@@ -57,7 +57,16 @@ export const Portfolio = props => {
 
     const handleProjectTitleChange = (event, idx) => {
         let tmpProjects = [...projects.values];
-        tmpProjects[idx].title = event.target.value;
+        tmpProjects[idx] = {
+            project_id: projects.values[idx].project_id,
+            uid: projects.values[idx].uid,
+            title: event.target.value,
+            description: projects.values[idx].description,
+            organization: projects.values[idx].organization,
+            from_when: projects.values[idx].from_when,
+            to_when: projects.values[idx].to_when,
+            link: projects.values[idx].link
+        }
         if((typeof(tmpProjects[idx].project_id) !== 'undefined')
         && !(typeof(tmpProjects[idx].toUpdate) !== 'undefined')){
             tmpProjects[idx].toUpdate = true;
@@ -68,7 +77,16 @@ export const Portfolio = props => {
     
     const handleProjectDescriptionChange = (event, idx) => {
         let tmpProjects = [...projects.values];
-        tmpProjects[idx].description = event.target.value;
+        tmpProjects[idx] = {
+            project_id: projects.values[idx].project_id,
+            uid: projects.values[idx].uid,
+            title: projects.values[idx].title,
+            description: event.target.value,
+            organization: projects.values[idx].organization,
+            from_when: projects.values[idx].from_when,
+            to_when: projects.values[idx].to_when,
+            link: projects.values[idx].link
+        }
         if((typeof(tmpProjects[idx].project_id) !== 'undefined')
         && !(typeof(tmpProjects[idx].toUpdate) !== 'undefined')){
             tmpProjects[idx].toUpdate = true;
@@ -79,7 +97,16 @@ export const Portfolio = props => {
 
     const handleProjectOrganizationChange = (event, idx) => {
         let tmpProjects = [...projects.values];
-        tmpProjects[idx].organization = event.target.value;
+        tmpProjects[idx] = {
+            project_id: projects.values[idx].project_id,
+            uid: projects.values[idx].uid,
+            title: projects.values[idx].title,
+            description: projects.values[idx].description,
+            organization: event.target.value,
+            from_when: projects.values[idx].from_when,
+            to_when: projects.values[idx].to_when,
+            link: projects.values[idx].link
+        }
         if((typeof(tmpProjects[idx].project_id) !== 'undefined')
         && !(typeof(tmpProjects[idx].toUpdate) !== 'undefined')){
             tmpProjects[idx].toUpdate = true;
@@ -101,7 +128,16 @@ export const Portfolio = props => {
             // console.log("\n")
         }
         let tmpProjects = [...projects.values];
-        tmpProjects[idx].from_when = newDate;
+        tmpProjects[idx] = {
+            project_id: projects.values[idx].project_id,
+            uid: projects.values[idx].uid,
+            title: projects.values[idx].title,
+            description: projects.values[idx].description,
+            organization: projects.values[idx].organization,
+            from_when: newDate,
+            to_when: projects.values[idx].to_when,
+            link: projects.values[idx].link
+        }
         if((typeof(tmpProjects[idx].project_id) !== 'undefined')
         && !(typeof(tmpProjects[idx].toUpdate) !== 'undefined')){
             tmpProjects[idx].toUpdate = true;
@@ -119,7 +155,16 @@ export const Portfolio = props => {
             newDate = date.toISOString().replace(/-/g, '\/').replace(/T.+/, '');
         }
         let tmpProjects = [...projects.values];
-        tmpProjects[idx].to_when = newDate;
+        tmpProjects[idx] = {
+            project_id: projects.values[idx].project_id,
+            uid: projects.values[idx].uid,
+            title: projects.values[idx].title,
+            description: projects.values[idx].description,
+            organization: projects.values[idx].organization,
+            from_when: projects.values[idx].from_when,
+            to_when: newDate,
+            link: projects.values[idx].link
+        }
         if((typeof(tmpProjects[idx].project_id) !== 'undefined')
         && !(typeof(tmpProjects[idx].toUpdate) !== 'undefined')){
             tmpProjects[idx].toUpdate = true;
@@ -130,7 +175,16 @@ export const Portfolio = props => {
 
     const handleProjectLinkChange = (event, idx) => {
         let tmpProjects = [...projects.values];
-        tmpProjects[idx].link = event.target.value;
+        tmpProjects[idx] = {
+            project_id: projects.values[idx].project_id,
+            uid: projects.values[idx].uid,
+            title: projects.values[idx].title,
+            description: projects.values[idx].description,
+            organization: projects.values[idx].organization,
+            from_when: projects.values[idx].from_when,
+            to_when: projects.values[idx].to_when,
+            link: event.target.value
+        }
         if((typeof(tmpProjects[idx].project_id) !== 'undefined')
         && !(typeof(tmpProjects[idx].toUpdate) !== 'undefined')){
             tmpProjects[idx].toUpdate = true;
@@ -175,7 +229,15 @@ export const Portfolio = props => {
 
     const handlePortfolioOccupationChange = (event, idx) => {
         let tmpPortfolio = [...portfolio.values];
-        tmpPortfolio[idx].occupation = event.target.value;
+        tmpPortfolio[idx] = {
+            portfolio_id: portfolio.values[idx].portfolio_id,
+            uid: portfolio.values[idx].uid,
+            occupation: event.target.value,
+            organization: portfolio.values[idx].organization,
+            from_when: portfolio.values[idx].from_when,
+            to_when: portfolio.values[idx].to_when,
+            description: portfolio.values[idx].description
+        }
         if((typeof(tmpPortfolio[idx].portfolio_id) !== 'undefined')
         && !(typeof(tmpPortfolio[idx].toUpdate) !== 'undefined')){
             tmpPortfolio[idx].toUpdate = true;
@@ -186,7 +248,15 @@ export const Portfolio = props => {
 
     const handlePortfolioOrganizationChange = (event, idx) => {
         let tmpPortfolio = [...portfolio.values];
-        tmpPortfolio[idx].organization = event.target.value;
+        tmpPortfolio[idx] = {
+            portfolio_id: portfolio.values[idx].portfolio_id,
+            uid: portfolio.values[idx].uid,
+            occupation: portfolio.values[idx].occupation,
+            organization: event.target.value,
+            from_when: portfolio.values[idx].from_when,
+            to_when: portfolio.values[idx].to_when,
+            description: portfolio.values[idx].description
+        }
         if((typeof(tmpPortfolio[idx].portfolio_id) !== 'undefined')
         && !(typeof(tmpPortfolio[idx].toUpdate) !== 'undefined')){
             tmpPortfolio[idx].toUpdate = true;
@@ -204,7 +274,15 @@ export const Portfolio = props => {
             newDate = date.toISOString().replace(/-/g, '\/').replace(/T.+/, '');
         }
         let tmpPortfolio = [...portfolio.values];
-        tmpPortfolio[idx].from_when = newDate;
+        tmpPortfolio[idx] = {
+            portfolio_id: portfolio.values[idx].portfolio_id,
+            uid: portfolio.values[idx].uid,
+            occupation: portfolio.values[idx].occupation,
+            organization: portfolio.values[idx].organization,
+            from_when: newDate,
+            to_when: portfolio.values[idx].to_when,
+            description: portfolio.values[idx].description
+        }
         if((typeof(tmpPortfolio[idx].portfolio_id) !== 'undefined')
         && !(typeof(tmpPortfolio[idx].toUpdate) !== 'undefined')){
             tmpPortfolio[idx].toUpdate = true;
@@ -222,7 +300,15 @@ export const Portfolio = props => {
             newDate = date.toISOString().replace(/-/g, '\/').replace(/T.+/, '');
         }
         let tmpPortfolio = [...portfolio.values];
-        tmpPortfolio[idx].to_when = newDate;
+        tmpPortfolio[idx] = {
+            portfolio_id: portfolio.values[idx].portfolio_id,
+            uid: portfolio.values[idx].uid,
+            occupation: portfolio.values[idx].occupation,
+            organization: portfolio.values[idx].organization,
+            from_when: portfolio.values[idx].from_when,
+            to_when: newDate,
+            description: portfolio.values[idx].description
+        }
         if((typeof(tmpPortfolio[idx].portfolio_id) !== 'undefined')
         && !(typeof(tmpPortfolio[idx].toUpdate) !== 'undefined')){
             tmpPortfolio[idx].toUpdate = true;
@@ -233,7 +319,15 @@ export const Portfolio = props => {
 
     const handlePortfolioDescriptionChange = (event, idx) => {
         let tmpPortfolio = [...portfolio.values];
-        tmpPortfolio[idx].description = event.target.value;
+        tmpPortfolio[idx] = {
+            portfolio_id: portfolio.values[idx].portfolio_id,
+            uid: portfolio.values[idx].uid,
+            occupation: portfolio.values[idx].occupation,
+            organization: portfolio.values[idx].organization,
+            from_when: portfolio.values[idx].from_when,
+            to_when: portfolio.values[idx].to_when,
+            description: event.target.value
+        }
         if((typeof(tmpPortfolio[idx].portfolio_id) !== 'undefined')
         && !(typeof(tmpPortfolio[idx].toUpdate) !== 'undefined')){
             tmpPortfolio[idx].toUpdate = true;
@@ -276,7 +370,15 @@ export const Portfolio = props => {
 
     const handleEducationOrganizationChange = (event, idx) => {
         let tmpEducation = [...education.values];
-        tmpEducation[idx].organization = event.target.value;
+        tmpEducation[idx] = {
+            education_id: education.values[idx].education_id,
+            uid: education.values[idx].uid,
+            organization: event.target.value,
+            education: education.values[idx].education,
+            from_when: education.values[idx].from_when,
+            to_when: education.values[idx].to_when,
+            description: education.values[idx].description
+        }
         if((typeof(tmpEducation[idx].education_id) !== 'undefined')
         && !(typeof(tmpEducation[idx].toUpdate) !== 'undefined')){
             tmpEducation[idx].toUpdate = true;
@@ -287,7 +389,15 @@ export const Portfolio = props => {
 
     const handleEducationChange = (event, idx) => {
         let tmpEducation = [...education.values];
-        tmpEducation[idx].education = event.target.value;
+        tmpEducation[idx] = {
+            education_id: education.values[idx].education_id,
+            uid: education.values[idx].uid,
+            organization: education.values[idx].organization,
+            education: event.target.value,
+            from_when: education.values[idx].from_when,
+            to_when: education.values[idx].to_when,
+            description: education.values[idx].description
+        }
         if((typeof(tmpEducation[idx].education_id) !== 'undefined')
         && !(typeof(tmpEducation[idx].toUpdate) !== 'undefined')){
             tmpEducation[idx].toUpdate = true;
@@ -305,7 +415,15 @@ export const Portfolio = props => {
             newDate = date.toISOString().replace(/-/g, '\/').replace(/T.+/, '');
         }
         let tmpEducation = [...education.values];
-        tmpEducation[idx].from_when = newDate;
+        tmpEducation[idx] = {
+            education_id: education.values[idx].education_id,
+            uid: education.values[idx].uid,
+            organization: education.values[idx].organization,
+            education: education.values[idx].education,
+            from_when: newDate,
+            to_when: education.values[idx].to_when,
+            description: education.values[idx].description
+        }
         if((typeof(tmpEducation[idx].education_id) !== 'undefined')
         && !(typeof(tmpEducation[idx].toUpdate) !== 'undefined')){
             tmpEducation[idx].toUpdate = true;
@@ -323,7 +441,15 @@ export const Portfolio = props => {
             newDate = date.toISOString().replace(/-/g, '\/').replace(/T.+/, '');
         }
         let tmpEducation = [...education.values];
-        tmpEducation[idx].to_when = newDate;
+        tmpEducation[idx] = {
+            education_id: education.values[idx].education_id,
+            uid: education.values[idx].uid,
+            organization: education.values[idx].organization,
+            education: education.values[idx].education,
+            from_when: education.values[idx].from_when,
+            to_when: newDate,
+            description: education.values[idx].description
+        }
         if((typeof(tmpEducation[idx].education_id) !== 'undefined')
         && !(typeof(tmpEducation[idx].toUpdate) !== 'undefined')){
             tmpEducation[idx].toUpdate = true;
@@ -334,7 +460,15 @@ export const Portfolio = props => {
 
     const handleEducationDescriptionChange = (event, idx) => {
         let tmpEducation = [...education.values];
-        tmpEducation[idx].description = event.target.value;
+        tmpEducation[idx] = {
+            education_id: education.values[idx].education_id,
+            uid: education.values[idx].uid,
+            organization: education.values[idx].organization,
+            education: education.values[idx].education,
+            from_when: education.values[idx].from_when,
+            to_when: education.values[idx].to_when,
+            description: event.target.value
+        }
         if((typeof(tmpEducation[idx].education_id) !== 'undefined')
         && !(typeof(tmpEducation[idx].toUpdate) !== 'undefined')){
             tmpEducation[idx].toUpdate = true;
@@ -633,7 +767,7 @@ export const Portfolio = props => {
                 </Form.Label>
                 <Col>
                     <Form.Control as={ DatePicker } 
-                    selected={(row.from_when !== "infinity" && row.from_when !== null) 
+                    selected={(row.from_when !== "infinity" && typeof(row.from_when) !== 'undefined') 
                     //eslint-disable-next-line
                     ? new Date(row.from_when.replace(/-/g, '\/').replace(/T.+/, ''))
                     : ''}
@@ -650,7 +784,7 @@ export const Portfolio = props => {
                 </Form.Label>
                 <Col>
                     <Form.Control as={ DatePicker } 
-                    selected={(row.to_when !== "infinity" && row.to_when !== null) 
+                    selected={(row.to_when !== "infinity" && typeof(row.to_when) !== 'undefined') 
                     //eslint-disable-next-line
                     ? new Date(row.to_when.replace(/-/g, '\/').replace(/T.+/, ''))
                     : ''}  
@@ -713,7 +847,7 @@ export const Portfolio = props => {
                 </Form.Label>
                 <Col>
                     <Form.Control as={ DatePicker } 
-                    selected={(row.from_when !== "infinity" && row.from_when !== null) 
+                    selected={(row.from_when !== "infinity" && typeof(row.from_when) !== 'undefined') 
                     //eslint-disable-next-line
                     ? new Date(row.from_when.replace(/-/g, '\/').replace(/T.+/, ''))
                     : ''}   
@@ -730,7 +864,7 @@ export const Portfolio = props => {
                 </Form.Label>
                 <Col>
                     <Form.Control as={ DatePicker } 
-                    selected={(row.to_when !== "infinity" && row.to_when !== null) 
+                    selected={(row.to_when !== "infinity" && typeof(row.to_when) !== 'undefined') 
                     //eslint-disable-next-line
                     ? new Date(row.to_when.replace(/-/g, '\/').replace(/T.+/, ''))
                     : ''}  
@@ -795,7 +929,7 @@ export const Portfolio = props => {
                 </Form.Label>
                 <Col>
                     <Form.Control as={ DatePicker } 
-                    selected={(row.from_when !== "infinity" && row.from_when !== null) 
+                    selected={(row.from_when !== "infinity" && typeof(row.from_when) !== 'undefined') 
                     //eslint-disable-next-line
                     ? new Date(row.from_when.replace(/-/g, '\/'))
                     : ''}   
@@ -812,7 +946,7 @@ export const Portfolio = props => {
                 </Form.Label>
                 <Col>
                     <Form.Control as={ DatePicker } 
-                    selected={(row.to_when !== "infinity" && row.to_when !== null) 
+                    selected={(row.to_when !== "infinity" && typeof(row.to_when) !== 'undefined') 
                     //eslint-disable-next-line
                     ? new Date(row.to_when.replace(/-/g, '\/')) 
                     : ''}  

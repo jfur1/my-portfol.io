@@ -44,22 +44,22 @@ export const Contact = (props) => {
     }
 
     // form values change? => stage values to be updated
-    // useEffect(() => {
-    //     if(profile.phone !== phone)
-    //         setPhoneToUpdate(phone);
-    //     if(profile.public_email !== publicEmail){
-    //         setEmailToUpdate(publicEmail);
-    //     }
+    useEffect(() => {
+        if(profile.phone !== phone)
+            setPhoneToUpdate(phone);
+        if(profile.public_email !== publicEmail){
+            setEmailToUpdate(publicEmail);
+        }
 
-    // }, [phone, profile.phone, profile.public_email, publicEmail])
+    }, [phone, profile.phone, profile.public_email, publicEmail])
 
-    // Upon successful POST response, linksData or aboutData will change, so reset hooks
-    // useEffect(() => {
-    //     setPhoneToUpdate([]);
-    //     setEmailToUpdate([]);
-    //     setLinksToDelete([]);
-    //     setLinks({values: linksData})
-    // }, [linksData])
+    //Upon successful POST response, linksData or aboutData will change, so reset hooks
+    useEffect(() => {
+        setPhoneToUpdate([]);
+        setEmailToUpdate([]);
+        setLinksToDelete([]);
+        setLinks({values: linksData})
+    }, [props, linksData])
 
 
     const handleSave = () => {
