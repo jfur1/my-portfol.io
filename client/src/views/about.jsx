@@ -338,7 +338,7 @@ export const About = props => {
             <div key={idx}>{str.length === 0 ? <br/> : str}</div>
         );
     }
-
+    console.log(hobbiesData)
     return(
         <div className="tab-container">
         

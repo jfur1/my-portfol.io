@@ -1,7 +1,0 @@
-{
-  "dependencies": {
-    "react-beautiful-dnd": "^13.0.0",
-    "react-datepicker": "^3.4.1",
-    "react-hook-form": "^6.15.1"
-  }
-}

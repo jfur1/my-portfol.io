@@ -8,7 +8,6 @@ import { Home } from './home';
 import { About } from './about';
 import { Portfolio } from './portfolio';
 import { Contact } from './contact';
-import { DragDropContext } from "react-beautiful-dnd";
 
 
 class Profile extends Component{
@@ -476,9 +475,7 @@ class Profile extends Component{
         console.log("Client Recieved Response: ", data);
 
         let tmpLinks = [...this.state.contact];
-        let row = {...tmpLinks[rowIdx]};
-        row = data;
-        tmpLinks[rowIdx] = row;
+        tmpLinks[rowIdx] = data;
         this.setState({contact: tmpLinks, loading: false});
 
         console.log("Profile.jsx Updated the Link. this.state.contact",this.state.contact);
@@ -722,7 +719,6 @@ class Profile extends Component{
     render(){
 
         return(
-            //<DragDropContext>
             <div className="container">
                 {this.state.loading
                 
@@ -761,7 +757,6 @@ class Profile extends Component{
                             deleteHobby={this.deleteHobby}
                             deleteSkill={this.deleteSkill}
                             reloadProfile={this.reloadProfile}
-                            //DragDropContext= {DragDropContext}
                         />
                     : null }
 
@@ -780,7 +775,6 @@ class Profile extends Component{
                             updateEducation={this.updateEducation}
                             deleteEducation={this.deleteEducation}
                             reloadProfile={this.reloadProfile}
-                            //DragDropContext={DragDropContext}
                         />
                     : null }
 
@@ -793,13 +787,11 @@ class Profile extends Component{
                             deleteLink={this.deleteLink}
                             setCreatedLinks={this.setCreatedLinks}
                             reloadProfile={this.reloadProfile}
-                            //DragDropContext={DragDropContext}
                         />
                     : null }
                 </div> 
                 </>}
             </div>
-        //</DragDropContext>
         );
     }
 
