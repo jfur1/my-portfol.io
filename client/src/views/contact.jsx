@@ -51,6 +51,7 @@ export const Contact = (props) => {
         setLinks({values: linksData});
         setChangingOrder(false);
         setReordered(false);
+        setLinksToDelete([]);
     }
 
     // form values change? => stage values to be updated
@@ -72,27 +73,16 @@ export const Contact = (props) => {
     }, [props, linksData])
 
 
-    const handleSave = () => {
+    const handleSave = async() => {
 
         console.log("Saving Changes:");
-
         console.log("Email to Update:", emailToUpdate);
         console.log("Phone to Update:", phoneToUpdate);
 
-        if(emailToUpdate.length){
-            props.updateEmail(user.user_id, emailToUpdate);
-        }
-        if(phoneToUpdate.length){
-            props.updatePhone(user.user_id, phoneToUpdate);
-        }
         var linksToCreate = [];
         var linksToUpdate = [];
-
         // Update/Insert (Upsert) Links?
         links.values.forEach((row, idx) => {
-            // console.log("row:", row);
-            // console.log("linksData[idx]",linksData[idx]);
-            // console.log("links.values[idx]", links.values[idx]);
             if(!(typeof(row.link_id) !== 'undefined')){
                 if(row.link === ""){
                     console.log("A link is required in order to create!")
@@ -101,7 +91,7 @@ export const Contact = (props) => {
                         title: row.title,
                         link: row.link,
                         description: JSON.stringify(row.description).replace(/['"]+/g, ''),
-                        position: idx
+                        rowIdx: idx
                     });
                 }
             } else if((typeof(row.toUpdate) !== 'undefined')){
@@ -118,55 +108,54 @@ export const Contact = (props) => {
         console.log("Links to Create:", linksToCreate);
         console.log("Links to Update:", linksToUpdate);
         console.log("Links to Delete", linksToDelete);        
-
         console.log("links.values:", links.values);
+
+        // BEGIN POST REQUESTS
+        const handlePhone = async() => {
+            await props.updatePhone(user.user_id, phoneToUpdate);
+        }
+        if(phoneToUpdate.length) await handlePhone();
+
         
-        if(linksToCreate.length) {
-            const createLinks = async() => {
-                var newLinks = [];
-                var idx = 0;
-                for await (let linkToCreate of linksToCreate){
-                    const data = await props.createLink(user.user_id, linkToCreate, idx);
-                    //console.log("About.jsx Recieved Data from Profile.jsx:", data);
-                    newLinks.push(data);
-                    idx++;
-                }
-                console.log("[About.jsx] Newly Created Links: ", newLinks);
-                props.setCreatedLinks(newLinks);
+        const handleEmail = async() => {
+            await props.updateEmail(user.user_id, emailToUpdate);
+        }
+        if(emailToUpdate.length) await handleEmail();
+
+
+        const createLinks = async() => {
+            for await (let linkToCreate of linksToCreate){
+                await props.createLink(user.user_id, linkToCreate, linkToCreate.rowIdx);
             }
-            createLinks();
         }
+        if(linksToCreate.length) await createLinks();
 
-        if(linksToUpdate.length){
-            linksToUpdate.forEach((row, rowIdx) => {
-                props.updateLink(row.link_id, row.link, row.title, row.description, user.user_id, row.rowIdx);
-            })
-            props.reloadProfile();
+
+        const updateLinks = async() => {
+            for await(let linkToUpdate of linksToUpdate){
+                await props.updateLink(linkToUpdate.link_id, linkToUpdate.link, linkToUpdate.title, linkToUpdate.description, user.user_id, linkToUpdate.rowIdx);
+            }
         }
+        if(linksToUpdate.length) await updateLinks();
 
-        if(reordered){
-            console.log("Reordered links:")
+
+        const reorder = async() => {
             links.values.forEach((row, rowIdx) => {
-                console.log("Row:", row);
-                console.log("New Position:", rowIdx);
                 props.updateLink(row.link_id, row.link, row.title, row.description, user.user_id, rowIdx);
             })
-            props.reloadProfile();
         }
+        if(reordered) await reorder();
 
-        // Possible DELETE ops should come last -- involves forced refresh
-        if(linksToDelete.length) {
-            //console.log(`** DELETE Skills with ID: ${skillsToDelete}`);
-            const deleteLinks = async() => {
-                for await (let linkToDelete of linksToDelete){
-                    await props.deleteLink(linkToDelete.link_id);
-                }
-                props.reloadProfile();
+
+        const deleteLinks = async() => {
+            for await (let linkToDelete of linksToDelete){
+                await props.deleteLink(linkToDelete.link_id);
             }
-            deleteLinks();
-        };
-        setChangingOrder(false);
-        setShow(false);
+        }
+        if(linksToDelete.length) await deleteLinks();
+
+
+        window.location.reload();
     }
     
     const renderLinksForm = () => {

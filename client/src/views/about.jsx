@@ -33,14 +33,10 @@ export const About = props => {
     const [skillsToDelete, setSkillToDelete] = useState([]);
     const [hobbiesToDelete, setHobbyToDelete] = useState([]);
 
-    const [showLogs, setShowLogs] = useState(false);
-
     // After successful post request, profile.jsx updates state with new data
     // New data passed to hobbiesData/skillsData, and is copied into hobbies/skills hooks
     // where data can be manipulated by user
     useEffect(() => {
-        //setLocationToCreate([]);
-        //setBioToCreate([]);
         setHobbies({values: hobbiesData});
         setSkills({values: skillsData});
         setHobbyToDelete([]);
@@ -63,8 +59,10 @@ export const About = props => {
         setLocation(info.location);
         setBio(info.bio);
         setHobbies({values: hobbiesData});
-        setChangingOrder(false);
         setSkills({values: skillsData});
+        setHobbyToDelete([]);
+        setSkillToDelete([]);
+        setChangingOrder(false);
         setReordered(false);
     }
 
@@ -249,7 +247,7 @@ export const About = props => {
         );
     }
     // Format edit hooks to be sent in POST request
-    const handleSave = () => {
+    const handleSave = async() => {
         // Location
         let locationToCreate = [];
         let locationToUpdate = [];
@@ -342,83 +340,55 @@ export const About = props => {
         
         
         // Begin POST requests
-
-        if(locationToUpdate.length){
-            props.updateLocation(locationToUpdate[0], user.user_id);
-            locationToUpdate = [];
-        } else if(locationToCreate.length){
-            let newLocation = [];
-            const createLocation = async() => {
-                const data = await props.createLocation(user.user_id, locationToCreate[0]);
-                newLocation.push(data);
+        const handleLocation = async() => {
+            if(locationToUpdate.length){
+                await props.updateLocation(locationToUpdate[0], user.user_id);
+                locationToUpdate = [];
+            } else if(locationToCreate.length){
+                await props.createLocation(user.user_id, locationToCreate[0], locationToCreate[0].rowIdx);
             }
-            createLocation();
-            locationToCreate = [];
         }
+        await handleLocation();
 
-        if(bioToUpdate.length) {
-            props.updateBio(bioToUpdate[0], user.user_id);
-            bioToUpdate = [];
-        } else if(bioToCreate.length){
-            let newBio = [];
-            const createBio = async() => {
-                const data = await props.createLocation(user.user_id, locationToCreate[0]);
-                newBio.push(data);
+        const handleBio = async() => {
+            if(bioToUpdate.length) {
+                await props.updateBio(bioToUpdate[0], user.user_id);
+            } else if(bioToCreate.length){
+                await props.createLocation(user.user_id, bioToCreate[0], bioToCreate[0].rowIdx);
             }
-            createBio();
-            bioToCreate = [];
         }
+        await handleBio();
 
-        if(hobbiesToCreate.length) {
-            const createHobbies = async() => {
-                var newHobbies = [];
-                var idx = 0;
-                for await (let hobbyToCreate of hobbiesToCreate){
-                    const data = await props.createHobby(user.user_id, hobbyToCreate.hobby, idx);
-                    //console.log("About.jsx Recieved Data from Profile.jsx:", data);
-                    newHobbies.push(data);
-                    idx++;
-                }
-                //console.log("[About.jsx] Newly Created Hobbies: ", newHobbies);
-                props.setCreatedHobbies(newHobbies);
+        const createHobbies = async() => {
+            for await (let hobbyToCreate of hobbiesToCreate){
+                await props.createHobby(user.user_id, hobbyToCreate.hobby, hobbyToCreate.rowIdx);
             }
-            createHobbies();
         }
-        if(hobbiesToUpdate.length) {
-            //console.log(`** UPDATE Hobbies: ${hobbiesToUpdate}`);
-            hobbiesToUpdate.forEach((row, rowIdx) => {
-                props.updateHobby(row.hobby_id, row.hobby, user.user_id, row.rowIdx);
-            })
-        };
+        if(hobbiesToCreate.length) await createHobbies();
 
-        if(skillsToCreate.length) {
-            //console.log(`** CREATE Skills: ${skillsToCreate}`);
-            const createSkills = async() => {
-                var newSkills = [];
-                var idx = 0;
+        const updateHobbies = async() => {
+            for await(let hobbyToUpdate of hobbiesToUpdate){
+                await props.updateHobby(hobbyToUpdate.hobby_id, hobbyToUpdate.hobby, user.user_id, hobbyToUpdate.rowIdx)
+            }
+        }
+        if(hobbiesToUpdate.length) await updateHobbies();
+
+
+        const createSkills = async() => {
                 for await (let skillToCreate of skillsToCreate){
-                    const data = await props.createSkill(user.user_id, skillToCreate.skill, idx);
-                    //console.log("About.jsx Recieved Data from Profile.jsx:", data);
-                    newSkills.push(data);
-                    idx++;
+                    await props.createSkill(user.user_id, skillToCreate.skill, skillToCreate.rowIdx);
                 }
-                //console.log("[About.jsx] Newly Created skills: ", newSkills);
-                props.setCreatedSkills(newSkills);
-            }
-            createSkills();
         }
-        if(skillsToUpdate.length) {
-            //console.log(`** UPDATE Skills: ${skillsToUpdate}`);
-            var idx = 0;
-            skillsToUpdate.forEach((row, rowIdx) => {
-                props.updateSkill(row.skill_id, row.skill, user.user_id, idx);
-                idx++;
-            })
-            console.log("HobbiesToUpdate:", skillsToUpdate);
-        };
+        if(skillsToCreate.length) await createSkills();
 
+        const updateSkills = async() => {
+            for await (let skillToUpdate of skillsToUpdate){
+                await props.updateSkill(skillToUpdate.skill_id, skillToUpdate.skill, user.user_id, skillToUpdate.rowIdx);
+            }
+        }
+        if(skillsToUpdate.length) await updateSkills();
 
-        if(reordered){
+        const reorder = async() => {
             console.log("Reordered hobbies:");
             hobbies.values.forEach((row, rowIdx) => {
                 console.log("Row:", row);
@@ -431,35 +401,24 @@ export const About = props => {
                 console.log("New Position:", rowIdx);
                 props.updateSkill(row.skill_id, row.skill, user.user_id, rowIdx);
             })
-            props.reloadProfile();
         }
+        if(reordered) await reorder();
 
-        if(skillsToDelete.length) {
-            //console.log(`** DELETE Skills with ID: ${skillsToDelete}`);
-            const deleteSkills = async() => {
-                for await (let skillToDelete of skillsToDelete){
-                    await props.deleteSkill(skillToDelete.skill_id);
-                }
-                props.reloadProfile();
+        const deleteSkills = async() => {
+            for await (let skillToDelete of skillsToDelete){
+                await props.deleteSkill(skillToDelete.skill_id);
             }
-            deleteSkills();
-        };
-
-        if(hobbiesToDelete.length) {
-            //console.log(`** DELETE Hobbies with ID: ${hobbiesToDelete}`);
-            const deleteHobbies = async() => {
-                for await (let hobbyToDelete of hobbiesToDelete){
-                    await props.deleteHobby(hobbyToDelete.hobby_id);
-                }
-                props.reloadProfile();
-            }
-            deleteHobbies();
         }
+        if(skillsToDelete.length) await deleteSkills();
+
+        const deleteHobbies = async() => {
+            for await (let hobbyToDelete of hobbiesToDelete){
+                await props.deleteHobby(hobbyToDelete.hobby_id);
+            }
+        }
+        if(hobbiesToDelete.length) await deleteHobbies();
        
-        setChangingOrder(false);
-        setShow(false);
-        // Bad, but working method for triggering useEffect
-        return showLogs ? setShowLogs(false) : setShowLogs(true);
+        window.location.reload();
     };
 
     function NewlineText(props) {

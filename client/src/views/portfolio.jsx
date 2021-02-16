@@ -36,6 +36,9 @@ export const Portfolio = props => {
         setProjects({values: projectsData});
         setPortfolio({values: portfolioData});
         setEducation({values: educationData});
+        setProjectsToDelete([]);
+        setWorkExperienceToDelete([]);
+        setEducationToDelete([]);
         setChangingOrder(false);
         setReordered(false);
     }
@@ -557,12 +560,15 @@ export const Portfolio = props => {
 
     // --------------- End Education Event Handling --------------
 
-    const handleSave = () => {
-        console.log("'Saving' Changes:");
+    const handleSave = async(e) => {
+        console.log("Saving Changes:");
 
-        // ------------------- Begin Projects ----------------------------
         var projectsToCreate = [];
         var projectsToUpdate = [];
+        var workExperienceToCreate = [];
+        var workExperienceToUpdate = [];
+        var educationToCreate = [];
+        var educationToUpdate = [];
 
         // Determine what needs to be created vs. updated
         projects.values.forEach((row, idx) => {
@@ -577,7 +583,8 @@ export const Portfolio = props => {
                         organization: row.organization,
                         from_when: row.from_when,
                         to_when: row.to_when,
-                        link: row.link
+                        link: row.link,
+                        rowIdx: idx
                     });
                 }
             } else if(typeof(row.toUpdate) !== 'undefined'){
@@ -593,38 +600,6 @@ export const Portfolio = props => {
                 })
             }
         })
-
-        console.log("Projects to Create:", projectsToCreate);
-        console.log("Projects to Update:", projectsToUpdate);
-        console.log("Projects to Delete:", projectsToDelete);
-
-        if(projectsToCreate.length){
-            const createProjects = async() => {
-                var newProjects = [];
-                var idx = 0;
-                for await (let projectToCreate of projectsToCreate){
-                    const data = await props.createProject(user.user_id, projectToCreate, idx);
-                    newProjects.push(data);
-                    idx++;
-                }
-                console.log("[About.jsx] Newly Created Projects: ", newProjects);
-                props.setCreatedProjects(newProjects);
-            }
-            createProjects();
-        }
-
-        if(projectsToUpdate.length){
-            projectsToUpdate.forEach((row, idx) => {
-                console.log("Row To Update: ", row)
-                props.updateProject(user.user_id, row, row.rowIdx);
-            })
-            props.reloadProfile();
-        }
-        // ------------------- Begin Portfolio ----------------------------
-        var workExperienceToCreate = [];
-        var workExperienceToUpdate = [];
-
-        // Determine what needs to be created vs. updated
         portfolio.values.forEach((row, idx) => {
             if(!(typeof(row.portfolio_id) !== 'undefined')){
                 if(row.occupation === ''){
@@ -635,7 +610,8 @@ export const Portfolio = props => {
                         organization: row.organization,
                         from_when: row.from_when,
                         to_when: row.to_when,
-                        description: JSON.stringify(row.description).replace(/['"]+/g, '')
+                        description: JSON.stringify(row.description).replace(/['"]+/g, ''),
+                        rowIdx: idx
                     });
                 }
             } else if(typeof(row.toUpdate) !== 'undefined'){
@@ -650,37 +626,6 @@ export const Portfolio = props => {
                 })
             }
         })
-        console.log("Work Experience to Create:", workExperienceToCreate);
-        console.log("Work Experience to Update:", workExperienceToUpdate);
-        console.log("Work Experience to Delete:", workExperienceToDelete);
-
-        if(workExperienceToCreate.length){
-            const createPortfolio = async() => {
-                var newWorkExperiences = [];
-                var idx = 0;
-                for await (let workToCreate of workExperienceToCreate){
-                    const data = await props.createWorkExperience(user.user_id, workToCreate, idx);
-                    newWorkExperiences.push(data);
-                    idx++;
-                }
-                console.log("[About.jsx] Newly Created Portfolio: ", newWorkExperiences);
-                props.setCreatedWorkExperience(newWorkExperiences);
-            }
-            createPortfolio();
-        }
-
-        if(workExperienceToUpdate.length){
-            workExperienceToUpdate.forEach((row, idx) => {
-                props.updateWorkExperience(user.user_id, row, row.rowIdx);
-            })
-            props.reloadProfile();
-        }
-        // ------------------- Begin Projects ----------------------------
-
-        var educationToCreate = [];
-        var educationToUpdate = [];
-
-        // Determine what needs to be created vs. updated
         education.values.forEach((row, idx) => {
             if(!(typeof(row.education_id) !== 'undefined')){
                 if(row.education === ''){
@@ -691,7 +636,8 @@ export const Portfolio = props => {
                         education: row.education,
                         from_when: row.from_when,
                         to_when: row.to_when,
-                        description: JSON.stringify(row.description).replace(/['"]+/g, '')
+                        description: JSON.stringify(row.description).replace(/['"]+/g, ''),
+                        rowIdx: idx
                     });
                 }
             } else if(typeof(row.toUpdate) !== 'undefined'){
@@ -707,68 +653,82 @@ export const Portfolio = props => {
             }
         })
 
+        console.log("Projects to Create:", projectsToCreate);
+        console.log("Projects to Update:", projectsToUpdate);
+        console.log("Projects to Delete:", projectsToDelete);
+        console.log("Work Experience to Create:", workExperienceToCreate);
+        console.log("Work Experience to Update:", workExperienceToUpdate);
+        console.log("Work Experience to Delete:", workExperienceToDelete);
         console.log("Education to Create:", educationToCreate);
         console.log("Education to Update:", educationToUpdate);
         console.log("Education to Delete:", educationToDelete);
 
-        if(educationToCreate.length){
-            const createEdu = async() => {
-                var newEducation = [];
-                var idx=0;
+        // Begin POST Requests
+        
+        const createProjects = async() => {
+            for await (let projectToCreate of projectsToCreate){
+                await props.createProject(user.user_id, projectToCreate, projectToCreate.rowIdx);
+            }
+        }
+        if(projectsToCreate.length) await createProjects();
+
+        const updateProjects = async() => {
+            for(const projectToUpdate of projectsToUpdate){
+                await props.updateProject(user.user_id, projectToUpdate, projectToUpdate.rowIdx);
+            }
+        }
+        if(projectsToUpdate.length) await updateProjects();
+
+        const createPortfolio = async() => {
+            for await (let workToCreate of workExperienceToCreate){
+                await props.createWorkExperience(user.user_id, workToCreate, workToCreate.rowIdx);
+            }
+        }
+        if(workExperienceToCreate.length) await createPortfolio();
+
+        const updateWorkExperience = async() => {
+            for(const workToUpdate of workExperienceToUpdate){
+                await props.updateWorkExperience(user.user_id, workToUpdate, workToUpdate.rowIdx);
+            }
+        }
+        if(workExperienceToUpdate.length) await updateWorkExperience();
+
+        const createEdu = async() => {
                 for await (let eduToCreate of educationToCreate){
-                    const data = await props.createEducation(user.user_id, eduToCreate, idx);
-                    newEducation.push(data);
-                    idx++;
+                    await props.createEducation(user.user_id, eduToCreate, eduToCreate.rowIdx);
                 }
-                console.log("[About.jsx] Newly Created Education: ", newEducation);
-                props.setCreatedEducation(newEducation);
-            }
-            createEdu();
         }
+        if(educationToCreate.length) await createEdu();
 
-        if(educationToUpdate.length){
-            educationToUpdate.forEach((row, idx) => {
-                props.updateEducation(user.user_id, row, idx);
-            });
-            props.reloadProfile();
-        }
-
-        // -------------- Handle Deletes ----------------------------
-        // Possible DELETE ops should come last -- involves forced refresh
-
-        if(projectsToDelete.length) {
-            //console.log(`** DELETE Skills with ID: ${skillsToDelete}`);
-            const deleteProjects = async() => {
-                for await (let projectToDelete of projectsToDelete){
-                    await props.deleteProject(projectToDelete.project_id);
-                }
-                props.reloadProfile();
+        const updateEdu = async() => {
+            for await (const eduToUpdate of educationToUpdate){
+                await props.updateEducation(user.user_id, eduToUpdate, eduToUpdate.rowIdx);
             }
-            deleteProjects();
+        }
+        if(educationToUpdate.length) await updateEdu();
+
+        const deleteProjects = async() => {
+            for await (let projectToDelete of projectsToDelete){
+                await props.deleteProject(projectToDelete.project_id);
+            }
         };
+        if(projectsToDelete.length) await deleteProjects();
 
-        if(workExperienceToDelete.length){
-            const deleteWork = async() => {
-                for await (let workToDelete of workExperienceToDelete){
-                    await props.deleteWorkExperience(workToDelete.portfolio_id);
-                }
-                props.reloadProfile();
+        const deleteWork = async() => {
+            for await (let workToDelete of workExperienceToDelete){
+                await props.deleteWorkExperience(workToDelete.portfolio_id);
             }
-            deleteWork();
         }
+        if(workExperienceToDelete.length) await deleteWork();
 
-        if(educationToDelete.length){
-            const deleteEdu = async() => {
-                for await (let eduToDelete of educationToDelete){
-                    await props.deleteEducation(eduToDelete.education_id);
-                }
-                props.reloadProfile();
+        const deleteEdu = async() => {
+            for await (let eduToDelete of educationToDelete){
+                await props.deleteEducation(eduToDelete.education_id);
             }
-            deleteEdu();
         }
-        //-------- Handle Reorder
+        if(educationToDelete.length) await deleteEdu();
 
-        if(reordered){
+        const reorder = async() => {
             console.log("Reordered projects:");
             projects.values.forEach((row, rowIdx) => {
                 console.log("Row:", row);
@@ -786,11 +746,11 @@ export const Portfolio = props => {
                 console.log("New Position:", rowIdx);
                 props.updateEducation(user.user_id, row, rowIdx);
             })
-            props.reloadProfile();
         }
+        if(reordered) await reorder();
 
-        setChangingOrder(false);
-        setShow(false);
+        console.log("DONE");
+        window.location.reload();
     }
 
 
