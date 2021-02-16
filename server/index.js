@@ -450,7 +450,7 @@ app.get('/projects', (req, res) => {
             return res.json({error: true});
         }
 
-        return t.any('SELECT project_id, uid, title, description, organization, from_when::varchar, to_when::varchar, link FROM projects WHERE \''+ user.user_id +'\' = uid;');
+        return t.any('SELECT project_id, uid, title, description, organization, from_when::varchar, to_when::varchar, link, position FROM projects WHERE \''+ user.user_id +'\' = uid ORDER BY position;');
     })
     .then((skills) => {
         return res.json(skills);
@@ -1010,7 +1010,7 @@ app.post('/createEducation', (req, res) => {
 })
 
 app.post('/updateEducation', (req,res) => {
-    let {
+    const {
         education_id, 
         user_id, 
         organization, 

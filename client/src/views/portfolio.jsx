@@ -618,6 +618,7 @@ export const Portfolio = props => {
                 console.log("Row To Update: ", row)
                 props.updateProject(user.user_id, row, row.rowIdx);
             })
+            props.reloadProfile();
         }
         // ------------------- Begin Portfolio ----------------------------
         var workExperienceToCreate = [];
@@ -672,6 +673,7 @@ export const Portfolio = props => {
             workExperienceToUpdate.forEach((row, idx) => {
                 props.updateWorkExperience(user.user_id, row, row.rowIdx);
             })
+            props.reloadProfile();
         }
         // ------------------- Begin Projects ----------------------------
 
@@ -726,8 +728,9 @@ export const Portfolio = props => {
 
         if(educationToUpdate.length){
             educationToUpdate.forEach((row, idx) => {
-                props.updateEducation(user.user_id, row, row.rowIdx);
+                props.updateEducation(user.user_id, row, idx);
             });
+            props.reloadProfile();
         }
 
         // -------------- Handle Deletes ----------------------------

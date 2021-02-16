@@ -751,7 +751,7 @@ class Profile extends Component{
         });
         const data = await response.json();
         console.log("Client Recieved Response: ", data);
-
+        
         // let tmpEducation = [...this.state.education];
         // tmpEducation[rowIdx] = data;
         // this.setState({education: tmpEducation, loading: false});
