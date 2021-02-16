@@ -141,6 +141,7 @@ export const Contact = (props) => {
             linksToUpdate.forEach((row, rowIdx) => {
                 props.updateLink(row.link_id, row.link, row.title, row.description, user.user_id, row.rowIdx);
             })
+            props.reloadProfile();
         }
 
         if(reordered){
