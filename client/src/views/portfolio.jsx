@@ -892,7 +892,7 @@ export const Portfolio = props => {
     const renderWorkExperienceForm = () => {
 
         return portfolio.values.map((row, idx) => 
-        <Form.Row className='mb-4 ml-3' key={idx}>
+        <Form.Row className='draggable-container mb-4 ml-3' key={idx}>
             <Form.Row className='mt-1' style={{width: "75%"}}>
                 <Form.Label column sm={3}>
                     Title
@@ -971,7 +971,7 @@ export const Portfolio = props => {
 
     const renderEducationForm = () => {
         return education.values.map((row, idx) => 
-        <Form.Row className='mb-4 ml-3' key={idx}>
+        <Form.Row className='draggable-container mb-4 ml-3' key={idx}>
             <Form.Row className='mt-1' style={{width: "75%"}}>
                 <Form.Label column sm={3}>
                     Education
