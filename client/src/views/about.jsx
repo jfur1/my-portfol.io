@@ -389,11 +389,11 @@ export const About = props => {
         if(skillsToUpdate.length) await updateSkills();
 
         const reorder = async() => {
-            hobbies.values.forEach((row, rowIdx) => {
-                props.updateHobby(row.hobby_id, row.hobby, user.user_id, rowIdx);
+            hobbies.values.forEach(async (row, rowIdx) => {
+                await props.updateHobby(row.hobby_id, row.hobby, user.user_id, rowIdx);
             })
-            skills.values.forEach((row, rowIdx) => {
-                props.updateSkill(row.skill_id, row.skill, user.user_id, rowIdx);
+            skills.values.forEach(async (row, rowIdx) => {
+                await props.updateSkill(row.skill_id, row.skill, user.user_id, rowIdx);
             })
         }
         if(reordered) await reorder();

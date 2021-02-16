@@ -140,8 +140,8 @@ export const Contact = (props) => {
 
 
         const reorder = async() => {
-            links.values.forEach((row, rowIdx) => {
-                props.updateLink(row.link_id, row.link, row.title, row.description, user.user_id, rowIdx);
+            links.values.forEach(async (row, rowIdx) => {
+                await props.updateLink(row.link_id, row.link, row.title, row.description, user.user_id, rowIdx);
             })
         }
         if(reordered) await reorder();

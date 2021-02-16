@@ -730,21 +730,21 @@ export const Portfolio = props => {
 
         const reorder = async() => {
             console.log("Reordered projects:");
-            projects.values.forEach((row, rowIdx) => {
+            projects.values.forEach(async (row, rowIdx) => {
                 console.log("Row:", row);
                 console.log("New Position:", rowIdx);
-                props.updateProject(user.user_id, row, rowIdx);
+                await props.updateProject(user.user_id, row, rowIdx);
             })
             console.log("Reordered Work Experience:");
-            portfolio.values.forEach((row, rowIdx) => {
+            portfolio.values.forEach(async (row, rowIdx) => {
                 console.log("Row:", row);
                 console.log("New Position:", rowIdx);
-                props.updateWorkExperience(user.user_id, row, rowIdx);
+                await props.updateWorkExperience(user.user_id, row, rowIdx);
             })
-            education.values.forEach((row, rowIdx) => {
+            education.values.forEach(async (row, rowIdx) => {
                 console.log("Row:", row);
                 console.log("New Position:", rowIdx);
-                props.updateEducation(user.user_id, row, rowIdx);
+                await props.updateEducation(user.user_id, row, rowIdx);
             })
         }
         if(reordered) await reorder();
