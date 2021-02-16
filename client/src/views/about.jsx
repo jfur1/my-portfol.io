@@ -251,6 +251,12 @@ export const About = props => {
         // Location
         let locationToCreate = [];
         let locationToUpdate = [];
+        let bioToCreate = [];
+        let bioToUpdate = [];
+        var hobbiesToCreate = [];
+        var hobbiesToUpdate = [];
+        var skillsToCreate = [];
+        var skillsToUpdate = [];
         
         if(info === null && location){
             locationToCreate.push(JSON.stringify(location).replace(/['"]+/g, ''));
@@ -259,8 +265,6 @@ export const About = props => {
             locationToUpdate.push(JSON.stringify(location).replace(/['"]+/g, ''));
         }
 
-        let bioToCreate = [];
-        let bioToUpdate = [];
         // Bio
         if(info === null && bio){
             bioToCreate.push(JSON.stringify(bio).replace(/['"]+/g, ''));
@@ -269,8 +273,6 @@ export const About = props => {
             bioToUpdate.push(JSON.stringify(bio).replace(/['"]+/g, ''));
         }
 
-        var hobbiesToCreate = [];
-        var hobbiesToUpdate = [];
         // Hobbies: 
         // No ID? => CREATE new hobby
         // Existing ID? => UPDATE existing hobby
@@ -297,9 +299,6 @@ export const About = props => {
                 }
             }
         })
-
-        var skillsToCreate = [];
-        var skillsToUpdate = [];
         // Skills: 
         // No ID? => CREATE new skill
         // Existing ID? => UPDATE existing skill
@@ -340,24 +339,26 @@ export const About = props => {
         
         
         // Begin POST requests
-        const handleLocation = async() => {
-            if(locationToUpdate.length){
-                await props.updateLocation(locationToUpdate[0], user.user_id);
-                locationToUpdate = [];
-            } else if(locationToCreate.length){
-                await props.createLocation(user.user_id, locationToCreate[0], locationToCreate[0].rowIdx);
-            }
-        }
-        await handleLocation();
 
-        const handleBio = async() => {
-            if(bioToUpdate.length) {
-                await props.updateBio(bioToUpdate[0], user.user_id);
-            } else if(bioToCreate.length){
-                await props.createLocation(user.user_id, bioToCreate[0], bioToCreate[0].rowIdx);
-            }
+        const createLocation = async() => {
+            await props.createLocation(user.user_id, locationToCreate[0]);
         }
-        await handleBio();
+        if(locationToCreate.length) await createLocation();
+
+        const updateLocation = async() => {
+            await props.updateLocation(locationToUpdate[0], user.user_id);
+        }
+        if(locationToUpdate.length) await updateLocation();
+
+        const createBio = async() => {
+            await props.createBio(user.user_id, bioToCreate[0]);
+        }
+        if(bioToCreate.length) await createBio();
+
+        const updateBio = async() => {
+            await props.updateBio(bioToUpdate[0], user.user_id)
+        }
+        if(bioToUpdate.length) await updateBio();
 
         const createHobbies = async() => {
             for await (let hobbyToCreate of hobbiesToCreate){
@@ -373,11 +374,10 @@ export const About = props => {
         }
         if(hobbiesToUpdate.length) await updateHobbies();
 
-
         const createSkills = async() => {
-                for await (let skillToCreate of skillsToCreate){
-                    await props.createSkill(user.user_id, skillToCreate.skill, skillToCreate.rowIdx);
-                }
+            for await (let skillToCreate of skillsToCreate){
+                await props.createSkill(user.user_id, skillToCreate.skill, skillToCreate.rowIdx);
+            }
         }
         if(skillsToCreate.length) await createSkills();
 
@@ -389,16 +389,10 @@ export const About = props => {
         if(skillsToUpdate.length) await updateSkills();
 
         const reorder = async() => {
-            console.log("Reordered hobbies:");
             hobbies.values.forEach((row, rowIdx) => {
-                console.log("Row:", row);
-                console.log("New Position:", rowIdx);
                 props.updateHobby(row.hobby_id, row.hobby, user.user_id, rowIdx);
             })
-            console.log("Reordered skills:");
             skills.values.forEach((row, rowIdx) => {
-                console.log("Row:", row);
-                console.log("New Position:", rowIdx);
                 props.updateSkill(row.skill_id, row.skill, user.user_id, rowIdx);
             })
         }
@@ -418,6 +412,7 @@ export const About = props => {
         }
         if(hobbiesToDelete.length) await deleteHobbies();
        
+
         window.location.reload();
     };
 

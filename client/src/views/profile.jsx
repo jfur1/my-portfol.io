@@ -209,14 +209,7 @@ class Profile extends Component{
         });
         const data = await response.json();
         console.log("Client Recieved Response: ", data);
-        this.setState({
-            about: {
-                ...this.state.about,
-                location: data,
-            },
-            loading: false
-        });
-        console.log("Profile.jsx Created Location. this.state.about:", this.state.about);
+        return;
     }
     updateLocation = async (locationToUpdate, user_id) => {
         this.setState({loading: true});
@@ -232,14 +225,7 @@ class Profile extends Component{
         });
         const data = await response.json();
         console.log("Client Recieved Response: ", data);
-        this.setState({
-            about: {
-                ...this.state.about,
-                location: data,
-            },
-            loading: false
-        });
-        console.log("Profile.jsx Updated Location. this.state.about:",this.state.about);
+        return;
     }
 
     createBio = async(user_id, bio) => {
@@ -256,14 +242,7 @@ class Profile extends Component{
         });
         const data = await response.json();
         console.log("Client Recieved Response: ", data);
-        this.setState({
-            about: {
-                ...this.state.about,
-                bio: data,
-            },
-            loading: false
-        });
-        console.log("Profile.jsx Created Bio. this.state.about:", this.state.about);
+        return;
     }
     updateBio = async(bioToUpdate, user_id) => {
         this.setState({loading: true});
@@ -279,14 +258,7 @@ class Profile extends Component{
         });
         const data = await response.json();
         console.log("Client Recieved Response: ", data);
-        this.setState({
-            about: {
-                ...this.state.about,
-                bio: data,
-            },
-            loading: false
-        });
-        console.log("Profile.jsx Updated Bio. this.state.about:", this.state.about);
+        return;
     }
     
     createHobby = async(user_id, hobby, idx) => {
@@ -304,7 +276,7 @@ class Profile extends Component{
         });
         const data = await response.json();
         console.log("Client Recieved Response: ", data);
-        return data;
+        return;
     } 
     updateHobby = async(hobby_id, hobby, user_id, rowIdx) => {
         this.setState({loading: true});
@@ -323,14 +295,7 @@ class Profile extends Component{
         });
         const data = await response.json();
         console.log("Client Recieved Response: ", data);
-
-        // let tmpHobbies = [...this.state.hobbies];
-        // let row = {...tmpHobbies[rowIdx]};
-        // row.hobby = data;
-        // tmpHobbies[rowIdx] = row;
-        // this.setState({hobbies: tmpHobbies, loading: false});
-
-        // console.log("Profile.jsx Updated the hobby. this.state.hobbies:",this.state.hobbies);
+        return;
     }
     deleteHobby = async(hobby_id) => {
         this.setState({loading: true});
@@ -382,14 +347,7 @@ class Profile extends Component{
         });
         const data = await response.json();
         console.log("Client Recieved Response: ", data);
-        
-        // let tmpSkills = [...this.state.skills];
-        // let row = {...tmpSkills[rowIdx]};
-        // row.skill = data;
-        // tmpSkills[rowIdx] = row;
-        // this.setState({skills: tmpSkills, loading: false});
-
-        //console.log("Profile.jsx Updated the skill. this.state.skills",this.state.skills);
+        return;
     }
     deleteSkill = async(skill_id) => {
         this.setState({loading: true});
@@ -423,16 +381,7 @@ class Profile extends Component{
         });
         const data = await response.json();
         console.log("Client Recieved Response: ", data);
-        
-        // Update public_email in state -- create copy and update
-        let tmpProfile = [...this.state.profile];
-        tmpProfile[0].public_email = data;
-
-        this.setState({
-            profile: tmpProfile,
-            loading: false
-        });
-        console.log("Profile.jsx Updated Public Email. this.state.profile:", this.state.profile);
+        return;
     }
 
     updatePhone = async(user_id, phone) => {
@@ -449,16 +398,7 @@ class Profile extends Component{
         });
         const data = await response.json();
         console.log("Client Recieved Response: ", data);
-        
-        // Update public_email in state -- create copy and update
-        let tmpProfile = [...this.state.profile];
-        tmpProfile[0].phone = data;
-
-        this.setState({
-            profile: tmpProfile,
-            loading: false
-        });
-        console.log("Profile.jsx Updated Public Email. this.state.profile:", this.state.profile);
+        return;
     }
 
     createLink = async(user_id, link, idx) =>{
@@ -479,7 +419,7 @@ class Profile extends Component{
         });
         const data = await response.json();
         console.log("Client Recieved Response: ", data);
-        return data;
+        return;
     }
 
     updateLink = async(link_id, link, title, description, user_id, rowIdx) => {
@@ -501,13 +441,7 @@ class Profile extends Component{
         });
         const data = await response.json();
         console.log("Client Recieved Response: ", data);
-
-        // let tmpLinks = [...this.state.contact];
-        // tmpLinks[rowIdx] = data;
-        // this.setState({contact: tmpLinks, loading: false});
-
-
-        //console.log("Profile.jsx Updated the Link. this.state.contact",this.state.contact);
+        return;
     }
 
     deleteLink = async(link_id) => {

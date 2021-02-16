@@ -664,7 +664,7 @@ export const Portfolio = props => {
         console.log("Education to Delete:", educationToDelete);
 
         // Begin POST Requests
-        
+
         const createProjects = async() => {
             for await (let projectToCreate of projectsToCreate){
                 await props.createProject(user.user_id, projectToCreate, projectToCreate.rowIdx);
@@ -749,7 +749,7 @@ export const Portfolio = props => {
         }
         if(reordered) await reorder();
 
-        console.log("DONE");
+
         window.location.reload();
     }
 

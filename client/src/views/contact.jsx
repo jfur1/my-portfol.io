@@ -110,17 +110,17 @@ export const Contact = (props) => {
         console.log("Links to Delete", linksToDelete);        
         console.log("links.values:", links.values);
 
-        // BEGIN POST REQUESTS
-        const handlePhone = async() => {
+        // Begin POST Requests
+        const updatePhone = async() => {
             await props.updatePhone(user.user_id, phoneToUpdate);
         }
-        if(phoneToUpdate.length) await handlePhone();
+        if(phoneToUpdate.length) await updatePhone();
 
         
-        const handleEmail = async() => {
+        const updateEmail = async() => {
             await props.updateEmail(user.user_id, emailToUpdate);
         }
-        if(emailToUpdate.length) await handleEmail();
+        if(emailToUpdate.length) await updateEmail();
 
 
         const createLinks = async() => {
