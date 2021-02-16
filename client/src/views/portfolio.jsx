@@ -37,6 +37,7 @@ export const Portfolio = props => {
         setPortfolio({values: portfolioData});
         setEducation({values: educationData});
         setChangingOrder(false);
+        setReordered(false);
     }
 
     // Data to be Modified
@@ -231,7 +232,44 @@ export const Portfolio = props => {
         setProjects({values: tmpProjects});
         setEdited(true);
     };
+    // -----------------------------------------------------
+    function handleOnDragEnd(result) {
+        console.log(result)
+      if (!result.destination) return;
 
+      // Sorting in same list
+      if(result.source.droppableId === result.destination.droppableId){
+        if(result.source.droppableId === "projects"){
+            const items = Array.from(projects.values);
+            const [reorderedItem] = items.splice(result.source.index, 1);
+            items.splice(result.destination.index, 0, reorderedItem);
+        
+            setReordered(true);
+            setEdited(true);
+            setProjects({values: items});
+        } else if(result.source.droppableId === "work-experience"){
+            const items = Array.from(portfolio.values);
+            const [reorderedItem] = items.splice(result.source.index, 1);
+            items.splice(result.destination.index, 0, reorderedItem);
+        
+            setReordered(true);
+            setEdited(true);
+            setPortfolio({values: items});
+        } else if(result.source.droppableId === "education"){
+            const items = Array.from(education.values);
+            const [reorderedItem] = items.splice(result.source.index, 1);
+            items.splice(result.destination.index, 0, reorderedItem);
+        
+            setReordered(true);
+            setEdited(true);
+            setEducation({values: items});
+        }
+
+      } else{
+          console.log("No sorting between lists!");
+          return;
+      }
+    }
 
     
     // --------------- Begin Portfolio Event Handling ------------
@@ -563,9 +601,11 @@ export const Portfolio = props => {
         if(projectsToCreate.length){
             const createProjects = async() => {
                 var newProjects = [];
+                var idx = 0;
                 for await (let projectToCreate of projectsToCreate){
-                    const data = await props.createProject(user.user_id, projectToCreate);
+                    const data = await props.createProject(user.user_id, projectToCreate, idx);
                     newProjects.push(data);
+                    idx++;
                 }
                 console.log("[About.jsx] Newly Created Projects: ", newProjects);
                 props.setCreatedProjects(newProjects);
@@ -616,9 +656,11 @@ export const Portfolio = props => {
         if(workExperienceToCreate.length){
             const createPortfolio = async() => {
                 var newWorkExperiences = [];
+                var idx = 0;
                 for await (let workToCreate of workExperienceToCreate){
-                    const data = await props.createWorkExperience(user.user_id, workToCreate);
+                    const data = await props.createWorkExperience(user.user_id, workToCreate, idx);
                     newWorkExperiences.push(data);
+                    idx++;
                 }
                 console.log("[About.jsx] Newly Created Portfolio: ", newWorkExperiences);
                 props.setCreatedWorkExperience(newWorkExperiences);
@@ -670,9 +712,11 @@ export const Portfolio = props => {
         if(educationToCreate.length){
             const createEdu = async() => {
                 var newEducation = [];
+                var idx=0;
                 for await (let eduToCreate of educationToCreate){
-                    const data = await props.createEducation(user.user_id, eduToCreate);
+                    const data = await props.createEducation(user.user_id, eduToCreate, idx);
                     newEducation.push(data);
+                    idx++;
                 }
                 console.log("[About.jsx] Newly Created Education: ", newEducation);
                 props.setCreatedEducation(newEducation);
@@ -719,6 +763,29 @@ export const Portfolio = props => {
             }
             deleteEdu();
         }
+        //-------- Handle Reorder
+
+        if(reordered){
+            console.log("Reordered projects:");
+            projects.values.forEach((row, rowIdx) => {
+                console.log("Row:", row);
+                console.log("New Position:", rowIdx);
+                props.updateProject(user.user_id, row, rowIdx);
+            })
+            console.log("Reordered Work Experience:");
+            portfolio.values.forEach((row, rowIdx) => {
+                console.log("Row:", row);
+                console.log("New Position:", rowIdx);
+                props.updateWorkExperience(user.user_id, row, rowIdx);
+            })
+            education.values.forEach((row, rowIdx) => {
+                console.log("Row:", row);
+                console.log("New Position:", rowIdx);
+                props.updateEducation(user.user_id, row, rowIdx);
+            })
+            props.reloadProfile();
+        }
+
         setChangingOrder(false);
         setShow(false);
     }
@@ -727,7 +794,7 @@ export const Portfolio = props => {
     // Dynamically render list of forms
     const renderProjectsForm = () => {
         return projects.values.map((row, idx) => 
-        <Form.Row className='mb-4 ml-1' key={idx}>
+        <Form.Row className='draggable-container mb-4 ml-1' key={idx}>
             <Form.Row className='mt-1' style={{width: "75%"}}>
                 <Form.Label column sm={3}>
                     Project
@@ -801,7 +868,6 @@ export const Portfolio = props => {
                     onChange={date => {
                         handleProjectFinishChange(date, idx);
                     }}></Form.Control>
-                    
 
                 </Col>
             </Form.Row>
@@ -982,6 +1048,112 @@ export const Portfolio = props => {
         )
     }
 
+    const ChangeOrder = (props) => {
+        console.log("ChangeOrder Component Recieved ID:", props.droppableId)
+        return (
+            <DragDropContext 
+                onDragEnd={handleOnDragEnd}
+            >
+            {props.droppableId === "projects"
+            ? <Droppable droppableId="projects">
+            {(provided) => (
+                <div {...provided.droppableProps} ref={provided.innerRef}>
+                    {projects.values.map((row, idx) => {
+                        return (
+                            <Draggable key={idx} draggableId={row.title} index={idx}>
+                                {(provided) => (
+                                
+                                    <div className='draggable-container mb-4 ml-3 mr-3' ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+
+                                    {row.title
+                                        ? row.title
+                                        : null}
+                                    <br></br>
+                                    {row.description
+                                        ? <NewlineText text={row.description} key={idx}/>
+                                        : null} 
+                                    <br></br>
+                                    {row.organization
+                                        ? row.organization
+                                        : null} 
+                                    <br></br>
+                                    {(row.from_when && row.from_when !== "infinity")
+                                        ? row.from_when
+                                        : null} 
+                                    <br></br>
+                                    {(row.to_when && row.to_when !== "infinity")
+                                        ? row.to_when
+                                        : null}
+                                    <br></br> 
+                                    {row.link
+                                        ? row.link
+                                        : null} 
+
+                                    </div>
+                                )}
+                            </Draggable>
+                        );
+                    })}
+                    {provided.placeholder}
+                </div>
+            )}
+            </Droppable>
+            : null}
+
+            {props.droppableId === "work-experience"
+            ? <Droppable droppableId="work-experience">
+            {(provided) => (
+                <div {...provided.droppableProps} ref={provided.innerRef}>
+                    {portfolio.values.map((row, idx) => {
+                        return (
+                            <Draggable key={idx} draggableId={row.occupation} index={idx}>
+                                {(provided) => (
+                                
+                                    <div className='draggable-container mb-4 ml-3 mr-3' ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+
+                                    {row.occupation
+                                        ? row.occupation
+                                        : null}
+                                    </div>
+                                )}
+                            </Draggable>
+                        );
+                    })}
+                    {provided.placeholder}
+                </div>
+            )}
+            </Droppable>
+            : null}
+
+            {props.droppableId === "education"
+            ? <Droppable droppableId="education">
+            {(provided) => (
+                <div {...provided.droppableProps} ref={provided.innerRef}>
+                    {education.values.map((row, idx) => {
+                        return (
+                            <Draggable key={idx} draggableId={row.education} index={idx}>
+                                {(provided) => (
+                                
+                                    <div className='draggable-container mb-4 ml-3 mr-3' ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+
+                                    {row.education
+                                        ? row.education
+                                        : null}
+                                        
+                                    </div>
+                                )}
+                            </Draggable>
+                        );
+                    })}
+                    {provided.placeholder}
+                </div>
+            )}
+            </Droppable>
+            : null}
+            </DragDropContext>
+        );
+    }
+
     function NewlineText(props) {
         const text = props.text;
         if(text == null) return null;
@@ -1005,7 +1177,7 @@ export const Portfolio = props => {
             keyboard={false}
             size="lg"
             centered
-            scrollable={true}
+            scrollable={false}
         >
             <Modal.Header closeButton>
                 <Modal.Title id="contained-modal-title-vcenter">
@@ -1026,13 +1198,14 @@ export const Portfolio = props => {
                     <Col sm={3}>
                     <Nav variant="pills" className="flex-column">
                         <Nav.Item>
-                            <Nav.Link eventKey="projects">Projects</Nav.Link>
+                            <Nav.Link eventKey="projects" onClick={() => setChangingOrder(false)}>Projects</Nav.Link>
                         </Nav.Item>
                         <Nav.Item>
-                            <Nav.Link eventKey="work-exerience">Work Experience</Nav.Link>
+                            <Nav.Link eventKey="work-exerience" 
+                            onClick={() => setChangingOrder(false)}>Work Experience</Nav.Link>
                         </Nav.Item>
                         <Nav.Item>
-                            <Nav.Link eventKey="education">Education</Nav.Link>
+                            <Nav.Link eventKey="education" onClick={() => setChangingOrder(false)}>Education</Nav.Link>
                         </Nav.Item>
                     </Nav>
                     </Col>
@@ -1043,8 +1216,20 @@ export const Portfolio = props => {
                                 <h4>Projects</h4>
                                 {projects.values.length < 4
                                 ? <Button onClick={() => addProject()} variant="outline-success" size="sm">Add Project</Button>  
-                                : null }
-                                {renderProjectsForm()}
+                                : null }<br></br>
+                                                               
+                                {projectsData.length > 1
+                                ? <><label>Change Order</label>
+                                    <Switch
+                                        isOn={changingOrder}
+                                        handleToggle={() => setChangingOrder(!changingOrder)}
+                                    /></>
+                                : null}
+
+                                {changingOrder
+                                ? <ChangeOrder droppableId="projects"></ChangeOrder>
+                                : renderProjectsForm()}
+
                             </Form>
                         </Tab.Pane>
                         <Tab.Pane eventKey="work-exerience">
@@ -1052,8 +1237,19 @@ export const Portfolio = props => {
                                 <h4>Work Experience</h4>
                                 {portfolio.values.length < 4
                                 ? <Button onClick={() => addWorkExperience()} variant="outline-success" size="sm">Add Work Experience</Button>  
-                                : null }
-                                {renderWorkExperienceForm()}
+                                : null }<br></br>
+
+                                {portfolioData.length > 1
+                                ? <><label>Change Order</label>
+                                    <Switch
+                                        isOn={changingOrder}
+                                        handleToggle={() => setChangingOrder(!changingOrder)}
+                                    /></>
+                                : null}
+
+                                {changingOrder
+                                ? <ChangeOrder droppableId="work-experience"></ChangeOrder>
+                                : renderWorkExperienceForm()}
                             </Form>
                         </Tab.Pane>
                         <Tab.Pane eventKey="education">
@@ -1061,14 +1257,29 @@ export const Portfolio = props => {
                                 <h4>Education</h4>
                                 {education.values.length < 4
                                 ? <Button onClick={() => addEducation()} variant="outline-success" size="sm">Add Education</Button>  
-                                : null }
-                                {renderEducationForm()}
+                                : null }<br></br>
+
+                                {educationData.length > 1
+                                ? <><label>Change Order</label>
+                                    <Switch
+                                        isOn={changingOrder}
+                                        handleToggle={() => setChangingOrder(!changingOrder)}
+                                    /></>
+                                : null} 
+                                
+                                {changingOrder
+                                ? <ChangeOrder droppableId="education"></ChangeOrder>
+                                : renderEducationForm()}
+
+
                             </Form>
                         </Tab.Pane>
                     </Tab.Content>
                     </Col>
                 </Row>
+
             </Tab.Container>
+
             </Modal.Body>
             <Modal.Footer>
                 <Button variant="success" onClick={handleSave}>Save Changes</Button>
@@ -1077,7 +1288,7 @@ export const Portfolio = props => {
         <br></br>
 
         <h3>Projects</h3>
-        <div className="user-container">
+        <div className="info-container">
             {projectsData
             ? projectsData.map((row, idx) => 
                 <div className="draggable-container mb-4 ml-3 mr-3" key={idx}>
@@ -1113,7 +1324,7 @@ export const Portfolio = props => {
         </div>
 
         <h3>Work Experience:</h3>
-        <div className="user-container">
+        <div className="info-container">
         {portfolioData
         ? portfolioData.map((row, idx) => 
             <div className="draggable-container" key={idx}>
@@ -1141,7 +1352,7 @@ export const Portfolio = props => {
         </div>
 
         <h3>Education</h3>
-        <div className="user-container">
+        <div className="info-container">
             {educationData 
             ? educationData.map((row, idx) => 
                 <div className="draggable-container" key={idx}>

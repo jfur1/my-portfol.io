@@ -555,7 +555,7 @@ class Profile extends Component{
 
     // PORTFOLIO Tab
 
-    createProject = async(user_id, project) => {
+    createProject = async(user_id, project, idx) => {
         this.setState({loading: true});
         const response = await fetch('http://localhost:5000/createProject',  {
             method: 'POST', 
@@ -569,7 +569,8 @@ class Profile extends Component{
                 organization: project.organization,
                 from_when: project.from_when,
                 to_when: project.to_when,
-                link: project.link
+                link: project.link,
+                position: idx
             }
         });
         const data = await response.json();
@@ -600,16 +601,17 @@ class Profile extends Component{
                 organization: project.organization,
                 from_when: project.from_when,
                 to_when: project.to_when,
-                link: project.link
+                link: project.link,
+                position: rowIdx
             }
         });
         const data = await response.json();
         console.log("Client Recieved Response: ", data);
 
-        let tmpProjects = [...this.state.projects];
-        tmpProjects[rowIdx] = data;
-        this.setState({projects: tmpProjects, loading: false});
-        console.log("Profile.jsx Updated the Link. this.state.projects",this.state.projects);
+        // let tmpProjects = [...this.state.projects];
+        // tmpProjects[rowIdx] = data;
+        // this.setState({projects: tmpProjects, loading: false});
+        // console.log("Profile.jsx Updated the Link. this.state.projects",this.state.projects);
     }
     
     deleteProject = async(project_id) => {
@@ -628,7 +630,7 @@ class Profile extends Component{
         return data;
     }
 
-    createWorkExperience = async(user_id, workExperience) => {
+    createWorkExperience = async(user_id, workExperience, idx) => {
         this.setState({loading: true});
         const response = await fetch('http://localhost:5000/createWorkExperience',  {
             method: 'POST', 
@@ -641,7 +643,8 @@ class Profile extends Component{
                 organization: workExperience.organization,
                 from_when: workExperience.from_when,
                 to_when: workExperience.to_when,
-                description: workExperience.description
+                description: workExperience.description,
+                position: idx
             }
         });
         const data = await response.json();
@@ -670,16 +673,17 @@ class Profile extends Component{
                 organization: workExperience.organization,
                 from_when: workExperience.from_when,
                 to_when: workExperience.to_when,
-                description: workExperience.description
+                description: workExperience.description,
+                position: rowIdx
             }
         });
         const data = await response.json();
         console.log("Client Recieved Response: ", data);
 
-        let tmpPortfolio = [...this.state.portfolio];
-        tmpPortfolio[rowIdx] = data;
-        this.setState({portfolio: tmpPortfolio, loading: false});
-        console.log("Profile.jsx Updated the portfolio. this.state.portfolio",this.state.portfolio);
+        // let tmpPortfolio = [...this.state.portfolio];
+        // tmpPortfolio[rowIdx] = data;
+        // this.setState({portfolio: tmpPortfolio, loading: false});
+        // console.log("Profile.jsx Updated the portfolio. this.state.portfolio",this.state.portfolio);
     }
 
     deleteWorkExperience = async(portfolio_id) => {
@@ -698,7 +702,7 @@ class Profile extends Component{
         return data;
     }
 
-    createEducation = async(user_id, education) => {
+    createEducation = async(user_id, education, idx) => {
         this.setState({loading: true});
         const response = await fetch('http://localhost:5000/createEducation',  {
             method: 'POST', 
@@ -711,7 +715,8 @@ class Profile extends Component{
                 education: education.education,
                 from_when: education.from_when,
                 to_when: education.to_when,
-                description: education.description
+                description: education.description,
+                position: idx
             }
         });
         const data = await response.json();
@@ -740,16 +745,17 @@ class Profile extends Component{
                 education: education.education,
                 from_when: education.from_when,
                 to_when: education.to_when,
-                description: education.description
+                description: education.description,
+                position: rowIdx
             }
         });
         const data = await response.json();
         console.log("Client Recieved Response: ", data);
 
-        let tmpEducation = [...this.state.education];
-        tmpEducation[rowIdx] = data;
-        this.setState({education: tmpEducation, loading: false});
-        console.log("Profile.jsx Updated the education. this.state.education",this.state.education);
+        // let tmpEducation = [...this.state.education];
+        // tmpEducation[rowIdx] = data;
+        // this.setState({education: tmpEducation, loading: false});
+        // console.log("Profile.jsx Updated the education. this.state.education",this.state.education);
     }
 
     deleteEducation = async(education_id) => {

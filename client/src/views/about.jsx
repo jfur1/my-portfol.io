@@ -192,8 +192,6 @@ export const About = props => {
           console.log("No sorting between lists!");
           return;
       }
-  
-
     }
     
     const ChangeOrder = () => {

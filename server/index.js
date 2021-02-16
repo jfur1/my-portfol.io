@@ -355,7 +355,7 @@ app.get('/portfolio', (req, res) => {
             return res.json({error: true});
         }
 
-        return t.any('SELECT portfolio_id, uid, occupation, organization, from_when::varchar, to_when::varchar, description FROM portfolio WHERE uid = $1', user.user_id);
+        return t.any('SELECT portfolio_id, uid, occupation, organization, from_when::varchar, to_when::varchar, description FROM portfolio WHERE uid = $1 ORDER BY position', user.user_id);
     })
     .then((portfolio) => {
         return res.json(portfolio);
@@ -396,7 +396,7 @@ app.get('/education', (req, res) => {
             return res.json({error: true});
         }
 
-        return t.any('SELECT education_id, uid, organization, education, from_when::varchar, to_when::varchar, description FROM education WHERE \''+ user.user_id +'\' = uid;');
+        return t.any('SELECT education_id, uid, organization, education, from_when::varchar, to_when::varchar, description FROM education WHERE \''+ user.user_id +'\' = uid ORDER BY position;');
     })
     .then((eduaction) => {
         return res.json(eduaction);
@@ -545,7 +545,7 @@ app.post('/createSkill', (req, res) => {
         let newId = max_id.max;
         newId++;
 
-        return t.one('INSERT INTO skills (skill_id, uid, skill, position) VALUES(${newId}, ${user_id}, ${skill}), ${position} RETURNING skill_id, uid, skill, position', 
+        return t.one('INSERT INTO skills (skill_id, uid, skill, position) VALUES(${newId}, ${user_id}, ${skill}, ${position}) RETURNING skill_id, uid, skill, position', 
         {
             newId,
             user_id,
@@ -794,7 +794,8 @@ app.post('/createProject', (req, res) => {
         organization,
         from_when,
         to_when,
-        link
+        link,
+        position
     } = req.headers;
 
     db.tx(async t => {
@@ -802,7 +803,7 @@ app.post('/createProject', (req, res) => {
         let newId = max_id.max;
         newId++;
 
-        return t.one('INSERT INTO projects (project_id, uid, title, description, organization, from_when, to_when, link) VALUES(${newId}, ${user_id}, ${title}, ${description}, ${organization}, ${from_when}, ${to_when}, ${link}) RETURNING project_id, uid, title, description, organization, from_when::varchar, to_when::varchar, link', 
+        return t.one('INSERT INTO projects (project_id, uid, title, description, organization, from_when, to_when, link, position) VALUES(${newId}, ${user_id}, ${title}, ${description}, ${organization}, ${from_when}, ${to_when}, ${link}, ${position}) RETURNING project_id, uid, title, description, organization, from_when::varchar, to_when::varchar, link, position', 
         {
             newId,
             user_id,
@@ -811,7 +812,8 @@ app.post('/createProject', (req, res) => {
             organization,
             from_when, 
             to_when,
-            link
+            link,
+            position
         });
     })
     .then((data) => {
@@ -832,7 +834,8 @@ app.post('/updateProject', (req, res) => {
         organization, 
         from_when, 
         to_when, 
-        link
+        link,
+        position
     } = req.headers;
 
     //console.log(description, organization, from_when, to_when, link)
@@ -840,7 +843,7 @@ app.post('/updateProject', (req, res) => {
     if(from_when == "null") from_when = "infinity";
 
     db.tx(async t => {
-        return t.one('UPDATE projects SET title = ${title}, description = ${description}, organization = ${organization}, from_when = ${from_when}, to_when = ${to_when}, link = ${link} WHERE uid = ${user_id} AND project_id = ${project_id} RETURNING project_id, uid, title, description, organization, from_when::varchar, to_when::varchar, link;',
+        return t.one('UPDATE projects SET title = ${title}, description = ${description}, organization = ${organization}, from_when = ${from_when}, to_when = ${to_when}, link = ${link}, position=${position} WHERE uid = ${user_id} AND project_id = ${project_id} RETURNING project_id, uid, title, description, organization, from_when::varchar, to_when::varchar, link, position;',
         {
             project_id, 
             user_id, 
@@ -849,7 +852,8 @@ app.post('/updateProject', (req, res) => {
             organization, 
             from_when, 
             to_when, 
-            link
+            link,
+            position
         });
     })
     .then((data) => {
@@ -884,7 +888,8 @@ app.post('/createWorkExperience', (req, res) => {
         organization,
         from_when,
         to_when,
-        description
+        description,
+        position
     } = req.headers;
 
     db.tx(async t => {
@@ -892,7 +897,7 @@ app.post('/createWorkExperience', (req, res) => {
         let newId = max_id.max;
         newId++;
 
-        return t.one('INSERT INTO portfolio (portfolio_id, uid, occupation, organization, from_when, to_when, description) VALUES(${newId}, ${user_id}, ${occupation}, ${organization}, ${from_when}, ${to_when}, ${description}) RETURNING portfolio_id, uid, occupation, organization, from_when::varchar, to_when::varchar, description', 
+        return t.one('INSERT INTO portfolio (portfolio_id, uid, occupation, organization, from_when, to_when, description, position) VALUES(${newId}, ${user_id}, ${occupation}, ${organization}, ${from_when}, ${to_when}, ${description}, ${position}) RETURNING portfolio_id, uid, occupation, organization, from_when::varchar, to_when::varchar, description, position', 
         {
             newId,
             user_id,
@@ -900,7 +905,8 @@ app.post('/createWorkExperience', (req, res) => {
             organization,
             from_when, 
             to_when,
-            description
+            description,
+            position
         });
     })
     .then((data) => {
@@ -920,7 +926,8 @@ app.post('/updateWorkExperience', (req, res) => {
         organization, 
         from_when, 
         to_when, 
-        description
+        description,
+        position
     } = req.headers;
 
     //console.log(description, organization, from_when, to_when, link)
@@ -928,7 +935,7 @@ app.post('/updateWorkExperience', (req, res) => {
     if(from_when == "null") from_when = "infinity";
 
     db.tx(async t => {
-        return t.one('UPDATE portfolio SET occupation = ${occupation}, organization = ${organization}, from_when = ${from_when}, to_when = ${to_when}, description = ${description} WHERE uid = ${user_id} AND portfolio_id = ${portfolio_id} RETURNING portfolio_id, uid, occupation, description, organization, from_when::varchar, to_when::varchar, description;',
+        return t.one('UPDATE portfolio SET occupation = ${occupation}, organization = ${organization}, from_when = ${from_when}, to_when = ${to_when}, description = ${description}, position=${position} WHERE uid = ${user_id} AND portfolio_id = ${portfolio_id} RETURNING portfolio_id, uid, occupation, description, organization, from_when::varchar, to_when::varchar, description, position;',
         {
             occupation, 
             organization, 
@@ -936,7 +943,8 @@ app.post('/updateWorkExperience', (req, res) => {
             to_when, 
             description, 
             user_id, 
-            portfolio_id
+            portfolio_id,
+            position
         });
     })
     .then((data) => {
@@ -971,7 +979,8 @@ app.post('/createEducation', (req, res) => {
         education,
         from_when,
         to_when,
-        description
+        description,
+        position
     } = req.headers;
 
     db.tx(async t => {
@@ -979,7 +988,7 @@ app.post('/createEducation', (req, res) => {
         let newId = max_id.max;
         newId++;
 
-        return t.one('INSERT INTO education (education_id, uid, organization, education, from_when, to_when, description) VALUES(${newId}, ${user_id}, ${organization}, ${education}, ${from_when}, ${to_when}, ${description}) RETURNING education_id, uid, organization, education, from_when::varchar, to_when::varchar, description', 
+        return t.one('INSERT INTO education (education_id, uid, organization, education, from_when, to_when, description, position) VALUES(${newId}, ${user_id}, ${organization}, ${education}, ${from_when}, ${to_when}, ${description}, ${position}) RETURNING education_id, uid, organization, education, from_when::varchar, to_when::varchar, description, position', 
         {
             newId,
             user_id,
@@ -987,7 +996,8 @@ app.post('/createEducation', (req, res) => {
             education,
             from_when, 
             to_when,
-            description
+            description,
+            position
         });
     })
     .then((data) => {
@@ -1007,7 +1017,8 @@ app.post('/updateEducation', (req,res) => {
         education, 
         from_when, 
         to_when, 
-        description
+        description,
+        position
     } = req.headers;
 
     //console.log(description, organization, from_when, to_when, link)
@@ -1015,7 +1026,7 @@ app.post('/updateEducation', (req,res) => {
     if(from_when == "null") from_when = "infinity";
 
     db.tx(async t => {
-        return t.one('UPDATE education SET organization = ${organization}, education = ${education}, from_when = ${from_when}, to_when = ${to_when}, description = ${description} WHERE uid = ${user_id} AND education_id = ${education_id} RETURNING education_id, uid, organization, education, from_when::varchar, to_when::varchar, description;',
+        return t.one('UPDATE education SET organization = ${organization}, education = ${education}, from_when = ${from_when}, to_when = ${to_when}, description = ${description}, position=${position} WHERE uid = ${user_id} AND education_id = ${education_id} RETURNING education_id, uid, organization, education, from_when::varchar, to_when::varchar, description, position;',
         {
             education_id, 
             user_id, 
@@ -1023,7 +1034,8 @@ app.post('/updateEducation', (req,res) => {
             education, 
             from_when, 
             to_when, 
-            description
+            description,
+            position
         });
     })
     .then((data) => {
