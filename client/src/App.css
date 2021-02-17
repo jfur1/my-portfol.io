@@ -255,4 +255,21 @@ table.center {
 
 .edit-button{
   float:right;
+
+}
+.nav-item > .nav-link.nav-error{
+  border: 2px solid red;
+  border-radius: 10px;
+  margin-top: 3px;
+}
+
+/* .nav-item > .nav-error.nav-link.active {
+  color: #fff;
+  background-color: rgb(255, 97, 97);
+  
+} */
+
+.nav-item > .nav-link{
+  border-radius: 25px;
+  margin-top: 3px;
 }

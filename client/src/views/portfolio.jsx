@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { PencilFill } from 'react-bootstrap-icons';
-import { Nav, Tab, Modal, Button, Form, Row, Col } from 'react-bootstrap';
+import { Nav, Tab, Modal, Button, Form, Row, Col, Badge } from 'react-bootstrap';
 import { AlertDismissible } from '../components/alertDismissible';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import Switch  from '../components/switch';
@@ -21,6 +21,9 @@ export const Portfolio = props => {
 
     const [reordered, setReordered] = useState(false);
     const [changingOrder, setChangingOrder] = useState(false);
+
+    const [validated, setValidated] = useState(false);
+    const [errs, setErrs] = useState({}); 
     
     const handleShow = () => setShow(true);
     const handleClose = () => {
@@ -28,6 +31,11 @@ export const Portfolio = props => {
         else{
             setChangingOrder(false);
             setShow(false);
+            setProjects({values: projectsData});
+            setPortfolio({values: portfolioData});
+            setEducation({values: educationData});
+            setValidated(false);
+            setErrs({values: []});
         }
     }
 
@@ -36,8 +44,13 @@ export const Portfolio = props => {
         setProjects({values: projectsData});
         setPortfolio({values: portfolioData});
         setEducation({values: educationData});
+        setProjectsToDelete([]);
+        setWorkExperienceToDelete([]);
+        setEducationToDelete([]);
         setChangingOrder(false);
         setReordered(false);
+        setValidated(false);
+        setErrs({});
     }
 
     // Data to be Modified
@@ -60,6 +73,9 @@ export const Portfolio = props => {
 
         setEducation({values: educationData});
         setEducationToDelete([]);
+
+        setValidated(false);
+        setErrs({});
     }, [props, projectsData, portfolioData, educationData])
 
 
@@ -80,6 +96,11 @@ export const Portfolio = props => {
         if((typeof(tmpProjects[idx].project_id) !== 'undefined')
         && !(typeof(tmpProjects[idx].toUpdate) !== 'undefined')){
             tmpProjects[idx].toUpdate = true;
+        }
+        if((typeof(errs["project"]) !== 'undefined') 
+        && (typeof(errs["project"]["Idx"+idx]) !== 'undefined') 
+        && (tmpProjects[idx].title !== "")){
+            delete errs["project"]["Idx"+idx];
         }
         setProjects({values: tmpProjects});
         setEdited(true);
@@ -289,6 +310,11 @@ export const Portfolio = props => {
         && !(typeof(tmpPortfolio[idx].toUpdate) !== 'undefined')){
             tmpPortfolio[idx].toUpdate = true;
         }
+        if((typeof(errs["portfolio"]) !== 'undefined') 
+        && (typeof(errs["portfolio"]["Idx"+idx]) !== 'undefined') 
+        && (tmpPortfolio[idx].occupation !== "")){
+            delete errs["portfolio"]["Idx"+idx];
+        }
         setPortfolio({values: tmpPortfolio});
         setEdited(true);
     }
@@ -449,6 +475,11 @@ export const Portfolio = props => {
         && !(typeof(tmpEducation[idx].toUpdate) !== 'undefined')){
             tmpEducation[idx].toUpdate = true;
         }
+        if((typeof(errs["education"]) !== 'undefined') 
+        && (typeof(errs["education"]["Idx"+idx]) !== 'undefined') 
+        && (tmpEducation[idx].education !== "")){
+            delete errs["education"]["Idx"+idx];
+        }
         setEducation({values: tmpEducation});
         setEdited(true);
     }
@@ -557,12 +588,50 @@ export const Portfolio = props => {
 
     // --------------- End Education Event Handling --------------
 
-    const handleSave = () => {
-        console.log("'Saving' Changes:");
+    const validate = () => {
+        let isValidated = true;
+        let errors = {};
+        errors["project"] = {};
+        errors["portfolio"] = {};
+        errors["education"] = {};
+        projects.values.forEach((row, idx) => {
+            if((row.title === "")){
+                isValidated = false;
+                setValidated(false);
+                errors["project"]["Idx"+idx] = true;
+            }
+        })
+        portfolio.values.forEach((row, idx) => {
+            if((row.occupation === "")){
+                isValidated = false;
+                setValidated(false);
+                errors["portfolio"]["Idx"+idx] = true;
+            }
+        })
+        education.values.forEach((row, idx) => {
+            if((row.education === "")){
+                isValidated = false;
+                setValidated(false);
+                errors["education"]["Idx"+idx] = true;
+            }
+        })
+        console.log("errors:", errors)
+        setErrs(errors);
+        return isValidated;
+    }
 
-        // ------------------- Begin Projects ----------------------------
+    const handleSave = async(event) => {
+        if(!validate()){
+            event.preventDefault();
+            event.stopPropagation();
+        } else{
+
         var projectsToCreate = [];
         var projectsToUpdate = [];
+        var workExperienceToCreate = [];
+        var workExperienceToUpdate = [];
+        var educationToCreate = [];
+        var educationToUpdate = [];
 
         // Determine what needs to be created vs. updated
         projects.values.forEach((row, idx) => {
@@ -577,7 +646,8 @@ export const Portfolio = props => {
                         organization: row.organization,
                         from_when: row.from_when,
                         to_when: row.to_when,
-                        link: row.link
+                        link: row.link,
+                        rowIdx: idx
                     });
                 }
             } else if(typeof(row.toUpdate) !== 'undefined'){
@@ -593,38 +663,6 @@ export const Portfolio = props => {
                 })
             }
         })
-
-        console.log("Projects to Create:", projectsToCreate);
-        console.log("Projects to Update:", projectsToUpdate);
-        console.log("Projects to Delete:", projectsToDelete);
-
-        if(projectsToCreate.length){
-            const createProjects = async() => {
-                var newProjects = [];
-                var idx = 0;
-                for await (let projectToCreate of projectsToCreate){
-                    const data = await props.createProject(user.user_id, projectToCreate, idx);
-                    newProjects.push(data);
-                    idx++;
-                }
-                console.log("[About.jsx] Newly Created Projects: ", newProjects);
-                props.setCreatedProjects(newProjects);
-            }
-            createProjects();
-        }
-
-        if(projectsToUpdate.length){
-            projectsToUpdate.forEach((row, idx) => {
-                console.log("Row To Update: ", row)
-                props.updateProject(user.user_id, row, row.rowIdx);
-            })
-            props.reloadProfile();
-        }
-        // ------------------- Begin Portfolio ----------------------------
-        var workExperienceToCreate = [];
-        var workExperienceToUpdate = [];
-
-        // Determine what needs to be created vs. updated
         portfolio.values.forEach((row, idx) => {
             if(!(typeof(row.portfolio_id) !== 'undefined')){
                 if(row.occupation === ''){
@@ -635,7 +673,8 @@ export const Portfolio = props => {
                         organization: row.organization,
                         from_when: row.from_when,
                         to_when: row.to_when,
-                        description: JSON.stringify(row.description).replace(/['"]+/g, '')
+                        description: JSON.stringify(row.description).replace(/['"]+/g, ''),
+                        rowIdx: idx
                     });
                 }
             } else if(typeof(row.toUpdate) !== 'undefined'){
@@ -650,37 +689,6 @@ export const Portfolio = props => {
                 })
             }
         })
-        console.log("Work Experience to Create:", workExperienceToCreate);
-        console.log("Work Experience to Update:", workExperienceToUpdate);
-        console.log("Work Experience to Delete:", workExperienceToDelete);
-
-        if(workExperienceToCreate.length){
-            const createPortfolio = async() => {
-                var newWorkExperiences = [];
-                var idx = 0;
-                for await (let workToCreate of workExperienceToCreate){
-                    const data = await props.createWorkExperience(user.user_id, workToCreate, idx);
-                    newWorkExperiences.push(data);
-                    idx++;
-                }
-                console.log("[About.jsx] Newly Created Portfolio: ", newWorkExperiences);
-                props.setCreatedWorkExperience(newWorkExperiences);
-            }
-            createPortfolio();
-        }
-
-        if(workExperienceToUpdate.length){
-            workExperienceToUpdate.forEach((row, idx) => {
-                props.updateWorkExperience(user.user_id, row, row.rowIdx);
-            })
-            props.reloadProfile();
-        }
-        // ------------------- Begin Projects ----------------------------
-
-        var educationToCreate = [];
-        var educationToUpdate = [];
-
-        // Determine what needs to be created vs. updated
         education.values.forEach((row, idx) => {
             if(!(typeof(row.education_id) !== 'undefined')){
                 if(row.education === ''){
@@ -691,7 +699,8 @@ export const Portfolio = props => {
                         education: row.education,
                         from_when: row.from_when,
                         to_when: row.to_when,
-                        description: JSON.stringify(row.description).replace(/['"]+/g, '')
+                        description: JSON.stringify(row.description).replace(/['"]+/g, ''),
+                        rowIdx: idx
                     });
                 }
             } else if(typeof(row.toUpdate) !== 'undefined'){
@@ -707,90 +716,105 @@ export const Portfolio = props => {
             }
         })
 
+        console.log("Projects to Create:", projectsToCreate);
+        console.log("Projects to Update:", projectsToUpdate);
+        console.log("Projects to Delete:", projectsToDelete);
+        console.log("Work Experience to Create:", workExperienceToCreate);
+        console.log("Work Experience to Update:", workExperienceToUpdate);
+        console.log("Work Experience to Delete:", workExperienceToDelete);
         console.log("Education to Create:", educationToCreate);
         console.log("Education to Update:", educationToUpdate);
         console.log("Education to Delete:", educationToDelete);
 
-        if(educationToCreate.length){
-            const createEdu = async() => {
-                var newEducation = [];
-                var idx=0;
+        // Begin POST Requests
+
+        const createProjects = async() => {
+            for await (const projectToCreate of projectsToCreate){
+                await props.createProject(user.user_id, projectToCreate, projectToCreate.rowIdx);
+            }
+        }
+        if(projectsToCreate.length) await createProjects();
+
+        const updateProjects = async() => {
+            for(const projectToUpdate of projectsToUpdate){
+                await props.updateProject(user.user_id, projectToUpdate, projectToUpdate.rowIdx);
+            }
+        }
+        if(projectsToUpdate.length) await updateProjects();
+
+        const createPortfolio = async() => {
+            for await (let workToCreate of workExperienceToCreate){
+                await props.createWorkExperience(user.user_id, workToCreate, workToCreate.rowIdx);
+            }
+        }
+        if(workExperienceToCreate.length) await createPortfolio();
+
+        const updateWorkExperience = async() => {
+            for(const workToUpdate of workExperienceToUpdate){
+                await props.updateWorkExperience(user.user_id, workToUpdate, workToUpdate.rowIdx);
+            }
+        }
+        if(workExperienceToUpdate.length) await updateWorkExperience();
+
+        const createEdu = async() => {
                 for await (let eduToCreate of educationToCreate){
-                    const data = await props.createEducation(user.user_id, eduToCreate, idx);
-                    newEducation.push(data);
-                    idx++;
+                    await props.createEducation(user.user_id, eduToCreate, eduToCreate.rowIdx);
                 }
-                console.log("[About.jsx] Newly Created Education: ", newEducation);
-                props.setCreatedEducation(newEducation);
-            }
-            createEdu();
         }
+        if(educationToCreate.length) await createEdu();
 
-        if(educationToUpdate.length){
-            educationToUpdate.forEach((row, idx) => {
-                props.updateEducation(user.user_id, row, idx);
-            });
-            props.reloadProfile();
-        }
-
-        // -------------- Handle Deletes ----------------------------
-        // Possible DELETE ops should come last -- involves forced refresh
-
-        if(projectsToDelete.length) {
-            //console.log(`** DELETE Skills with ID: ${skillsToDelete}`);
-            const deleteProjects = async() => {
-                for await (let projectToDelete of projectsToDelete){
-                    await props.deleteProject(projectToDelete.project_id);
-                }
-                props.reloadProfile();
+        const updateEdu = async() => {
+            for await (const eduToUpdate of educationToUpdate){
+                await props.updateEducation(user.user_id, eduToUpdate, eduToUpdate.rowIdx);
             }
-            deleteProjects();
+        }
+        if(educationToUpdate.length) await updateEdu();
+
+        const deleteProjects = async() => {
+            for await (let projectToDelete of projectsToDelete){
+                await props.deleteProject(projectToDelete.project_id);
+            }
         };
+        if(projectsToDelete.length) await deleteProjects();
 
-        if(workExperienceToDelete.length){
-            const deleteWork = async() => {
-                for await (let workToDelete of workExperienceToDelete){
-                    await props.deleteWorkExperience(workToDelete.portfolio_id);
-                }
-                props.reloadProfile();
+        const deleteWork = async() => {
+            for await (let workToDelete of workExperienceToDelete){
+                await props.deleteWorkExperience(workToDelete.portfolio_id);
             }
-            deleteWork();
         }
+        if(workExperienceToDelete.length) await deleteWork();
 
-        if(educationToDelete.length){
-            const deleteEdu = async() => {
-                for await (let eduToDelete of educationToDelete){
-                    await props.deleteEducation(eduToDelete.education_id);
-                }
-                props.reloadProfile();
+        const deleteEdu = async() => {
+            for await (let eduToDelete of educationToDelete){
+                await props.deleteEducation(eduToDelete.education_id);
             }
-            deleteEdu();
         }
-        //-------- Handle Reorder
+        if(educationToDelete.length) await deleteEdu();
 
-        if(reordered){
+        const reorder = async() => {
             console.log("Reordered projects:");
-            projects.values.forEach((row, rowIdx) => {
+            projects.values.forEach(async (row, rowIdx) => {
                 console.log("Row:", row);
                 console.log("New Position:", rowIdx);
-                props.updateProject(user.user_id, row, rowIdx);
+                await props.updateProject(user.user_id, row, rowIdx);
             })
             console.log("Reordered Work Experience:");
-            portfolio.values.forEach((row, rowIdx) => {
+            portfolio.values.forEach(async (row, rowIdx) => {
                 console.log("Row:", row);
                 console.log("New Position:", rowIdx);
-                props.updateWorkExperience(user.user_id, row, rowIdx);
+                await props.updateWorkExperience(user.user_id, row, rowIdx);
             })
-            education.values.forEach((row, rowIdx) => {
+            education.values.forEach(async (row, rowIdx) => {
                 console.log("Row:", row);
                 console.log("New Position:", rowIdx);
-                props.updateEducation(user.user_id, row, rowIdx);
+                await props.updateEducation(user.user_id, row, rowIdx);
             })
-            props.reloadProfile();
         }
+        if(reordered) await reorder();
 
-        setChangingOrder(false);
-        setShow(false);
+
+        window.location.reload();
+        }
     }
 
 
@@ -803,9 +827,17 @@ export const Portfolio = props => {
                     Project
                 </Form.Label>
                 <Col>
-                    <Form.Control type="text" value={row.title || ''} placeholder={"Project Title (Required)"} 
+                    <Form.Control 
+                        required
+                        isInvalid={errs["project"] && row.title === ""}
+                        type="text" 
+                        value={row.title || ''} 
+                        placeholder={"Project Title (Required)"} 
                         onChange={e => handleProjectTitleChange(e, idx)}
                     />
+                    <Form.Control.Feedback type="invalid">
+                        Please provide a project title.
+                    </Form.Control.Feedback>
                 </Col>
             </Form.Row>
 
@@ -821,7 +853,7 @@ export const Portfolio = props => {
                 </Form.Label>
                 <Col>
                     <Form.Control as="textarea" id="description" rows="3" 
-                    value={row.description.replace(/\\n/g, '\n') || ''} 
+                    value={row.description !== null ? row.description.replace(/\\n/g, '\n') : ''} 
                     placeholder={"Add a description for your project!"} 
                     onChange={e => handleProjectDescriptionChange(e, idx)}
                     />
@@ -834,7 +866,7 @@ export const Portfolio = props => {
                 </Form.Label>
                 <Col>
                     <Form.Control type="text" id="project-organization" 
-                    value={row.organization || ''} 
+                    value={row.organization !== null ? row.organization : ''} 
                     placeholder={"Add an organization (Optional)"} 
                     onChange={e => handleProjectOrganizationChange(e, idx)}></Form.Control>
                 </Col>
@@ -846,7 +878,7 @@ export const Portfolio = props => {
                 </Form.Label>
                 <Col>
                     <Form.Control as={ DatePicker } 
-                    selected={(row.from_when !== "infinity" && typeof(row.from_when) !== 'undefined') 
+                    selected={(row.from_when !== "infinity" && typeof(row.from_when) !== 'undefined' && row.from_when !== null) 
                     //eslint-disable-next-line
                     ? new Date(row.from_when.replace(/-/g, '\/').replace(/T.+/, ''))
                     : ''}
@@ -863,7 +895,7 @@ export const Portfolio = props => {
                 </Form.Label>
                 <Col>
                     <Form.Control as={ DatePicker } 
-                    selected={(row.to_when !== "infinity" && typeof(row.to_when) !== 'undefined') 
+                    selected={(row.to_when !== "infinity" && typeof(row.to_when) !== 'undefined' && row.to_when !== null) 
                     //eslint-disable-next-line
                     ? new Date(row.to_when.replace(/-/g, '\/').replace(/T.+/, ''))
                     : ''}  
@@ -880,7 +912,7 @@ export const Portfolio = props => {
                     Link
                 </Form.Label>
                 <Col>
-                    <Form.Control type="text" id="project-link" value={row.link || ''} placeholder={"Add an link for your project! (Optional)"} 
+                    <Form.Control type="text" id="project-link" value={row.link !== null ? row.link : ''} placeholder={"Add an link for your project! (Optional)"} 
                         onChange={e => handleProjectLinkChange(e, idx)}
                     />
                 </Col>
@@ -898,9 +930,17 @@ export const Portfolio = props => {
                     Title
                 </Form.Label>
                 <Col>
-                    <Form.Control type="text" value={row.occupation || ''} placeholder={"Occupation Title"} 
+                    <Form.Control 
+                        type="text" 
+                        required
+                        isInvalid={errs["portfolio"] && row.occupation === ""}
+                        value={row.occupation !== null ? row.occupation : ''} 
+                        placeholder={"Occupation Title"} 
                         onChange={e => {handlePortfolioOccupationChange(e, idx)}}
                     />
+                    <Form.Control.Feedback type="invalid">
+                        Please provide an occupation.
+                    </Form.Control.Feedback>
                 </Col>
             </Form.Row>
 
@@ -913,7 +953,7 @@ export const Portfolio = props => {
                     Organization
                 </Form.Label>
                 <Col>
-                    <Form.Control type="text" id="organization" value={row.organization || ''} placeholder={"Add an organization. (Optional)"} 
+                    <Form.Control type="text" id="organization" value={row.organization !== null ? row.organization : ''} placeholder={"Add an organization. (Optional)"} 
                         onChange={e => {handlePortfolioOrganizationChange(e, idx)}}>
                     </Form.Control>
                 </Col>
@@ -925,7 +965,7 @@ export const Portfolio = props => {
                 </Form.Label>
                 <Col>
                     <Form.Control as={ DatePicker } 
-                    selected={(row.from_when !== "infinity" && typeof(row.from_when) !== 'undefined') 
+                    selected={(row.from_when !== "infinity" && typeof(row.from_when) !== 'undefined' && row.from_when !== null) 
                     //eslint-disable-next-line
                     ? new Date(row.from_when.replace(/-/g, '\/').replace(/T.+/, ''))
                     : ''}   
@@ -942,7 +982,7 @@ export const Portfolio = props => {
                 </Form.Label>
                 <Col>
                     <Form.Control as={ DatePicker } 
-                    selected={(row.to_when !== "infinity" && typeof(row.to_when) !== 'undefined') 
+                    selected={(row.to_when !== "infinity" && typeof(row.to_when) !== 'undefined' && row.to_when !== null) 
                     //eslint-disable-next-line
                     ? new Date(row.to_when.replace(/-/g, '\/').replace(/T.+/, ''))
                     : ''}  
@@ -959,7 +999,7 @@ export const Portfolio = props => {
                 </Form.Label>
                 <Col>
                     <Form.Control as="textarea" rows="3" 
-                    value={row.description.replace(/\\n/g, '\n') || ''} 
+                    value={row.description !== null ? row.description.replace(/\\n/g, '\n') : ''}
                     placeholder={"Add a description (Optional)"} 
                     onChange={e => handlePortfolioDescriptionChange(e, idx)}
                     />
@@ -977,9 +1017,17 @@ export const Portfolio = props => {
                     Education
                 </Form.Label>
                 <Col>
-                    <Form.Control type="text" value={row.education || ''} placeholder={"Education (Required)"} 
+                    <Form.Control 
+                        type="text" 
+                        required
+                        isInvalid={errs["education"] && row.education === ""}
+                        value={row.education !== null ? row.education : ''} 
+                        placeholder={"Education (Required)"} 
                         onChange={e => {handleEducationChange(e, idx)}}
                     />
+                    <Form.Control.Feedback type="invalid">
+                        Please provide education.
+                    </Form.Control.Feedback>
                 </Col>
             </Form.Row>
 
@@ -988,7 +1036,7 @@ export const Portfolio = props => {
                     Organization
                 </Form.Label>
                 <Col>
-                    <Form.Control type="text" id="education-organization" value={row.organization || ''} placeholder={"Add an organization (Optional)"}
+                    <Form.Control type="text" id="education-organization" value={row.organization !== null ? row.organization : ''} placeholder={"Add an organization (Optional)"}
                         onChange={e => {handleEducationOrganizationChange(e, idx)}}
                     ></Form.Control>
                 </Col>
@@ -1007,7 +1055,7 @@ export const Portfolio = props => {
                 </Form.Label>
                 <Col>
                     <Form.Control as={ DatePicker } 
-                    selected={(row.from_when !== "infinity" && typeof(row.from_when) !== 'undefined') 
+                    selected={(row.from_when !== "infinity" && typeof(row.from_when) !== 'undefined' && row.from_when !== null) 
                     //eslint-disable-next-line
                     ? new Date(row.from_when.replace(/-/g, '\/'))
                     : ''}   
@@ -1024,7 +1072,7 @@ export const Portfolio = props => {
                 </Form.Label>
                 <Col>
                     <Form.Control as={ DatePicker } 
-                    selected={(row.to_when !== "infinity" && typeof(row.to_when) !== 'undefined') 
+                    selected={(row.to_when !== "infinity" && typeof(row.to_when) !== 'undefined' && row.to_when !== null) 
                     //eslint-disable-next-line
                     ? new Date(row.to_when.replace(/-/g, '\/')) 
                     : ''}  
@@ -1041,7 +1089,7 @@ export const Portfolio = props => {
                 </Form.Label>
                 <Col>
                     <Form.Control as="textarea" rows="3" 
-                    value={row.description.replace(/\\n/g, '\n') || ''} 
+                    value={row.description !== null ? row.description.replace(/\\n/g, '\n') : ''}
                     placeholder={"Add a description (Optional)"}
                     onChange={e => {handleEducationDescriptionChange(e, idx)}}
                     />
@@ -1164,6 +1212,13 @@ export const Portfolio = props => {
             <div key={idx}>{str.length === 0 ? <br/> : str}</div>
         );
     }
+    function isEmpty(obj) {
+        return Object.keys(obj).length === 0;
+    }
+    function length(obj) {
+        if(!(typeof(obj) !== 'undefined') || obj == null) return 0;
+        return Object.keys(obj).length;
+    }
 
     return(
         <div className="tab-container">        
@@ -1195,25 +1250,61 @@ export const Portfolio = props => {
             </Modal.Header>
             <Modal.Body>
             <Tab.Container id="left-tabs-example" defaultActiveKey="projects">
+            <Form noValidate validated={validated} onSubmit={handleSave}>
                 <Row>
                     <Col sm={3}>
                     <Nav variant="pills" className="flex-column">
                         <Nav.Item>
-                            <Nav.Link eventKey="projects" onClick={() => setChangingOrder(false)}>Projects</Nav.Link>
+                            <Nav.Link 
+                                className={(typeof(errs["project"]) !== 'undefined') && (!isEmpty(errs["project"]) )
+                                    ? "nav-error" 
+                                    : ""}
+                                eventKey="projects" 
+                                onClick={() => setChangingOrder(false)}
+                            >
+                            Projects
+                            {((typeof(errs["project"]) !== 'undefined') && (length(errs["project"]) > 0))
+                            ? <Badge variant="danger" className='ml-4'>
+                                {length(errs["project"])}
+                                </Badge>
+                            : null}
+                            
+                            </Nav.Link>
                         </Nav.Item>
                         <Nav.Item>
-                            <Nav.Link eventKey="work-exerience" 
-                            onClick={() => setChangingOrder(false)}>Work Experience</Nav.Link>
+                            <Nav.Link 
+                                className={(typeof(errs["portfolio"]) !== 'undefined') && (!isEmpty(errs["portfolio"]))
+                                    ? "nav-error" : "nav-link"}
+                                eventKey="work-exerience" 
+                                onClick={() => setChangingOrder(false)}
+                            >Work Experience
+                            {((typeof(errs["portfolio"]) !== 'undefined') && (length(errs["portfolio"]) > 0))
+                            ? <Badge variant="danger" className='ml-1'>
+                                {length(errs["portfolio"])}
+                                </Badge>
+                            : null}
+                            </Nav.Link>
                         </Nav.Item>
                         <Nav.Item>
-                            <Nav.Link eventKey="education" onClick={() => setChangingOrder(false)}>Education</Nav.Link>
+                            <Nav.Link 
+                                className={((typeof(errs["education"]) !== 'undefined') && (!isEmpty(errs["education"])))
+                                ? "nav-error" : ""}  
+                                eventKey="education" 
+                                onClick={() => setChangingOrder(false)}
+                            >Education
+                            {((typeof(errs["education"]) !== 'undefined') && (length(errs["education"]) > 0))
+                            ? <Badge variant="danger" className='ml-4'>
+                                {length(errs["education"])}
+                                </Badge>
+                            : null}
+                            </Nav.Link>
                         </Nav.Item>
                     </Nav>
                     </Col>
                     <Col sm={9}>
                     <Tab.Content>
                         <Tab.Pane eventKey="projects">
-                            <Form>
+                            <Form.Group>
                                 <h4>Projects</h4>
                                 {projects.values.length < 4
                                 ? <Button onClick={() => addProject()} variant="outline-success" size="sm">Add Project</Button>  
@@ -1231,10 +1322,10 @@ export const Portfolio = props => {
                                 ? <ChangeOrder droppableId="projects"></ChangeOrder>
                                 : renderProjectsForm()}
 
-                            </Form>
+                            </Form.Group>
                         </Tab.Pane>
                         <Tab.Pane eventKey="work-exerience">
-                            <Form>
+                            <Form.Group>
                                 <h4>Work Experience</h4>
                                 {portfolio.values.length < 4
                                 ? <Button onClick={() => addWorkExperience()} variant="outline-success" size="sm">Add Work Experience</Button>  
@@ -1251,10 +1342,10 @@ export const Portfolio = props => {
                                 {changingOrder
                                 ? <ChangeOrder droppableId="work-experience"></ChangeOrder>
                                 : renderWorkExperienceForm()}
-                            </Form>
+                            </Form.Group>
                         </Tab.Pane>
                         <Tab.Pane eventKey="education">
-                            <Form>
+                            <Form.Group>
                                 <h4>Education</h4>
                                 {education.values.length < 4
                                 ? <Button onClick={() => addEducation()} variant="outline-success" size="sm">Add Education</Button>  
@@ -1273,17 +1364,18 @@ export const Portfolio = props => {
                                 : renderEducationForm()}
 
 
-                            </Form>
+                            </Form.Group>
                         </Tab.Pane>
                     </Tab.Content>
                     </Col>
                 </Row>
-
+                <Button variant="success" type="submit">Save Changes</Button>
+            </Form>
             </Tab.Container>
 
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="success" onClick={handleSave}>Save Changes</Button>
+                
             </Modal.Footer>
         </Modal>
         <br></br>

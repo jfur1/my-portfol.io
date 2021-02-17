@@ -32,6 +32,9 @@ export const Contact = (props) => {
     const [phoneToUpdate, setPhoneToUpdate] = useState([]);
     const [linksToDelete, setLinksToDelete] = useState([]);
 
+    const [validated, setValidated] = useState(false);
+    const [errs, setErrs] = useState({}); 
+
     // Event Handlers
     const handleShow = () => setShow(true);
     const handleClose = () => {
@@ -41,6 +44,7 @@ export const Contact = (props) => {
         else {
             setShow(false);
             setChangingOrder(false);
+            setLinks({values: linksData});
         }
     }
 
@@ -51,6 +55,9 @@ export const Contact = (props) => {
         setLinks({values: linksData});
         setChangingOrder(false);
         setReordered(false);
+        setLinksToDelete([]);
+        setValidated(false);
+        setErrs({});
     }
 
     // form values change? => stage values to be updated
@@ -68,31 +75,38 @@ export const Contact = (props) => {
         setPhoneToUpdate([]);
         setEmailToUpdate([]);
         setLinksToDelete([]);
-        setLinks({values: linksData})
+        setLinks({values: linksData});
+        setValidated(false);
+        setErrs({});
     }, [props, linksData])
 
 
-    const handleSave = () => {
+    const validate = () => {
+        let isValidated = true;
+        links.values.forEach((row, idx) => {
+            if(!(typeof(row.link_id) !== 'undefined') && (row.link === "")){
+                isValidated = false;
+                setValidated(false);
+                setErrs({link: "Please enter a link."});
+            }
+        })
+        return isValidated;
+    }
+
+    const handleSave = async(event) => {
+        if(!validate()){
+            event.preventDefault();
+            event.stopPropagation();
+        } else{
 
         console.log("Saving Changes:");
-
         console.log("Email to Update:", emailToUpdate);
         console.log("Phone to Update:", phoneToUpdate);
 
-        if(emailToUpdate.length){
-            props.updateEmail(user.user_id, emailToUpdate);
-        }
-        if(phoneToUpdate.length){
-            props.updatePhone(user.user_id, phoneToUpdate);
-        }
         var linksToCreate = [];
         var linksToUpdate = [];
-
         // Update/Insert (Upsert) Links?
         links.values.forEach((row, idx) => {
-            // console.log("row:", row);
-            // console.log("linksData[idx]",linksData[idx]);
-            // console.log("links.values[idx]", links.values[idx]);
             if(!(typeof(row.link_id) !== 'undefined')){
                 if(row.link === ""){
                     console.log("A link is required in order to create!")
@@ -101,7 +115,7 @@ export const Contact = (props) => {
                         title: row.title,
                         link: row.link,
                         description: JSON.stringify(row.description).replace(/['"]+/g, ''),
-                        position: idx
+                        rowIdx: idx
                     });
                 }
             } else if((typeof(row.toUpdate) !== 'undefined')){
@@ -118,60 +132,61 @@ export const Contact = (props) => {
         console.log("Links to Create:", linksToCreate);
         console.log("Links to Update:", linksToUpdate);
         console.log("Links to Delete", linksToDelete);        
-
         console.log("links.values:", links.values);
+
+        // Begin POST Requests
+        const updatePhone = async() => {
+            await props.updatePhone(user.user_id, phoneToUpdate);
+        }
+        if(phoneToUpdate.length) await updatePhone();
+
         
-        if(linksToCreate.length) {
-            const createLinks = async() => {
-                var newLinks = [];
-                var idx = 0;
-                for await (let linkToCreate of linksToCreate){
-                    const data = await props.createLink(user.user_id, linkToCreate, idx);
-                    //console.log("About.jsx Recieved Data from Profile.jsx:", data);
-                    newLinks.push(data);
-                    idx++;
-                }
-                console.log("[About.jsx] Newly Created Links: ", newLinks);
-                props.setCreatedLinks(newLinks);
+        const updateEmail = async() => {
+            await props.updateEmail(user.user_id, emailToUpdate);
+        }
+        if(emailToUpdate.length) await updateEmail();
+
+
+        const createLinks = async() => {
+            for await (let linkToCreate of linksToCreate){
+                await props.createLink(user.user_id, linkToCreate, linkToCreate.rowIdx);
             }
-            createLinks();
         }
+        if(linksToCreate.length) await createLinks();
 
-        if(linksToUpdate.length){
-            linksToUpdate.forEach((row, rowIdx) => {
-                props.updateLink(row.link_id, row.link, row.title, row.description, user.user_id, row.rowIdx);
-            })
-            props.reloadProfile();
-        }
 
-        if(reordered){
-            console.log("Reordered links:")
-            links.values.forEach((row, rowIdx) => {
-                console.log("Row:", row);
-                console.log("New Position:", rowIdx);
-                props.updateLink(row.link_id, row.link, row.title, row.description, user.user_id, rowIdx);
-            })
-            props.reloadProfile();
-        }
-
-        // Possible DELETE ops should come last -- involves forced refresh
-        if(linksToDelete.length) {
-            //console.log(`** DELETE Skills with ID: ${skillsToDelete}`);
-            const deleteLinks = async() => {
-                for await (let linkToDelete of linksToDelete){
-                    await props.deleteLink(linkToDelete.link_id);
-                }
-                props.reloadProfile();
+        const updateLinks = async() => {
+            for await(let linkToUpdate of linksToUpdate){
+                await props.updateLink(linkToUpdate.link_id, linkToUpdate.link, linkToUpdate.title, linkToUpdate.description, user.user_id, linkToUpdate.rowIdx);
             }
-            deleteLinks();
-        };
-        setChangingOrder(false);
-        setShow(false);
+        }
+        if(linksToUpdate.length) await updateLinks();
+
+
+        const reorder = async() => {
+            links.values.forEach(async (row, rowIdx) => {
+                await props.updateLink(row.link_id, row.link, row.title, row.description, user.user_id, rowIdx);
+            })
+        }
+        if(reordered) await reorder();
+
+
+        const deleteLinks = async() => {
+            for await (let linkToDelete of linksToDelete){
+                await props.deleteLink(linkToDelete.link_id);
+            }
+        }
+        if(linksToDelete.length) await deleteLinks();
+
+
+        window.location.reload();
+        }
     }
     
     const renderLinksForm = () => {
         return (
-            links.values.map((row, idx) => 
+            <Form.Group controlId="validationCustom01">
+            {links.values.map((row, idx) => 
                 <Form.Row className='draggable-container mb-4 ml-3 mr-3' key={idx}>
                     <Form.Row className='mt-1' style={{width: "75%"}}>
                         <Form.Label column sm={3}>
@@ -189,9 +204,18 @@ export const Contact = (props) => {
                             Link
                         </Form.Label>
                         <Col>
-                            <Form.Control type="text" value={row.link} placeholder={"Add your link here (Required)"} onChange={e => {
-                                handleLinkChange(e, idx);
+                            <Form.Control 
+                                required
+                                isInvalid={errs["link"] && row.link === ""}
+                                type="text" 
+                                value={row.link} 
+                                placeholder={"Add your link here (Required)"} 
+                                onChange={e => {
+                                    handleLinkChange(e, idx);
                             }}/>
+                            <Form.Control.Feedback type="invalid">
+                                Please provide a Link.
+                            </Form.Control.Feedback>
                         </Col>
                     </Form.Row>
 
@@ -204,8 +228,8 @@ export const Contact = (props) => {
                                 Description
                             </Form.Label>
                             <Col>
-                                <Form.Control as="textarea" rows={3} id="link-description" 
-                                value={row.description.replace(/\\n/g, '\n') || ''} 
+                                <Form.Control as="textarea" rows={3}
+                                value={(row.description !== null) ? row.description.replace(/\\n/g, '\n') : ''} 
                                 placeholder={"Add a description for your link! (Optional)"} 
                                 onChange={e => {
                                     handleLinkDescriptionChange(e, idx);
@@ -213,7 +237,8 @@ export const Contact = (props) => {
                             </Col>
                         </Form.Row>
                 </Form.Row>
-            )
+            )}
+            </Form.Group>
         );
     }
 
@@ -361,7 +386,7 @@ export const Contact = (props) => {
                 scrollable={false}
             >
                 <Modal.Header closeButton>
-                    <Modal.Title id="contained-modal-title-vcenter">
+                    <Modal.Title>
                         <h3>Edit</h3>
                         <AlertDismissible
                             setShow={setShow}
@@ -376,7 +401,7 @@ export const Contact = (props) => {
                 </Modal.Header>
                 <Modal.Body>
 
-                <Form>
+                <Form noValidate validated={validated} onSubmit={handleSave}>
                     <h4>Contact Information</h4>
                     <Form.Row className='mt-4'>
                         <Form.Label column sm={2}>
@@ -408,7 +433,7 @@ export const Contact = (props) => {
                     <Form.Group>
                         <Form.Label className='mt-4'>
                             <h4>Links</h4>
-                            
+                        </Form.Label > <br></br>
                             {links.values.length < 6
                                 ? <Button 
                                 onClick={() => addLink()} 
@@ -428,17 +453,18 @@ export const Contact = (props) => {
                                 /></>
                             : null}
 
-                        </Form.Label >
+                       
 
                         {changingOrder 
                         ? <ChangeLinksOrder></ChangeLinksOrder>
                         : renderLinksForm()}
 
                     </Form.Group>
+                    <Button variant="success" type="submit">Save Changes</Button>
                 </Form>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="success" onClick={handleSave}>Save Changes</Button>
+                    
                 </Modal.Footer>
             </Modal>
 

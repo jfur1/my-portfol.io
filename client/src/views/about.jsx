@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { PencilFill } from 'react-bootstrap-icons';
-import { Modal, Button } from 'react-bootstrap';
+import { Modal, Button, Form, Col } from 'react-bootstrap';
 import { AlertDismissible } from '../components/alertDismissible';
 import Switch  from '../components/switch';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
@@ -27,24 +27,25 @@ export const About = props => {
     const [hobbies, setHobbies] = useState({values: hobbiesData});
     const [skills, setSkills] = useState({values: skillsData});
 
+    const [validated, setValidated] = useState(false);
+    const [errs, setErrs] = useState({}); 
+
 
     // Hooks used to format final onClick data for POST request
     
     const [skillsToDelete, setSkillToDelete] = useState([]);
     const [hobbiesToDelete, setHobbyToDelete] = useState([]);
 
-    const [showLogs, setShowLogs] = useState(false);
-
     // After successful post request, profile.jsx updates state with new data
     // New data passed to hobbiesData/skillsData, and is copied into hobbies/skills hooks
     // where data can be manipulated by user
     useEffect(() => {
-        //setLocationToCreate([]);
-        //setBioToCreate([]);
         setHobbies({values: hobbiesData});
         setSkills({values: skillsData});
         setHobbyToDelete([]);
         setSkillToDelete([]);
+        setValidated(false);
+        setErrs({});
     }, [hobbiesData, skillsData]);
 
     // Toggle Modal
@@ -53,6 +54,8 @@ export const About = props => {
         if(edited){
             setShowAlert(true);
         } else{
+            setHobbies({values: hobbiesData});
+            setSkills({values: skillsData});
             setChangingOrder(false);
             setShow(false);    
         }
@@ -63,19 +66,42 @@ export const About = props => {
         setLocation(info.location);
         setBio(info.bio);
         setHobbies({values: hobbiesData});
-        setChangingOrder(false);
         setSkills({values: skillsData});
+        setHobbyToDelete([]);
+        setSkillToDelete([]);
+        setChangingOrder(false);
         setReordered(false);
+        setErrs({});
     }
 
 
     // ----------- [BEGIN] Hobby Handlers -------------------
     const renderHobbiesForm = () => {
-        return hobbies.values.map((row, idx) =>
-            <div className="form-group row" key={idx}>
-                <input type="text" className="form-control" style={{width: '70%'}} value={row.hobby || ''} onChange={e => {handleHobbyChange(e, idx)}}/>
-                <Button onClick={() => removeHobby(idx)} variant="outline-danger" size="sm">Delete</Button>
-            </div>
+        return (
+            <Form.Group controlId="validationCustom02">
+            {hobbies.values.map((row, idx) =>
+                <Form.Row className='mb-4 ml-3 mr-3' key={idx}>
+                    <Form.Control 
+                        required
+                        style={{width: '70%'}}
+                        isInvalid={errs["hobby"] && row.hobby === ""}
+                        type="text" 
+                        value={row.hobby} 
+                        placeholder={"Enter Hobby"} 
+                        onChange={e => {
+                            handleHobbyChange(e, idx);
+                    }}/>
+                    <Button 
+                        variant="outline-danger" 
+                        size="sm"
+                        onClick={() => removeHobby(idx)}    
+                    >Delete</Button>
+                    <Form.Control.Feedback type="invalid">
+                        Please provide a hobby.
+                    </Form.Control.Feedback>
+                </Form.Row>
+            )}
+            </Form.Group>
         )
     }
     const handleHobbyChange = (event, idx) => {
@@ -119,11 +145,31 @@ export const About = props => {
     // ----------- [BEGIN] Skill Handlers ------------------- 
 
     const renderSkillsForm = () => {
-        return skills.values.map((row, idx) =>
-            <div className="form-group row" key={idx}>
-                <input type="text" className="form-control" style={{width: '70%'}} value={row.skill || ''} onChange={e => {handleSkillChange(e, idx)}}/>
-                <Button onClick={() => removeSkill(idx)} variant="outline-danger" size="sm">Delete</Button>
-            </div>
+        return (
+            <Form.Group controlId="validationCustom01">
+             {skills.values.map((row, idx) =>
+                <Form.Row className='mb-4 ml-3 mr-3' key={idx}>
+                    <Form.Control 
+                            required
+                            style={{width: '70%'}}
+                            isInvalid={errs["skill"] && row.skill === ""}
+                            type="text" 
+                            value={row.skill} 
+                            placeholder={"Enter skill"} 
+                            onChange={e => {
+                                handleSkillChange(e, idx);
+                        }}/>
+                    <Button 
+                        variant="outline-danger" 
+                        size="sm"
+                        onClick={() => removeSkill(idx)}    
+                    >Delete</Button>
+                    <Form.Control.Feedback type="invalid">
+                        Please provide a skill.
+                    </Form.Control.Feedback>
+                </Form.Row>
+            )}
+            </Form.Group>
         )
     }
     const handleSkillChange = (event, idx) => {
@@ -196,63 +242,104 @@ export const About = props => {
     
     const ChangeOrder = () => {
         return (
-            <div style={{ 'display': 'flex' }}>
+            <Form.Row className="text-center">
             <DragDropContext 
                 onDragEnd={handleOnDragEnd}
             >
-            <Droppable droppableId="hobbies">
-            {(provided) => (
-                <div {...provided.droppableProps} ref={provided.innerRef}>
-                    {hobbies.values.map((row, idx) => {
-                        return (
-                            <Draggable key={idx} draggableId={row.hobby} index={idx}>
-                                {(provided) => (
-                                
-                                    <div className='draggable-container mb-4 ml-3 mr-3' ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+            <Col>
+                <Droppable droppableId="hobbies">
+                {(provided) => (
+                    <div {...provided.droppableProps} ref={provided.innerRef}>
+                        {hobbies.values.map((row, idx) => {
+                            return (
+                                <Draggable key={idx} draggableId={row.hobby} index={idx}>
+                                    {(provided) => (
+                                    
+                                        <div 
+                                        className='draggable-container mb-4 ml-3 mr-3' 
+                                        ref={provided.innerRef} 
+                                        {...provided.draggableProps} 
+                                        {...provided.dragHandleProps}>
 
-                                    {row.hobby
-                                        ? row.hobby
-                                        : null}
-                                    </div>
-                                )}
-                            </Draggable>
-                        );
-                    })}
-                    {provided.placeholder}
-                </div>
-            )}
-            </Droppable>
-            <Droppable droppableId="skills">
-            {(provided) => (
-                <div {...provided.droppableProps} ref={provided.innerRef}>
-                    {skills.values.map((row, idx) => {
-                        return (
-                            <Draggable key={idx} draggableId={row.skill} index={idx}>
-                                {(provided) => (
-                                
-                                    <div className='draggable-container mb-4 ml-3 mr-3' ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+                                        {row.hobby
+                                            ? row.hobby
+                                            : null}
+                                        </div>
+                                    )}
+                                </Draggable>
+                            );
+                        })}
+                        {provided.placeholder}
+                    </div>
+                )}
+                </Droppable>
+            </Col>
+            <Col>
+                <Droppable droppableId="skills">
+                {(provided) => (
+                    <div {...provided.droppableProps} ref={provided.innerRef}>
+                        {skills.values.map((row, idx) => {
+                            return (
+                                <Draggable key={idx} draggableId={row.skill} index={idx}>
+                                    {(provided) => (
+                                    
+                                        <div className='draggable-container mb-4 ml-3 mr-3' ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
 
-                                    {row.skill
-                                        ? row.skill
-                                        : null}
-                                    </div>
-                                )}
-                            </Draggable>
-                        );
-                    })}
-                    {provided.placeholder}
-                </div>
-            )}
-            </Droppable>
+                                        {row.skill
+                                            ? row.skill
+                                            : null}
+                                        </div>
+                                    )}
+                                </Draggable>
+                            );
+                        })}
+                        {provided.placeholder}
+                    </div>
+                )}
+                </Droppable>
+            </Col>
             </DragDropContext>
-        </div>
+        </Form.Row>
         );
     }
+
+    const validate = () => {
+        let isValidated = true;
+        let errors = {};
+        hobbies.values.forEach((row, idx) => {
+            if(!(typeof(row.hobby_id) !== 'undefined') && (row.hobby === "")){
+                isValidated = false;
+                setValidated(false);
+                errors["hobby"] = true;
+            }
+        })
+        skills.values.forEach((row, idx) => {
+            if(!(typeof(row.skill_id) !== 'undefined') && (row.skill === "")){
+                isValidated = false;
+                setValidated(false);
+                errors["skill"] = true;
+            }
+        })
+        setErrs(errors);
+        return isValidated;
+    }
+
     // Format edit hooks to be sent in POST request
-    const handleSave = () => {
+    const handleSave = async(event) => {
+        if(!validate()){
+            event.preventDefault();
+            event.stopPropagation();
+        } else{
+        
         // Location
         let locationToCreate = [];
         let locationToUpdate = [];
+        let bioToCreate = [];
+        let bioToUpdate = [];
+        var hobbiesToCreate = [];
+        var hobbiesToUpdate = [];
+        var skillsToCreate = [];
+        var skillsToUpdate = [];
         
         if(info === null && location){
             locationToCreate.push(JSON.stringify(location).replace(/['"]+/g, ''));
@@ -261,8 +348,6 @@ export const About = props => {
             locationToUpdate.push(JSON.stringify(location).replace(/['"]+/g, ''));
         }
 
-        let bioToCreate = [];
-        let bioToUpdate = [];
         // Bio
         if(info === null && bio){
             bioToCreate.push(JSON.stringify(bio).replace(/['"]+/g, ''));
@@ -271,8 +356,6 @@ export const About = props => {
             bioToUpdate.push(JSON.stringify(bio).replace(/['"]+/g, ''));
         }
 
-        var hobbiesToCreate = [];
-        var hobbiesToUpdate = [];
         // Hobbies: 
         // No ID? => CREATE new hobby
         // Existing ID? => UPDATE existing hobby
@@ -299,9 +382,6 @@ export const About = props => {
                 }
             }
         })
-
-        var skillsToCreate = [];
-        var skillsToUpdate = [];
         // Skills: 
         // No ID? => CREATE new skill
         // Existing ID? => UPDATE existing skill
@@ -343,123 +423,81 @@ export const About = props => {
         
         // Begin POST requests
 
-        if(locationToUpdate.length){
-            props.updateLocation(locationToUpdate[0], user.user_id);
-            locationToUpdate = [];
-        } else if(locationToCreate.length){
-            let newLocation = [];
-            const createLocation = async() => {
-                const data = await props.createLocation(user.user_id, locationToCreate[0]);
-                newLocation.push(data);
-            }
-            createLocation();
-            locationToCreate = [];
+        const createLocation = async() => {
+            await props.createLocation(user.user_id, locationToCreate[0]);
         }
+        if(locationToCreate.length) await createLocation();
 
-        if(bioToUpdate.length) {
-            props.updateBio(bioToUpdate[0], user.user_id);
-            bioToUpdate = [];
-        } else if(bioToCreate.length){
-            let newBio = [];
-            const createBio = async() => {
-                const data = await props.createLocation(user.user_id, locationToCreate[0]);
-                newBio.push(data);
-            }
-            createBio();
-            bioToCreate = [];
+        const updateLocation = async() => {
+            await props.updateLocation(locationToUpdate[0], user.user_id);
         }
+        if(locationToUpdate.length) await updateLocation();
 
-        if(hobbiesToCreate.length) {
-            const createHobbies = async() => {
-                var newHobbies = [];
-                var idx = 0;
-                for await (let hobbyToCreate of hobbiesToCreate){
-                    const data = await props.createHobby(user.user_id, hobbyToCreate.hobby, idx);
-                    //console.log("About.jsx Recieved Data from Profile.jsx:", data);
-                    newHobbies.push(data);
-                    idx++;
-                }
-                //console.log("[About.jsx] Newly Created Hobbies: ", newHobbies);
-                props.setCreatedHobbies(newHobbies);
-            }
-            createHobbies();
+        const createBio = async() => {
+            await props.createBio(user.user_id, bioToCreate[0]);
         }
-        if(hobbiesToUpdate.length) {
-            //console.log(`** UPDATE Hobbies: ${hobbiesToUpdate}`);
-            hobbiesToUpdate.forEach((row, rowIdx) => {
-                props.updateHobby(row.hobby_id, row.hobby, user.user_id, row.rowIdx);
+        if(bioToCreate.length) await createBio();
+
+        const updateBio = async() => {
+            await props.updateBio(bioToUpdate[0], user.user_id)
+        }
+        if(bioToUpdate.length) await updateBio();
+
+        const createHobbies = async() => {
+            for await (let hobbyToCreate of hobbiesToCreate){
+                await props.createHobby(user.user_id, hobbyToCreate.hobby, hobbyToCreate.rowIdx);
+            }
+        }
+        if(hobbiesToCreate.length) await createHobbies();
+
+        const updateHobbies = async() => {
+            for await(let hobbyToUpdate of hobbiesToUpdate){
+                await props.updateHobby(hobbyToUpdate.hobby_id, hobbyToUpdate.hobby, user.user_id, hobbyToUpdate.rowIdx)
+            }
+        }
+        if(hobbiesToUpdate.length) await updateHobbies();
+
+        const createSkills = async() => {
+            for await (let skillToCreate of skillsToCreate){
+                await props.createSkill(user.user_id, skillToCreate.skill, skillToCreate.rowIdx);
+            }
+        }
+        if(skillsToCreate.length) await createSkills();
+
+        const updateSkills = async() => {
+            for await (let skillToUpdate of skillsToUpdate){
+                await props.updateSkill(skillToUpdate.skill_id, skillToUpdate.skill, user.user_id, skillToUpdate.rowIdx);
+            }
+        }
+        if(skillsToUpdate.length) await updateSkills();
+
+        const reorder = async() => {
+            hobbies.values.forEach(async (row, rowIdx) => {
+                await props.updateHobby(row.hobby_id, row.hobby, user.user_id, rowIdx);
             })
-        };
-
-        if(skillsToCreate.length) {
-            //console.log(`** CREATE Skills: ${skillsToCreate}`);
-            const createSkills = async() => {
-                var newSkills = [];
-                var idx = 0;
-                for await (let skillToCreate of skillsToCreate){
-                    const data = await props.createSkill(user.user_id, skillToCreate.skill, idx);
-                    //console.log("About.jsx Recieved Data from Profile.jsx:", data);
-                    newSkills.push(data);
-                    idx++;
-                }
-                //console.log("[About.jsx] Newly Created skills: ", newSkills);
-                props.setCreatedSkills(newSkills);
-            }
-            createSkills();
-        }
-        if(skillsToUpdate.length) {
-            //console.log(`** UPDATE Skills: ${skillsToUpdate}`);
-            var idx = 0;
-            skillsToUpdate.forEach((row, rowIdx) => {
-                props.updateSkill(row.skill_id, row.skill, user.user_id, idx);
-                idx++;
+            skills.values.forEach(async (row, rowIdx) => {
+                await props.updateSkill(row.skill_id, row.skill, user.user_id, rowIdx);
             })
-            console.log("HobbiesToUpdate:", skillsToUpdate);
-        };
-
-
-        if(reordered){
-            console.log("Reordered hobbies:");
-            hobbies.values.forEach((row, rowIdx) => {
-                console.log("Row:", row);
-                console.log("New Position:", rowIdx);
-                props.updateHobby(row.hobby_id, row.hobby, user.user_id, rowIdx);
-            })
-            console.log("Reordered skills:");
-            skills.values.forEach((row, rowIdx) => {
-                console.log("Row:", row);
-                console.log("New Position:", rowIdx);
-                props.updateSkill(row.skill_id, row.skill, user.user_id, rowIdx);
-            })
-            props.reloadProfile();
         }
+        if(reordered) await reorder();
 
-        if(skillsToDelete.length) {
-            //console.log(`** DELETE Skills with ID: ${skillsToDelete}`);
-            const deleteSkills = async() => {
-                for await (let skillToDelete of skillsToDelete){
-                    await props.deleteSkill(skillToDelete.skill_id);
-                }
-                props.reloadProfile();
+        const deleteSkills = async() => {
+            for await (let skillToDelete of skillsToDelete){
+                await props.deleteSkill(skillToDelete.skill_id);
             }
-            deleteSkills();
-        };
-
-        if(hobbiesToDelete.length) {
-            //console.log(`** DELETE Hobbies with ID: ${hobbiesToDelete}`);
-            const deleteHobbies = async() => {
-                for await (let hobbyToDelete of hobbiesToDelete){
-                    await props.deleteHobby(hobbyToDelete.hobby_id);
-                }
-                props.reloadProfile();
-            }
-            deleteHobbies();
         }
+        if(skillsToDelete.length) await deleteSkills();
+
+        const deleteHobbies = async() => {
+            for await (let hobbyToDelete of hobbiesToDelete){
+                await props.deleteHobby(hobbyToDelete.hobby_id);
+            }
+        }
+        if(hobbiesToDelete.length) await deleteHobbies();
        
-        setChangingOrder(false);
-        setShow(false);
-        // Bad, but working method for triggering useEffect
-        return showLogs ? setShowLogs(false) : setShowLogs(true);
+
+        window.location.reload();
+        }
     };
 
     function NewlineText(props) {
@@ -488,7 +526,7 @@ export const About = props => {
             scrollable={false}
         >
             <Modal.Header closeButton>
-                <Modal.Title id="contained-modal-title-vcenter">
+                <Modal.Title>
                     Edit
                     <AlertDismissible
                         setShow={setShow}
@@ -501,10 +539,12 @@ export const About = props => {
                 </Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <form>
+                <Form noValidate validated={validated} onSubmit={handleSave}>
                     
-                    <div className="form-group">
-                        <label htmlFor="location"><b>Location</b></label>
+                    <Form.Row className='mt-3'>
+                        <Form.Label column sm={2}>
+                            Location
+                        </Form.Label>
                         <input 
                             type="text" 
                             className="form-control" 
@@ -515,10 +555,12 @@ export const About = props => {
                                 setEdited(true);
                             }}
                         ></input>
-                    </div>
+                    </Form.Row>
 
-                    <div className="form-group">
-                        <label htmlFor="bio"><b>Bio</b></label>
+                    <Form.Row className='mt-3'>
+                        <Form.Label column sm={2}>
+                            Bio
+                        </Form.Label>
                         
                         <textarea 
                             className="form-control" 
@@ -528,50 +570,65 @@ export const About = props => {
                             onChange={e => {
                                 setBio(e.target.value); 
                                 setEdited(true);
-                            }}>
-
-                        </textarea>
-                    </div>
+                            }}/>
+                    </Form.Row>
                     
-                    {(hobbiesData.length > 1 || skillsData.length > 1)
-                        ? <><label>Change Order</label>
+                    <Form.Group className="mt-4">
+                        {(hobbiesData.length > 1 || skillsData.length > 1)
+                        ? <>
+                        <label>Change Order</label>
                             <Switch
                                 isOn={changingOrder}
                                 handleToggle={() => setChangingOrder(!changingOrder)}
-                            /></>
+                            />
+                            </>
+                        : null}
+                    </Form.Group>
+
+                    <Form.Row className="text-center">
+                        <Col>
+                            <Form.Label className='text-center'>
+                                <h4>Hobbies</h4>
+                            </Form.Label > <br></br>
+
+                            {changingOrder ? null : renderHobbiesForm()}
+                            
+                            {hobbies.values.length < 6 && !changingOrder
+                                ? <Button 
+                                    onClick={() => addHobby()} 
+                                    variant="outline-success" 
+                                    size="sm"    
+                                >Add Hobby</Button>
+                                : null }
+                                
+                        </Col> 
+                        <Col>
+                            <Form.Label className='text-center'>
+                                <h4>Skills</h4>
+                            </Form.Label > <br></br>
+
+                            {changingOrder ? null : renderSkillsForm()}
+
+                            {skills.values.length < 6 && !changingOrder
+                            ? <Button 
+                                onClick={() => addSkill()} 
+                                variant="outline-success" 
+                                size="sm"    
+                            >Add Skill</Button>
+                            : null }
+                        </Col>
+                    </Form.Row>
+
+                    {changingOrder 
+                        ? <ChangeOrder></ChangeOrder>
                         : null}
 
-                    {changingOrder
-                    ? <ChangeOrder></ChangeOrder>
-                    
-                    : <div className="form-group row ml-4">
-                        <div className="form-group col text-center">
-                            <label htmlFor="hobbies"><b>Hobbies</b></label>
-                            {renderHobbiesForm()}
-                            {hobbies.values.length < 6
-                            ? <Button onClick={() => addHobby()} variant="outline-success" size="sm">Add Hobby</Button>
-                            : null }
-                        </div>  
-                        <div className="form-group col text-center">
+                    <Button variant="success" type="submit" className="mt-5">Save Changes</Button>
 
-                            <label htmlFor="skills"><b>Skills</b></label>
-                            {renderSkillsForm()}
-                            {skills.values.length < 6
-                            ? <Button onClick={() => addSkill()} variant="outline-success" size="sm">Add Skill</Button>
-                            : null }
-
-                        </div>  
-                    </div>
-                    }
-                </form>             
+                </Form>             
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="success" onClick={() => {
-                    setShow(false); 
-                    handleSave(); 
-                    setEdited(false); 
-                    setShowAlert(false);
-                }}>Save Changes</Button>
+            
             </Modal.Footer>
         </Modal>
 

@@ -209,14 +209,7 @@ class Profile extends Component{
         });
         const data = await response.json();
         console.log("Client Recieved Response: ", data);
-        this.setState({
-            about: {
-                ...this.state.about,
-                location: data,
-            },
-            loading: false
-        });
-        console.log("Profile.jsx Created Location. this.state.about:", this.state.about);
+        return;
     }
     updateLocation = async (locationToUpdate, user_id) => {
         this.setState({loading: true});
@@ -232,14 +225,7 @@ class Profile extends Component{
         });
         const data = await response.json();
         console.log("Client Recieved Response: ", data);
-        this.setState({
-            about: {
-                ...this.state.about,
-                location: data,
-            },
-            loading: false
-        });
-        console.log("Profile.jsx Updated Location. this.state.about:",this.state.about);
+        return;
     }
 
     createBio = async(user_id, bio) => {
@@ -256,16 +242,8 @@ class Profile extends Component{
         });
         const data = await response.json();
         console.log("Client Recieved Response: ", data);
-        this.setState({
-            about: {
-                ...this.state.about,
-                bio: data,
-            },
-            loading: false
-        });
-        console.log("Profile.jsx Created Bio. this.state.about:", this.state.about);
+        return;
     }
-
     updateBio = async(bioToUpdate, user_id) => {
         this.setState({loading: true});
         const response = await fetch('http://localhost:5000/updateBio',  {
@@ -280,16 +258,26 @@ class Profile extends Component{
         });
         const data = await response.json();
         console.log("Client Recieved Response: ", data);
-        this.setState({
-            about: {
-                ...this.state.about,
-                bio: data,
-            },
-            loading: false
-        });
-        console.log("Profile.jsx Updated Bio. this.state.about:", this.state.about);
+        return;
     }
     
+    createHobby = async(user_id, hobby, idx) => {
+        this.setState({loading: true});
+        const response = await fetch('http://localhost:5000/createHobby',  {
+            method: 'POST', 
+            mode: 'cors',
+            credentials: 'include',
+            withCredentials: true,
+            headers: {
+                user_id: user_id,
+                hobby: hobby,
+                position: idx
+            }
+        });
+        const data = await response.json();
+        console.log("Client Recieved Response: ", data);
+        return;
+    } 
     updateHobby = async(hobby_id, hobby, user_id, rowIdx) => {
         this.setState({loading: true});
         console.log("[Profile.jsx] Recieved Position:", rowIdx);
@@ -307,67 +295,22 @@ class Profile extends Component{
         });
         const data = await response.json();
         console.log("Client Recieved Response: ", data);
-
-        // let tmpHobbies = [...this.state.hobbies];
-        // let row = {...tmpHobbies[rowIdx]};
-        // row.hobby = data;
-        // tmpHobbies[rowIdx] = row;
-        // this.setState({hobbies: tmpHobbies, loading: false});
-
-        // console.log("Profile.jsx Updated the hobby. this.state.hobbies:",this.state.hobbies);
+        return;
     }
-
-    updateSkill = async(skill_id, skill, user_id, rowIdx) => {
+    deleteHobby = async(hobby_id) => {
         this.setState({loading: true});
-        console.log("[Profile.jsx] Recieved Position:", rowIdx);
-        const response = await fetch('http://localhost:5000/updateSkill',  {
+        const response = await fetch('http://localhost:5000/deleteHobby',  {
             method: 'POST', 
             mode: 'cors',
             credentials: 'include',
             withCredentials: true,
             headers: {
-                skill_id: skill_id, 
-                skill: skill,
-                user_id: user_id,
-                position: rowIdx
-            }
-        });
-        const data = await response.json();
-        console.log("Client Recieved Response: ", data);
-        
-        // let tmpSkills = [...this.state.skills];
-        // let row = {...tmpSkills[rowIdx]};
-        // row.skill = data;
-        // tmpSkills[rowIdx] = row;
-        // this.setState({skills: tmpSkills, loading: false});
-
-        //console.log("Profile.jsx Updated the skill. this.state.skills",this.state.skills);
-    }
-
-    createHobby = async(user_id, hobby, idx) => {
-        this.setState({loading: true});
-        const response = await fetch('http://localhost:5000/createHobby',  {
-            method: 'POST', 
-            mode: 'cors',
-            credentials: 'include',
-            withCredentials: true,
-            headers: {
-                user_id: user_id,
-                hobby: hobby,
-                position: idx
+                hobby_id: hobby_id
             }
         });
         const data = await response.json();
         console.log("Client Recieved Response: ", data);
         return data;
-    } 
-    // Wait to set state until all promises are fulfilled
-    setCreatedHobbies = (createdHobbiesToSet) => {
-        console.log("Profile.jsx recieved hobbies to set:", createdHobbiesToSet);
-        this.setState({
-            hobbies: [...this.state.hobbies, ...createdHobbiesToSet],
-            loading: false
-        });
     }
 
     createSkill = async(user_id, skill, idx) => {
@@ -387,30 +330,25 @@ class Profile extends Component{
         console.log("Client Recieved Response: ", data);
         return data;
     }
-    // Wait to set state until all promises are fulfilled
-    setCreatedSkills = (createdSkillsToSet) => {
-        console.log("Profile.jsx recieved skills to set:", createdSkillsToSet);
-        this.setState({
-            skills: [...this.state.skills, ...createdSkillsToSet],
-            loading: false});
-    }
-
-    deleteHobby = async(hobby_id) => {
+    updateSkill = async(skill_id, skill, user_id, rowIdx) => {
         this.setState({loading: true});
-        const response = await fetch('http://localhost:5000/deleteHobby',  {
+        console.log("[Profile.jsx] Recieved Position:", rowIdx);
+        const response = await fetch('http://localhost:5000/updateSkill',  {
             method: 'POST', 
             mode: 'cors',
             credentials: 'include',
             withCredentials: true,
             headers: {
-                hobby_id: hobby_id
+                skill_id: skill_id, 
+                skill: skill,
+                user_id: user_id,
+                position: rowIdx
             }
         });
         const data = await response.json();
         console.log("Client Recieved Response: ", data);
-        return data;
+        return;
     }
-
     deleteSkill = async(skill_id) => {
         this.setState({loading: true});
         const response = await fetch('http://localhost:5000/deleteSkill',  {
@@ -443,16 +381,7 @@ class Profile extends Component{
         });
         const data = await response.json();
         console.log("Client Recieved Response: ", data);
-        
-        // Update public_email in state -- create copy and update
-        let tmpProfile = [...this.state.profile];
-        tmpProfile[0].public_email = data;
-
-        this.setState({
-            profile: tmpProfile,
-            loading: false
-        });
-        console.log("Profile.jsx Updated Public Email. this.state.profile:", this.state.profile);
+        return;
     }
 
     updatePhone = async(user_id, phone) => {
@@ -469,16 +398,7 @@ class Profile extends Component{
         });
         const data = await response.json();
         console.log("Client Recieved Response: ", data);
-        
-        // Update public_email in state -- create copy and update
-        let tmpProfile = [...this.state.profile];
-        tmpProfile[0].phone = data;
-
-        this.setState({
-            profile: tmpProfile,
-            loading: false
-        });
-        console.log("Profile.jsx Updated Public Email. this.state.profile:", this.state.profile);
+        return;
     }
 
     createLink = async(user_id, link, idx) =>{
@@ -499,14 +419,7 @@ class Profile extends Component{
         });
         const data = await response.json();
         console.log("Client Recieved Response: ", data);
-        return data;
-    }
-    setCreatedLinks = (createdLinksToSet) => {
-        console.log("Profile.jsx recieved links to set:", createdLinksToSet);
-        this.setState({
-            contact: [...this.state.contact, ...createdLinksToSet],
-            loading: false
-        });
+        return;
     }
 
     updateLink = async(link_id, link, title, description, user_id, rowIdx) => {
@@ -528,13 +441,7 @@ class Profile extends Component{
         });
         const data = await response.json();
         console.log("Client Recieved Response: ", data);
-
-        // let tmpLinks = [...this.state.contact];
-        // tmpLinks[rowIdx] = data;
-        // this.setState({contact: tmpLinks, loading: false});
-
-
-        //console.log("Profile.jsx Updated the Link. this.state.contact",this.state.contact);
+        return;
     }
 
     deleteLink = async(link_id) => {
@@ -577,17 +484,10 @@ class Profile extends Component{
         console.log("Client Recieved Response: ", data);
         return data;
     }
-    setCreatedProjects = (createdProjectsToSet) => {
-        console.log("Profile.jsx recieved projects to set:", createdProjectsToSet);
-        this.setState({
-            projects: [...this.state.projects, ...createdProjectsToSet],
-            loading: false
-        });
-    }
 
     updateProject = async(user_id, project, rowIdx) => {
         this.setState({loading: true});
-        console.log("Profile.jsx Recieved Project:", project)
+        //console.log("Profile.jsx Recieved Project:", project)
         const response = await fetch('http://localhost:5000/updateProject',  {
             method: 'POST', 
             mode: 'cors',
@@ -607,12 +507,8 @@ class Profile extends Component{
         });
         const data = await response.json();
         console.log("Client Recieved Response: ", data);
-
-        // let tmpProjects = [...this.state.projects];
-        // tmpProjects[rowIdx] = data;
-        // this.setState({projects: tmpProjects, loading: false});
-        // console.log("Profile.jsx Updated the Link. this.state.projects",this.state.projects);
-    }
+        return data;
+    } 
     
     deleteProject = async(project_id) => {
         this.setState({loading: true});
@@ -651,13 +547,6 @@ class Profile extends Component{
         console.log("Client Recieved Response: ", data);
         return data;
     }
-    setCreatedWorkExperience = (createdWorkExperienceToSet) => {
-        console.log("Profile.jsx recieved Work to set:", createdWorkExperienceToSet);
-        this.setState({
-            portfolio: [...this.state.portfolio, ...createdWorkExperienceToSet],
-            loading: false
-        });
-    }
 
     updateWorkExperience = async(user_id, workExperience, rowIdx) => {
         this.setState({loading: true});
@@ -679,11 +568,7 @@ class Profile extends Component{
         });
         const data = await response.json();
         console.log("Client Recieved Response: ", data);
-
-        // let tmpPortfolio = [...this.state.portfolio];
-        // tmpPortfolio[rowIdx] = data;
-        // this.setState({portfolio: tmpPortfolio, loading: false});
-        // console.log("Profile.jsx Updated the portfolio. this.state.portfolio",this.state.portfolio);
+        return data;
     }
 
     deleteWorkExperience = async(portfolio_id) => {
@@ -723,13 +608,6 @@ class Profile extends Component{
         console.log("Client Recieved Response: ", data);
         return data;
     }
-    setCreatedEducation = async(createdEducationToSet) => {
-        console.log("Profile.jsx recieved education to set:", createdEducationToSet);
-        this.setState({
-            education: [...this.state.education, ...createdEducationToSet],
-            loading: false
-        });
-    }
 
     updateEducation = async(user_id, education, rowIdx) => {
         this.setState({loading: true});
@@ -751,11 +629,7 @@ class Profile extends Component{
         });
         const data = await response.json();
         console.log("Client Recieved Response: ", data);
-        
-        // let tmpEducation = [...this.state.education];
-        // tmpEducation[rowIdx] = data;
-        // this.setState({education: tmpEducation, loading: false});
-        // console.log("Profile.jsx Updated the education. this.state.education",this.state.education);
+        return data;
     }
 
     deleteEducation = async(education_id) => {
@@ -772,10 +646,6 @@ class Profile extends Component{
         const data = await response.json();
         console.log("Client Recieved Response: ", data);
         return data;
-    }
-
-    reloadProfile = () => {
-        window.location.reload();
     }
 
     render(){
@@ -816,30 +686,23 @@ class Profile extends Component{
                             updateHobby={this.updateHobby}
                             updateSkill={this.updateSkill}
                             createHobby={this.createHobby}
-                            setCreatedHobbies={this.setCreatedHobbies}
                             createSkill={this.createSkill}
-                            setCreatedSkills={this.setCreatedSkills}
                             deleteHobby={this.deleteHobby}
                             deleteSkill={this.deleteSkill}
-                            reloadProfile={this.reloadProfile}
                         />
                     : null }
 
                     { this.state.key === "portfolio" ?
                         <Portfolio {...this.props} data={this.state}
                             createProject={this.createProject}
-                            setCreatedProjects={this.setCreatedProjects}
                             updateProject={this.updateProject}
                             deleteProject={this.deleteProject}
                             createWorkExperience={this.createWorkExperience}
-                            setCreatedWorkExperience={this.setCreatedWorkExperience}
                             updateWorkExperience={this.updateWorkExperience}
                             deleteWorkExperience={this.deleteWorkExperience}
                             createEducation={this.createEducation}
-                            setCreatedEducation={this.setCreatedEducation}
                             updateEducation={this.updateEducation}
                             deleteEducation={this.deleteEducation}
-                            reloadProfile={this.reloadProfile}
                         />
                     : null }
 
@@ -850,9 +713,6 @@ class Profile extends Component{
                             createLink={this.createLink}
                             updateLink={this.updateLink}
                             deleteLink={this.deleteLink}
-                            setCreatedLinks={this.setCreatedLinks}
-                            reloadProfile={this.reloadProfile}
-                            setReorderedLinks={this.setReorderedLinks}
                         />
                     : null }
                 </div> 
