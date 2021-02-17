@@ -44,6 +44,7 @@ export const Contact = (props) => {
         else {
             setShow(false);
             setChangingOrder(false);
+            setLinks({values: linksData});
         }
     }
 

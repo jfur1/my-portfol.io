@@ -54,6 +54,8 @@ export const About = props => {
         if(edited){
             setShowAlert(true);
         } else{
+            setHobbies({values: hobbiesData});
+            setSkills({values: skillsData});
             setChangingOrder(false);
             setShow(false);    
         }

@@ -31,6 +31,9 @@ export const Portfolio = props => {
         else{
             setChangingOrder(false);
             setShow(false);
+            setProjects({values: projectsData});
+            setPortfolio({values: portfolioData});
+            setEducation({values: educationData});
             setValidated(false);
             setErrs({values: []});
         }
@@ -93,6 +96,11 @@ export const Portfolio = props => {
         if((typeof(tmpProjects[idx].project_id) !== 'undefined')
         && !(typeof(tmpProjects[idx].toUpdate) !== 'undefined')){
             tmpProjects[idx].toUpdate = true;
+        }
+        if((typeof(errs["project"]) !== 'undefined') 
+        && (typeof(errs["project"]["Idx"+idx]) !== 'undefined') 
+        && (tmpProjects[idx].title !== "")){
+            delete errs["project"]["Idx"+idx];
         }
         setProjects({values: tmpProjects});
         setEdited(true);
@@ -302,6 +310,11 @@ export const Portfolio = props => {
         && !(typeof(tmpPortfolio[idx].toUpdate) !== 'undefined')){
             tmpPortfolio[idx].toUpdate = true;
         }
+        if((typeof(errs["portfolio"]) !== 'undefined') 
+        && (typeof(errs["portfolio"]["Idx"+idx]) !== 'undefined') 
+        && (tmpPortfolio[idx].occupation !== "")){
+            delete errs["portfolio"]["Idx"+idx];
+        }
         setPortfolio({values: tmpPortfolio});
         setEdited(true);
     }
@@ -462,6 +475,11 @@ export const Portfolio = props => {
         && !(typeof(tmpEducation[idx].toUpdate) !== 'undefined')){
             tmpEducation[idx].toUpdate = true;
         }
+        if((typeof(errs["education"]) !== 'undefined') 
+        && (typeof(errs["education"]["Idx"+idx]) !== 'undefined') 
+        && (tmpEducation[idx].education !== "")){
+            delete errs["education"]["Idx"+idx];
+        }
         setEducation({values: tmpEducation});
         setEdited(true);
     }
@@ -573,27 +591,31 @@ export const Portfolio = props => {
     const validate = () => {
         let isValidated = true;
         let errors = {};
+        errors["project"] = {};
+        errors["portfolio"] = {};
+        errors["education"] = {};
         projects.values.forEach((row, idx) => {
             if((row.title === "")){
                 isValidated = false;
                 setValidated(false);
-                errors["project"] = true;
+                errors["project"]["Idx"+idx] = true;
             }
         })
         portfolio.values.forEach((row, idx) => {
             if((row.occupation === "")){
                 isValidated = false;
                 setValidated(false);
-                errors["portfolio"] = true;
+                errors["portfolio"]["Idx"+idx] = true;
             }
         })
         education.values.forEach((row, idx) => {
             if((row.education === "")){
                 isValidated = false;
                 setValidated(false);
-                errors["education"] = true;
+                errors["education"]["Idx"+idx] = true;
             }
         })
+        console.log("errors:", errors)
         setErrs(errors);
         return isValidated;
     }
@@ -1190,6 +1212,13 @@ export const Portfolio = props => {
             <div key={idx}>{str.length === 0 ? <br/> : str}</div>
         );
     }
+    function isEmpty(obj) {
+        return Object.keys(obj).length === 0;
+    }
+    function length(obj) {
+        if(!(typeof(obj) !== 'undefined') || obj == null) return 0;
+        return Object.keys(obj).length;
+    }
 
     return(
         <div className="tab-container">        
@@ -1229,13 +1258,16 @@ export const Portfolio = props => {
                     <Nav variant="pills" className="flex-column">
                         <Nav.Item>
                             <Nav.Link 
-                                className={errs["project"] ? "nav-error" : ""}
+                                className={(typeof(errs["project"]) !== 'undefined') && (!isEmpty(errs["project"]) )
+                                    ? "nav-error" 
+                                    : ""}
                                 eventKey="projects" 
                                 onClick={() => setChangingOrder(false)}
                             >
                             Projects
-                            {errs["project"] 
-                            ? <Badge variant="danger" className='ml-4'>!
+                            {((typeof(errs["project"]) !== 'undefined') && (length(errs["project"]) > 0))
+                            ? <Badge variant="danger" className='ml-4'>
+                                {length(errs["project"])}
                                 </Badge>
                             : null}
                             
@@ -1243,24 +1275,28 @@ export const Portfolio = props => {
                         </Nav.Item>
                         <Nav.Item>
                             <Nav.Link 
-                                className={errs["portfolio"] ? "nav-error" : "nav-link"}
+                                className={(typeof(errs["portfolio"]) !== 'undefined') && (!isEmpty(errs["portfolio"]))
+                                    ? "nav-error" : "nav-link"}
                                 eventKey="work-exerience" 
                                 onClick={() => setChangingOrder(false)}
                             >Work Experience
-                            {errs["portfolio"] 
-                            ? <Badge variant="danger" className='ml-1'>!
+                            {((typeof(errs["portfolio"]) !== 'undefined') && (length(errs["portfolio"]) > 0))
+                            ? <Badge variant="danger" className='ml-1'>
+                                {length(errs["portfolio"])}
                                 </Badge>
                             : null}
                             </Nav.Link>
                         </Nav.Item>
                         <Nav.Item>
                             <Nav.Link 
-                                className={errs["education"] ? "nav-error" : ""}  
+                                className={((typeof(errs["education"]) !== 'undefined') && (!isEmpty(errs["education"])))
+                                ? "nav-error" : ""}  
                                 eventKey="education" 
                                 onClick={() => setChangingOrder(false)}
                             >Education
-                            {errs["education"] 
-                            ? <Badge variant="danger" className='ml-4'>!
+                            {((typeof(errs["education"]) !== 'undefined') && (length(errs["education"]) > 0))
+                            ? <Badge variant="danger" className='ml-4'>
+                                {length(errs["education"])}
                                 </Badge>
                             : null}
                             </Nav.Link>
