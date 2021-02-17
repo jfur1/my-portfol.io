@@ -781,7 +781,7 @@ export const Portfolio = props => {
                 </Form.Label>
                 <Col>
                     <Form.Control as="textarea" id="description" rows="3" 
-                    value={row.description.replace(/\\n/g, '\n') || ''} 
+                    value={row.description !== null ? row.description.replace(/\\n/g, '\n') : ''} 
                     placeholder={"Add a description for your project!"} 
                     onChange={e => handleProjectDescriptionChange(e, idx)}
                     />
@@ -794,7 +794,7 @@ export const Portfolio = props => {
                 </Form.Label>
                 <Col>
                     <Form.Control type="text" id="project-organization" 
-                    value={row.organization || ''} 
+                    value={row.organization !== null ? row.organization : ''} 
                     placeholder={"Add an organization (Optional)"} 
                     onChange={e => handleProjectOrganizationChange(e, idx)}></Form.Control>
                 </Col>
@@ -806,7 +806,7 @@ export const Portfolio = props => {
                 </Form.Label>
                 <Col>
                     <Form.Control as={ DatePicker } 
-                    selected={(row.from_when !== "infinity" && typeof(row.from_when) !== 'undefined') 
+                    selected={(row.from_when !== "infinity" && typeof(row.from_when) !== 'undefined' && row.from_when !== null) 
                     //eslint-disable-next-line
                     ? new Date(row.from_when.replace(/-/g, '\/').replace(/T.+/, ''))
                     : ''}
@@ -823,7 +823,7 @@ export const Portfolio = props => {
                 </Form.Label>
                 <Col>
                     <Form.Control as={ DatePicker } 
-                    selected={(row.to_when !== "infinity" && typeof(row.to_when) !== 'undefined') 
+                    selected={(row.to_when !== "infinity" && typeof(row.to_when) !== 'undefined' && row.to_when !== null) 
                     //eslint-disable-next-line
                     ? new Date(row.to_when.replace(/-/g, '\/').replace(/T.+/, ''))
                     : ''}  
@@ -840,7 +840,7 @@ export const Portfolio = props => {
                     Link
                 </Form.Label>
                 <Col>
-                    <Form.Control type="text" id="project-link" value={row.link || ''} placeholder={"Add an link for your project! (Optional)"} 
+                    <Form.Control type="text" id="project-link" value={row.link !== null ? row.link : ''} placeholder={"Add an link for your project! (Optional)"} 
                         onChange={e => handleProjectLinkChange(e, idx)}
                     />
                 </Col>
@@ -858,7 +858,7 @@ export const Portfolio = props => {
                     Title
                 </Form.Label>
                 <Col>
-                    <Form.Control type="text" value={row.occupation || ''} placeholder={"Occupation Title"} 
+                    <Form.Control type="text" value={row.occupation !== null ? row.occupation : ''} placeholder={"Occupation Title"} 
                         onChange={e => {handlePortfolioOccupationChange(e, idx)}}
                     />
                 </Col>
@@ -873,7 +873,7 @@ export const Portfolio = props => {
                     Organization
                 </Form.Label>
                 <Col>
-                    <Form.Control type="text" id="organization" value={row.organization || ''} placeholder={"Add an organization. (Optional)"} 
+                    <Form.Control type="text" id="organization" value={row.organization !== null ? row.organization : ''} placeholder={"Add an organization. (Optional)"} 
                         onChange={e => {handlePortfolioOrganizationChange(e, idx)}}>
                     </Form.Control>
                 </Col>
@@ -885,7 +885,7 @@ export const Portfolio = props => {
                 </Form.Label>
                 <Col>
                     <Form.Control as={ DatePicker } 
-                    selected={(row.from_when !== "infinity" && typeof(row.from_when) !== 'undefined') 
+                    selected={(row.from_when !== "infinity" && typeof(row.from_when) !== 'undefined' && row.from_when !== null) 
                     //eslint-disable-next-line
                     ? new Date(row.from_when.replace(/-/g, '\/').replace(/T.+/, ''))
                     : ''}   
@@ -902,7 +902,7 @@ export const Portfolio = props => {
                 </Form.Label>
                 <Col>
                     <Form.Control as={ DatePicker } 
-                    selected={(row.to_when !== "infinity" && typeof(row.to_when) !== 'undefined') 
+                    selected={(row.to_when !== "infinity" && typeof(row.to_when) !== 'undefined' && row.to_when !== null) 
                     //eslint-disable-next-line
                     ? new Date(row.to_when.replace(/-/g, '\/').replace(/T.+/, ''))
                     : ''}  
@@ -919,7 +919,7 @@ export const Portfolio = props => {
                 </Form.Label>
                 <Col>
                     <Form.Control as="textarea" rows="3" 
-                    value={row.description.replace(/\\n/g, '\n') || ''} 
+                    value={row.description !== null ? row.description.replace(/\\n/g, '\n') : ''}
                     placeholder={"Add a description (Optional)"} 
                     onChange={e => handlePortfolioDescriptionChange(e, idx)}
                     />
@@ -937,7 +937,7 @@ export const Portfolio = props => {
                     Education
                 </Form.Label>
                 <Col>
-                    <Form.Control type="text" value={row.education || ''} placeholder={"Education (Required)"} 
+                    <Form.Control type="text" value={row.education !== null ? row.education : ''} placeholder={"Education (Required)"} 
                         onChange={e => {handleEducationChange(e, idx)}}
                     />
                 </Col>
@@ -948,7 +948,7 @@ export const Portfolio = props => {
                     Organization
                 </Form.Label>
                 <Col>
-                    <Form.Control type="text" id="education-organization" value={row.organization || ''} placeholder={"Add an organization (Optional)"}
+                    <Form.Control type="text" id="education-organization" value={row.organization !== null ? row.organization : ''} placeholder={"Add an organization (Optional)"}
                         onChange={e => {handleEducationOrganizationChange(e, idx)}}
                     ></Form.Control>
                 </Col>
@@ -967,7 +967,7 @@ export const Portfolio = props => {
                 </Form.Label>
                 <Col>
                     <Form.Control as={ DatePicker } 
-                    selected={(row.from_when !== "infinity" && typeof(row.from_when) !== 'undefined') 
+                    selected={(row.from_when !== "infinity" && typeof(row.from_when) !== 'undefined' && row.from_when !== null) 
                     //eslint-disable-next-line
                     ? new Date(row.from_when.replace(/-/g, '\/'))
                     : ''}   
@@ -984,7 +984,7 @@ export const Portfolio = props => {
                 </Form.Label>
                 <Col>
                     <Form.Control as={ DatePicker } 
-                    selected={(row.to_when !== "infinity" && typeof(row.to_when) !== 'undefined') 
+                    selected={(row.to_when !== "infinity" && typeof(row.to_when) !== 'undefined' && row.to_when !== null) 
                     //eslint-disable-next-line
                     ? new Date(row.to_when.replace(/-/g, '\/')) 
                     : ''}  
@@ -1001,7 +1001,7 @@ export const Portfolio = props => {
                 </Form.Label>
                 <Col>
                     <Form.Control as="textarea" rows="3" 
-                    value={row.description.replace(/\\n/g, '\n') || ''} 
+                    value={row.description !== null ? row.description.replace(/\\n/g, '\n') : ''}
                     placeholder={"Add a description (Optional)"}
                     onChange={e => {handleEducationDescriptionChange(e, idx)}}
                     />

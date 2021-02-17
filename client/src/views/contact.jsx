@@ -194,7 +194,7 @@ export const Contact = (props) => {
                             </Form.Label>
                             <Col>
                                 <Form.Control as="textarea" rows={3} id="link-description" 
-                                value={row.description.replace(/\\n/g, '\n') || ''} 
+                                value={(row.description !== null) ? row.description.replace(/\\n/g, '\n') : ''} 
                                 placeholder={"Add a description for your link! (Optional)"} 
                                 onChange={e => {
                                     handleLinkDescriptionChange(e, idx);
