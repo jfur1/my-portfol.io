@@ -32,6 +32,9 @@ export const Contact = (props) => {
     const [phoneToUpdate, setPhoneToUpdate] = useState([]);
     const [linksToDelete, setLinksToDelete] = useState([]);
 
+    const [validated, setValidated] = useState(false);
+    const [errs, setErrs] = useState({}); 
+
     // Event Handlers
     const handleShow = () => setShow(true);
     const handleClose = () => {
@@ -52,6 +55,8 @@ export const Contact = (props) => {
         setChangingOrder(false);
         setReordered(false);
         setLinksToDelete([]);
+        setValidated(false);
+        setErrs({});
     }
 
     // form values change? => stage values to be updated
@@ -69,11 +74,29 @@ export const Contact = (props) => {
         setPhoneToUpdate([]);
         setEmailToUpdate([]);
         setLinksToDelete([]);
-        setLinks({values: linksData})
+        setLinks({values: linksData});
+        setValidated(false);
+        setErrs({});
     }, [props, linksData])
 
 
-    const handleSave = async() => {
+    const validate = () => {
+        let isValidated = true;
+        links.values.forEach((row, idx) => {
+            if(!(typeof(row.link_id) !== 'undefined') && (row.link === "")){
+                isValidated = false;
+                setValidated(false);
+                setErrs({link: "Please enter a link."});
+            }
+        })
+        return isValidated;
+    }
+
+    const handleSave = async(event) => {
+        if(!validate()){
+            event.preventDefault();
+            event.stopPropagation();
+        } else{
 
         console.log("Saving Changes:");
         console.log("Email to Update:", emailToUpdate);
@@ -156,11 +179,13 @@ export const Contact = (props) => {
 
 
         window.location.reload();
+        }
     }
     
     const renderLinksForm = () => {
         return (
-            links.values.map((row, idx) => 
+            <Form.Group controlId="validationCustom01">
+            {links.values.map((row, idx) => 
                 <Form.Row className='draggable-container mb-4 ml-3 mr-3' key={idx}>
                     <Form.Row className='mt-1' style={{width: "75%"}}>
                         <Form.Label column sm={3}>
@@ -178,9 +203,18 @@ export const Contact = (props) => {
                             Link
                         </Form.Label>
                         <Col>
-                            <Form.Control type="text" value={row.link} placeholder={"Add your link here (Required)"} onChange={e => {
-                                handleLinkChange(e, idx);
+                            <Form.Control 
+                                required
+                                isInvalid={errs["link"] && row.link === ""}
+                                type="text" 
+                                value={row.link} 
+                                placeholder={"Add your link here (Required)"} 
+                                onChange={e => {
+                                    handleLinkChange(e, idx);
                             }}/>
+                            <Form.Control.Feedback type="invalid">
+                                Please provide a Link.
+                            </Form.Control.Feedback>
                         </Col>
                     </Form.Row>
 
@@ -193,7 +227,7 @@ export const Contact = (props) => {
                                 Description
                             </Form.Label>
                             <Col>
-                                <Form.Control as="textarea" rows={3} id="link-description" 
+                                <Form.Control as="textarea" rows={3}
                                 value={(row.description !== null) ? row.description.replace(/\\n/g, '\n') : ''} 
                                 placeholder={"Add a description for your link! (Optional)"} 
                                 onChange={e => {
@@ -202,7 +236,8 @@ export const Contact = (props) => {
                             </Col>
                         </Form.Row>
                 </Form.Row>
-            )
+            )}
+            </Form.Group>
         );
     }
 
@@ -350,7 +385,7 @@ export const Contact = (props) => {
                 scrollable={false}
             >
                 <Modal.Header closeButton>
-                    <Modal.Title id="contained-modal-title-vcenter">
+                    <Modal.Title>
                         <h3>Edit</h3>
                         <AlertDismissible
                             setShow={setShow}
@@ -365,7 +400,7 @@ export const Contact = (props) => {
                 </Modal.Header>
                 <Modal.Body>
 
-                <Form>
+                <Form noValidate validated={validated} onSubmit={handleSave}>
                     <h4>Contact Information</h4>
                     <Form.Row className='mt-4'>
                         <Form.Label column sm={2}>
@@ -397,7 +432,7 @@ export const Contact = (props) => {
                     <Form.Group>
                         <Form.Label className='mt-4'>
                             <h4>Links</h4>
-                            
+                        </Form.Label > <br></br>
                             {links.values.length < 6
                                 ? <Button 
                                 onClick={() => addLink()} 
@@ -417,17 +452,18 @@ export const Contact = (props) => {
                                 /></>
                             : null}
 
-                        </Form.Label >
+                       
 
                         {changingOrder 
                         ? <ChangeLinksOrder></ChangeLinksOrder>
                         : renderLinksForm()}
 
                     </Form.Group>
+                    <Button variant="success" type="submit">Save Changes</Button>
                 </Form>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="success" onClick={handleSave}>Save Changes</Button>
+                    
                 </Modal.Footer>
             </Modal>
 

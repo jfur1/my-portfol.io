@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { PencilFill } from 'react-bootstrap-icons';
-import { Modal, Button } from 'react-bootstrap';
+import { Modal, Button, Form, Col } from 'react-bootstrap';
 import { AlertDismissible } from '../components/alertDismissible';
 import Switch  from '../components/switch';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
@@ -27,6 +27,9 @@ export const About = props => {
     const [hobbies, setHobbies] = useState({values: hobbiesData});
     const [skills, setSkills] = useState({values: skillsData});
 
+    const [validated, setValidated] = useState(false);
+    const [errs, setErrs] = useState({}); 
+
 
     // Hooks used to format final onClick data for POST request
     
@@ -41,6 +44,8 @@ export const About = props => {
         setSkills({values: skillsData});
         setHobbyToDelete([]);
         setSkillToDelete([]);
+        setValidated(false);
+        setErrs({});
     }, [hobbiesData, skillsData]);
 
     // Toggle Modal
@@ -64,16 +69,37 @@ export const About = props => {
         setSkillToDelete([]);
         setChangingOrder(false);
         setReordered(false);
+        setErrs({});
     }
 
 
     // ----------- [BEGIN] Hobby Handlers -------------------
     const renderHobbiesForm = () => {
-        return hobbies.values.map((row, idx) =>
-            <div className="form-group row" key={idx}>
-                <input type="text" className="form-control" style={{width: '70%'}} value={row.hobby || ''} onChange={e => {handleHobbyChange(e, idx)}}/>
-                <Button onClick={() => removeHobby(idx)} variant="outline-danger" size="sm">Delete</Button>
-            </div>
+        return (
+            <Form.Group controlId="validationCustom02">
+            {hobbies.values.map((row, idx) =>
+                <Form.Row className='mb-4 ml-3 mr-3' key={idx}>
+                    <Form.Control 
+                        required
+                        style={{width: '70%'}}
+                        isInvalid={errs["hobby"] && row.hobby === ""}
+                        type="text" 
+                        value={row.hobby} 
+                        placeholder={"Enter Hobby"} 
+                        onChange={e => {
+                            handleHobbyChange(e, idx);
+                    }}/>
+                    <Button 
+                        variant="outline-danger" 
+                        size="sm"
+                        onClick={() => removeHobby(idx)}    
+                    >Delete</Button>
+                    <Form.Control.Feedback type="invalid">
+                        Please provide a hobby.
+                    </Form.Control.Feedback>
+                </Form.Row>
+            )}
+            </Form.Group>
         )
     }
     const handleHobbyChange = (event, idx) => {
@@ -117,11 +143,31 @@ export const About = props => {
     // ----------- [BEGIN] Skill Handlers ------------------- 
 
     const renderSkillsForm = () => {
-        return skills.values.map((row, idx) =>
-            <div className="form-group row" key={idx}>
-                <input type="text" className="form-control" style={{width: '70%'}} value={row.skill || ''} onChange={e => {handleSkillChange(e, idx)}}/>
-                <Button onClick={() => removeSkill(idx)} variant="outline-danger" size="sm">Delete</Button>
-            </div>
+        return (
+            <Form.Group controlId="validationCustom01">
+             {skills.values.map((row, idx) =>
+                <Form.Row className='mb-4 ml-3 mr-3' key={idx}>
+                    <Form.Control 
+                            required
+                            style={{width: '70%'}}
+                            isInvalid={errs["skill"] && row.skill === ""}
+                            type="text" 
+                            value={row.skill} 
+                            placeholder={"Enter skill"} 
+                            onChange={e => {
+                                handleSkillChange(e, idx);
+                        }}/>
+                    <Button 
+                        variant="outline-danger" 
+                        size="sm"
+                        onClick={() => removeSkill(idx)}    
+                    >Delete</Button>
+                    <Form.Control.Feedback type="invalid">
+                        Please provide a skill.
+                    </Form.Control.Feedback>
+                </Form.Row>
+            )}
+            </Form.Group>
         )
     }
     const handleSkillChange = (event, idx) => {
@@ -194,60 +240,95 @@ export const About = props => {
     
     const ChangeOrder = () => {
         return (
-            <div style={{ 'display': 'flex' }}>
+            <Form.Row className="text-center">
             <DragDropContext 
                 onDragEnd={handleOnDragEnd}
             >
-            <Droppable droppableId="hobbies">
-            {(provided) => (
-                <div {...provided.droppableProps} ref={provided.innerRef}>
-                    {hobbies.values.map((row, idx) => {
-                        return (
-                            <Draggable key={idx} draggableId={row.hobby} index={idx}>
-                                {(provided) => (
-                                
-                                    <div className='draggable-container mb-4 ml-3 mr-3' ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+            <Col>
+                <Droppable droppableId="hobbies">
+                {(provided) => (
+                    <div {...provided.droppableProps} ref={provided.innerRef}>
+                        {hobbies.values.map((row, idx) => {
+                            return (
+                                <Draggable key={idx} draggableId={row.hobby} index={idx}>
+                                    {(provided) => (
+                                    
+                                        <div 
+                                        className='draggable-container mb-4 ml-3 mr-3' 
+                                        ref={provided.innerRef} 
+                                        {...provided.draggableProps} 
+                                        {...provided.dragHandleProps}>
 
-                                    {row.hobby
-                                        ? row.hobby
-                                        : null}
-                                    </div>
-                                )}
-                            </Draggable>
-                        );
-                    })}
-                    {provided.placeholder}
-                </div>
-            )}
-            </Droppable>
-            <Droppable droppableId="skills">
-            {(provided) => (
-                <div {...provided.droppableProps} ref={provided.innerRef}>
-                    {skills.values.map((row, idx) => {
-                        return (
-                            <Draggable key={idx} draggableId={row.skill} index={idx}>
-                                {(provided) => (
-                                
-                                    <div className='draggable-container mb-4 ml-3 mr-3' ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+                                        {row.hobby
+                                            ? row.hobby
+                                            : null}
+                                        </div>
+                                    )}
+                                </Draggable>
+                            );
+                        })}
+                        {provided.placeholder}
+                    </div>
+                )}
+                </Droppable>
+            </Col>
+            <Col>
+                <Droppable droppableId="skills">
+                {(provided) => (
+                    <div {...provided.droppableProps} ref={provided.innerRef}>
+                        {skills.values.map((row, idx) => {
+                            return (
+                                <Draggable key={idx} draggableId={row.skill} index={idx}>
+                                    {(provided) => (
+                                    
+                                        <div className='draggable-container mb-4 ml-3 mr-3' ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
 
-                                    {row.skill
-                                        ? row.skill
-                                        : null}
-                                    </div>
-                                )}
-                            </Draggable>
-                        );
-                    })}
-                    {provided.placeholder}
-                </div>
-            )}
-            </Droppable>
+                                        {row.skill
+                                            ? row.skill
+                                            : null}
+                                        </div>
+                                    )}
+                                </Draggable>
+                            );
+                        })}
+                        {provided.placeholder}
+                    </div>
+                )}
+                </Droppable>
+            </Col>
             </DragDropContext>
-        </div>
+        </Form.Row>
         );
     }
+
+    const validate = () => {
+        let isValidated = true;
+        let errors = {};
+        hobbies.values.forEach((row, idx) => {
+            if(!(typeof(row.hobby_id) !== 'undefined') && (row.hobby === "")){
+                isValidated = false;
+                setValidated(false);
+                errors["hobby"] = true;
+            }
+        })
+        skills.values.forEach((row, idx) => {
+            if(!(typeof(row.skill_id) !== 'undefined') && (row.skill === "")){
+                isValidated = false;
+                setValidated(false);
+                errors["skill"] = true;
+            }
+        })
+        setErrs(errors);
+        return isValidated;
+    }
+
     // Format edit hooks to be sent in POST request
-    const handleSave = async() => {
+    const handleSave = async(event) => {
+        if(!validate()){
+            event.preventDefault();
+            event.stopPropagation();
+        } else{
+        
         // Location
         let locationToCreate = [];
         let locationToUpdate = [];
@@ -414,6 +495,7 @@ export const About = props => {
        
 
         window.location.reload();
+        }
     };
 
     function NewlineText(props) {
@@ -443,7 +525,7 @@ export const About = props => {
             scrollable={false}
         >
             <Modal.Header closeButton>
-                <Modal.Title id="contained-modal-title-vcenter">
+                <Modal.Title>
                     Edit
                     <AlertDismissible
                         setShow={setShow}
@@ -456,10 +538,12 @@ export const About = props => {
                 </Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <form>
+                <Form noValidate validated={validated} onSubmit={handleSave}>
                     
-                    <div className="form-group">
-                        <label htmlFor="location"><b>Location</b></label>
+                    <Form.Row className='mt-3'>
+                        <Form.Label column sm={2}>
+                            Location
+                        </Form.Label>
                         <input 
                             type="text" 
                             className="form-control" 
@@ -470,10 +554,12 @@ export const About = props => {
                                 setEdited(true);
                             }}
                         ></input>
-                    </div>
+                    </Form.Row>
 
-                    <div className="form-group">
-                        <label htmlFor="bio"><b>Bio</b></label>
+                    <Form.Row className='mt-3'>
+                        <Form.Label column sm={2}>
+                            Bio
+                        </Form.Label>
                         
                         <textarea 
                             className="form-control" 
@@ -483,50 +569,65 @@ export const About = props => {
                             onChange={e => {
                                 setBio(e.target.value); 
                                 setEdited(true);
-                            }}>
-
-                        </textarea>
-                    </div>
+                            }}/>
+                    </Form.Row>
                     
-                    {(hobbiesData.length > 1 || skillsData.length > 1)
-                        ? <><label>Change Order</label>
+                    <Form.Group className="mt-4">
+                        {(hobbiesData.length > 1 || skillsData.length > 1)
+                        ? <>
+                        <label>Change Order</label>
                             <Switch
                                 isOn={changingOrder}
                                 handleToggle={() => setChangingOrder(!changingOrder)}
-                            /></>
+                            />
+                            </>
+                        : null}
+                    </Form.Group>
+
+                    <Form.Row className="text-center">
+                        <Col>
+                            <Form.Label className='text-center'>
+                                <h4>Hobbies</h4>
+                            </Form.Label > <br></br>
+
+                            {changingOrder ? null : renderHobbiesForm()}
+                            
+                            {hobbies.values.length < 6 && !changingOrder
+                                ? <Button 
+                                    onClick={() => addHobby()} 
+                                    variant="outline-success" 
+                                    size="sm"    
+                                >Add Hobby</Button>
+                                : null }
+                                
+                        </Col> 
+                        <Col>
+                            <Form.Label className='text-center'>
+                                <h4>Skills</h4>
+                            </Form.Label > <br></br>
+
+                            {changingOrder ? null : renderSkillsForm()}
+
+                            {skills.values.length < 6 && !changingOrder
+                            ? <Button 
+                                onClick={() => addSkill()} 
+                                variant="outline-success" 
+                                size="sm"    
+                            >Add Skill</Button>
+                            : null }
+                        </Col>
+                    </Form.Row>
+
+                    {changingOrder 
+                        ? <ChangeOrder></ChangeOrder>
                         : null}
 
-                    {changingOrder
-                    ? <ChangeOrder></ChangeOrder>
-                    
-                    : <div className="form-group row ml-4">
-                        <div className="form-group col text-center">
-                            <label htmlFor="hobbies"><b>Hobbies</b></label>
-                            {renderHobbiesForm()}
-                            {hobbies.values.length < 6
-                            ? <Button onClick={() => addHobby()} variant="outline-success" size="sm">Add Hobby</Button>
-                            : null }
-                        </div>  
-                        <div className="form-group col text-center">
+                    <Button variant="success" type="submit" className="mt-5">Save Changes</Button>
 
-                            <label htmlFor="skills"><b>Skills</b></label>
-                            {renderSkillsForm()}
-                            {skills.values.length < 6
-                            ? <Button onClick={() => addSkill()} variant="outline-success" size="sm">Add Skill</Button>
-                            : null }
-
-                        </div>  
-                    </div>
-                    }
-                </form>             
+                </Form>             
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="success" onClick={() => {
-                    setShow(false); 
-                    handleSave(); 
-                    setEdited(false); 
-                    setShowAlert(false);
-                }}>Save Changes</Button>
+            
             </Modal.Footer>
         </Modal>
 

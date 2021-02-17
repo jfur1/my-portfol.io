@@ -666,7 +666,7 @@ export const Portfolio = props => {
         // Begin POST Requests
 
         const createProjects = async() => {
-            for await (let projectToCreate of projectsToCreate){
+            for await (const projectToCreate of projectsToCreate){
                 await props.createProject(user.user_id, projectToCreate, projectToCreate.rowIdx);
             }
         }
