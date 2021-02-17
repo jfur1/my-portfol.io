@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Tabs, Tab, Spinner } from 'react-bootstrap'
+import { Tabs, Tab, Spinner } from 'react-bootstrap';
 import { AlertMsg } from '../components/alerts';
 
 // Import Components
@@ -787,9 +787,10 @@ class Profile extends Component{
                 ? <><Spinner animation="border" variant="success" /></>
                 
                 : <><NavBar {...this.props} data={this.state}/>
-                
+                <div className="tabulation-container">
                 <div className="user-container">
                     <Tabs
+                    className="tab-style"
                     activeKey={this.state.key}
                     onSelect={(k) => this.setState({key: k})}
                         >
@@ -855,6 +856,7 @@ class Profile extends Component{
                         />
                     : null }
                 </div> 
+                </div>
                 </>}
             </div>
         );

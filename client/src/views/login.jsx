@@ -29,7 +29,7 @@ export const Login = props => {
         <div className="login-container">
             <Card style={{width: '35rem'}}>
                 <Card.Body>
-                    <a href="/"> <img className="logostyle" src="/mp-new-logo-beta.png" alt="logo"/></a>
+                    <a href="/"> <img className="logostyle" src="/mp-new-logo.png" alt="logo"/></a>
 
                     <Card.Title><h1>Login</h1></Card.Title>
                     
