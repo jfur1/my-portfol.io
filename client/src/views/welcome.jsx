@@ -18,7 +18,7 @@ export const Welcome = props => {
         <div className="splash-container">
             <Card style={{width: '35rem'}}>
             <Card.Body>
-                <img className="logostyle" src="/mp-new-logo-beta.png" alt="logo"/>
+                <img className="logostyle" src="/mp-new-logo.png" alt="logo"/>
 
                 <br></br>
                 <Card.Title>Create an account or login.</Card.Title>

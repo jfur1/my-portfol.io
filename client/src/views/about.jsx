@@ -426,12 +426,9 @@ export const About = props => {
 
     return(
         <div className="tab-container">
-        
-        <h2>{user.firstname} {user.lastname}</h2>
+        {props.data.ownedByUser ? <Button variant="danger" className="edit-button" onClick={handleShow}>Edit About Page&nbsp;<PencilFill size={25}/></Button> : null}
+        <h3>{user.firstname} {user.lastname}</h3>
         <p>About</p>
-        {props.data.ownedByUser 
-        ? <PencilFill size={25} onClick={handleShow}/> 
-        : null}
 
         <Modal
             show={show}

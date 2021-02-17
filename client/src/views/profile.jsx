@@ -657,64 +657,65 @@ class Profile extends Component{
                 ? <><Spinner animation="border" variant="success" /></>
                 
                 : <><NavBar {...this.props} data={this.state}/>
-                
-                <div className="user-container">
-                    <Tabs
-                    activeKey={this.state.key}
-                    onSelect={(k) => this.setState({key: k})}
-                        >
-                        <Tab eventKey="home" title="Home" />
-                        <Tab eventKey="about" title="About" />
-                        <Tab eventKey="portfolio" title="Portfolio" />
-                        <Tab eventKey="contact" title="Contact" />
-                    </Tabs>
+                <div className="tabulation-container">
+                    <div className="user-container">
+                        <Tabs
+                        activeKey={this.state.key}
+                        onSelect={(k) => this.setState({key: k})}
+                            >
+                            <Tab eventKey="home" title="Home" />
+                            <Tab eventKey="about" title="About" />
+                            <Tab eventKey="portfolio" title="Portfolio" />
+                            <Tab eventKey="contact" title="Contact" />
+                        </Tabs>
+                    </div>
+
+                    <div className="info-container">
+                        { this.state.key === "home" ? 
+                            <Home {...this.props} data={this.state} />
+                        : null }
+
+                        { this.state.key === "about" ?  
+                            <About {...this.props} 
+                                data={this.state} 
+                                createLocation={this.createLocation}
+                                updateLocation={this.updateLocation}
+                                createBio={this.createBio}
+                                updateBio={this.updateBio}
+                                updateHobby={this.updateHobby}
+                                updateSkill={this.updateSkill}
+                                createHobby={this.createHobby}
+                                createSkill={this.createSkill}
+                                deleteHobby={this.deleteHobby}
+                                deleteSkill={this.deleteSkill}
+                            />
+                        : null }
+
+                        { this.state.key === "portfolio" ?
+                            <Portfolio {...this.props} data={this.state}
+                                createProject={this.createProject}
+                                updateProject={this.updateProject}
+                                deleteProject={this.deleteProject}
+                                createWorkExperience={this.createWorkExperience}
+                                updateWorkExperience={this.updateWorkExperience}
+                                deleteWorkExperience={this.deleteWorkExperience}
+                                createEducation={this.createEducation}
+                                updateEducation={this.updateEducation}
+                                deleteEducation={this.deleteEducation}
+                            />
+                        : null }
+
+                        { this.state.key === "contact" ?
+                            <Contact {...this.props} data={this.state}
+                                updateEmail={this.updateEmail}
+                                updatePhone={this.updatePhone}
+                                createLink={this.createLink}
+                                updateLink={this.updateLink}
+                                deleteLink={this.deleteLink}
+                            />
+                        : null }
+                    </div> 
                 </div>
-
-                <div className="info-container">
-                    { this.state.key === "home" ? 
-                        <Home {...this.props} data={this.state} />
-                    : null }
-
-                    { this.state.key === "about" ?  
-                        <About {...this.props} 
-                            data={this.state} 
-                            createLocation={this.createLocation}
-                            updateLocation={this.updateLocation}
-                            createBio={this.createBio}
-                            updateBio={this.updateBio}
-                            updateHobby={this.updateHobby}
-                            updateSkill={this.updateSkill}
-                            createHobby={this.createHobby}
-                            createSkill={this.createSkill}
-                            deleteHobby={this.deleteHobby}
-                            deleteSkill={this.deleteSkill}
-                        />
-                    : null }
-
-                    { this.state.key === "portfolio" ?
-                        <Portfolio {...this.props} data={this.state}
-                            createProject={this.createProject}
-                            updateProject={this.updateProject}
-                            deleteProject={this.deleteProject}
-                            createWorkExperience={this.createWorkExperience}
-                            updateWorkExperience={this.updateWorkExperience}
-                            deleteWorkExperience={this.deleteWorkExperience}
-                            createEducation={this.createEducation}
-                            updateEducation={this.updateEducation}
-                            deleteEducation={this.deleteEducation}
-                        />
-                    : null }
-
-                    { this.state.key === "contact" ?
-                        <Contact {...this.props} data={this.state}
-                            updateEmail={this.updateEmail}
-                            updatePhone={this.updatePhone}
-                            createLink={this.createLink}
-                            updateLink={this.updateLink}
-                            deleteLink={this.deleteLink}
-                        />
-                    : null }
-                </div> 
                 </>}
             </div>
         );

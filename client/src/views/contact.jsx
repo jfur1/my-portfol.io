@@ -432,13 +432,9 @@ export const Contact = (props) => {
             </Modal>
 
             {/* After integrating backend, render original data not tmpHooks */}
+            {props.data.ownedByUser ? <Button variant="danger" className="edit-button" onClick={handleShow}>Edit About Page&nbsp;<PencilFill size={25}/></Button> : null}
             <h3>{user.firstname} {user.lastname}</h3>
-            <h4>
-                <p>Contact</p>
-                {props.data.ownedByUser 
-                ? <PencilFill size={25} onClick={handleShow}/> 
-                : null}
-            </h4>
+            <p>Contact</p>
 
             <div className="info-container">
 
