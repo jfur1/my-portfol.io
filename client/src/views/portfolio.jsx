@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { PencilFill } from 'react-bootstrap-icons';
-import { Nav, Tab, Modal, Button, Form, Row, Col } from 'react-bootstrap';
+import { Nav, Tab, Modal, Button, Form, Row, Col, Badge } from 'react-bootstrap';
 import { AlertDismissible } from '../components/alertDismissible';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import Switch  from '../components/switch';
@@ -21,6 +21,9 @@ export const Portfolio = props => {
 
     const [reordered, setReordered] = useState(false);
     const [changingOrder, setChangingOrder] = useState(false);
+
+    const [validated, setValidated] = useState(false);
+    const [errs, setErrs] = useState({}); 
     
     const handleShow = () => setShow(true);
     const handleClose = () => {
@@ -28,6 +31,8 @@ export const Portfolio = props => {
         else{
             setChangingOrder(false);
             setShow(false);
+            setValidated(false);
+            setErrs({values: []});
         }
     }
 
@@ -41,6 +46,8 @@ export const Portfolio = props => {
         setEducationToDelete([]);
         setChangingOrder(false);
         setReordered(false);
+        setValidated(false);
+        setErrs({});
     }
 
     // Data to be Modified
@@ -63,6 +70,9 @@ export const Portfolio = props => {
 
         setEducation({values: educationData});
         setEducationToDelete([]);
+
+        setValidated(false);
+        setErrs({});
     }, [props, projectsData, portfolioData, educationData])
 
 
@@ -560,8 +570,39 @@ export const Portfolio = props => {
 
     // --------------- End Education Event Handling --------------
 
-    const handleSave = async(e) => {
-        console.log("Saving Changes:");
+    const validate = () => {
+        let isValidated = true;
+        let errors = {};
+        projects.values.forEach((row, idx) => {
+            if((row.title === "")){
+                isValidated = false;
+                setValidated(false);
+                errors["project"] = true;
+            }
+        })
+        portfolio.values.forEach((row, idx) => {
+            if((row.occupation === "")){
+                isValidated = false;
+                setValidated(false);
+                errors["portfolio"] = true;
+            }
+        })
+        education.values.forEach((row, idx) => {
+            if((row.education === "")){
+                isValidated = false;
+                setValidated(false);
+                errors["education"] = true;
+            }
+        })
+        setErrs(errors);
+        return isValidated;
+    }
+
+    const handleSave = async(event) => {
+        if(!validate()){
+            event.preventDefault();
+            event.stopPropagation();
+        } else{
 
         var projectsToCreate = [];
         var projectsToUpdate = [];
@@ -751,6 +792,7 @@ export const Portfolio = props => {
 
 
         window.location.reload();
+        }
     }
 
 
@@ -763,9 +805,17 @@ export const Portfolio = props => {
                     Project
                 </Form.Label>
                 <Col>
-                    <Form.Control type="text" value={row.title || ''} placeholder={"Project Title (Required)"} 
+                    <Form.Control 
+                        required
+                        isInvalid={errs["project"] && row.title === ""}
+                        type="text" 
+                        value={row.title || ''} 
+                        placeholder={"Project Title (Required)"} 
                         onChange={e => handleProjectTitleChange(e, idx)}
                     />
+                    <Form.Control.Feedback type="invalid">
+                        Please provide a project title.
+                    </Form.Control.Feedback>
                 </Col>
             </Form.Row>
 
@@ -858,9 +908,17 @@ export const Portfolio = props => {
                     Title
                 </Form.Label>
                 <Col>
-                    <Form.Control type="text" value={row.occupation !== null ? row.occupation : ''} placeholder={"Occupation Title"} 
+                    <Form.Control 
+                        type="text" 
+                        required
+                        isInvalid={errs["portfolio"] && row.occupation === ""}
+                        value={row.occupation !== null ? row.occupation : ''} 
+                        placeholder={"Occupation Title"} 
                         onChange={e => {handlePortfolioOccupationChange(e, idx)}}
                     />
+                    <Form.Control.Feedback type="invalid">
+                        Please provide an occupation.
+                    </Form.Control.Feedback>
                 </Col>
             </Form.Row>
 
@@ -937,9 +995,17 @@ export const Portfolio = props => {
                     Education
                 </Form.Label>
                 <Col>
-                    <Form.Control type="text" value={row.education !== null ? row.education : ''} placeholder={"Education (Required)"} 
+                    <Form.Control 
+                        type="text" 
+                        required
+                        isInvalid={errs["education"] && row.education === ""}
+                        value={row.education !== null ? row.education : ''} 
+                        placeholder={"Education (Required)"} 
                         onChange={e => {handleEducationChange(e, idx)}}
                     />
+                    <Form.Control.Feedback type="invalid">
+                        Please provide education.
+                    </Form.Control.Feedback>
                 </Col>
             </Form.Row>
 
@@ -1157,25 +1223,54 @@ export const Portfolio = props => {
             </Modal.Header>
             <Modal.Body>
             <Tab.Container id="left-tabs-example" defaultActiveKey="projects">
+            <Form noValidate validated={validated} onSubmit={handleSave}>
                 <Row>
                     <Col sm={3}>
                     <Nav variant="pills" className="flex-column">
                         <Nav.Item>
-                            <Nav.Link eventKey="projects" onClick={() => setChangingOrder(false)}>Projects</Nav.Link>
+                            <Nav.Link 
+                                className={errs["project"] ? "nav-error" : ""}
+                                eventKey="projects" 
+                                onClick={() => setChangingOrder(false)}
+                            >
+                            Projects
+                            {errs["project"] 
+                            ? <Badge variant="danger" className='ml-4'>!
+                                </Badge>
+                            : null}
+                            
+                            </Nav.Link>
                         </Nav.Item>
                         <Nav.Item>
-                            <Nav.Link eventKey="work-exerience" 
-                            onClick={() => setChangingOrder(false)}>Work Experience</Nav.Link>
+                            <Nav.Link 
+                                className={errs["portfolio"] ? "nav-error" : "nav-link"}
+                                eventKey="work-exerience" 
+                                onClick={() => setChangingOrder(false)}
+                            >Work Experience
+                            {errs["portfolio"] 
+                            ? <Badge variant="danger" className='ml-1'>!
+                                </Badge>
+                            : null}
+                            </Nav.Link>
                         </Nav.Item>
                         <Nav.Item>
-                            <Nav.Link eventKey="education" onClick={() => setChangingOrder(false)}>Education</Nav.Link>
+                            <Nav.Link 
+                                className={errs["education"] ? "nav-error" : ""}  
+                                eventKey="education" 
+                                onClick={() => setChangingOrder(false)}
+                            >Education
+                            {errs["education"] 
+                            ? <Badge variant="danger" className='ml-4'>!
+                                </Badge>
+                            : null}
+                            </Nav.Link>
                         </Nav.Item>
                     </Nav>
                     </Col>
                     <Col sm={9}>
                     <Tab.Content>
                         <Tab.Pane eventKey="projects">
-                            <Form>
+                            <Form.Group>
                                 <h4>Projects</h4>
                                 {projects.values.length < 4
                                 ? <Button onClick={() => addProject()} variant="outline-success" size="sm">Add Project</Button>  
@@ -1193,10 +1288,10 @@ export const Portfolio = props => {
                                 ? <ChangeOrder droppableId="projects"></ChangeOrder>
                                 : renderProjectsForm()}
 
-                            </Form>
+                            </Form.Group>
                         </Tab.Pane>
                         <Tab.Pane eventKey="work-exerience">
-                            <Form>
+                            <Form.Group>
                                 <h4>Work Experience</h4>
                                 {portfolio.values.length < 4
                                 ? <Button onClick={() => addWorkExperience()} variant="outline-success" size="sm">Add Work Experience</Button>  
@@ -1213,10 +1308,10 @@ export const Portfolio = props => {
                                 {changingOrder
                                 ? <ChangeOrder droppableId="work-experience"></ChangeOrder>
                                 : renderWorkExperienceForm()}
-                            </Form>
+                            </Form.Group>
                         </Tab.Pane>
                         <Tab.Pane eventKey="education">
-                            <Form>
+                            <Form.Group>
                                 <h4>Education</h4>
                                 {education.values.length < 4
                                 ? <Button onClick={() => addEducation()} variant="outline-success" size="sm">Add Education</Button>  
@@ -1235,17 +1330,18 @@ export const Portfolio = props => {
                                 : renderEducationForm()}
 
 
-                            </Form>
+                            </Form.Group>
                         </Tab.Pane>
                     </Tab.Content>
                     </Col>
                 </Row>
-
+                <Button variant="success" type="submit">Save Changes</Button>
+            </Form>
             </Tab.Container>
 
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="success" onClick={handleSave}>Save Changes</Button>
+                
             </Modal.Footer>
         </Modal>
         <br></br>
