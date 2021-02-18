@@ -621,7 +621,13 @@ export const About = props => {
                         <label>Change Order</label>
                             <Switch
                                 isOn={changingOrder}
-                                handleToggle={() => setChangingOrder(!changingOrder)}
+                                handleToggle={() => {
+                                    if(!validate()){
+                                        console.log("Please address errs");
+                                    } else{
+                                        setChangingOrder(!changingOrder);
+                                    }
+                                }}
                             />
                             </>
                         : null}
