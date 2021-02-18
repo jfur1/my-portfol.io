@@ -30,6 +30,8 @@ export const About = props => {
     const [validated, setValidated] = useState(false);
     const [errs, setErrs] = useState({}); 
     
+    const [duplicateSkill, setDuplicateSkill] = useState({});
+    const [duplicateHobby, setDuplicateHobby] = useState({});
 
 
     // Hooks used to format final onClick data for POST request
@@ -47,6 +49,8 @@ export const About = props => {
         setSkillToDelete([]);
         setValidated(false);
         setErrs({});
+        setDuplicateSkill({});
+        setDuplicateHobby({});
     }, [hobbiesData, skillsData]);
 
     // Toggle Modal
@@ -57,6 +61,8 @@ export const About = props => {
         } else{
             setHobbies({values: hobbiesData});
             setSkills({values: skillsData});
+            setDuplicateSkill({});
+            setDuplicateHobby({});
             setChangingOrder(false);
             setShow(false);    
         }
@@ -73,6 +79,8 @@ export const About = props => {
         setChangingOrder(false);
         setReordered(false);
         setErrs({});
+        setDuplicateSkill({});
+        setDuplicateHobby({});
     }
 
 
@@ -85,7 +93,7 @@ export const About = props => {
                     <Form.Control 
                         required
                         style={{width: '70%'}}
-                        isInvalid={errs["hobby"] && row.hobby === ""}
+                        isInvalid={(errs["hobby"] && row.hobby === "") || (typeof(duplicateHobby["Idx"+idx]) !== 'undefined' && row.hobby !== "")}
                         type="text" 
                         value={row.hobby} 
                         placeholder={"Enter Hobby"} 
@@ -98,7 +106,13 @@ export const About = props => {
                         onClick={() => removeHobby(idx)}    
                     >Delete</Button>
                     <Form.Control.Feedback type="invalid">
-                        Please provide a hobby.
+                        {errs["hobby"] && row.hobby === ""
+                            ? "Please provide a hobby."
+                            : null}
+                        {typeof(duplicateHobby["Idx"+idx]) !== 'undefined' && row.hobby !== ""
+                            ? "Duplicate hobbies are not allowed."
+                            : null
+                        }
                     </Form.Control.Feedback>
                 </Form.Row>
             )}
@@ -115,6 +129,12 @@ export const About = props => {
         if((typeof(tmpHobbies[idx].hobby_id) !== 'undefined')
         && !(typeof(tmpHobbies[idx].toUpdate) !== 'undefined')){
             tmpHobbies[idx].toUpdate = true;
+        }
+        if((hobbies.values.some(e => e.hobby === event.target.value))){
+            setDuplicateHobby({...duplicateHobby, ["Idx"+idx]: true});
+        }
+        else if(!(hobbies.values.some(e => e.hobby === event.target.value)) && typeof(duplicateHobby["Idx"+idx]) !== 'undefined'){
+            delete duplicateHobby["Idx"+idx];
         }
         setHobbies({values: tmpHobbies});
         setEdited(true);
@@ -153,7 +173,7 @@ export const About = props => {
                     <Form.Control 
                             required
                             style={{width: '70%'}}
-                            isInvalid={errs["skill"] && row.skill === ""}
+                            isInvalid={(errs["skill"] && row.skill === "") || (typeof(duplicateSkill["Idx"+idx]) !== 'undefined' && row.skill !== "")}
                             type="text" 
                             value={row.skill} 
                             placeholder={"Enter skill"} 
@@ -166,7 +186,13 @@ export const About = props => {
                         onClick={() => removeSkill(idx)}    
                     >Delete</Button>
                     <Form.Control.Feedback type="invalid">
-                        Please provide a skill.
+                        {(errs["skill"] && row.skill === "")
+                            ? "Please provide a skill."
+                            : null}
+                        {typeof(duplicateSkill["Idx"+idx]) !== 'undefined' && row.skill !== ""
+                            ? "Duplicate skills are not allowed."
+                            : null
+                        }
                     </Form.Control.Feedback>
                 </Form.Row>
             )}
@@ -183,6 +209,12 @@ export const About = props => {
         if((typeof(tmpSkills[idx].skill_id) !== 'undefined')
         && !(typeof(tmpSkills[idx].toUpdate) !== 'undefined')){
             tmpSkills[idx].toUpdate = true;
+        }
+        if(skills.values.some(e => e.skill === event.target.value)){
+            setDuplicateSkill({...duplicateSkill, ["Idx"+idx] : true});
+        }
+        else if(!(skills.values.some(e => e.skill === event.target.value)) && typeof(duplicateSkill["Idx"+idx]) !== 'undefined'){
+            delete duplicateSkill["Idx"+idx];
         }
         setSkills({values: tmpSkills});
         setEdited(true);
@@ -313,12 +345,20 @@ export const About = props => {
                 setValidated(false);
                 errors["hobby"] = true;
             }
+            if(typeof(duplicateHobby["Idx"+idx]) !== 'undefined'){
+                isValidated = false;
+                setValidated(false);
+            }
         })
         skills.values.forEach((row, idx) => {
             if(!(typeof(row.skill_id) !== 'undefined') && (row.skill === "")){
                 isValidated = false;
                 setValidated(false);
                 errors["skill"] = true;
+            }
+            if(typeof(duplicateSkill["Idx"+idx]) !== 'undefined'){
+                isValidated = false;
+                setValidated(false);
             }
         })
         setErrs(errors);
