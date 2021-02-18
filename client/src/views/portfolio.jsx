@@ -508,7 +508,7 @@ export const Portfolio = props => {
         })
 
         setErrs({
-            proejct: {...errs["project"]},
+            project: {...errs["project"]},
             portfolio: errors,
             education: {...errs["education"]}
         })
@@ -1412,7 +1412,7 @@ export const Portfolio = props => {
                         <Nav.Item>
                             <Nav.Link 
                                 className={(length(errs["portfolio"]) > 0) || (length(duplicateWork) > 0)
-                                    ? "nav-error" : "nav-link"}
+                                    ? "nav-error" : ""}
                                 eventKey="work-exerience" 
                                 onClick={() => setChangingOrder(false)}
                             >Work Experience
