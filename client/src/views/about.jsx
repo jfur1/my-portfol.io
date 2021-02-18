@@ -29,6 +29,7 @@ export const About = props => {
 
     const [validated, setValidated] = useState(false);
     const [errs, setErrs] = useState({}); 
+    
 
 
     // Hooks used to format final onClick data for POST request

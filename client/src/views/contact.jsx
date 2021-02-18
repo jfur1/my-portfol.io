@@ -89,14 +89,13 @@ export const Contact = (props) => {
         let isValidated = true;
 
         links.values.forEach((row, idx) => {
-            if(!(typeof(row.link_id) !== 'undefined') && (row.link === "")){
+            if(row.link === ""){
                 isValidated = false;
                 setValidated(false);
                 setErrs({link: true});
             }
             if(typeof(duplicates["Idx"+idx]) !== 'undefined'){
                 console.log("Validation found duplicate at idx:", idx)
-                
                 isValidated = false;
                 setValidated(false);
             }
@@ -217,7 +216,7 @@ export const Contact = (props) => {
                         <Col>
                             <Form.Control 
                                 required
-                                isInvalid={(errs["link"] && row.link === "") || typeof(duplicates["Idx"+idx]) !== 'undefined'}
+                                isInvalid={(errs["link"] && row.link === "") || (typeof(duplicates["Idx"+idx]) !== 'undefined' && row.link !== "")}
                                 type="text" 
                                 value={row.link} 
                                 placeholder={"Add your link here (Required)"} 
@@ -225,10 +224,11 @@ export const Contact = (props) => {
                                     handleLinkChange(e, idx);
                             }}/>
                             <Form.Control.Feedback type="invalid">
+                                {/* Can't ever have both cases! */}
                                 {(errs["link"] && row.link === "") 
                                 ? "Please provide a Link." 
                                 : null} 
-                                {typeof(duplicates["Idx"+idx]) !== 'undefined'
+                                {typeof(duplicates["Idx"+idx]) !== 'undefined' && row.link !== ""
                                 ? "Duplicate links are not allowed."
                                 : null
                                 }
@@ -321,7 +321,6 @@ export const Contact = (props) => {
 
     const handleLinkChange = (event, idx) => {
         let tmpLinks = [...links.values];
-        let dups = {};
         tmpLinks[idx] = {
             link_id: links.values[idx].link_id,
             uid: links.values[idx].uid,
@@ -333,12 +332,15 @@ export const Contact = (props) => {
         && !(typeof(tmpLinks[idx].toUpdate) !== 'undefined')){
                 tmpLinks[idx].toUpdate = true;
         }
-        if((links.values.some(e => e.link === event.target.value)) 
-        ){
-            console.log("Found duplicate:", event.target.value)
-            dups["Idx"+idx] = true;
+        // If duplicate => add index to duplicates hook
+        if((links.values.some(e => e.link === event.target.value))){
+            console.log("Found duplicate:", event.target.value);
+            setDuplicates({...duplicates, ["Idx"+idx]: true});
+        } 
+        // User fixes duplicate entry: not a duplicate, but exists as one in duplcates hook => remove
+        else if(!(links.values.some(e => e.link === event.target.value)) && typeof(duplicates["Idx"+idx]) !== undefined){
+            delete duplicates["Idx"+idx];
         }
-        setDuplicates(dups)
         setLinks({values: tmpLinks});
         setEdited(true);
     }
