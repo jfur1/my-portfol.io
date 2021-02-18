@@ -12,7 +12,7 @@ export const NavBar = (props) => {
     return(
 
         <Navbar sticky="top" style={{background:'rgba(255,255,255,1)'}}>
-            <Navbar.Brand><img style={{height: "30px"}} src="/mp-new-logo.png" alt="logo"/>&nbsp;&nbsp;&nbsp;/{user.username}</Navbar.Brand>
+            <Navbar.Brand href="/profile"><img style={{height: "30px"}} src="/mp-new-logo.png" alt="logo"/>&nbsp;&nbsp;&nbsp;/{user.username}</Navbar.Brand>
             <Navbar.Toggle aria-controls="responsive-navbar-nav" />
             <Navbar.Collapse className="justify-content-end">
                 <Nav.Item>
