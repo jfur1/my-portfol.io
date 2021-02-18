@@ -1,45 +1,27 @@
 import React from 'react';
-import { Nav, Navbar, Dropdown } from 'react-bootstrap'
-import { PersonCircle } from 'react-bootstrap-icons';
+import { Nav, Navbar, Dropdown } from 'react-bootstrap';
 import auth from '../components/auth';
 
 export const NavBar = (props) => {
     //console.log("NavBar Component Recieved Props: ", props);
     const loggedIn = (props.data.loggedIn !== null) ? props.data.loggedIn : false;
     const requestedBy = (props.data.requestedBy !== null) ? props.data.requestedBy : null;
+    const user = (props.data.user !== null) ? props.data.user : null;
 
 
     return(
 
-        <Navbar>
-            <Navbar.Brand href="/dashboard"><img style={{height: "30px"}} src="/mp-new-logo-beta.png" alt="logo"/></Navbar.Brand>
+        <Navbar sticky="top" style={{background:'rgba(255,255,255,1)'}}>
+            <Navbar.Brand><img style={{height: "30px"}} src="/mp-new-logo.png" alt="logo"/>&nbsp;&nbsp;&nbsp;/{user.username}</Navbar.Brand>
             <Navbar.Toggle aria-controls="responsive-navbar-nav" />
             <Navbar.Collapse className="justify-content-end">
-            {loggedIn ? 
                 <Nav.Item>
-                    <Navbar.Text className="mr-sm-2">
-                        Signed in as: <a href={requestedBy.username}>
-                            <b>{requestedBy.first_name} {requestedBy.last_name}</b>
-                        </a>
-                    </Navbar.Text>
-                </Nav.Item>
-                : null}
-                <Nav.Item>
+                    {loggedIn ?
                     <Dropdown id="collapsible-nav-dropdown">
                         <Dropdown.Toggle className="bg-transparent text-dark" id="dropdown-custom-components">
-                            <PersonCircle size={50}/>
+                        Signed in as: <b>{requestedBy.first_name} {requestedBy.last_name}</b>
                         </Dropdown.Toggle>
-                        {loggedIn ?
                         <Dropdown.Menu>
-                            <Dropdown.Item>
-                                <Nav.Link onClick={() => {
-                                    props.history.push({
-                                        pathname:"/editProfile",
-                                        state: props.location.state
-                                    });
-                                }}>Edit Profile
-                                </Nav.Link>
-                            </Dropdown.Item>
                             <Dropdown.Item>
                                 <Nav.Link onClick={() => {
                                     auth.logout(() => {
@@ -51,16 +33,14 @@ export const NavBar = (props) => {
                                 }}>Logout</Nav.Link>
                             </Dropdown.Item>
                         </Dropdown.Menu>
-                        :         
-                        <Dropdown.Menu>
-                            <Dropdown.Item>                          
-                            <Nav.Link onClick={() => {props.history.push("/login");
-                            }}>Login</Nav.Link>
-                            </Dropdown.Item>
-                        </Dropdown.Menu>  }
                     </Dropdown>
+                    :                              
+                    <div className="order"><Nav.Link onClick={() => {props.history.push("/login");
+                        }}>Login</Nav.Link><p className="my-bar"></p>
+                    <Nav.Link onClick={() => {props.history.push("/register");
+                        }}>Register</Nav.Link></div>
+                    }
                 </Nav.Item>
-                
             </Navbar.Collapse>
         </Navbar>
     )

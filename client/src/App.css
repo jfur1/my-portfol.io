@@ -117,9 +117,8 @@ table.center {
 
 /* Container for individual posts */
 .tab-container{
-  background-color: #eaf8fc;
+  background: rgba(255, 255, 255, 0.7);
   padding: 3%;
-  border-radius: 25px;
 }
 
 /* Alert */
@@ -159,19 +158,26 @@ table.center {
 .container{
   display:flex;
   flex-direction: column;
+  width:100%;
 }
 
 .user-container{
   display:flex;
   flex-direction: row;
   justify-content: space-evenly;
-  margin-top: 3%
+  margin-top: 3%;
+  font-size:1.4em;
 }
 
 .links-container{
   display: grid;
   grid-template-columns: auto auto;
   margin: 2% 10% 2% 10%;
+}
+
+.tabulation-container{
+  background:rgba(255,255,255,.5);
+  padding-bottom:2%;
 }
 
 .post-list{
@@ -196,7 +202,8 @@ table.center {
   padding-left: 1rem;
   padding-right: 1rem;
   border-radius: 16px;
-  margin-top: 4px;
+  margin: 1%;
+  margin-bottom:2%;
 }
 
 .form-row > .col {
@@ -246,6 +253,10 @@ table.center {
   width: 30px;
 }
 
+.edit-button{
+  float:right;
+
+}
 .nav-item > .nav-link.nav-error{
   border: 2px solid red;
   border-radius: 10px;
@@ -261,4 +272,15 @@ table.center {
 .nav-item > .nav-link{
   border-radius: 25px;
   margin-top: 3px;
+}
+
+.order{
+  display:flex;
+  flex-direction:row;
+}
+
+.my-bar{
+  margin-top: 5%;
+  border-left: 2px solid black;
+  height:25px;
 }

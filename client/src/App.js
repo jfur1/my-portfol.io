@@ -13,7 +13,7 @@ import { Register } from './views/register';
 
 function App() {
   return (
-    <div className="App" style={{backgroundImage: 'url("/geo-bg.png")', backgroundSize: 'cover', height: '100vh'}}>
+    <div className="App" style={{backgroundImage: 'url(/geo-bg.png)', backgroundRepeat: 'no-repeat', backgroundSize: 'cover', backgroundAttachment: 'fixed', minHeight:'100vh', minWidth: '100vw'}}>
       <Switch>
         <Route exact path="/" component={Welcome} />
         <Route exact path="/login" component={Login} />
