@@ -34,6 +34,7 @@ export const Contact = (props) => {
 
     const [validated, setValidated] = useState(false);
     const [errs, setErrs] = useState({}); 
+    const [duplicates, setDuplicates] = useState({});
 
     // Event Handlers
     const handleShow = () => setShow(true);
@@ -45,6 +46,7 @@ export const Contact = (props) => {
             setShow(false);
             setChangingOrder(false);
             setLinks({values: linksData});
+            setDuplicates({});
         }
     }
 
@@ -58,6 +60,7 @@ export const Contact = (props) => {
         setLinksToDelete([]);
         setValidated(false);
         setErrs({});
+        setDuplicates({});
     }
 
     // form values change? => stage values to be updated
@@ -78,16 +81,24 @@ export const Contact = (props) => {
         setLinks({values: linksData});
         setValidated(false);
         setErrs({});
+        setDuplicates({});
     }, [props, linksData])
 
 
     const validate = () => {
         let isValidated = true;
+
         links.values.forEach((row, idx) => {
             if(!(typeof(row.link_id) !== 'undefined') && (row.link === "")){
                 isValidated = false;
                 setValidated(false);
-                setErrs({link: "Please enter a link."});
+                setErrs({link: true});
+            }
+            if(typeof(duplicates["Idx"+idx]) !== 'undefined'){
+                console.log("Validation found duplicate at idx:", idx)
+                
+                isValidated = false;
+                setValidated(false);
             }
         })
         return isValidated;
@@ -206,7 +217,7 @@ export const Contact = (props) => {
                         <Col>
                             <Form.Control 
                                 required
-                                isInvalid={errs["link"] && row.link === ""}
+                                isInvalid={(errs["link"] && row.link === "") || typeof(duplicates["Idx"+idx]) !== 'undefined'}
                                 type="text" 
                                 value={row.link} 
                                 placeholder={"Add your link here (Required)"} 
@@ -214,7 +225,13 @@ export const Contact = (props) => {
                                     handleLinkChange(e, idx);
                             }}/>
                             <Form.Control.Feedback type="invalid">
-                                Please provide a Link.
+                                {(errs["link"] && row.link === "") 
+                                ? "Please provide a Link." 
+                                : null} 
+                                {typeof(duplicates["Idx"+idx]) !== 'undefined'
+                                ? "Duplicate links are not allowed."
+                                : null
+                                }
                             </Form.Control.Feedback>
                         </Col>
                     </Form.Row>
@@ -304,6 +321,7 @@ export const Contact = (props) => {
 
     const handleLinkChange = (event, idx) => {
         let tmpLinks = [...links.values];
+        let dups = {};
         tmpLinks[idx] = {
             link_id: links.values[idx].link_id,
             uid: links.values[idx].uid,
@@ -315,6 +333,12 @@ export const Contact = (props) => {
         && !(typeof(tmpLinks[idx].toUpdate) !== 'undefined')){
                 tmpLinks[idx].toUpdate = true;
         }
+        if((links.values.some(e => e.link === event.target.value)) 
+        ){
+            console.log("Found duplicate:", event.target.value)
+            dups["Idx"+idx] = true;
+        }
+        setDuplicates(dups)
         setLinks({values: tmpLinks});
         setEdited(true);
     }
