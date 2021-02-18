@@ -35,8 +35,10 @@ export const NavBar = (props) => {
                         </Dropdown.Menu>
                     </Dropdown>
                     :                              
-                    <Nav.Link onClick={() => {props.history.push("/login");
-                        }}>Login</Nav.Link>
+                    <div className="order"><Nav.Link onClick={() => {props.history.push("/login");
+                        }}>Login</Nav.Link><p className="my-bar"></p>
+                    <Nav.Link onClick={() => {props.history.push("/register");
+                        }}>Register</Nav.Link></div>
                     }
                 </Nav.Item>
             </Navbar.Collapse>

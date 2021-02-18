@@ -273,3 +273,14 @@ table.center {
   border-radius: 25px;
   margin-top: 3px;
 }
+
+.order{
+  display:flex;
+  flex-direction:row;
+}
+
+.my-bar{
+  margin-top: 5%;
+  border-left: 2px solid black;
+  height:25px;
+}
