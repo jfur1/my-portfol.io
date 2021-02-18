@@ -364,11 +364,11 @@ export const Portfolio = props => {
             delete errs["portfolio"]["Idx"+idx];
         }
         // New event is a duplicate? Add idx as duplicate
-        if((portfolio.values.some(e => e.occupation === event.target.value))){
+        if((portfolio.values.some(e => (e.occupation + e.organization) === (event.target.value + tmpPortfolio[idx].organization)))){
             setDuplicateWork({...duplicateWork, ["Idx"+idx] : true});
         }
          // No longer a duplicate? Delete from duplicates
-        else if(!(portfolio.values.some(e => e.occupation === event.target.value)) && typeof(duplicateWork["Idx"+idx]) !== 'undefined'){
+        else if(!(portfolio.values.some(e => (e.occupation + e.organization) === event.target.value + tmpPortfolio[idx].organization)) && typeof(duplicateWork["Idx"+idx]) !== 'undefined'){
             delete duplicateWork["Idx"+idx];
         }
         setPortfolio({values: tmpPortfolio});
@@ -389,6 +389,12 @@ export const Portfolio = props => {
         if((typeof(tmpPortfolio[idx].portfolio_id) !== 'undefined')
         && !(typeof(tmpPortfolio[idx].toUpdate) !== 'undefined')){
             tmpPortfolio[idx].toUpdate = true;
+        }
+        if((portfolio.values.some(e => (e.occupation + e.organization) === (tmpPortfolio[idx].occupation + event.target.value)))){
+            setDuplicateWork({...duplicateWork, ["Idx"+idx] : true});
+        }         
+        else if(!(portfolio.values.some(e => (e.occupation + e.organization) === tmpPortfolio[idx].occupation + event.target.value)) && typeof(duplicateWork["Idx"+idx]) !== 'undefined'){
+            delete duplicateWork["Idx"+idx];
         }
         setPortfolio({values: tmpPortfolio});
         setEdited(true);
@@ -499,7 +505,7 @@ export const Portfolio = props => {
                 errors["Idx"+newIdx] = true;
             } else{
                 tmpPortfolio.forEach((tmpRow, tmpIdx) => {
-                    if(tmpRow.occupation === row.occupation && tmpIdx !== newIdx){
+                    if((tmpRow.occupation + tmpRow.organization) === (row.occupation + row.organization) && tmpIdx !== newIdx){
                         duplicates["Idx"+tmpIdx] = true;
                         duplicates["Idx"+newIdx] = true;
                     }
@@ -1076,7 +1082,7 @@ export const Portfolio = props => {
                         ? "Please provide an occupation."
                         : null} 
                     {(typeof(duplicateWork["Idx"+idx]) !== 'undefined' && row.occupation !== "")
-                        ? "Duplicate occupation titles are not allowed"
+                        ? "Duplicate (occupation titles, organization) not allowed."
                         : null}
                     </Form.Control.Feedback>
                 </Col>
