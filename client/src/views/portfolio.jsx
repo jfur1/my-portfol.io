@@ -1361,6 +1361,20 @@ export const Portfolio = props => {
             <div key={idx}>{str.length === 0 ? <br/> : str}</div>
         );
     }
+
+    const FormatDate = (props) => {
+        console.log("Recieved Date:", props.dateString);
+        let date = props.dateString;
+        const months = {"01": "Jan", "02": "Feb", "03": "Mar", "04": "Apr", "05": "May", "06": "Jun", 
+                        "07": "Jul", "08": "Aug", "09": "Sep", "10": "Oct", "11": "Nov", "12": "Dec"};
+        const year = date.substring(0, 4);
+        const monthDecimal = date.substring(5, 7);
+        const month = months[monthDecimal];
+        console.log(month, year)
+        const formattedDate = month + ' ' + year;
+        return formattedDate;
+    }
+
     function length(obj) {
         if((!(typeof(obj) !== 'undefined')) || (obj == null)) return 0;
         return Object.keys(obj).length;
@@ -1564,12 +1578,12 @@ export const Portfolio = props => {
                     
                     
                     {(row.from_when && row.from_when !== "infinity")
-                    ? <p><b>From:</b> {row.from_when} </p>
+                    ? <p><b>From:</b> <FormatDate dateString={row.from_when} key={idx}/> </p>
                     : null
                     }
                     
                     {(row.to_when && row.to_when !== "infinity")
-                    ? <p><b>To:</b> {(row.to_when)}</p>
+                    ? <p><b>To:</b> <FormatDate dateString={row.to_when} key={idx}/></p>
                     : <p><b>To:</b> Current</p>}
                     <br></br>
                 </div>
@@ -1586,12 +1600,12 @@ export const Portfolio = props => {
                 <p><b>Organization:</b> {row.organization}</p>
                 
                 {(row.from_when && row.from_when !== "infinity")
-                ? <p><b>From:</b> {row.from_when} </p>
+                ? <p><b>From:</b> <FormatDate dateString={row.from_when} key={idx}/> </p>
                 : null
                 }
                 
                 {(row.to_when && row.to_when !== "infinity")
-                ? <p><b>To:</b> {row.to_when}</p>
+                ? <p><b>To:</b> <FormatDate dateString={row.to_when} key={idx}/></p>
                 : <p><b>To:</b> Current</p>}
 
                 {(row.description)
@@ -1617,12 +1631,12 @@ export const Portfolio = props => {
                     : null}
 
                     {(row.from_when && row.from_when !== "infinity")
-                    ? <p><b>From:</b> {row.from_when} </p>
+                    ? <p><b>From:</b> <FormatDate dateString={row.from_when} key={idx}/> </p>
                     : null
                     }
                     
                     {(row.to_when && row.to_when !== "infinity")
-                    ? <p><b>To:</b> {row.to_when}</p>
+                    ? <p><b>To:</b> <FormatDate dateString={row.to_when} key={idx}/></p>
                     : <p><b>To:</b> Current</p>}
 
                     {row.description
