@@ -24,6 +24,10 @@ export const Portfolio = props => {
 
     const [validated, setValidated] = useState(false);
     const [errs, setErrs] = useState({}); 
+
+    const [duplicateProject, setDuplicateProject] = useState({});
+    const [duplicateWork, setDuplicateWork] = useState({});
+    const [duplicateEducation, setDuplicateEducation] = useState({});
     
     const handleShow = () => setShow(true);
     const handleClose = () => {
@@ -35,7 +39,7 @@ export const Portfolio = props => {
             setPortfolio({values: portfolioData});
             setEducation({values: educationData});
             setValidated(false);
-            setErrs({values: []});
+            setErrs({});
         }
     }
 
@@ -102,6 +106,12 @@ export const Portfolio = props => {
         && (tmpProjects[idx].title !== "")){
             delete errs["project"]["Idx"+idx];
         }
+        if(projects.values.some(e => e.title === event.target.value)){
+            setDuplicateProject({...duplicateProject, ["Idx"+idx]: true});
+        }
+        else if(!(projects.values.some(e => e.title === event.target.value)) && typeof(duplicateProject["Idx"+idx]) !== 'undefined'){
+            delete duplicateProject["Idx"+idx];
+        }
         setProjects({values: tmpProjects});
         setEdited(true);
     }
@@ -154,9 +164,6 @@ export const Portfolio = props => {
             if(offset < 0) date.setHours(12, 0, 0);
             //eslint-disable-next-line
             newDate = date.toISOString().replace(/-/g, '\/').replace(/T.+/, '');
-            // console.log("Formatted Start Date Object:", date);
-            // console.log("Formatted Start Date String:", newDate);
-            // console.log("\n")
         }
         let tmpProjects = [...projects.values];
         tmpProjects[idx] = {
@@ -314,6 +321,12 @@ export const Portfolio = props => {
         && (typeof(errs["portfolio"]["Idx"+idx]) !== 'undefined') 
         && (tmpPortfolio[idx].occupation !== "")){
             delete errs["portfolio"]["Idx"+idx];
+        }
+        if((portfolio.values.some(e => e.occupation === event.target.value))){
+            setDuplicateWork({...duplicateWork, ["Idx"+idx] : true});
+        }
+        else if(!(portfolio.values.some(e => e.occupation === event.target.value)) && typeof(duplicateWork["Idx"+idx]) !== 'undefined'){
+            delete duplicateWork["Idx"+idx];
         }
         setPortfolio({values: tmpPortfolio});
         setEdited(true);
@@ -480,6 +493,12 @@ export const Portfolio = props => {
         && (tmpEducation[idx].education !== "")){
             delete errs["education"]["Idx"+idx];
         }
+        if((education.values.some(e => e.education === event.target.value))){
+            setDuplicateEducation({...duplicateEducation, ["Idx"+idx] : true});
+        }
+        else if(!(education.values.some(e => e.education === event.target.value)) && typeof(duplicateEducation["Idx"+idx]) !== 'undefined'){
+            delete duplicateEducation["Idx"+idx];
+        }
         setEducation({values: tmpEducation});
         setEdited(true);
     }
@@ -600,12 +619,20 @@ export const Portfolio = props => {
                 setValidated(false);
                 errors["project"]["Idx"+idx] = true;
             }
+            if(typeof(duplicateProject["Idx"+idx]) !== 'undefined'){
+                isValidated = false;
+                setValidated(false);
+            }
         })
         portfolio.values.forEach((row, idx) => {
             if((row.occupation === "")){
                 isValidated = false;
                 setValidated(false);
                 errors["portfolio"]["Idx"+idx] = true;
+            }
+            if(typeof(duplicateWork["Idx"+idx]) !== 'undefined'){
+                isValidated = false;
+                setValidated(false);
             }
         })
         education.values.forEach((row, idx) => {
@@ -614,7 +641,12 @@ export const Portfolio = props => {
                 setValidated(false);
                 errors["education"]["Idx"+idx] = true;
             }
+            if(typeof(duplicateEducation["Idx"+idx]) !== 'undefined'){
+                isValidated = false;
+                setValidated(false);
+            }
         })
+
         console.log("errors:", errors)
         setErrs(errors);
         return isValidated;
@@ -829,14 +861,20 @@ export const Portfolio = props => {
                 <Col>
                     <Form.Control 
                         required
-                        isInvalid={errs["project"] && row.title === ""}
+                        isInvalid={(errs["project"] && row.title === "") || (typeof(duplicateProject["Idx"+idx]) !== 'undefined' && row.title !== "")}
                         type="text" 
                         value={row.title || ''} 
                         placeholder={"Project Title (Required)"} 
                         onChange={e => handleProjectTitleChange(e, idx)}
                     />
                     <Form.Control.Feedback type="invalid">
-                        Please provide a project title.
+                        {(errs["project"] && row.title === "")
+                            ? "Please provide a project title."
+                            : null}
+                        {(typeof(duplicateProject["Idx"+idx]) !== 'undefined' && row.title !== "")
+                            ? "Duplicate project titles are not allowed."
+                            : null
+                        }
                     </Form.Control.Feedback>
                 </Col>
             </Form.Row>
@@ -933,13 +971,18 @@ export const Portfolio = props => {
                     <Form.Control 
                         type="text" 
                         required
-                        isInvalid={errs["portfolio"] && row.occupation === ""}
+                        isInvalid={(length(errs["portfolio"]) > 0 && row.occupation === "") || typeof(duplicateWork["Idx"+idx]) !== 'undefined' && row.occupation !== ""}
                         value={row.occupation !== null ? row.occupation : ''} 
                         placeholder={"Occupation Title"} 
                         onChange={e => {handlePortfolioOccupationChange(e, idx)}}
                     />
                     <Form.Control.Feedback type="invalid">
-                        Please provide an occupation.
+                    {(errs["portfolio"] && row.occupation === "")
+                        ? "Please provide an occupation."
+                        : null} 
+                    {(typeof(duplicateWork["Idx"+idx]) !== 'undefined' && row.occupation !== "")
+                        ? "Duplicate occupation titles are not allowed"
+                        : null}
                     </Form.Control.Feedback>
                 </Col>
             </Form.Row>
@@ -1020,13 +1063,18 @@ export const Portfolio = props => {
                     <Form.Control 
                         type="text" 
                         required
-                        isInvalid={errs["education"] && row.education === ""}
+                        isInvalid={(errs["education"] && row.education === "") || typeof(duplicateEducation["Idx"+idx]) !== 'undefined' && row.education !== ""}
                         value={row.education !== null ? row.education : ''} 
                         placeholder={"Education (Required)"} 
                         onChange={e => {handleEducationChange(e, idx)}}
                     />
                     <Form.Control.Feedback type="invalid">
-                        Please provide education.
+                    {(errs["education"] && row.education === "")
+                        ? "Please provide education."
+                        : null}
+                    {(typeof(duplicateEducation["Idx"+idx]) !== 'undefined' && row.education !== "")
+                        ? "Duplicate education is not allowed."
+                        :null}
                     </Form.Control.Feedback>
                 </Col>
             </Form.Row>

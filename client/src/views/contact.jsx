@@ -338,7 +338,7 @@ export const Contact = (props) => {
             setDuplicates({...duplicates, ["Idx"+idx]: true});
         } 
         // User fixes duplicate entry: not a duplicate, but exists as one in duplcates hook => remove
-        else if(!(links.values.some(e => e.link === event.target.value)) && typeof(duplicates["Idx"+idx]) !== undefined){
+        else if(!(links.values.some(e => e.link === event.target.value)) && typeof(duplicates["Idx"+idx]) !== "undefined"){
             delete duplicates["Idx"+idx];
         }
         setLinks({values: tmpLinks});
