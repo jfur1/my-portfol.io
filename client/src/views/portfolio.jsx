@@ -7,7 +7,7 @@ import Switch  from '../components/switch';
 import DatePicker from 'react-datepicker'
 
 export const Portfolio = props => {
-    console.log("Portfolio Recieved Props: ", props);
+    //console.log("Portfolio Recieved Props: ", props);
     // Data passed down from Profile through the parent state
     const user = props.location.state.user;
     const portfolioData = (props.data.portfolio !== null) ? props.data.portfolio: props.location.state.portfolio;
@@ -23,7 +23,7 @@ export const Portfolio = props => {
     const [changingOrder, setChangingOrder] = useState(false);
 
     const [validated, setValidated] = useState(false);
-    const [errs, setErrs] = useState({}); 
+    const [errs, setErrs] = useState({"project": {}, "portfolio": {}, "education": {}}); 
 
     const [duplicateProject, setDuplicateProject] = useState({});
     const [duplicateWork, setDuplicateWork] = useState({});
@@ -39,7 +39,10 @@ export const Portfolio = props => {
             setPortfolio({values: portfolioData});
             setEducation({values: educationData});
             setValidated(false);
-            setErrs({});
+            setErrs({"project": {}, "portfolio": {}, "education": {}});
+            setDuplicateProject({});
+            setDuplicateWork({});
+            setDuplicateEducation({});
         }
     }
 
@@ -54,7 +57,10 @@ export const Portfolio = props => {
         setChangingOrder(false);
         setReordered(false);
         setValidated(false);
-        setErrs({});
+        setErrs({"project": {}, "portfolio": {}, "education": {}});
+        setDuplicateProject({});
+        setDuplicateWork({});
+        setDuplicateEducation({});
     }
 
     // Data to be Modified
@@ -79,7 +85,11 @@ export const Portfolio = props => {
         setEducationToDelete([]);
 
         setValidated(false);
-        setErrs({});
+        setErrs({"project": {}, "portfolio": {}, "education": {}});
+
+        setDuplicateProject({});
+        setDuplicateWork({});
+        setDuplicateEducation({});
     }, [props, projectsData, portfolioData, educationData])
 
 
@@ -101,15 +111,21 @@ export const Portfolio = props => {
         && !(typeof(tmpProjects[idx].toUpdate) !== 'undefined')){
             tmpProjects[idx].toUpdate = true;
         }
-        if((typeof(errs["project"]) !== 'undefined') 
-        && (typeof(errs["project"]["Idx"+idx]) !== 'undefined') 
+        // Delete empty-error if user fills out field
+        if((typeof(errs["project"]["Idx"+idx]) !== 'undefined') 
         && (tmpProjects[idx].title !== "")){
             delete errs["project"]["Idx"+idx];
         }
+        // New event is a duplicate? Add idx as duplicate
         if(projects.values.some(e => e.title === event.target.value)){
             setDuplicateProject({...duplicateProject, ["Idx"+idx]: true});
         }
+        // No longer a duplicate? Delete from duplicates
         else if(!(projects.values.some(e => e.title === event.target.value)) && typeof(duplicateProject["Idx"+idx]) !== 'undefined'){
+            if(typeof(errs["project"]["Idx"+idx]) !== 'undefined'){
+                delete errs["project"]["Idx"+idx];
+            }
+            console.log("Deleting dup project at idx:", idx)
             delete duplicateProject["Idx"+idx];
         }
         setProjects({values: tmpProjects});
@@ -249,6 +265,8 @@ export const Portfolio = props => {
 
     const deleteProject = (idx) => {
         let tmpProjects = [...projects.values];
+        let errors = {};
+        let duplicates = {}
         if((typeof(tmpProjects[idx].project_id) !== 'undefined')){
             setProjectsToDelete(
                 [
@@ -257,6 +275,29 @@ export const Portfolio = props => {
                 ]);
         }
         tmpProjects.splice(idx, 1);
+        
+        // Indexes are shifted upon a delete, so we need to recalculate blanks, and/or duplicates
+        tmpProjects.forEach((row, newIdx) => {
+            if((row.title === "")){
+                errors["Idx"+newIdx] = true;
+            } else{
+                tmpProjects.forEach((tmpRow, tmpIdx) => {
+                    if(tmpRow.title === row.title && tmpIdx !== newIdx){
+                        duplicates["Idx"+tmpIdx] = true;
+                        duplicates["Idx"+newIdx] = true;
+                    }
+                })
+            }
+        })
+
+        setErrs({
+            project: errors,
+            portfolio: {...errs["portfolio"]},
+            education: {...errs["education"]}
+        })
+        setDuplicateProject(duplicates)
+        console.log("New dups after delete:", duplicates)
+        console.log("errors['project'] after delete:", errors);
         setProjects({values: tmpProjects});
         setEdited(true);
     };
@@ -317,14 +358,16 @@ export const Portfolio = props => {
         && !(typeof(tmpPortfolio[idx].toUpdate) !== 'undefined')){
             tmpPortfolio[idx].toUpdate = true;
         }
-        if((typeof(errs["portfolio"]) !== 'undefined') 
-        && (typeof(errs["portfolio"]["Idx"+idx]) !== 'undefined') 
+        // Delete empty-error if user fills out field
+        if((typeof(errs["portfolio"]["Idx"+idx]) !== 'undefined') 
         && (tmpPortfolio[idx].occupation !== "")){
             delete errs["portfolio"]["Idx"+idx];
         }
+        // New event is a duplicate? Add idx as duplicate
         if((portfolio.values.some(e => e.occupation === event.target.value))){
             setDuplicateWork({...duplicateWork, ["Idx"+idx] : true});
         }
+         // No longer a duplicate? Delete from duplicates
         else if(!(portfolio.values.some(e => e.occupation === event.target.value)) && typeof(duplicateWork["Idx"+idx]) !== 'undefined'){
             delete duplicateWork["Idx"+idx];
         }
@@ -439,6 +482,8 @@ export const Portfolio = props => {
 
     const deleteWorkExperience = (idx) => {
         let tmpPortfolio = [...portfolio.values];
+        let errors = {};
+        let duplicates = {};
         if((typeof(tmpPortfolio[idx].portfolio_id) !== 'undefined')){
             setWorkExperienceToDelete(
                 [
@@ -447,6 +492,29 @@ export const Portfolio = props => {
                 ]);
         }
         tmpPortfolio.splice(idx, 1);
+
+        // Indexes are shifted upon a delete, so we need to recalculate blanks, and/or duplicates
+        tmpPortfolio.forEach((row, newIdx) => {
+            if(row.occupation === ""){
+                errors["Idx"+newIdx] = true;
+            } else{
+                tmpPortfolio.forEach((tmpRow, tmpIdx) => {
+                    if(tmpRow.occupation === row.occupation && tmpIdx !== newIdx){
+                        duplicates["Idx"+tmpIdx] = true;
+                        duplicates["Idx"+newIdx] = true;
+                    }
+                })
+            }
+        })
+
+        setErrs({
+            proejct: {...errs["project"]},
+            portfolio: errors,
+            education: {...errs["education"]}
+        })
+        setDuplicateWork(duplicates);
+        console.log("New dups after delete:", duplicates)
+        console.log("errors['portfolio'] after delete:", errors);
         setPortfolio({values: tmpPortfolio});
         setEdited(true);
     }
@@ -488,14 +556,16 @@ export const Portfolio = props => {
         && !(typeof(tmpEducation[idx].toUpdate) !== 'undefined')){
             tmpEducation[idx].toUpdate = true;
         }
-        if((typeof(errs["education"]) !== 'undefined') 
-        && (typeof(errs["education"]["Idx"+idx]) !== 'undefined') 
+        // Delete empty-error if user fills out field
+        if((typeof(errs["education"]["Idx"+idx]) !== 'undefined') 
         && (tmpEducation[idx].education !== "")){
             delete errs["education"]["Idx"+idx];
         }
+        // New event is a duplicate? Add idx as duplicate
         if((education.values.some(e => e.education === event.target.value))){
             setDuplicateEducation({...duplicateEducation, ["Idx"+idx] : true});
         }
+        // No longer a duplicate? Delete from duplicates
         else if(!(education.values.some(e => e.education === event.target.value)) && typeof(duplicateEducation["Idx"+idx]) !== 'undefined'){
             delete duplicateEducation["Idx"+idx];
         }
@@ -592,6 +662,8 @@ export const Portfolio = props => {
 
     const deleteEducation = (idx) => {
         let tmpEducation = [...education.values];
+        let duplicates = {};
+        let errors = {};
         if((typeof(tmpEducation[idx].education_id) !== 'undefined')){
             setEducationToDelete(
                 [
@@ -600,6 +672,27 @@ export const Portfolio = props => {
                 ]);
         }
         tmpEducation.splice(idx, 1);
+
+        tmpEducation.forEach((row, newIdx) => {
+            if(row.education === ""){
+                errors["Idx"+idx] = true;
+            } else{
+                tmpEducation.forEach((tmpRow, tmpIdx) => {
+                    if(tmpRow.education === row.education && tmpIdx !== newIdx){
+                        duplicates["Idx"+tmpIdx] = true;
+                        duplicates["Idx"+newIdx] = true;
+                    }
+                })
+            }
+        })
+        setErrs({
+            project: {...errs["project"]},
+            portfolio: {...errs["portfolio"]},
+            education: errors
+        })
+        setDuplicateEducation(duplicates);
+        console.log("New dups after delete:", duplicates)
+        console.log("errors['project'] after delete:", errors);
         setEducation({values: tmpEducation});
         setEdited(true);
     }
@@ -609,6 +702,7 @@ export const Portfolio = props => {
 
     const validate = () => {
         let isValidated = true;
+        setErrs({});
         let errors = {};
         errors["project"] = {};
         errors["portfolio"] = {};
@@ -647,7 +741,8 @@ export const Portfolio = props => {
             }
         })
 
-        console.log("errors:", errors)
+        console.log("errors['project'] in validate():", errors["project"]);
+        console.log("duplicate projects in validate():", duplicateProject);
         setErrs(errors);
         return isValidated;
     }
@@ -861,14 +956,14 @@ export const Portfolio = props => {
                 <Col>
                     <Form.Control 
                         required
-                        isInvalid={(errs["project"] && row.title === "") || (typeof(duplicateProject["Idx"+idx]) !== 'undefined' && row.title !== "")}
+                        isInvalid={(length(errs["project"]) > 0 && row.title==="") || (typeof(duplicateProject["Idx"+idx]) !== 'undefined' && row.title !== "")}
                         type="text" 
                         value={row.title || ''} 
                         placeholder={"Project Title (Required)"} 
                         onChange={e => handleProjectTitleChange(e, idx)}
                     />
                     <Form.Control.Feedback type="invalid">
-                        {(errs["project"] && row.title === "")
+                        {(length(errs["project"]) > 0) && row.title === ""
                             ? "Please provide a project title."
                             : null}
                         {(typeof(duplicateProject["Idx"+idx]) !== 'undefined' && row.title !== "")
@@ -971,13 +1066,13 @@ export const Portfolio = props => {
                     <Form.Control 
                         type="text" 
                         required
-                        isInvalid={(length(errs["portfolio"]) > 0 && row.occupation === "") || typeof(duplicateWork["Idx"+idx]) !== 'undefined' && row.occupation !== ""}
+                        isInvalid={(length(errs["portfolio"]) > 0 && row.occupation === "") || (typeof(duplicateWork["Idx"+idx]) !== 'undefined' && row.occupation !== "")}
                         value={row.occupation !== null ? row.occupation : ''} 
                         placeholder={"Occupation Title"} 
                         onChange={e => {handlePortfolioOccupationChange(e, idx)}}
                     />
                     <Form.Control.Feedback type="invalid">
-                    {(errs["portfolio"] && row.occupation === "")
+                    {(length(errs["portfolio"]) > 0 && row.occupation === "")
                         ? "Please provide an occupation."
                         : null} 
                     {(typeof(duplicateWork["Idx"+idx]) !== 'undefined' && row.occupation !== "")
@@ -1063,13 +1158,13 @@ export const Portfolio = props => {
                     <Form.Control 
                         type="text" 
                         required
-                        isInvalid={(errs["education"] && row.education === "") || typeof(duplicateEducation["Idx"+idx]) !== 'undefined' && row.education !== ""}
+                        isInvalid={(length(errs["education"]) > 0 && row.education === "") || (typeof(duplicateEducation["Idx"+idx]) !== 'undefined' && row.education !== "")}
                         value={row.education !== null ? row.education : ''} 
                         placeholder={"Education (Required)"} 
                         onChange={e => {handleEducationChange(e, idx)}}
                     />
                     <Form.Control.Feedback type="invalid">
-                    {(errs["education"] && row.education === "")
+                    {(length(errs["education"]) > 0 && row.education === "")
                         ? "Please provide education."
                         : null}
                     {(typeof(duplicateEducation["Idx"+idx]) !== 'undefined' && row.education !== "")
@@ -1260,11 +1355,8 @@ export const Portfolio = props => {
             <div key={idx}>{str.length === 0 ? <br/> : str}</div>
         );
     }
-    function isEmpty(obj) {
-        return Object.keys(obj).length === 0;
-    }
     function length(obj) {
-        if(!(typeof(obj) !== 'undefined') || obj == null) return 0;
+        if((!(typeof(obj) !== 'undefined')) || (obj == null)) return 0;
         return Object.keys(obj).length;
     }
 
@@ -1302,16 +1394,16 @@ export const Portfolio = props => {
                     <Nav variant="pills" className="flex-column">
                         <Nav.Item>
                             <Nav.Link 
-                                className={(typeof(errs["project"]) !== 'undefined') && (!isEmpty(errs["project"]) )
+                                className={(length(errs["project"]) > 0) || (length(duplicateProject) > 0)
                                     ? "nav-error" 
                                     : ""}
                                 eventKey="projects" 
                                 onClick={() => setChangingOrder(false)}
                             >
                             Projects
-                            {((typeof(errs["project"]) !== 'undefined') && (length(errs["project"]) > 0))
+                            {((length(errs["project"]) > 0) || (length(duplicateProject) > 0))
                             ? <Badge variant="danger" className='ml-4'>
-                                {length(errs["project"])}
+                                {(length(errs["project"]) + length(duplicateProject))}
                                 </Badge>
                             : null}
                             
@@ -1319,28 +1411,28 @@ export const Portfolio = props => {
                         </Nav.Item>
                         <Nav.Item>
                             <Nav.Link 
-                                className={(typeof(errs["portfolio"]) !== 'undefined') && (!isEmpty(errs["portfolio"]))
+                                className={(length(errs["portfolio"]) > 0) || (length(duplicateWork) > 0)
                                     ? "nav-error" : "nav-link"}
                                 eventKey="work-exerience" 
                                 onClick={() => setChangingOrder(false)}
                             >Work Experience
-                            {((typeof(errs["portfolio"]) !== 'undefined') && (length(errs["portfolio"]) > 0))
+                            {(length(errs["portfolio"]) > 0) || (length(duplicateWork) > 0)
                             ? <Badge variant="danger" className='ml-1'>
-                                {length(errs["portfolio"])}
+                                {length(errs["portfolio"]) + length(duplicateWork)}
                                 </Badge>
                             : null}
                             </Nav.Link>
                         </Nav.Item>
                         <Nav.Item>
                             <Nav.Link 
-                                className={((typeof(errs["education"]) !== 'undefined') && (!isEmpty(errs["education"])))
+                                className={(length(errs["education"]) > 0) || (length(duplicateEducation) > 0)
                                 ? "nav-error" : ""}  
                                 eventKey="education" 
                                 onClick={() => setChangingOrder(false)}
                             >Education
-                            {((typeof(errs["education"]) !== 'undefined') && (length(errs["education"]) > 0))
+                            {(length(errs["education"]) > 0) || (length(duplicateEducation) > 0)
                             ? <Badge variant="danger" className='ml-4'>
-                                {length(errs["education"])}
+                                {length(errs["education"]) + length(duplicateEducation)}
                                 </Badge>
                             : null}
                             </Nav.Link>
