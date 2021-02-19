@@ -508,7 +508,7 @@ export const Portfolio = props => {
         })
 
         setErrs({
-            proejct: {...errs["project"]},
+            project: {...errs["project"]},
             portfolio: errors,
             education: {...errs["education"]}
         })
