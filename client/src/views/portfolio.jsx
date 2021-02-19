@@ -364,11 +364,11 @@ export const Portfolio = props => {
             delete errs["portfolio"]["Idx"+idx];
         }
         // New event is a duplicate? Add idx as duplicate
-        if((portfolio.values.some(e => e.occupation === event.target.value))){
+        if((portfolio.values.some(e => (e.occupation + e.organization) === (event.target.value + tmpPortfolio[idx].organization)))){
             setDuplicateWork({...duplicateWork, ["Idx"+idx] : true});
         }
          // No longer a duplicate? Delete from duplicates
-        else if(!(portfolio.values.some(e => e.occupation === event.target.value)) && typeof(duplicateWork["Idx"+idx]) !== 'undefined'){
+        else if(!(portfolio.values.some(e => (e.occupation + e.organization) === event.target.value + tmpPortfolio[idx].organization)) && typeof(duplicateWork["Idx"+idx]) !== 'undefined'){
             delete duplicateWork["Idx"+idx];
         }
         setPortfolio({values: tmpPortfolio});
@@ -389,6 +389,12 @@ export const Portfolio = props => {
         if((typeof(tmpPortfolio[idx].portfolio_id) !== 'undefined')
         && !(typeof(tmpPortfolio[idx].toUpdate) !== 'undefined')){
             tmpPortfolio[idx].toUpdate = true;
+        }
+        if((portfolio.values.some(e => (e.occupation + e.organization) === (tmpPortfolio[idx].occupation + event.target.value)))){
+            setDuplicateWork({...duplicateWork, ["Idx"+idx] : true});
+        }         
+        else if(!(portfolio.values.some(e => (e.occupation + e.organization) === tmpPortfolio[idx].occupation + event.target.value)) && typeof(duplicateWork["Idx"+idx]) !== 'undefined'){
+            delete duplicateWork["Idx"+idx];
         }
         setPortfolio({values: tmpPortfolio});
         setEdited(true);
@@ -499,7 +505,7 @@ export const Portfolio = props => {
                 errors["Idx"+newIdx] = true;
             } else{
                 tmpPortfolio.forEach((tmpRow, tmpIdx) => {
-                    if(tmpRow.occupation === row.occupation && tmpIdx !== newIdx){
+                    if((tmpRow.occupation + tmpRow.organization) === (row.occupation + row.organization) && tmpIdx !== newIdx){
                         duplicates["Idx"+tmpIdx] = true;
                         duplicates["Idx"+newIdx] = true;
                     }
@@ -1076,7 +1082,7 @@ export const Portfolio = props => {
                         ? "Please provide an occupation."
                         : null} 
                     {(typeof(duplicateWork["Idx"+idx]) !== 'undefined' && row.occupation !== "")
-                        ? "Duplicate occupation titles are not allowed"
+                        ? "Duplicate (occupation titles, organization) not allowed."
                         : null}
                     </Form.Control.Feedback>
                 </Col>
@@ -1355,6 +1361,20 @@ export const Portfolio = props => {
             <div key={idx}>{str.length === 0 ? <br/> : str}</div>
         );
     }
+
+    const FormatDate = (props) => {
+        console.log("Recieved Date:", props.dateString);
+        let date = props.dateString;
+        const months = {"01": "Jan", "02": "Feb", "03": "Mar", "04": "Apr", "05": "May", "06": "Jun", 
+                        "07": "Jul", "08": "Aug", "09": "Sep", "10": "Oct", "11": "Nov", "12": "Dec"};
+        const year = date.substring(0, 4);
+        const monthDecimal = date.substring(5, 7);
+        const month = months[monthDecimal];
+        console.log(month, year)
+        const formattedDate = month + ' ' + year;
+        return formattedDate;
+    }
+
     function length(obj) {
         if((!(typeof(obj) !== 'undefined')) || (obj == null)) return 0;
         return Object.keys(obj).length;
@@ -1412,7 +1432,7 @@ export const Portfolio = props => {
                         <Nav.Item>
                             <Nav.Link 
                                 className={(length(errs["portfolio"]) > 0) || (length(duplicateWork) > 0)
-                                    ? "nav-error" : "nav-link"}
+                                    ? "nav-error" : ""}
                                 eventKey="work-exerience" 
                                 onClick={() => setChangingOrder(false)}
                             >Work Experience
@@ -1452,7 +1472,13 @@ export const Portfolio = props => {
                                 ? <><label>Change Order</label>
                                     <Switch
                                         isOn={changingOrder}
-                                        handleToggle={() => setChangingOrder(!changingOrder)}
+                                        handleToggle={() => {                                    
+                                            if(!validate()){
+                                                console.log("Please address errs");
+                                            } else{
+                                                setChangingOrder(!changingOrder);
+                                            }
+                                        }}
                                     /></>
                                 : null}
 
@@ -1473,7 +1499,13 @@ export const Portfolio = props => {
                                 ? <><label>Change Order</label>
                                     <Switch
                                         isOn={changingOrder}
-                                        handleToggle={() => setChangingOrder(!changingOrder)}
+                                        handleToggle={() => {
+                                            if(!validate()){
+                                                console.log("Please address errs");
+                                            } else{
+                                                setChangingOrder(!changingOrder);
+                                            }
+                                        }}
                                     /></>
                                 : null}
 
@@ -1493,7 +1525,12 @@ export const Portfolio = props => {
                                 ? <><label>Change Order</label>
                                     <Switch
                                         isOn={changingOrder}
-                                        handleToggle={() => setChangingOrder(!changingOrder)}
+                                        handleToggle={() => {
+                                            if(!validate()){
+                                            console.log("Please address errs");
+                                        } else{
+                                            setChangingOrder(!changingOrder);
+                                        }}}
                                     /></>
                                 : null} 
                                 
@@ -1541,12 +1578,12 @@ export const Portfolio = props => {
                     
                     
                     {(row.from_when && row.from_when !== "infinity")
-                    ? <p><b>From:</b> {row.from_when} </p>
+                    ? <p><b>From:</b> <FormatDate dateString={row.from_when} key={idx}/> </p>
                     : null
                     }
                     
                     {(row.to_when && row.to_when !== "infinity")
-                    ? <p><b>To:</b> {(row.to_when)}</p>
+                    ? <p><b>To:</b> <FormatDate dateString={row.to_when} key={idx}/></p>
                     : <p><b>To:</b> Current</p>}
                     <br></br>
                 </div>
@@ -1563,12 +1600,12 @@ export const Portfolio = props => {
                 <p><b>Organization:</b> {row.organization}</p>
                 
                 {(row.from_when && row.from_when !== "infinity")
-                ? <p><b>From:</b> {row.from_when} </p>
+                ? <p><b>From:</b> <FormatDate dateString={row.from_when} key={idx}/> </p>
                 : null
                 }
                 
                 {(row.to_when && row.to_when !== "infinity")
-                ? <p><b>To:</b> {row.to_when}</p>
+                ? <p><b>To:</b> <FormatDate dateString={row.to_when} key={idx}/></p>
                 : <p><b>To:</b> Current</p>}
 
                 {(row.description)
@@ -1594,12 +1631,12 @@ export const Portfolio = props => {
                     : null}
 
                     {(row.from_when && row.from_when !== "infinity")
-                    ? <p><b>From:</b> {row.from_when} </p>
+                    ? <p><b>From:</b> <FormatDate dateString={row.from_when} key={idx}/> </p>
                     : null
                     }
                     
                     {(row.to_when && row.to_when !== "infinity")
-                    ? <p><b>To:</b> {row.to_when}</p>
+                    ? <p><b>To:</b> <FormatDate dateString={row.to_when} key={idx}/></p>
                     : <p><b>To:</b> Current</p>}
 
                     {row.description

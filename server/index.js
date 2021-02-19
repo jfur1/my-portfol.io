@@ -838,9 +838,10 @@ app.post('/updateProject', (req, res) => {
         position
     } = req.headers;
 
-    //console.log(description, organization, from_when, to_when, link)
-    if(to_when == "null") to_when = "infinity";
-    if(from_when == "null") from_when = "infinity";
+    console.log("From When:", from_when);
+    console.log("To When:", to_when);
+    if(to_when == "null" || to_when == "undefined") to_when = "infinity";
+    if(from_when == "null" || from_when == "undefined") from_when = "infinity";
 
     db.tx(async t => {
         return t.one('UPDATE projects SET title = ${title}, description = ${description}, organization = ${organization}, from_when = ${from_when}, to_when = ${to_when}, link = ${link}, position=${position} WHERE uid = ${user_id} AND project_id = ${project_id} RETURNING project_id, uid, title, description, organization, from_when::varchar, to_when::varchar, link, position;',
@@ -931,8 +932,8 @@ app.post('/updateWorkExperience', (req, res) => {
     } = req.headers;
 
     //console.log(description, organization, from_when, to_when, link)
-    if(to_when == "null") to_when = "infinity";
-    if(from_when == "null") from_when = "infinity";
+    if(to_when == "null" || to_when == "undefined") to_when = "infinity";
+    if(from_when == "null" || from_when == "undefined") from_when = "infinity";
 
     db.tx(async t => {
         return t.one('UPDATE portfolio SET occupation = ${occupation}, organization = ${organization}, from_when = ${from_when}, to_when = ${to_when}, description = ${description}, position=${position} WHERE uid = ${user_id} AND portfolio_id = ${portfolio_id} RETURNING portfolio_id, uid, occupation, description, organization, from_when::varchar, to_when::varchar, description, position;',
@@ -1010,7 +1011,7 @@ app.post('/createEducation', (req, res) => {
 })
 
 app.post('/updateEducation', (req,res) => {
-    const {
+    let {
         education_id, 
         user_id, 
         organization, 
@@ -1022,8 +1023,8 @@ app.post('/updateEducation', (req,res) => {
     } = req.headers;
 
     //console.log(description, organization, from_when, to_when, link)
-    if(to_when == "null") to_when = "infinity";
-    if(from_when == "null") from_when = "infinity";
+    if(to_when == "null" || to_when == "undefined") to_when = "infinity";
+    if(from_when == "null" || from_when == "undefined") from_when = "infinity";
 
     db.tx(async t => {
         return t.one('UPDATE education SET organization = ${organization}, education = ${education}, from_when = ${from_when}, to_when = ${to_when}, description = ${description}, position=${position} WHERE uid = ${user_id} AND education_id = ${education_id} RETURNING education_id, uid, organization, education, from_when::varchar, to_when::varchar, description, position;',
