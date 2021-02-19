@@ -4,8 +4,18 @@ import auth from '../auth';
 import './form.css';
 
 export const TestRegisterForm = (props) => {
+    // Login Hooks
     const [loginEmail, setLoginEmail] = useState();
     const [loginPassword, setLoginPassword] = useState();
+    // Registration Hooks
+    const [registerFirstname, setRegisterFirstName] = useState("");
+    const [registerLastname, setRegisterLastName] = useState("");
+    const [registerUsername, setRegisterUserName] = useState("");
+    const [registerEmail, setRegisterEmail] = useState("");
+    const [registerPassword, setRegisterPassword] = useState("");
+    const [registerPasswordCheck, setRegisterPasswordCheck] = useState("");
+    const [count, setCount] = useState(0);
+    const [passwordCheck, setPasswordCheck] = useState("");
 
     let alert;
 
@@ -24,9 +34,12 @@ export const TestRegisterForm = (props) => {
     else if(typeof props.location.state["failedAttempt"] !== 'undefined'){
         alert = AlertMsg("error", "Invalid Email or Password!");
     }
+    
     useEffect(() => {
         const signUpButton = document.getElementById('signUp');
         const signInButton = document.getElementById('signIn');
+        const signUpStep2Btn = document.getElementById('register');
+        const backBtn = document.getElementById('back');
         const container = document.getElementById('slider-container');
 
         signUpButton.addEventListener('click', () => {
@@ -35,21 +48,52 @@ export const TestRegisterForm = (props) => {
         signInButton.addEventListener('click', () => {
             container.classList.remove("right-panel-active");
         });
+
+        signUpStep2Btn.addEventListener('click', () => {
+            container.classList.add("sign-up-container-2");
+        });
+        backBtn.addEventListener('click', () => {
+            container.classList.remove("sign-up-container-2");
+        })
+
     }, [])
     
     return(
         <>
         <div className="register-body">
         <div className="slider-container" id="slider-container">
+            <div className="form-container back-btn-container" id="back">
+                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="white" class="bi bi-arrow-left-circle" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8zm15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-4.5-.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5z"/>
+                    </svg>
+                </div>
             <div className="form-container sign-up-container">
                 <div className="form-box">
                     <h1>Register</h1><br/>
 
-                    <input type="text" placeholder="Firstname" /><br/>
-                    <input type="text" placeholder="Lastname" /><br/>
-                    <input type="email" placeholder="Email" /><br/>
-                    <input type="password" placeholder="Password" />
-                    <button className="form-button">Sign Up</button>
+                    <input type="text" placeholder="Firstname" 
+                        onChange={e => setRegisterFirstName(e.target.value)}/><br/>
+                    <input type="text" placeholder="Lastname"
+                        onChange={e => registerLastname(e.target.value)} /><br/>
+                    <input type="email" placeholder="Email" 
+                        onChange={e => setRegisterEmail(e.target.value)}/><br/>
+                    <input type="password" placeholder="Password"
+                        onChange={e => setRegisterPassword(e.target.value)} /><br/>
+                    <button className="form-button" id="register">Sign Up</button>
+                </div>
+            </div>
+            <div className="form-container sign-up-2">
+                <div className="form-box">
+                    <input type="text" placeholder="Firstname" 
+                        onChange={e => setRegisterFirstName(e.target.value)}/><br/>
+                    <input type="text" placeholder="Lastname"
+                        onChange={e => registerLastname(e.target.value)} /><br/>
+                    <input type="email" placeholder="Email" 
+                        onChange={e => setRegisterEmail(e.target.value)}/><br/>
+                    <input type="password" placeholder="Password"
+                        onChange={e => setRegisterPassword(e.target.value)} /><br/>
+                    <input type="passwordCheck" placeholder="Confirm Password"
+                        onChange={e => setRegisterFirstName(e.target.value)} />
                 </div>
             </div>
             <div className="form-container sign-in-container">
@@ -92,7 +136,6 @@ export const TestRegisterForm = (props) => {
                     }>Sign In</button>
                 </div>
             </div>
-            
             <div className="overlay-container">
                 <div className="overlay">
                     <div className="overlay-panel overlay-left">
