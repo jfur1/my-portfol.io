@@ -838,8 +838,8 @@ app.post('/updateProject', (req, res) => {
         position
     } = req.headers;
 
-    console.log("From When:", from_when);
-    console.log("To When:", to_when);
+    // console.log("From When:", from_when);
+    // console.log("To When:", to_when);
     if(to_when == "null" || to_when == "undefined") to_when = "infinity";
     if(from_when == "null" || from_when == "undefined") from_when = "infinity";
 

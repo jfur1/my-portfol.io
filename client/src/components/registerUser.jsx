@@ -1,12 +1,8 @@
 import { ValidateRegistration } from './validateRegistration';
 
 export const registerUser = (credentials, props, next) => {
-    //console.log('props: ', props.history);
 
     const errors = ValidateRegistration(credentials);
-    
-    // console.log("ValidateRegistration Resposne: ", validated);
-    // console.log("ValidatedRegistration errors: ", errors);
 
     if(errors.length){
         console.log("Invalid Registration!");

@@ -6,13 +6,13 @@ export const NavBar = (props) => {
     //console.log("NavBar Component Recieved Props: ", props);
     const loggedIn = (props.data.loggedIn !== null) ? props.data.loggedIn : false;
     const requestedBy = (props.location.state.requestedBy !== null) ? props.location.state.requestedBy : props.data.requestedBy;
-    const user = (props.data.user !== null) ? props.data.user : null;
+    //const user = (props.data.user !== null) ? props.data.user : null;
 
 
     return(
 
         <Navbar sticky="top" style={{background:'rgba(255,255,255,1)'}}>
-            <Navbar.Brand><img style={{height: "30px"}} src="/mp-new-logo.png" alt="logo"/>&nbsp;&nbsp;&nbsp;/{user.username}</Navbar.Brand>
+            <Navbar.Brand><img style={{height: "30px"}} src="/mp-new-logo.png" alt="logo"/>&nbsp;&nbsp;&nbsp;</Navbar.Brand>
             <Navbar.Toggle aria-controls="responsive-navbar-nav" />
             <Navbar.Collapse className="justify-content-end">
                 <Nav.Item>
@@ -26,7 +26,7 @@ export const NavBar = (props) => {
                                 <Nav.Link onClick={() => {
                                     auth.logout(() => {
                                         props.history.push({
-                                            pathname:"/login",
+                                            pathname:"/",
                                             state: {loggedOut: true}
                                         });
                                     });
@@ -37,7 +37,7 @@ export const NavBar = (props) => {
                     :                              
                     <div className="order"><Nav.Link onClick={() => {props.history.push("/login");
                         }}>Login</Nav.Link><p className="my-bar"></p>
-                    <Nav.Link onClick={() => {props.history.push("/register");
+                    <Nav.Link onClick={() => {props.history.push("/");
                         }}>Register</Nav.Link></div>
                     }
                 </Nav.Item>

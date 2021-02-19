@@ -1363,14 +1363,12 @@ export const Portfolio = props => {
     }
 
     const FormatDate = (props) => {
-        console.log("Recieved Date:", props.dateString);
         let date = props.dateString;
         const months = {"01": "Jan", "02": "Feb", "03": "Mar", "04": "Apr", "05": "May", "06": "Jun", 
                         "07": "Jul", "08": "Aug", "09": "Sep", "10": "Oct", "11": "Nov", "12": "Dec"};
         const year = date.substring(0, 4);
         const monthDecimal = date.substring(5, 7);
         const month = months[monthDecimal];
-        console.log(month, year)
         const formattedDate = month + ' ' + year;
         return formattedDate;
     }

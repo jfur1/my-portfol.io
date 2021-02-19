@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Card } from 'react-bootstrap';
 import { useToggle } from '../components/useToggle';
 import { registerUser } from '../components/registerUser';
@@ -14,10 +14,6 @@ export const Register = props => {
     const [hidden, toggleHidden] = useToggle();
     const [passwordCheck, setPasswordCheck] = useState("");
     
-
-    useEffect(() => {
-        console.log("Render Count = ", count);
-    })
 
     let alert;
 
