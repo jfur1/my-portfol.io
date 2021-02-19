@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { AlertMsg } from '../alerts';
+import Switch  from '../switch';
 import auth from '../auth';
 import './form.css';
 
@@ -8,14 +9,14 @@ export const TestRegisterForm = (props) => {
     const [loginEmail, setLoginEmail] = useState();
     const [loginPassword, setLoginPassword] = useState();
     // Registration Hooks
-    const [registerFirstname, setRegisterFirstName] = useState("");
-    const [registerLastname, setRegisterLastName] = useState("");
+    const [registerFullName, setRegisterFullName] = useState("");
     const [registerUsername, setRegisterUserName] = useState("");
     const [registerEmail, setRegisterEmail] = useState("");
     const [registerPassword, setRegisterPassword] = useState("");
     const [registerPasswordCheck, setRegisterPasswordCheck] = useState("");
     const [count, setCount] = useState(0);
     const [passwordCheck, setPasswordCheck] = useState("");
+    const [showPassword, setShowPassword] = useState(false);
 
     let alert;
 
@@ -67,33 +68,34 @@ export const TestRegisterForm = (props) => {
                         <path fill-rule="evenodd" d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8zm15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-4.5-.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5z"/>
                     </svg>
                 </div>
+            
+            <h1 className="register-title">Register</h1>
             <div className="form-container sign-up-container">
                 <div className="form-box">
-                    <h1>Register</h1><br/>
-
-                    <input type="text" placeholder="Firstname" 
-                        onChange={e => setRegisterFirstName(e.target.value)}/><br/>
-                    <input type="text" placeholder="Lastname"
-                        onChange={e => registerLastname(e.target.value)} /><br/>
+                    <input type="text" placeholder="Full Name" 
+                        onChange={e => setRegisterFullName(e.target.value)}/><br/>
                     <input type="email" placeholder="Email" 
                         onChange={e => setRegisterEmail(e.target.value)}/><br/>
                     <input type="password" placeholder="Password"
                         onChange={e => setRegisterPassword(e.target.value)} /><br/>
-                    <button className="form-button" id="register">Sign Up</button>
                 </div>
             </div>
+            <button className="form-button register-btn" id="register">Sign Up</button>
             <div className="form-container sign-up-2">
                 <div className="form-box">
-                    <input type="text" placeholder="Firstname" 
-                        onChange={e => setRegisterFirstName(e.target.value)}/><br/>
-                    <input type="text" placeholder="Lastname"
-                        onChange={e => registerLastname(e.target.value)} /><br/>
-                    <input type="email" placeholder="Email" 
-                        onChange={e => setRegisterEmail(e.target.value)}/><br/>
-                    <input type="password" placeholder="Password"
-                        onChange={e => setRegisterPassword(e.target.value)} /><br/>
+
+                    <label>Select a Username</label>
+                    <input type="text" placeholder="Username" 
+                        onChange={e => setRegisterUserName(e.target.value)}/><br/>
+                        
+                    <label>Show Password </label>
+                    <Switch
+                        type="register"
+                        isOn={showPassword}
+                        handleToggle={() => setShowPassword(!showPassword)}
+                    />
                     <input type="passwordCheck" placeholder="Confirm Password"
-                        onChange={e => setRegisterFirstName(e.target.value)} />
+                        onChange={e => setRegisterPasswordCheck(e.target.value)} />
                 </div>
             </div>
             <div className="form-container sign-in-container">
