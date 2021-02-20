@@ -15,7 +15,6 @@ export const TestRegisterForm = (props) => {
     const [registerEmail, setRegisterEmail] = useState("");
     const [registerPassword, setRegisterPassword] = useState("");
     const [registerPasswordCheck, setRegisterPasswordCheck] = useState("");
-    const [count, setCount] = useState(0);
     const [showPassword, setShowPassword] = useState(false);
     const [errors1, setErrors1] = useState({});
     const [errors2, setErrors2] = useState({});
@@ -115,6 +114,8 @@ export const TestRegisterForm = (props) => {
 
         signUpButton.addEventListener('click', () => {
             container.classList.add("right-panel-active");
+            setErrors1({});
+            setErrors2({});
         });
         signInButton.addEventListener('click', () => {
             container.classList.remove("right-panel-active");

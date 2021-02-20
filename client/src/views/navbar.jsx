@@ -19,7 +19,7 @@ export const NavBar = (props) => {
                     {loggedIn ?
                     <Dropdown id="collapsible-nav-dropdown">
                         <Dropdown.Toggle className="bg-transparent text-dark" id="dropdown-custom-components">
-                        Signed in as: <b>{requestedBy.first_name} {requestedBy.last_name}</b>
+                        Signed in as: <b>{requestedBy.fullname}</b>
                         </Dropdown.Toggle>
                         <Dropdown.Menu>
                             <Dropdown.Item>
