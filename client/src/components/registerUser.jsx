@@ -1,14 +1,6 @@
-import { ValidateRegistration } from './validateRegistration';
-
 export const registerUser = (credentials, props, next) => {
 
-    const errors = ValidateRegistration(credentials);
-
-    if(errors.length){
-        console.log("Invalid Registration!");
-        console.log("Errors: ", errors);
-        return next({data: {isRegistered: false, failedAttempt: true}, errors: errors});
-    }
+    let errors = [];
 
     fetch('http://localhost:5000/newUser', {
         method: 'POST',
