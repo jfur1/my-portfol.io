@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { registerUser } from '../newRegistration/RegisterUser';
+import { AlertMsg } from '../alerts';
 import Switch  from '../switch';
 import auth from '../auth';
 import './form.css';
@@ -8,25 +9,32 @@ export const TestRegisterForm = (props) => {
     console.log("Test Registration Recieved props:", props);
 
     let postData = {};
+    let alert;
 
     useEffect(() => {
         if(typeof(props.location.state) !== 'undefined'){
             postData = props.location.state;
             console.log("Post Data on Rerender:", postData);
             if(!postData.failedAttempt){
-                setRegisterFullName("");
-                setRegisterUserName("");
-                setRegisterEmail("");
-                setRegisterPassword("");
-                setRegisterPasswordCheck("");
-                
+                clearState();
                 document.getElementById('slider-container').classList.remove("sign-up-container-2");
 
                 document.getElementById('slider-container').
                 classList.remove("right-panel-active");
+
+                alert = AlertMsg("success", "You were successfully registered!");
+
             }
         }
     }, [props])
+
+    const clearState = () => {
+        setRegisterFullName("");
+        setRegisterUserName("");
+        setRegisterEmail("");
+        setRegisterPassword("");
+        setRegisterPasswordCheck("");
+    };
 
     // Login Hooks
     const [loginEmail, setLoginEmail] = useState();
@@ -38,11 +46,6 @@ export const TestRegisterForm = (props) => {
     const [registerPassword, setRegisterPassword] = useState("");
     const [registerPasswordCheck, setRegisterPasswordCheck] = useState("");
     const [showPassword, setShowPassword] = useState(false);
-    
-    const [errors1, setErrors1] = useState({});
-    const [errors2, setErrors2] = useState({});
-    const [validated1, setValidated1] = useState(false);
-    const [validated2, setValidated2] = useState(false);
 
 
     // Only runs once (acts like componentDidMount)
@@ -83,20 +86,24 @@ export const TestRegisterForm = (props) => {
             <div className="form-container sign-up-container">
                 <div className="form-box">
                     <input
-                        type="text" 
+                        type="text"
+                        value={registerFullName}
                         placeholder="Full Name" 
                         onChange={e => setRegisterFullName(e.target.value)}
                     />                        
                         <br/>
                     <input
                         type="email" 
+                        value={registerEmail}
                         placeholder="Email" 
                         onChange={e => {
                             setRegisterEmail(e.target.value);
                         }}/>
                         <br/>
                     <input
-                        type={showPassword ? 'text' : 'password'} placeholder="Password"
+                        type={showPassword ? 'text' : 'password'} 
+                        value={registerPassword}
+                        placeholder="Password"
                         onChange={e => setRegisterPassword(e.target.value)} 
                     />
                     <br/>
@@ -111,6 +118,7 @@ export const TestRegisterForm = (props) => {
                     <input
                         type="text" 
                         placeholder="Username" 
+                        value={registerUsername}
                         onChange={e => {
                             setRegisterUserName(e.target.value)
                         }}/><br/>
@@ -121,7 +129,9 @@ export const TestRegisterForm = (props) => {
                         handleToggle={() => setShowPassword(!showPassword)}
                     />
                     <input
-                        type={showPassword ? 'text' : 'password'} placeholder="Confirm Password"
+                        type={showPassword ? 'text' : 'password'} 
+                        value={registerPasswordCheck}
+                        placeholder="Confirm Password"
                         onChange={e => setRegisterPasswordCheck(e.target.value)} /><br/>
                     
                     <button className="form-button finish" id="register2"
@@ -156,9 +166,9 @@ export const TestRegisterForm = (props) => {
             
             <div className="form-container sign-in-container">
                 <div className="form-box">
-                    {/* <div className="alert-container mb-2">
+                    <div className="alert-container mb-2">
                         {alert}
-                    </div> */}
+                    </div>
                     <h1>Sign in</h1><br/>
 
                     <input type="email" placeholder="Email" 
