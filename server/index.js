@@ -95,8 +95,7 @@ app.use(passport.session());
 app.post('/newUser', async(req, res) => {
     console.log('Request Body Recieved by the Server: \n' , req.body);
     const {
-        firstname,
-        lastname,
+        fullname,
         username,
         email,
         password
@@ -104,11 +103,16 @@ app.post('/newUser', async(req, res) => {
 
     db.task(async t => {
         const email_check = await t.oneOrNone('SELECT * FROM users WHERE \'' + email + '\' = email;');
+        const username_check = await t.oneOrNone('SELECT * FROM users WHERE \'' + username + '\' = username;');
         
-        if(email_check !== null){
-            console.log("Email Already Exists!");
-            return false;
+        if(email_check !== null && username_check !== null){
+            return 3;
+        } else if(email_check !== null){
+            return 2;
+        } else if(username_check !== null){
+            return 1;
         }
+
         else{
             const max_id = await t.one('SELECT MAX(user_id) FROM users;');
             let newUserId = max_id.max;
@@ -124,11 +128,10 @@ app.post('/newUser', async(req, res) => {
             console.log('Generated hashed password: ');
             console.log(hashedPassword);
 
-            return t.none('INSERT INTO users (user_id, first_name, last_name, username, email, password) VALUES(${newUserId}, ${firstname}, ${lastname}, ${username}, ${email}, ${hashedPassword})', 
+            return t.none('INSERT INTO users (user_id, fullname, username, email, password) VALUES(${newUserId}, ${fullname}, ${username}, ${email}, ${hashedPassword})', 
             {
                 newUserId,
-                firstname,
-                lastname,
+                fullname,
                 username,
                 email,
                 hashedPassword
@@ -136,12 +139,16 @@ app.post('/newUser', async(req, res) => {
         }
     })
     .then(data => {
-        if(data === false){
-            return res.json({isRegistered: false, failedAttempt: true, emailTaken: true});
+        if(data === 3){
+            return res.json({usernameTaken: true, failedAttempt: true, emailTaken: true});
+        } else if(data === 2){
+            return res.json({failedAttempt: true, emailTaken: true});
+        } else if(data === 1){
+            return res.json({failedAttempt: true, usernameTaken: true});
         }
 
         console.log("Made it to register user callback.");
-        return res.json({isRegistered: true, failedAttempt: false, emailTaken: false});
+        return res.json({isRegistered: true, failedAttempt: false});
     })
     .catch((err) => {
         console.log(err);
@@ -838,8 +845,8 @@ app.post('/updateProject', (req, res) => {
         position
     } = req.headers;
 
-    console.log("From When:", from_when);
-    console.log("To When:", to_when);
+    // console.log("From When:", from_when);
+    // console.log("To When:", to_when);
     if(to_when == "null" || to_when == "undefined") to_when = "infinity";
     if(from_when == "null" || from_when == "undefined") from_when = "infinity";
 
