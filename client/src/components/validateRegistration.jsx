@@ -1,6 +1,7 @@
 export const ValidateRegistration = (credentials) => {
     const {
-        fullname,
+        firstname,
+        lastname,
         username,
         email,
         password,
@@ -9,8 +10,11 @@ export const ValidateRegistration = (credentials) => {
 
     let errors = [];
 
-    if (!fullname) {
-        errors.push("Please enter your full name!");
+    if (!firstname) {
+        errors.push("Please enter your first name!");
+      }
+    if (!lastname) {
+        errors.push("Please enter your last name!");
     }
     if (!email) {
         errors.push("Please enter your email Address!");

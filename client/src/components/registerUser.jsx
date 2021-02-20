@@ -1,6 +1,18 @@
-export const registerUser = (credentials, props, next) => {
+import { ValidateRegistration } from './validateRegistration';
 
-    let errors = [];
+export const registerUser = (credentials, props, next) => {
+    //console.log('props: ', props.history);
+
+    const errors = ValidateRegistration(credentials);
+    
+    // console.log("ValidateRegistration Resposne: ", validated);
+    // console.log("ValidatedRegistration errors: ", errors);
+
+    if(errors.length){
+        console.log("Invalid Registration!");
+        console.log("Errors: ", errors);
+        return next({data: {isRegistered: false, failedAttempt: true}, errors: errors});
+    }
 
     fetch('http://localhost:5000/newUser', {
         method: 'POST',
