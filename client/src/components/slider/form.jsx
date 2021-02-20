@@ -135,6 +135,7 @@ export const TestRegisterForm = (props) => {
 
         backBtn.addEventListener('click', () => {
             container.classList.remove("sign-up-container-2");
+            setShowPassword(false);
         })
         setErrors1({});
         setErrors2({});
