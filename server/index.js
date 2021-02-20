@@ -250,8 +250,7 @@ app.get('/getUserData', (req, res) => {
             return res.json({
                 user: {
                     user_id: user.user_id,
-                    firstname: user.first_name,
-                    lastname: user.last_name,
+                    fullname: user.fullname,
                     username: user.username,
                     email: user.email,
                 },

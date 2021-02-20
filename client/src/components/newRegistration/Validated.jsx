@@ -12,6 +12,9 @@ export const Validated = (credentials) => {
     if (fullname === "") {
         errors["fullname"] = "Please enter your full name.";
     }
+    if (fullname.length > 49) {
+        errors["fullnameLength"] = "Full name must be less than 50 characters.";
+    }
     if (email === "") {
         errors["email"] = "Please enter an email address.";
     }
@@ -23,14 +26,21 @@ export const Validated = (credentials) => {
     }
     if (password === "") {
         errors["password"] = "Please enter a password.";
-    } else if(password.length < 7){
-        errors["passwordLength"] = "Password must be at least 8 characters.";
-    } else if(password.length > 19){
-        errors["passwordLength"] = "Password must be less than 20 characters.";
-    }
+    } else if(password.length < 7 || password.length > 19){
+        errors["passwordLength"] = "Password must be between 8 and 20 characters.";
+    } 
+
     if(username === ""){
         errors["username"] = "Please enter a username.";
+    } else if(username.length < 7 || username.length > 49){
+        errors["usernameLength"] = "Username must be between 8 and 50 characters."
+    } else{
+        var regexp = /^[a-zA-Z0-9-_]+$/;
+        if(!username.serach(regexp)){
+            errors["invalidUsername"] = "Username can only contrain alphanumeric values, dashes, or underscores."
+        }
     }
+
     if(passwordCheck === ""){
         errors["passwordCheck"] = "Please confirm your password.";
     }
