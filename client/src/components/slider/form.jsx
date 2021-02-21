@@ -39,7 +39,7 @@ export const TestRegisterForm = (props) => {
     });
 
     const [showAlertRegistered, setShowAlertRegistered] = useState(false);
-    const [showAlertLogout, setShowAlertLogout] = useState(false);
+    const [showAlertLogout, setShowAlertLogout] = useState((typeof(props.location.state) !== 'undefined' && props.location.state.loggedOut) ? true : false);
     const [showAlertLoginFail, setShowAlertLoginFail] = useState(false);
 
     useEffect(() => {
@@ -56,9 +56,8 @@ export const TestRegisterForm = (props) => {
                 }
                 setErrors(tmpErrors);
                 console.log("Failed to Register. Errors:", errors);
-            } else if(postData.loggedOut){
-                setShowAlertLogout(true);
-            } else if(postData.loginFailure){
+            } 
+            else if(postData.loginFailure){
                 setShowAlertLoginFail(true);
             }
             else{
@@ -112,7 +111,6 @@ export const TestRegisterForm = (props) => {
             noMatch: ""
         });
         setShowAlertRegistered(false);
-        setShowAlertLogout(false);
         setShowAlertLoginFail(false);
     };
 
