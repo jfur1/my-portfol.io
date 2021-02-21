@@ -434,7 +434,7 @@ export const Contact = (props) => {
                             Public Email
                         </Form.Label>
                         <Col>
-                            <Form.Control type="email" style={{width: "55%"}} defaultValue={profile[0].public_email} onChange={e => {
+                            <Form.Control type="email" style={{width: "55%"}} defaultValue={(profile !== null && profile !== 'undefined' && profile[0].public_email !== 'undefined' && profile[0].public_email !== null) ? profile[0].public_email : ''} onChange={e => {
                                 setPublicEmail(e.target.value); 
                                 setEdited(true);
                             }}/>

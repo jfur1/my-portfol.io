@@ -6,17 +6,13 @@ export const NavBar = (props) => {
     //console.log("NavBar Component Recieved Props: ", props);
     const loggedIn = (props.data.loggedIn !== null) ? props.data.loggedIn : false;
     const requestedBy = (props.location.state.requestedBy !== null) ? props.location.state.requestedBy : props.data.requestedBy;
-    //const user = (props.data.user !== null) ? props.data.user : null;
+    const user = (props.data.user !== null) ? props.location.state.user : props.data.user;
 
 
     return(
 
         <Navbar sticky="top" style={{background:'rgba(255,255,255,1)'}}>
-<<<<<<< HEAD
-            <Navbar.Brand href="/profile"><img style={{height: "30px"}} src="/mp-new-logo.png" alt="logo"/>&nbsp;&nbsp;&nbsp;/{user.username}</Navbar.Brand>
-=======
-            <Navbar.Brand><img style={{height: "30px"}} src="/mp-new-logo.png" alt="logo"/>&nbsp;&nbsp;&nbsp;</Navbar.Brand>
->>>>>>> 4a2b5238eb7b41e01ca31be9fabdcbd5fcc2d91f
+            <Navbar.Brand><img style={{height: "30px"}} src="/mp-new-logo.png" alt="logo"/>&nbsp;&nbsp;&nbsp;/{user.username}</Navbar.Brand>
             <Navbar.Toggle aria-controls="responsive-navbar-nav" />
             <Navbar.Collapse className="justify-content-end">
                 <Nav.Item>
