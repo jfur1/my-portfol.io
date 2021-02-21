@@ -26,11 +26,13 @@ export const TestRegisterForm = (props) => {
         fullname: "",
         fullnameLength:"",
         email: "",
+        emailTaken: "",
         invalidEmail: "",
         password: "",
         passwordLength: "",
         username: "",
         usernameLength:"",
+        usernameTaken: "",
         invalidUsername: "",
         passwordCheck: "",
         noMatch: ""
@@ -39,11 +41,17 @@ export const TestRegisterForm = (props) => {
     useEffect(() => {
         if(typeof(props.location.state) !== 'undefined'){
             postData = props.location.state;
+            let tmpErrors = {...errors};
             console.log("Post Data on Rerender:", postData);
             if(postData.failedAttempt){
-                setErrors(postData.errors);
+                if(postData.emailTaken){
+                    tmpErrors["emailTaken"] = "Email already exists!";
+                }
+                if(postData.usernameTaken){
+                    tmpErrors["usernameTaken"] = "Username already exists!";
+                }
+                setErrors(tmpErrors);
                 console.log("Failed to Register. Errors:", errors);
-                
             } else{
                 clearState();
                 document.getElementById('slider-container').classList.remove("sign-up-container-2");
@@ -56,6 +64,24 @@ export const TestRegisterForm = (props) => {
         }
     }, [props])
 
+    const handleEmailChange = (email) => {
+        let tmpErrors = {...errors};
+        if(errors["emailTaken"] && email !== registerEmail){
+            tmpErrors["emailTaken"] = "";
+        }
+        setErrors(tmpErrors);
+        setRegisterEmail(email);
+    }
+
+    const handleUsernameChange = (username) => {
+        let tmpErrors = {...errors};
+        if(errors["usernameTaken"] && username !== registerUsername){
+            tmpErrors["usernameTaken"] = "";
+        }
+        setErrors(tmpErrors);
+        setRegisterUserName(username);
+    }
+
     const clearState = () => {
         setRegisterFullName("");
         setRegisterUserName("");
@@ -66,11 +92,13 @@ export const TestRegisterForm = (props) => {
             fullname: "",
             fullnameLength:"",
             email: "",
+            emailTaken: "",
             invalidEmail: "",
             password: "",
             passwordLength: "",
             username: "",
             usernameLength:"",
+            usernameTaken: "",
             invalidUsername: "",
             passwordCheck: "",
             noMatch: ""
@@ -137,7 +165,7 @@ export const TestRegisterForm = (props) => {
                         isInvalid={errors["email"] || errors["invalidEmail"] || errors["emailTaken"]}
                         placeholder="Email" 
                         onChange={e => {
-                            setRegisterEmail(e.target.value);
+                            handleEmailChange(e.target.value);
                         }}/>
                         <Form.Control.Feedback type="invalid">
                         {errors["email"] && registerEmail === ""
@@ -170,16 +198,17 @@ export const TestRegisterForm = (props) => {
                     <label>Select a Username</label>
                     <Form.Control
                         custom
-                        isInvalid={errors["username"] || errors["usernameLength"] || errors["invalidUsername"]}
+                        isInvalid={errors["username"] || errors["usernameLength"] || errors["invalidUsername"] || errors["usernameTaken"]}
                         type="text" 
                         placeholder="Username" 
                         value={registerUsername}
                         onChange={e => {
-                            setRegisterUserName(e.target.value)
+                            handleUsernameChange(e.target.value)
                         }}/><br/>
                     <Form.Control.Feedback type="invalid">
                         {errors["username"] && registerUsername === ""
                         ? errors["username"] : null}
+                        {errors["usernameTaken"] ? errors["usernameTaken"] : null}
                         {errors["invalidUsername"] ? errors["invalidUsername"]: null}
                         {errors["usernameLength"]  ? errors["usernameLength"] : null}
                     </Form.Control.Feedback>      

@@ -140,11 +140,11 @@ app.post('/newUser', async(req, res) => {
     })
     .then(data => {
         if(data === 3){
-            return res.json({usernameTaken: true, failedAttempt: true, emailTaken: true});
+            return res.json({failedAttempt: true, usernameTaken: true, emailTaken: true});
         } else if(data === 2){
-            return res.json({failedAttempt: true, emailTaken: true});
+            return res.json({failedAttempt: true, usernameTaken: false, emailTaken: true});
         } else if(data === 1){
-            return res.json({failedAttempt: true, usernameTaken: true});
+            return res.json({failedAttempt: true, usernameTaken: true, emailTaken: false});
         }
 
         console.log("Made it to register user callback.");

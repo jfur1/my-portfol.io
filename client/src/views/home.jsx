@@ -10,11 +10,7 @@ export const Home = (props) => {
             {(user !== null && typeof user !== 'undefined')
             ? 
                 <>
-                <h3>
-                    {user.firstname} {user.lastname} 
-                    
-
-                </h3>
+                <h3>{user.fullname}</h3>
 
                 <br></br>
 
