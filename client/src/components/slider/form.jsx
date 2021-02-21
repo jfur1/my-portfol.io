@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { registerUser } from '../newRegistration/RegisterUser';
+import {Form } from 'react-bootstrap';
 import { AlertMsg } from '../alerts';
 import Switch  from '../switch';
 import auth from '../auth';
@@ -11,31 +12,6 @@ export const TestRegisterForm = (props) => {
     let postData = {};
     let alert;
 
-    useEffect(() => {
-        if(typeof(props.location.state) !== 'undefined'){
-            postData = props.location.state;
-            console.log("Post Data on Rerender:", postData);
-            if(!postData.failedAttempt){
-                clearState();
-                document.getElementById('slider-container').classList.remove("sign-up-container-2");
-
-                document.getElementById('slider-container').
-                classList.remove("right-panel-active");
-
-                alert = AlertMsg("success", "You were successfully registered!");
-
-            }
-        }
-    }, [props])
-
-    const clearState = () => {
-        setRegisterFullName("");
-        setRegisterUserName("");
-        setRegisterEmail("");
-        setRegisterPassword("");
-        setRegisterPasswordCheck("");
-    };
-
     // Login Hooks
     const [loginEmail, setLoginEmail] = useState();
     const [loginPassword, setLoginPassword] = useState();
@@ -46,6 +22,60 @@ export const TestRegisterForm = (props) => {
     const [registerPassword, setRegisterPassword] = useState("");
     const [registerPasswordCheck, setRegisterPasswordCheck] = useState("");
     const [showPassword, setShowPassword] = useState(false);
+    const [errors, setErrors] = useState({            
+        fullname: "",
+        fullnameLength:"",
+        email: "",
+        invalidEmail: "",
+        password: "",
+        passwordLength: "",
+        username: "",
+        usernameLength:"",
+        invalidUsername: "",
+        passwordCheck: "",
+        noMatch: ""
+    });
+
+    useEffect(() => {
+        if(typeof(props.location.state) !== 'undefined'){
+            postData = props.location.state;
+            console.log("Post Data on Rerender:", postData);
+            if(postData.failedAttempt){
+                setErrors(postData.errors);
+                console.log("Failed to Register. Errors:", errors);
+                
+            } else{
+                clearState();
+                document.getElementById('slider-container').classList.remove("sign-up-container-2");
+
+                document.getElementById('slider-container').
+                classList.remove("right-panel-active");
+
+                alert = AlertMsg("success", "You were successfully registered!");
+            }
+        }
+    }, [props])
+
+    const clearState = () => {
+        setRegisterFullName("");
+        setRegisterUserName("");
+        setRegisterEmail("");
+        setRegisterPassword("");
+        setRegisterPasswordCheck("");
+        setErrors({
+            fullname: "",
+            fullnameLength:"",
+            email: "",
+            invalidEmail: "",
+            password: "",
+            passwordLength: "",
+            username: "",
+            usernameLength:"",
+            invalidUsername: "",
+            passwordCheck: "",
+            noMatch: ""
+        });
+    };
 
 
     // Only runs once (acts like componentDidMount)
@@ -69,6 +99,7 @@ export const TestRegisterForm = (props) => {
             container.classList.remove("sign-up-container-2");
             setShowPassword(false);
         })
+        clearState();
     }, [])
 
     
@@ -85,27 +116,49 @@ export const TestRegisterForm = (props) => {
             <h1 className="register-title">Register</h1>
             <div className="form-container sign-up-container">
                 <div className="form-box">
-                    <input
+                    <Form.Control
+                        custom
+                        isInvalid={errors["fullname"] || errors["fullnameLength"]}
                         type="text"
                         value={registerFullName}
                         placeholder="Full Name" 
                         onChange={e => setRegisterFullName(e.target.value)}
-                    />                        
+                    />
+                    <Form.Control.Feedback type="invalid">
+                        {errors["fullname"] && registerFullName === "" 
+                        ? errors["fullname"] : null}
+                        {errors["fullnameLength"] ? errors["fullnameLength"] : null }
+                    </Form.Control.Feedback>                        
                         <br/>
-                    <input
+                    <Form.Control
+                        custom
                         type="email" 
                         value={registerEmail}
+                        isInvalid={errors["email"] || errors["invalidEmail"] || errors["emailTaken"]}
                         placeholder="Email" 
                         onChange={e => {
                             setRegisterEmail(e.target.value);
                         }}/>
+                        <Form.Control.Feedback type="invalid">
+                        {errors["email"] && registerEmail === ""
+                        ? errors["email"] : null}
+                        {errors["emailTaken"] ? errors["emailTaken"]: null}
+                        {errors["invalidEmail"] ? errors["invalidEmail"] : null}
+                        </Form.Control.Feedback>          
                         <br/>
-                    <input
+                    <Form.Control
+                        custom
+                        isInvalid={errors["password"] || errors["passwordLength"]}
                         type={showPassword ? 'text' : 'password'} 
                         value={registerPassword}
                         placeholder="Password"
                         onChange={e => setRegisterPassword(e.target.value)} 
                     />
+                    <Form.Control.Feedback type="invalid">
+                        {errors["password"] && registerPassword === "" 
+                        ? errors["password"] : null}
+                        {errors["passwordLength"] ? errors["passwordLength"] : null }
+                    </Form.Control.Feedback>                 
                     <br/>
                 </div>
             </div>
@@ -115,25 +168,40 @@ export const TestRegisterForm = (props) => {
                 <div className="form-box">
 
                     <label>Select a Username</label>
-                    <input
+                    <Form.Control
+                        custom
+                        isInvalid={errors["username"] || errors["usernameLength"] || errors["invalidUsername"]}
                         type="text" 
                         placeholder="Username" 
                         value={registerUsername}
                         onChange={e => {
                             setRegisterUserName(e.target.value)
                         }}/><br/>
+                    <Form.Control.Feedback type="invalid">
+                        {errors["username"] && registerUsername === ""
+                        ? errors["username"] : null}
+                        {errors["invalidUsername"] ? errors["invalidUsername"]: null}
+                        {errors["usernameLength"]  ? errors["usernameLength"] : null}
+                    </Form.Control.Feedback>      
                     <label>Show Password </label>
                     <Switch
                         type="register"
                         isOn={showPassword}
                         handleToggle={() => setShowPassword(!showPassword)}
                     />
-                    <input
+                    <Form.Control
+                        custom
+                        isInvalid={errors["passwordCheck"] || errors["noMatch"]}
                         type={showPassword ? 'text' : 'password'} 
                         value={registerPasswordCheck}
                         placeholder="Confirm Password"
-                        onChange={e => setRegisterPasswordCheck(e.target.value)} /><br/>
-                    
+                        onChange={e => setRegisterPasswordCheck(e.target.value)} 
+                    /><br/>
+                    <Form.Control.Feedback type="invalid">
+                        {errors["passwordCheck"] && registerPasswordCheck === "" 
+                        ? errors["passwordCheck"] : null}
+                        {errors["noMatch"] ? errors["noMatch"] : null }
+                    </Form.Control.Feedback>         
                     <button className="form-button finish" id="register2"
                         onClick={() => {
                             const credentials = {
@@ -142,7 +210,7 @@ export const TestRegisterForm = (props) => {
                                 username: registerUsername,
                                 password: registerPassword,
                                 passwordCheck: registerPasswordCheck
-                            }
+                            };
                             registerUser(credentials, (res) => { 
                                 console.log("Recieved POST Response:", res);
                                 // Invalid Request

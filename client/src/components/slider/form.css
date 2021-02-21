@@ -179,7 +179,7 @@ input {
     position: absolute;
     display: flex;
     justify-content: center;
-    margin-top: 70%;
+    margin-top: 100%;
     width: 30%;
     opacity: 1;
     z-index: 1;
