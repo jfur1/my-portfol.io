@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { registerUser } from '../newRegistration/RegisterUser';
-import {Form } from 'react-bootstrap';
+import { Alert, Form } from 'react-bootstrap';
 import { AlertMsg } from '../alerts';
 import Switch  from '../switch';
 import auth from '../auth';
@@ -10,7 +10,6 @@ export const TestRegisterForm = (props) => {
     console.log("Test Registration Recieved props:", props);
 
     let postData = {};
-    let alert;
 
     // Login Hooks
     const [loginEmail, setLoginEmail] = useState();
@@ -22,6 +21,7 @@ export const TestRegisterForm = (props) => {
     const [registerPassword, setRegisterPassword] = useState("");
     const [registerPasswordCheck, setRegisterPasswordCheck] = useState("");
     const [showPassword, setShowPassword] = useState(false);
+
     const [errors, setErrors] = useState({            
         fullname: "",
         fullnameLength:"",
@@ -38,6 +38,10 @@ export const TestRegisterForm = (props) => {
         noMatch: ""
     });
 
+    const [showAlertRegistered, setShowAlertRegistered] = useState(false);
+    const [showAlertLogout, setShowAlertLogout] = useState(false);
+    const [showAlertLoginFail, setShowAlertLoginFail] = useState(false);
+
     useEffect(() => {
         if(typeof(props.location.state) !== 'undefined'){
             postData = props.location.state;
@@ -52,14 +56,18 @@ export const TestRegisterForm = (props) => {
                 }
                 setErrors(tmpErrors);
                 console.log("Failed to Register. Errors:", errors);
-            } else{
+            } else if(postData.loggedOut){
+                setShowAlertLogout(true);
+            } else if(postData.loginFailure){
+                setShowAlertLoginFail(true);
+            }
+            else{
                 clearState();
+                setShowAlertRegistered(true);
                 document.getElementById('slider-container').classList.remove("sign-up-container-2");
 
                 document.getElementById('slider-container').
                 classList.remove("right-panel-active");
-
-                alert = AlertMsg("success", "You were successfully registered!");
             }
         }
     }, [props])
@@ -103,6 +111,9 @@ export const TestRegisterForm = (props) => {
             passwordCheck: "",
             noMatch: ""
         });
+        setShowAlertRegistered(false);
+        setShowAlertLogout(false);
+        setShowAlertLoginFail(false);
     };
 
 
@@ -263,9 +274,18 @@ export const TestRegisterForm = (props) => {
             
             <div className="form-container sign-in-container">
                 <div className="form-box">
-                    <div className="alert-container mb-2">
-                        {alert}
-                    </div>
+                    {showAlertRegistered
+                    ? <Alert variant="success" onClose={() => setShowAlertRegistered(false)} dismissible>You were successfully registered!</Alert>
+                    : null}
+
+                    {showAlertLogout
+                    ? <Alert variant="success" onClose={() => setShowAlertLogout(false)} dismissible>You successfully logged out!</Alert>
+                    : null}
+
+                    {showAlertLoginFail
+                    ? <Alert variant="danger" onClose={() => setShowAlertLoginFail(false)} dismissible>Invlaid email or password!</Alert>
+                    : null}
+
                     <h1>Sign in</h1><br/>
 
                     <input type="email" placeholder="Email" 
@@ -282,8 +302,8 @@ export const TestRegisterForm = (props) => {
                                 (res) => { 
                                     if(typeof res["error"] !== 'undefined'){
                                         props.history.push({
-                                            pathname: '/testRegister',
-                                            state: {failedAttempt: true}
+                                            pathname: '/',
+                                            state: {loginFailure: true}
                                         });
                                     }
                                     else{
