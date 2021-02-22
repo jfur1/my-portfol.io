@@ -42,6 +42,8 @@ class Profile extends Component{
 
             projects: (typeof this.props.location.projects !== 'undefined') ? this.props.location.state.projects : null,
 
+            images: (typeof this.props.location.images !== 'undefined') ? this.props.location.state.images : null,
+
             loading: true
         }
     }
@@ -62,10 +64,11 @@ class Profile extends Component{
             'http://localhost:5000/education',
             'http://localhost:5000/hobbies',
             'http://localhost:5000/skills',
-            'http://localhost:5000/projects'
+            'http://localhost:5000/projects',
+            'http://localhost:5000/images',
         ];
 
-        let [data, about, profile, portfolio, contact, education, hobbies, skills, projects] = await 
+        let [data, about, profile, portfolio, contact, education, hobbies, skills, projects, images] = await 
         Promise.all(urls.map(url => 
             fetch(url, {
                 method: 'GET',
@@ -105,7 +108,8 @@ class Profile extends Component{
                         hobbies: this.state.hobbies,
                         skills: this.state.skills,
                         projects: this.state.projects,
-                        profile: this.state.profile
+                        profile: this.state.profile,
+                        images: this.state.images
                     }
                 })
                 window.location.reload();
@@ -124,6 +128,7 @@ class Profile extends Component{
                 hobbies: hobbies,
                 skills: skills,
                 projects: projects,
+                images: images
             });
         }
 
@@ -167,7 +172,8 @@ class Profile extends Component{
                         education: this.state.education,
                         hobbies: this.state.hobbies,
                         skills: this.state.skills,
-                        projects: this.state.projects
+                        projects: this.state.projects,
+                        images: this.state.images
                     }
                 })
                 return;
@@ -188,7 +194,8 @@ class Profile extends Component{
                     education: this.state.education,
                     hobbies: this.state.hobbies,
                     skills: this.state.skills,
-                    projects: this.state.projects
+                    projects: this.state.projects,
+                    images: this.state.images
                 }
             })
         }
@@ -733,6 +740,52 @@ class Profile extends Component{
         console.log("Client Recieved Response: ", data);
         return;
     }
+    
+    createProfileImages = async(user_id, base64image, base64preview, prefix) => {
+        this.setState({loading: true});
+        const response = await fetch('http://localhost:5000/createProfileImages',  {
+            method: 'POST', 
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            mode: 'cors',
+            credentials: 'include',
+            withCredentials: true,
+            body: JSON.stringify({
+                user_id: user_id,
+                base64image: base64image,
+                base64preview: base64preview,
+                prefix: prefix
+            })
+        });
+        const data = await response.json();
+        console.log("Client Recieved Response: ", data);
+        return;
+    }
+
+    updateProfileImages = async(user_id, base64image, base64preview, prefix) => {
+        this.setState({loading: true});
+        const response = await fetch('http://localhost:5000/updateProfileImages',  {
+            method: 'POST', 
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            mode: 'cors',
+            credentials: 'include',
+            withCredentials: true,
+            body: JSON.stringify({
+                user_id: user_id,
+                base64image: base64image,
+                base64preview: base64preview,
+                prefix: prefix
+            })
+        });
+        const data = await response.json();
+        console.log("Client Recieved Response: ", data);
+        return;
+    }
 
     render(){
 
@@ -765,6 +818,8 @@ class Profile extends Component{
                             updateCurrentOccupation={this.updateCurrentOccupation}
                             createCurrentOrganization={this.createCurrentOrganization}
                             updateCurrentOrganization={this.updateCurrentOrganization}
+                            createProfileImages={this.createProfileImages}
+                            updateProfileImages={this.updateProfileImages}
                         />
                     : null }
 

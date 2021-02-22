@@ -11,7 +11,7 @@ const app = express();
 
 // Middleware
 app.use(cors({credentials: true, origin: 'http://localhost:3000'}));
-app.use(express.json()); //req.body
+app.use(express.json({ limit: '50mb' })); //req.body
 app.use(express.urlencoded({extended: false}));
 
 // --------------------------- BEGIN Passport.js Middleware ---------------------
@@ -474,6 +474,25 @@ app.get('/projects', (req, res) => {
     .catch((err) => console.log(err));
 })
 
+app.get('/images', (req, res) => {
+    const username = req.headers.username;
+
+    db.tx(async t => {
+        const user = await t.oneOrNone('SELECT user_id FROM users WHERE \''+ username + '\' = username;');
+
+        if(!user){
+            return res.json({error: true});
+        }
+
+        return t.any('SELECT uid, base64image, base64preview, prefix FROM images WHERE \''+ user.user_id +'\' = uid;');
+    })
+    .then((images) => {
+
+        return res.json(images);
+    })
+    .catch((err) => console.log(err));
+})
+
 // ----------- [BEGIN] Edit Home Tab -----------
 
 app.post('/updateFullname', (req, res) => {
@@ -579,6 +598,43 @@ app.post('/updateCurrentOrganization', (req, res) => {
     .catch(err => console.log(err));
 })
 
+app.post('/createProfileImages', (req, res) => {
+    const {user_id, base64image, base64preview, prefix} = req.body;
+    //console.log("Req.body:", req.body)
+    
+    db.tx(async t => {
+
+        return t.none('INSERT INTO images (uid, base64image, base64preview, prefix) VALUES(${user_id}, decode(${base64image}, \'base64\') , decode(${base64preview}, \'base64\'), ${prefix});', 
+        {
+            user_id,
+            base64image,
+            base64preview,
+            prefix
+        });
+    })
+    .then(data => {
+        return res.json({errors: false});
+    })
+    .catch(err => console.log(err));
+})
+
+app.post('/updateProfileImages', (req, res) => {
+    const {user_id, base64image, base64preview, prefix} = req.body;
+
+    db.tx(async t => {
+        return t.none('UPDATE images SET base64image=decode(${base64image}, \'base64\'), base64preview=decode(${base64preview}, \'base64\'), prefix=${prefix} WHERE uid=${user_id};', 
+        {
+            user_id,
+            base64image,
+            base64preview,
+            prefix
+        });
+    })
+    .then(data => {
+        return res.json({errors: false});
+    })
+    .catch(err => console.log(err));
+})
 
 // ----------- [BEGIN] Edit About Tab -----------
 
