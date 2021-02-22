@@ -26,13 +26,11 @@ export const TestRegisterForm = (props) => {
         fullname: "",
         fullnameLength:"",
         email: "",
-        emailTaken: "",
         invalidEmail: "",
         password: "",
         passwordLength: "",
         username: "",
         usernameLength:"",
-        usernameTaken: "",
         invalidUsername: "",
         passwordCheck: "",
         noMatch: ""
@@ -45,8 +43,8 @@ export const TestRegisterForm = (props) => {
     useEffect(() => {
         if(typeof(props.location.state) !== 'undefined'){
             postData = props.location.state;
-            let tmpErrors = {...errors};
-            console.log("Post Data on Rerender:", postData);
+            console.log("Recieved POST Response:", postData);
+            let tmpErrors = {...postData.errors};
             if(postData.failedAttempt){
                 if(postData.emailTaken){
                     tmpErrors["emailTaken"] = "Email already exists!";
@@ -55,7 +53,7 @@ export const TestRegisterForm = (props) => {
                     tmpErrors["usernameTaken"] = "Username already exists!";
                 }
                 setErrors(tmpErrors);
-                console.log("Failed to Register. Errors:", errors);
+                console.log("Failed to Register. Errors:", tmpErrors);
             } 
             else if(postData.loggedOut){
                 setShowAlertLogout(true);
@@ -254,7 +252,6 @@ export const TestRegisterForm = (props) => {
                                 passwordCheck: registerPasswordCheck
                             };
                             registerUser(credentials, (res) => { 
-                                console.log("Recieved POST Response:", res);
                                 // Invalid Request
                                 if(res.failedAttempt){
                                     props.history.push({
@@ -290,7 +287,7 @@ export const TestRegisterForm = (props) => {
 
                     <h1>Sign in</h1><br/>
 
-                    <input type="email" placeholder="Email" 
+                    <input type="email" placeholder="Email or Username" 
                         onChange={e => setLoginEmail(e.target.value)}
                     /><br/>
                     <input type="password" placeholder="Password" 

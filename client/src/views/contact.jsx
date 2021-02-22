@@ -125,7 +125,7 @@ export const Contact = (props) => {
                     linksToCreate.push({
                         title: row.title,
                         link: row.link,
-                        description: JSON.stringify(row.description).replace(/['"]+/g, ''),
+                        description: JSON.stringify(row.description),
                         rowIdx: idx
                     });
                 }
@@ -134,7 +134,7 @@ export const Contact = (props) => {
                     link_id: row.link_id,
                     title: row.title,
                     link: row.link,
-                    description: JSON.stringify(row.description).replace(/['"]+/g, ''),
+                    description: JSON.stringify(row.description),
                     rowIdx: idx
                 });
             }
@@ -247,7 +247,7 @@ export const Contact = (props) => {
                             </Form.Label>
                             <Col>
                                 <Form.Control as="textarea" rows={3}
-                                value={(row.description !== null) ? row.description.replace(/\\n/g, '\n') : ''} 
+                                defaultValue={(row.description !== null) ? row.description.substring(1, row.description.length-1).replace(/\\n/g, '\n') : ''} 
                                 placeholder={"Add a description for your link! (Optional)"} 
                                 onChange={e => {
                                     handleLinkDescriptionChange(e, idx);
@@ -400,6 +400,15 @@ export const Contact = (props) => {
       setLinks({values: items});
     }
 
+    function FormatTextarea(props) {
+        let text = props.text;
+        if(text == null) return null;
+        if(text.length>2) text = text.substring(1, text.length-1);
+        return text.split("\\n").map((str, idx) => 
+            <div key={idx}>{str.length === 0 ? <br/> : str}</div>
+        )
+    }
+
     //console.log("Links data:", linksData);
     return (
         <div className="tab-container"> 
@@ -508,7 +517,7 @@ export const Contact = (props) => {
             </Modal>
 
             {/* After integrating backend, render original data not tmpHooks */}
-            {props.data.ownedByUser ? <Button variant="danger" className="edit-button" onClick={handleShow}>Edit&nbsp;<PencilFill size={25}/></Button> : null}
+            {props.data.ownedByUser ? <Button variant="warning" className="edit-button" onClick={handleShow}>Edit&nbsp;<PencilFill size={25}/></Button> : null}
             <h3>Contact Information</h3><br/>
             <h3>{user.firstname} {user.lastname}</h3>
             <br/>
@@ -550,7 +559,7 @@ export const Contact = (props) => {
                         <br/>
 
                         {row.description 
-                        ? <NewlineText text={row.description} key={idx}/>
+                        ? <FormatTextarea text={row.description} key={idx}/>
                         : null }
                         
                         <br></br>

@@ -775,7 +775,7 @@ export const Portfolio = props => {
                 } else {
                     projectsToCreate.push({
                         title: row.title,
-                        description: JSON.stringify(row.description).replace(/['"]+/g, ''),
+                        description: JSON.stringify(row.description),
                         organization: row.organization,
                         from_when: row.from_when,
                         to_when: row.to_when,
@@ -787,7 +787,7 @@ export const Portfolio = props => {
                 projectsToUpdate.push({
                     project_id: row.project_id,
                     title: row.title,
-                    description: JSON.stringify(row.description).replace(/['"]+/g, ''),
+                    description: JSON.stringify(row.description),
                     organization: row.organization,
                     from_when: row.from_when,
                     to_when: row.to_when,
@@ -806,7 +806,7 @@ export const Portfolio = props => {
                         organization: row.organization,
                         from_when: row.from_when,
                         to_when: row.to_when,
-                        description: JSON.stringify(row.description).replace(/['"]+/g, ''),
+                        description: JSON.stringify(row.description),
                         rowIdx: idx
                     });
                 }
@@ -817,7 +817,7 @@ export const Portfolio = props => {
                     organization: row.organization,
                     from_when: row.from_when,
                     to_when: row.to_when,
-                    description: JSON.stringify(row.description).replace(/['"]+/g, ''),
+                    description: JSON.stringify(row.description),
                     rowIdx: idx
                 })
             }
@@ -832,7 +832,7 @@ export const Portfolio = props => {
                         education: row.education,
                         from_when: row.from_when,
                         to_when: row.to_when,
-                        description: JSON.stringify(row.description).replace(/['"]+/g, ''),
+                        description: JSON.stringify(row.description),
                         rowIdx: idx
                     });
                 }
@@ -843,7 +843,7 @@ export const Portfolio = props => {
                     education: row.education,
                     from_when: row.from_when,
                     to_when: row.to_when,
-                    description: JSON.stringify(row.description).replace(/['"]+/g, ''),
+                    description: JSON.stringify(row.description),
                     rowIdx: idx
                 })
             }
@@ -992,7 +992,9 @@ export const Portfolio = props => {
                 </Form.Label>
                 <Col>
                     <Form.Control as="textarea" id="description" rows="3" 
-                    value={row.description !== null ? row.description.replace(/\\n/g, '\n') : ''} 
+                    defaultValue={row.description !== null 
+                        ? row.description.substring(1, row.description.length-1).replace(/\\n/g, '\n') 
+                        : ''} 
                     placeholder={"Add a description for your project!"} 
                     onChange={e => handleProjectDescriptionChange(e, idx)}
                     />
@@ -1143,7 +1145,9 @@ export const Portfolio = props => {
                 </Form.Label>
                 <Col>
                     <Form.Control as="textarea" rows="3" 
-                    value={row.description !== null ? row.description.replace(/\\n/g, '\n') : ''}
+                    defaultValue={row.description !== null 
+                        ? row.description.substring(1, row.description.length-1).replace(/\\n/g, '\n') 
+                        : ''}
                     placeholder={"Add a description (Optional)"} 
                     onChange={e => handlePortfolioDescriptionChange(e, idx)}
                     />
@@ -1238,7 +1242,9 @@ export const Portfolio = props => {
                 </Form.Label>
                 <Col>
                     <Form.Control as="textarea" rows="3" 
-                    value={row.description !== null ? row.description.replace(/\\n/g, '\n') : ''}
+                    defaultValue={row.description !== null
+                        ? row.description.substring(1, row.description.length-1).replace(/\\n/g, '\n')  
+                        : ''}
                     placeholder={"Add a description (Optional)"}
                     onChange={e => {handleEducationDescriptionChange(e, idx)}}
                     />
@@ -1378,9 +1384,19 @@ export const Portfolio = props => {
         return Object.keys(obj).length;
     }
 
+    function FormatTextarea(props) {
+        let text = props.text;
+        if(text == null) return null;
+        if(text.length>2) text = text.substring(1, text.length-1);
+        return text.split("\\n").map((str, idx) => 
+            <div key={idx}>{str.length === 0 ? <br/> : str}</div>
+        )
+    }
+
+
     return(
         <div className="tab-container">        
-        {props.data.ownedByUser ? <Button variant="danger" className="edit-button" onClick={handleShow}>Edit&nbsp;<PencilFill size={25}/></Button> : null}
+        {props.data.ownedByUser ? <Button variant="warning" className="edit-button" onClick={handleShow}>Edit&nbsp;<PencilFill size={25}/></Button> : null}
         <h3>Portfolio</h3>
         <Modal
             show={show}
@@ -1561,7 +1577,7 @@ export const Portfolio = props => {
                     <h4><b>{row.title}</b></h4>
                     
                     {row.description 
-                    ? <><NewlineText text={row.description} key={idx}/></>
+                    ? <><FormatTextarea text={row.description} key={idx}/></>
                     : null}
 
                     <br></br>
@@ -1608,7 +1624,7 @@ export const Portfolio = props => {
 
                 {(row.description)
                 ? <><b>Description: </b>
-                    <><NewlineText text={row.description} key={idx}/></>
+                    <><FormatTextarea text={row.description} key={idx}/></>
                 </>
                 : null}
                 <br></br>
@@ -1638,7 +1654,7 @@ export const Portfolio = props => {
                     : <p><b>To:</b> Current</p>}
 
                     {row.description
-                    ? <><NewlineText text={row.description} key={idx}/></>
+                    ? <><FormatTextarea text={row.description} key={idx}/></>
                     : null}
                     <br></br>
                 </div>

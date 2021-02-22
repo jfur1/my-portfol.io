@@ -648,6 +648,92 @@ class Profile extends Component{
         return data;
     }
 
+    // HOME Tab
+    updateFullname = async(user_id, fullname) => {
+        this.setState({loading: true});
+        const response = await fetch('http://localhost:5000/updateFullname',  {
+            method: 'POST', 
+            mode: 'cors',
+            credentials: 'include',
+            withCredentials: true,
+            headers: {
+                user_id: user_id,
+                fullname: fullname
+            }
+        });
+        const data = await response.json();
+        console.log("Client Recieved Response: ", data);
+        return;
+    }
+
+    createCurrentOccupation = async(user_id, occupation) => {
+        this.setState({loading: true});
+        const response = await fetch('http://localhost:5000/createCurrentOccupation',  {
+            method: 'POST', 
+            mode: 'cors',
+            credentials: 'include',
+            withCredentials: true,
+            headers: {
+                user_id: user_id,
+                occupation: occupation
+            }
+        });
+        const data = await response.json();
+        console.log("Client Recieved Response: ", data);
+        return;
+    }
+
+    updateCurrentOccupation = async(user_id, occupation) => {
+        this.setState({loading: true});
+        const response = await fetch('http://localhost:5000/updateCurrentOccupation',  {
+            method: 'POST', 
+            mode: 'cors',
+            credentials: 'include',
+            withCredentials: true,
+            headers: {
+                user_id: user_id,
+                occupation: occupation
+            }
+        });
+        const data = await response.json();
+        console.log("Client Recieved Response: ", data);
+        return;
+    }
+
+    createCurrentOrganization = async(user_id, organization) => {
+        this.setState({loading: true});
+        const response = await fetch('http://localhost:5000/createCurrentOrganization',  {
+            method: 'POST', 
+            mode: 'cors',
+            credentials: 'include',
+            withCredentials: true,
+            headers: {
+                user_id: user_id,
+                organization: organization
+            }
+        });
+        const data = await response.json();
+        console.log("Client Recieved Response: ", data);
+        return;
+    }
+
+    updateCurrentOrganization = async(user_id, organization) => {
+        this.setState({loading: true});
+        const response = await fetch('http://localhost:5000/updateCurrentOrganization',  {
+            method: 'POST', 
+            mode: 'cors',
+            credentials: 'include',
+            withCredentials: true,
+            headers: {
+                user_id: user_id,
+                organization: organization
+            }
+        });
+        const data = await response.json();
+        console.log("Client Recieved Response: ", data);
+        return;
+    }
+
     render(){
 
         return(
@@ -673,7 +759,13 @@ class Profile extends Component{
 
                 <div className="info-container">
                     { this.state.key === "home" ? 
-                        <Home {...this.props} data={this.state} />
+                        <Home {...this.props} data={this.state} 
+                            updateFullname={this.updateFullname}
+                            createCurrentOccupation={this.createCurrentOccupation}
+                            updateCurrentOccupation={this.updateCurrentOccupation}
+                            createCurrentOrganization={this.createCurrentOrganization}
+                            updateCurrentOrganization={this.updateCurrentOrganization}
+                        />
                     : null }
 
                     { this.state.key === "about" ?  
