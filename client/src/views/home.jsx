@@ -19,9 +19,26 @@ export const Home = (props) => {
     const [currentOrganization, setCurrentOrganization] = useState(profile[0].current_organization);
     const [font, setFont] = useState("Arial"); //could use profile[0].font to store?
 
-    const [profilePic, setProfilePic] = useState("");
-    const [profileAvatar, setProfileAvatar] = useState("");
-    const [prefix, setPrefix] = useState("");
+    const [profilePic, setProfilePic] 
+    = useState(
+        typeof(images[0].base64image) !== 'undefined' 
+            ? binaryToBase64(images[0].base64image.data) 
+            : ""
+    );
+    
+    const [profileAvatar, setProfileAvatar] 
+    = useState(
+        typeof(images[0].base64preview) !== 'undefined' 
+            ? binaryToBase64(images[0].base64preview.data) 
+            : ""
+    );
+    
+    const [prefix, setPrefix] 
+    = useState(
+        typeof(images[0].prefix) !== 'undefined' 
+            ? images[0].prefix 
+            : ""
+    );
 
     // Modal Alert
     const handleShow = () => setShow(true);
@@ -112,14 +129,19 @@ export const Home = (props) => {
         window.location.reload();
     }
 
-    function base64src(prefix, data){
-        var image = btoa(String.fromCharCode.apply(null, data));
-        return prefix+image;
+    function binaryToBase64(data){
+        var image = btoa(new Uint8Array(data).reduce(function (tmp, byte) {
+            return tmp + String.fromCharCode(byte);
+        }, ''));
+        return image;
     }
 
     return(
         <div className="tab-container"> 
-        <Button variant="warning" className="edit-button" onClick={handleShow}>Edit&nbsp;<PencilFill size={25}/></Button>
+        {props.data.ownedByUser 
+        ? <Button variant="warning" className="edit-button" onClick={handleShow}>Edit&nbsp;<PencilFill size={25}/></Button>
+        : null}
+        
         <Modal
             show={show}
             onHide={handleClose}
@@ -197,7 +219,7 @@ export const Home = (props) => {
                             stagePreview={stagePreview}
                             stageImage={stageImage}
                             src={typeof(images[0]) !== 'undefined'
-                            ? `${base64src(images[0].prefix, images[0].base64preview.data)}` 
+                            ? prefix + `${binaryToBase64(images[0].base64image.data)}` 
                             : null}
                         />
                     </Form.Row>
@@ -205,7 +227,7 @@ export const Home = (props) => {
                     <br></br>
                     <Dropdown id="collapsible-nav-dropdown">
                         <Dropdown.Toggle className="bg-transparent text-dark" id="dropdown-custom-components">
-                        Your font: <b>{font}</b>
+                        Your font: <b style={{fontFamily: font}}>{font}</b>
                         </Dropdown.Toggle>
                         <Dropdown.Menu>
                             <Dropdown.Item onSelect={e => {setFont("Arial");setEdited(true);}} style={{fontFamily: "Arial"}}>Arial</Dropdown.Item>
@@ -235,7 +257,7 @@ export const Home = (props) => {
 
                 <h4>Profile Picture:</h4>
                 <img src={typeof(images[0]) !== 'undefined'
-                    ? `${base64src(images[0].prefix, images[0].base64preview.data)}` 
+                    ? prefix + `${binaryToBase64(images[0].base64preview.data)}` 
                     : ''} />
 
                 <br></br>
