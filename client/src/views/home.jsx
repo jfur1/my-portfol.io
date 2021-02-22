@@ -1,13 +1,15 @@
 // Home Tab on a User's Profile
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Modal, Button, Form, Dropdown } from 'react-bootstrap';
 import { PencilFill } from 'react-bootstrap-icons';
 import { AlertDismissible } from '../components/alertDismissible';
+import UploadProfilePicture from './uploadProfilePic'
 
 export const Home = (props) => {
     //console.log("Home Component Recieved Props: ", props);
     const user = props.data.user;
     let profile = (props.data.profile !== null) ? props.data.profile : props.location.state.profile;
+    const images = (props.data.images !== null) ? props.data.images : props.location.state.images;
 
     const [show, setShow] = useState(false);
     const [edited, setEdited] = useState(false);
@@ -15,9 +17,12 @@ export const Home = (props) => {
     const [fullname, setFullname] = useState(user.fullname);
     const [currentOccupation, setCurrentOccupation] = useState(profile[0].current_occupation);
     const [currentOrganization, setCurrentOrganization] = useState(profile[0].current_organization);
-    const [font, setFont] = useState("Arial");
+    const [font, setFont] = useState("Arial"); //could use profile[0].font to store?
 
-    
+    const [profilePic, setProfilePic] = useState("");
+    const [profileAvatar, setProfileAvatar] = useState("");
+    const [prefix, setPrefix] = useState("");
+
     // Modal Alert
     const handleShow = () => setShow(true);
     const handleClose = () => {
@@ -31,6 +36,18 @@ export const Home = (props) => {
         setFullname(user.fullname);
         setCurrentOccupation(profile.current_occupation);
         setCurrentOrganization(profile.current_organization);
+        setProfilePic('');
+        setProfileAvatar('');
+    }
+
+    const stageImage = (fullImage) => {
+        //console.log("Recieved Full Base64 Img:", fullImage);
+        setProfilePic(fullImage.substring(fullImage.indexOf(',')+1));
+        setPrefix(fullImage.substring(0, fullImage.indexOf(',')+1));
+    }
+    const stagePreview = (preview) => {
+        //console.log("Recieved Base64 Preview:", preview);
+        setProfileAvatar(preview.substring(preview.indexOf(',')+1));
     }
 
     const handleSave = async() => {
@@ -56,6 +73,14 @@ export const Home = (props) => {
             await props.updateCurrentOrganization(user.user_id, currentOrganization);
         }
 
+        const createProfileImages = async() => {
+            await props.createProfileImages(user.user_id, profilePic, profileAvatar, prefix)
+        }
+
+        const updateProfileImages = async() => {
+            await props.updateProfileImages(user.user_id, profilePic, profileAvatar, prefix)
+        }
+
         const updateFont = async() => {
             await props.updateFont(font);
         }
@@ -73,10 +98,23 @@ export const Home = (props) => {
         else if(typeof(profile.current_organization) !== 'undefined' && currentOrganization)
             await updateCurrentOrganization();
 
-        if(font !== "arial")
+        if(font !== "Arial")
             await updateFont();
+        
+        // Create Profile Picture
+        if(typeof(images[0]) == 'undefined' && (profileAvatar || profilePic)){
+            await createProfileImages();
+        }
+        else if(profilePic !== images[0].base64image || profileAvatar !== images[0].base64preview){
+            await updateProfileImages();
+        }
 
         window.location.reload();
+    }
+
+    function base64src(prefix, data){
+        var image = btoa(String.fromCharCode.apply(null, data));
+        return prefix+image;
     }
 
     return(
@@ -151,7 +189,20 @@ export const Home = (props) => {
                         ></input>
                     </Form.Row>
 
-                            <br></br>
+                    <Form.Row className='mt-3'>
+                        <Form.Label>
+                            Profile Picture
+                        </Form.Label>
+                        <UploadProfilePicture 
+                            stagePreview={stagePreview}
+                            stageImage={stageImage}
+                            src={typeof(images[0]) !== 'undefined'
+                            ? `${base64src(images[0].prefix, images[0].base64preview.data)}` 
+                            : null}
+                        />
+                    </Form.Row>
+
+                    <br></br>
                     <Dropdown id="collapsible-nav-dropdown">
                         <Dropdown.Toggle className="bg-transparent text-dark" id="dropdown-custom-components">
                         Your font: <b>{font}</b>
@@ -161,7 +212,14 @@ export const Home = (props) => {
                             <Dropdown.Item onSelect={e => {setFont("Times New Roman");setEdited(true);}} style={{fontFamily: "Times New Roman"}}>Times New Roman</Dropdown.Item>
                             <Dropdown.Item onSelect={e => {setFont("Helvetica");setEdited(true);}} style={{fontFamily: "Helvetica"}}>Helvetica</Dropdown.Item>
                             <Dropdown.Item onSelect={e => {setFont("Lucida Console");setEdited(true);}} style={{fontFamily: "Lucida Console"}}>Lucida Console</Dropdown.Item>
-                            <Dropdown.Item onSelect={e => {setFont("Papyrus");setEdited(true);}} style={{fontFamily: "Papyrus"}}>Papyrus</Dropdown.Item>
+                            <Dropdown.Item onSelect={e => {setFont("Georgia");setEdited(true);}} style={{fontFamily: "Georgia"}}>Georgia</Dropdown.Item>
+                            <Dropdown.Item onSelect={e => {setFont("Garamond");setEdited(true);}} style={{fontFamily: "Garamond"}}>Garamond</Dropdown.Item>
+                            <Dropdown.Item onSelect={e => {setFont("Verdana");setEdited(true);}} style={{fontFamily: "Verdana"}}>Verdana</Dropdown.Item>
+                            <Dropdown.Item onSelect={e => {setFont("Courier New");setEdited(true);}} style={{fontFamily: "Courier New"}}>Courier New</Dropdown.Item>
+                            <Dropdown.Item onSelect={e => {setFont("Monaco");setEdited(true);}} style={{fontFamily: "Monaco"}}>Monaco</Dropdown.Item>
+                            <Dropdown.Item onSelect={e => {setFont("Brush Script MT");setEdited(true);}} style={{fontFamily: "Brush Script MT"}}>Brush Script MT</Dropdown.Item>
+                            <Dropdown.Item onSelect={e => {setFont("Lucida Handwriting");setEdited(true);}} style={{fontFamily: "Lucida Handwriting"}}>Lucida Handwriting</Dropdown.Item>
+                            <Dropdown.Item onSelect={e => {setFont("Copperplate");setEdited(true);}} style={{fontFamily: "Copperplate"}}>Copperplate</Dropdown.Item>
                         </Dropdown.Menu>
                     </Dropdown>
 
@@ -174,6 +232,11 @@ export const Home = (props) => {
             ? 
                 <>
                 <h3>{user.fullname}</h3>
+
+                <h4>Profile Picture:</h4>
+                <img src={typeof(images[0]) !== 'undefined'
+                    ? `${base64src(images[0].prefix, images[0].base64preview.data)}` 
+                    : ''} />
 
                 <br></br>
 

@@ -148,6 +148,14 @@ VALUES(1, 8, 'Pathfinding Visualizer', 'Created a React app to visualize various
 (3, 8, 'my-portfol.io', 'Created a full stack application originally for my friends to host their portfolios on', 'my-portfol.io', '2021-01-01', NULL, 'my-portfol.io'),
 (4, 7, 'my-portfol.io', 'Created a full stack application originally for my friends to host their portfolios on', 'my-portfol.io' ,'2021-01-01', NULL, 'my-portfol.io');
 
+--------------------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS images(
+  name varchar,
+  uid INT REFERENCES users(user_id),
+  base64image bytea,
+  base64preview bytea
+);
 
 ----------------------------------- WAIT TO ADD THESE TABLES -----------------------------
 from: https://www.freecodecamp.org/news/fullstack-react-blog-app-with-express-and-psql/
