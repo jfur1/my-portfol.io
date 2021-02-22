@@ -6,8 +6,6 @@ import './App.css';
 // Components
 import { Welcome } from "./views/welcome";
 import Profile from './views/profile';
-import { Login } from './views/login';
-import { Register } from './views/register';
 import {TestRegisterForm} from './components/slider/form';
 
 

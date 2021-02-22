@@ -11,7 +11,7 @@ export const Contact = (props) => {
 
     // Original Data from Parent Profile
     const user = (props.location.state.user !== null) ? props.location.state.user : props.data.user;
-    const profile = (props.data.profile !== null) ? props.data.profile : props.location.state.profile;
+    let profile = (props.data.profile !== null) ? props.data.profile : props.location.state.profile;
     const linksData = (props.data.contact !== null) ? props.data.contact : props.location.state.contact;
 
     // Display Toggles
@@ -23,8 +23,8 @@ export const Contact = (props) => {
     const [changingOrder, setChangingOrder] = useState(false);
 
     // Data to be Modified
-    const [publicEmail, setPublicEmail] = useState('');
-    const [phone, setPhone] = useState('');
+    const [publicEmail, setPublicEmail] = useState(typeof(profile) !== 'undefined' ? profile.public_email : '');
+    const [phone, setPhone] = useState(typeof(profile) !== 'undefined' ? profile.phone : '');
     const [links, setLinks] = useState({values: linksData});
 
     // POST request hooks
@@ -35,6 +35,7 @@ export const Contact = (props) => {
     const [validated, setValidated] = useState(false);
     const [errs, setErrs] = useState({}); 
     const [duplicates, setDuplicates] = useState({});
+
 
     // Event Handlers
     const handleShow = () => setShow(true);
@@ -52,8 +53,8 @@ export const Contact = (props) => {
 
     // Replace state with original data
     const discardChanges = () => {
-        setPublicEmail(profile.public_email);
-        setPhone(profile.phone);
+        setPublicEmail(publicEmail);
+        setPhone(phone);
         setLinks({values: linksData});
         setChangingOrder(false);
         setReordered(false);
@@ -434,7 +435,9 @@ export const Contact = (props) => {
                             Public Email
                         </Form.Label>
                         <Col>
-                            <Form.Control type="email" style={{width: "55%"}} defaultValue={(profile !== null && profile !== 'undefined' && profile[0].public_email !== 'undefined' && profile[0].public_email !== null) ? profile[0].public_email : ''} onChange={e => {
+                            <Form.Control type="email" style={{width: "55%"}} 
+                            defaultValue={publicEmail} 
+                            onChange={e => {
                                 setPublicEmail(e.target.value); 
                                 setEdited(true);
                             }}/>
@@ -449,7 +452,11 @@ export const Contact = (props) => {
                             Phone Number
                         </Form.Label>
                         <Col>
-                            <Form.Control type="text" style={{width: "55%"}} defaultValue={profile[0].phone} onChange={e => {
+                            <Form.Control 
+                            type="text" 
+                            style={{width: "55%"}} 
+                            defaultValue={phone} 
+                            onChange={e => {
                                 setPhone(e.target.value);
                                 setEdited(true);
                             }}/>
@@ -507,17 +514,17 @@ export const Contact = (props) => {
             <br/>
 
             <div className="info-container">
-
-                {profile[0].public_email
-                ? <><h4>Email: </h4>
-                <p>{profile[0].public_email}</p></>
+                
+                <h4>Email: </h4>
+                {publicEmail
+                ? <p>{publicEmail}</p>
                 : null }
 
                 <br/>
 
-                {profile[0].phone
-                ? <><h4>Phone: </h4>
-                <p>{profile[0].phone}</p></>
+                <h4>Phone: </h4>
+                {phone
+                ? <p>{phone}</p>
                 : null }
 
                 </div>
