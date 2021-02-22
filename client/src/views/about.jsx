@@ -383,18 +383,18 @@ export const About = props => {
         var skillsToUpdate = [];
         
         if(info === null && location){
-            locationToCreate.push(JSON.stringify(location).replace(/['"]+/g, ''));
+            locationToCreate.push(JSON.stringify(location));
         } else if(info.location !== location){
             //console.log(`Set location update from: ${info.location} to: ${location}`);
-            locationToUpdate.push(JSON.stringify(location).replace(/['"]+/g, ''));
+            locationToUpdate.push(JSON.stringify(location));
         }
 
         // Bio
         if(info === null && bio){
-            bioToCreate.push(JSON.stringify(bio).replace(/['"]+/g, ''));
+            bioToCreate.push(JSON.stringify(bio));
         } else if(info.bio !== bio){
             //console.log(`Set bio update from: ${info.bio} to: ${bio}`);
-            bioToUpdate.push(JSON.stringify(bio).replace(/['"]+/g, ''));
+            bioToUpdate.push(JSON.stringify(bio));
         }
 
         // Hobbies: 
@@ -548,11 +548,19 @@ export const About = props => {
             <div key={idx}>{str.length === 0 ? <br/> : str}</div>
         );
     }
+    function FormatTextarea(props) {
+        let text = props.text;
+        if(text == null) return null;
+        if(text.length>2) text = text.substring(1, text.length-1);
+        return text.split("\\n").map((str, idx) => 
+            <div key={idx}>{str.length === 0 ? <br/> : str}</div>
+        )
+    }
 
     return(
         <div className="tab-container">
         {props.data.ownedByUser 
-        ? <Button variant="danger" className="edit-button" onClick={handleShow}>Edit&nbsp;<PencilFill size={25}/></Button>
+        ? <Button variant="warning" className="edit-button" onClick={handleShow}>Edit&nbsp;<PencilFill size={25}/></Button>
         : null}
         <h3>About</h3>
         <h3>{user.firstname} {user.lastname}</h3>
@@ -591,7 +599,9 @@ export const About = props => {
                             type="text" 
                             className="form-control" 
                             id="location" 
-                            defaultValue={(info !== null && info.location !== null) ? info.location : ''} 
+                            defaultValue={(info !== null && info.location !== null) 
+                                ? info.location.substring(1, info.location.length-1) 
+                                : ''} 
                             onChange={e => 
                                 {setLocation(e.target.value); 
                                 setEdited(true);
@@ -608,7 +618,9 @@ export const About = props => {
                             className="form-control" 
                             rows="5" 
                             id="bio" 
-                            defaultValue={(info !== null && info.bio !== null) ? info.bio.replace(/\\n/g, '\n') : ''} 
+                            defaultValue={(info !== null && info.bio !== null) 
+                                ? info.bio.substring(1, info.bio.length-1).replace(/\\n/g, '\n')
+                                : null} 
                             onChange={e => {
                                 setBio(e.target.value); 
                                 setEdited(true);
@@ -684,13 +696,13 @@ export const About = props => {
             <div className="draggable-container">
                 <h4><b>Location:</b></h4>
                     {info !== null 
-                    ? info.location
+                    ? <FormatTextarea text={info !== null ? info.location : ''}/>
                     : null}
             </div>
             <br></br>
             <div className="draggable-container">
                 <h4><b>Bio:</b></h4>
-            <><NewlineText text={info !== null ? info.bio : ''}/></>
+            <><FormatTextarea text={info !== null ? info.bio : ''}/></>
             </div>
             <br></br>
         </div>

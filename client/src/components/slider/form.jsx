@@ -287,7 +287,7 @@ export const TestRegisterForm = (props) => {
 
                     <h1>Sign in</h1><br/>
 
-                    <input type="email" placeholder="Email" 
+                    <input type="email" placeholder="Email or Username" 
                         onChange={e => setLoginEmail(e.target.value)}
                     /><br/>
                     <input type="password" placeholder="Password" 

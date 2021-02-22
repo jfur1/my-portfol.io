@@ -14,6 +14,7 @@ class Auth {
 
         const data = { email, password };
 
+
         fetch('http://localhost:5000/login', {
             method: 'POST',
             headers: {

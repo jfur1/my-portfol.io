@@ -23,13 +23,16 @@ passport.use(
 
         // Match User
         db.tx(t => {
-            return t.oneOrNone('SELECT * FROM users WHERE \'' + email + '\' = email;');
+            if(email.includes('@'))
+                return t.oneOrNone('SELECT * FROM users WHERE ${email} = email;', {email});
+            else
+                return t.oneOrNone('SELECT * FROM users WHERE ${email} = username;', {email});
         })
         .then((rows) => {
             const user = rows;
             if (!user) {
-                console.log('Wrong email!');
-                return done(null, false, { message: 'That email is not registered' });
+                console.log('Wrong email or username!');
+                return done(null, false, { message: 'That email/username is not registered' });
             }
 
             // Match Password
@@ -162,12 +165,19 @@ app.post('/login', (req, res, next) => {
     
     let errors = [];
     db.tx(t => {
-        return t.oneOrNone('SELECT * FROM users WHERE ${email} = email;', {email});
+        if(email.includes('@')){
+            console.log("Checking for email:", email);
+            return t.oneOrNone('SELECT * FROM users WHERE ${email} = email;', {email});
+        }
+        else{
+            console.log("Checking for username:", email);
+            return t.oneOrNone('SELECT * FROM users WHERE ${email}=username;', {email});
+        }
     })
     .then((data) => {
-
+        console.log("DATA:",data);
          if (data == null) {
-            console.log('No users registered with that email!');
+            console.log('No users registered with that email or username!');
             res.json({authenticated: false});
             return;
         } else {
@@ -463,6 +473,112 @@ app.get('/projects', (req, res) => {
     })
     .catch((err) => console.log(err));
 })
+
+// ----------- [BEGIN] Edit Home Tab -----------
+
+app.post('/updateFullname', (req, res) => {
+    const {user_id, fullname} = req.headers;
+    db.tx(async t => {
+        const user = await t.none('UPDATE users SET fullname = ${fullname} WHERE user_id = ${user_id}',
+        {
+            user_id, 
+            fullname
+        });
+    })
+    .then(data => {
+        return res.json({success: true});
+    })
+    .catch((err) => console.log(err));
+})
+
+app.post('/createCurrentOccupation', (req, res) => {
+    const {user_id, occupation} = req.headers;
+    db.task(async t => {
+        const user = await t.oneOrNone('SELECT * FROM profile WHERE ${user_id} = uid;', {user_id});
+        if(user == null){
+            const max_id = await t.one('SELECT MAX(profile_id) FROM profile;');
+            let newId = max_id.max;
+            newId++;
+    
+            return t.none('INSERT INTO profile (profile_id, uid, current_occupation) VALUES(${newId}, ${user_id}, ${occupation});', 
+            {
+                newId,
+                user_id,
+                occupation
+            })
+        }
+        // User may already have profile entry via createBio etc. But no occupation
+        else{
+            return t.none('UPDATE profile SET current_occupation=${occupation} WHERE uid = \'' + user_id + '\';', 
+            {
+                user_id,
+                occupation
+            });
+        }
+    })
+    .then(data => {
+        return res.json(data);
+    })
+    .catch((err) => {
+        console.log(err);
+    })
+})
+
+app.post('/updateCurrentOccupation', (req, res) => {
+    const {user_id, occupation} = req.headers;
+    db.tx(async t => {
+        return t.none('UDPATE profile SET current_occupation=${occupation} WHERE uid=${user_id};', {user_id, occupation});
+    })
+    .then(data => {
+        return res.json(data);
+    })
+    .catch(err => console.log(err));
+})
+
+app.post('/createCurrentOrganization', (req, res) => {
+    const {user_id, organization} = req.headers;
+    db.task(async t => {
+        const user = await t.oneOrNone('SELECT * FROM profile WHERE ${user_id} = uid;', {user_id});
+        if(user == null){
+            const max_id = await t.one('SELECT MAX(profile_id) FROM profile;');
+            let newId = max_id.max;
+            newId++;
+
+            return t.none('INSERT INTO profile (profile_id, uid, current_organization) VALUES(${newId}, ${user_id}, ${organization});', 
+            {
+                newId,
+                user_id,
+                organization
+            });
+        }
+        // User may already have profile entry via createBio etc. But no organization
+        else{
+            return t.none('UPDATE profile SET current_organization=${organization} WHERE uid = \'' + user_id + '\';', 
+            {
+                user_id,
+                organization
+            });
+        }
+    })
+    .then(data => {
+        return res.json(data);
+    })
+    .catch((err) => {
+        console.log(err);
+    })
+})
+
+app.post('/updateCurrentOrganization', (req, res) => {
+    const {user_id, organization} = req.headers;
+    db.tx(async t => {
+        return t.none('UDPATE profile SET current_organization=${organization} WHERE uid=${user_id};', {user_id, organization});
+    })
+    .then(data => {
+        return res.json(data);
+    })
+    .catch(err => console.log(err));
+})
+
 
 // ----------- [BEGIN] Edit About Tab -----------
 

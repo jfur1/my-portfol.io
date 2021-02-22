@@ -508,7 +508,7 @@ export const Contact = (props) => {
             </Modal>
 
             {/* After integrating backend, render original data not tmpHooks */}
-            {props.data.ownedByUser ? <Button variant="danger" className="edit-button" onClick={handleShow}>Edit&nbsp;<PencilFill size={25}/></Button> : null}
+            {props.data.ownedByUser ? <Button variant="warning" className="edit-button" onClick={handleShow}>Edit&nbsp;<PencilFill size={25}/></Button> : null}
             <h3>Contact Information</h3><br/>
             <h3>{user.firstname} {user.lastname}</h3>
             <br/>

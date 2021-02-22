@@ -1380,7 +1380,7 @@ export const Portfolio = props => {
 
     return(
         <div className="tab-container">        
-        {props.data.ownedByUser ? <Button variant="danger" className="edit-button" onClick={handleShow}>Edit&nbsp;<PencilFill size={25}/></Button> : null}
+        {props.data.ownedByUser ? <Button variant="warning" className="edit-button" onClick={handleShow}>Edit&nbsp;<PencilFill size={25}/></Button> : null}
         <h3>Portfolio</h3>
         <Modal
             show={show}
