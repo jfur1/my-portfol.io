@@ -148,11 +148,11 @@ app.post('/newUser', async(req, res) => {
         }
 
         console.log("Made it to register user callback.");
-        return res.json({isRegistered: true, failedAttempt: false});
+        return res.json({isRegistered: true, failedAttempt: false, emailTaken: false, usernameTaken: false});
     })
     .catch((err) => {
         console.log(err);
-        res.json({isRegistered: false, newUser: false, failedAttempt: true, emailTaken: false});
+        res.json({isRegistered: false, newUser: false, failedAttempt: true, emailTaken: false, usernameTaken: false});
     })
 })
 
