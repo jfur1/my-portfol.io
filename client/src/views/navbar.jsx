@@ -5,7 +5,7 @@ import auth from '../components/auth';
 export const NavBar = (props) => {
     //console.log("NavBar Component Recieved Props: ", props);
     const loggedIn = (props.data.loggedIn !== null) ? props.data.loggedIn : false;
-    const requestedBy = (props.location.state.requestedBy !== null) ? props.location.state.requestedBy : props.data.requestedBy;
+    const requestedBy = (typeof props.location.state !== 'undefined' && typeof props.location.state.requestedBy !== 'undefined') ? props.location.state.requestedBy : props.data.requestedBy;
     //const user = (props.data.user !== null) ? props.data.user : null;
 
 
@@ -35,7 +35,7 @@ export const NavBar = (props) => {
                         </Dropdown.Menu>
                     </Dropdown>
                     :                              
-                    <div className="order"><Nav.Link onClick={() => {props.history.push("/login");
+                    <div className="order"><Nav.Link onClick={() => {props.history.push("/");
                         }}>Login</Nav.Link><p className="my-bar"></p>
                     <Nav.Link onClick={() => {props.history.push("/");
                         }}>Register</Nav.Link></div>
