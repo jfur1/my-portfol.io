@@ -1,6 +1,6 @@
 // Home Tab on a User's Profile
 import { useState } from 'react';
-import { Modal, Button, Form } from 'react-bootstrap';
+import { Modal, Button, Form, Dropdown } from 'react-bootstrap';
 import { PencilFill } from 'react-bootstrap-icons';
 import { AlertDismissible } from '../components/alertDismissible';
 
@@ -15,6 +15,7 @@ export const Home = (props) => {
     const [fullname, setFullname] = useState(user.fullname);
     const [currentOccupation, setCurrentOccupation] = useState(profile[0].current_occupation);
     const [currentOrganization, setCurrentOrganization] = useState(profile[0].current_organization);
+    const [font, setFont] = useState("Arial");
 
     
     // Modal Alert
@@ -55,6 +56,10 @@ export const Home = (props) => {
             await props.updateCurrentOrganization(user.user_id, currentOrganization);
         }
 
+        const updateFont = async() => {
+            await props.updateFont(font);
+        }
+
         // Conditionally Call Functions
         if(fullname !== user.fullname) await updateFullname();
 
@@ -67,6 +72,9 @@ export const Home = (props) => {
             await createCurrentOrganization();
         else if(typeof(profile.current_organization) !== 'undefined' && currentOrganization)
             await updateCurrentOrganization();
+
+        if(font !== "arial")
+            await updateFont();
 
         window.location.reload();
     }
@@ -142,6 +150,20 @@ export const Home = (props) => {
                             }}
                         ></input>
                     </Form.Row>
+
+                            <br></br>
+                    <Dropdown id="collapsible-nav-dropdown">
+                        <Dropdown.Toggle className="bg-transparent text-dark" id="dropdown-custom-components">
+                        Your font: <b>{font}</b>
+                        </Dropdown.Toggle>
+                        <Dropdown.Menu>
+                            <Dropdown.Item onSelect={e => {setFont("Arial");setEdited(true);}} style={{fontFamily: "Arial"}}>Arial</Dropdown.Item>
+                            <Dropdown.Item onSelect={e => {setFont("Times New Roman");setEdited(true);}} style={{fontFamily: "Times New Roman"}}>Times New Roman</Dropdown.Item>
+                            <Dropdown.Item onSelect={e => {setFont("Helvetica");setEdited(true);}} style={{fontFamily: "Helvetica"}}>Helvetica</Dropdown.Item>
+                            <Dropdown.Item onSelect={e => {setFont("Lucida Console");setEdited(true);}} style={{fontFamily: "Lucida Console"}}>Lucida Console</Dropdown.Item>
+                            <Dropdown.Item onSelect={e => {setFont("Papyrus");setEdited(true);}} style={{fontFamily: "Papyrus"}}>Papyrus</Dropdown.Item>
+                        </Dropdown.Menu>
+                    </Dropdown>
 
                     <Button variant="success" type="submit" className="mt-5">Save Changes</Button>
 

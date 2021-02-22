@@ -42,7 +42,9 @@ class Profile extends Component{
 
             projects: (typeof this.props.location.projects !== 'undefined') ? this.props.location.state.projects : null,
 
-            loading: true
+            loading: true,
+
+            font: null
         }
     }
 
@@ -734,10 +736,15 @@ class Profile extends Component{
         return;
     }
 
+    updateFont = async(updatedFont) => {
+        this.setState({font: updatedFont});
+        console.log("state recieved font: ", this.state.font);
+    }
+
     render(){
 
         return(
-            <div className="container">
+            <div className="container" style={{fontFamily: this.state.font}}>
                 {this.state.loading
                 
                 ? <><Spinner animation="border" variant="success" /></>
@@ -765,6 +772,7 @@ class Profile extends Component{
                             updateCurrentOccupation={this.updateCurrentOccupation}
                             createCurrentOrganization={this.createCurrentOrganization}
                             updateCurrentOrganization={this.updateCurrentOrganization}
+                            updateFont={this.updateFont}
                         />
                     : null }
 
