@@ -224,24 +224,24 @@ export const Home = (props) => {
                         />
                     </Form.Row>
 
-                    <br></br>
+                    <br></br><br></br>
                     <Dropdown id="collapsible-nav-dropdown">
                         <Dropdown.Toggle className="bg-transparent text-dark" id="dropdown-custom-components">
                         Your font: <b style={{fontFamily: font}}>{font}</b>
                         </Dropdown.Toggle>
                         <Dropdown.Menu>
-                            <Dropdown.Item onSelect={e => {setFont("Arial");setEdited(true);}} style={{fontFamily: "Arial"}}>Arial</Dropdown.Item>
-                            <Dropdown.Item onSelect={e => {setFont("Times New Roman");setEdited(true);}} style={{fontFamily: "Times New Roman"}}>Times New Roman</Dropdown.Item>
-                            <Dropdown.Item onSelect={e => {setFont("Helvetica");setEdited(true);}} style={{fontFamily: "Helvetica"}}>Helvetica</Dropdown.Item>
-                            <Dropdown.Item onSelect={e => {setFont("Lucida Console");setEdited(true);}} style={{fontFamily: "Lucida Console"}}>Lucida Console</Dropdown.Item>
-                            <Dropdown.Item onSelect={e => {setFont("Georgia");setEdited(true);}} style={{fontFamily: "Georgia"}}>Georgia</Dropdown.Item>
-                            <Dropdown.Item onSelect={e => {setFont("Garamond");setEdited(true);}} style={{fontFamily: "Garamond"}}>Garamond</Dropdown.Item>
-                            <Dropdown.Item onSelect={e => {setFont("Verdana");setEdited(true);}} style={{fontFamily: "Verdana"}}>Verdana</Dropdown.Item>
-                            <Dropdown.Item onSelect={e => {setFont("Courier New");setEdited(true);}} style={{fontFamily: "Courier New"}}>Courier New</Dropdown.Item>
-                            <Dropdown.Item onSelect={e => {setFont("Monaco");setEdited(true);}} style={{fontFamily: "Monaco"}}>Monaco</Dropdown.Item>
-                            <Dropdown.Item onSelect={e => {setFont("Brush Script MT");setEdited(true);}} style={{fontFamily: "Brush Script MT"}}>Brush Script MT</Dropdown.Item>
-                            <Dropdown.Item onSelect={e => {setFont("Lucida Handwriting");setEdited(true);}} style={{fontFamily: "Lucida Handwriting"}}>Lucida Handwriting</Dropdown.Item>
-                            <Dropdown.Item onSelect={e => {setFont("Copperplate");setEdited(true);}} style={{fontFamily: "Copperplate"}}>Copperplate</Dropdown.Item>
+                            <Dropdown.Item active={(font === "Arial") ? true : false} onSelect={e => {setFont("Arial");setEdited(true);}} style={{fontFamily: "Arial"}}>Arial</Dropdown.Item>
+                            <Dropdown.Item active={(font === "Times New Roman") ? true : false} onSelect={e => {setFont("Times New Roman");setEdited(true);}} style={{fontFamily: "Times New Roman"}}>Times New Roman</Dropdown.Item>
+                            <Dropdown.Item active={(font === "Helvetica") ? true : false} onSelect={e => {setFont("Helvetica");setEdited(true);}} style={{fontFamily: "Helvetica"}}>Helvetica</Dropdown.Item>
+                            <Dropdown.Item active={(font === "Lucida Console") ? true : false} onSelect={e => {setFont("Lucida Console");setEdited(true);}} style={{fontFamily: "Lucida Console"}}>Lucida Console</Dropdown.Item>
+                            <Dropdown.Item active={(font === "Georgia") ? true : false} onSelect={e => {setFont("Georgia");setEdited(true);}} style={{fontFamily: "Georgia"}}>Georgia</Dropdown.Item>
+                            <Dropdown.Item active={(font === "Garamond") ? true : false} onSelect={e => {setFont("Garamond");setEdited(true);}} style={{fontFamily: "Garamond"}}>Garamond</Dropdown.Item>
+                            <Dropdown.Item active={(font === "Verdana") ? true : false} onSelect={e => {setFont("Verdana");setEdited(true);}} style={{fontFamily: "Verdana"}}>Verdana</Dropdown.Item>
+                            <Dropdown.Item active={(font === "Courier New") ? true : false} onSelect={e => {setFont("Courier New");setEdited(true);}} style={{fontFamily: "Courier New"}}>Courier New</Dropdown.Item>
+                            <Dropdown.Item active={(font === "Monaco") ? true : false} onSelect={e => {setFont("Monaco");setEdited(true);}} style={{fontFamily: "Monaco"}}>Monaco</Dropdown.Item>
+                            <Dropdown.Item active={(font === "Brush Script MT") ? true : false} onSelect={e => {setFont("Brush Script MT");setEdited(true);}} style={{fontFamily: "Brush Script MT"}}>Brush Script MT</Dropdown.Item>
+                            <Dropdown.Item active={(font === "Lucida Handwriting") ? true : false} onSelect={e => {setFont("Lucida Handwriting");setEdited(true);}} style={{fontFamily: "Lucida Handwriting"}}>Lucida Handwriting</Dropdown.Item>
+                            <Dropdown.Item active={(font === "Copperplate") ? true : false} onSelect={e => {setFont("Copperplate");setEdited(true);}} style={{fontFamily: "Copperplate"}}>Copperplate</Dropdown.Item>
                         </Dropdown.Menu>
                     </Dropdown>
 
