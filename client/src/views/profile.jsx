@@ -814,7 +814,7 @@ class Profile extends Component{
     updateSize = async(user_id, updatedSize) => {
         this.setState({loading: true})
         console.log("Profile recieved size:", updatedSize)
-        const response = await fetch('http://localhost:5000/updateSize',  {
+        const response = await fetch('http://localhost:5000/updateFontSize',  {
             method: 'POST', 
             headers: {
                 'Accept': 'application/json',
@@ -842,7 +842,7 @@ class Profile extends Component{
                 ? <><Spinner animation="border" variant="success" /></>
                 
                 : <><NavBar {...this.props} data={this.state}/>
-                <div className="tabulation-container" style={{fontFamily: this.state.profile[0].font, fontSize: this.state.profile[0].size}}>
+                <div className="tabulation-container" style={{fontFamily: this.state.profile[0].font, fontSize: this.state.profile[0].font_size}}>
                 <div className="user-container">
                     <Tabs
                     className="tab-style"

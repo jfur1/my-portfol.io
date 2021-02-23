@@ -652,6 +652,22 @@ app.post('/updateFont', (req, res) => {
     .catch(err => console.log(err));
 })
 
+app.post('/updateFontSize', (req, res) => {
+    const {user_id, size} = req.body;
+
+    db.tx(async t => {
+        return t.none('UPDATE profile SET font_size=${size} WHERE uid=${user_id};', 
+        {
+            user_id, 
+            size
+        });
+    })
+    .then(data => {
+        return res.json({errors: false});
+    })
+    .catch(err => console.log(err));
+})
+
 // ----------- [BEGIN] Edit About Tab -----------
 
 app.post('/createLocation', (req, res) => {

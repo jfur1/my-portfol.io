@@ -1,5 +1,5 @@
 import React from 'react';
-import Avatar from 'react-avatar-edit';
+import Avatar from '../components/testAvatar';
 
 function getBase64(file, cb) {
   let reader = new FileReader();
@@ -54,7 +54,6 @@ class UploadProfilePicture extends React.Component{
               closeIconColor={"black"}
               onFileLoad={this.onFileLoad}
               src={this.state.src}
-              
             />
 
             <br></br>

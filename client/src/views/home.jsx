@@ -18,8 +18,8 @@ export const Home = (props) => {
     const [fullname, setFullname] = useState(user.fullname);
     const [currentOccupation, setCurrentOccupation] = useState(profile[0].current_occupation);
     const [currentOrganization, setCurrentOrganization] = useState(profile[0].current_organization);
-    const [font, setFont] = useState(profile[0].font !== null ? profile[0].font : "Arial");
-    const [size, setSize] = useState(profile[0].size !== null ? profile[0].size : "100%") 
+    const [font, setFont] = useState(null);
+    const [size, setSize] = useState(null);
     const [showEditPic, setShowEditPic] = useState(false);
 
     const [profilePic, setProfilePic] 
@@ -254,7 +254,7 @@ export const Home = (props) => {
                     <br></br>
                     <Dropdown id="collapsible-nav-dropdown">
                         <Dropdown.Toggle className="bg-transparent text-dark" id="dropdown-custom-components">
-                        Your font: <b style={{fontFamily: font}}>{font}</b>
+                        Your font: <b style={{fontFamily: profile[0].font}}>{profile[0].font}</b>
                         </Dropdown.Toggle>
                         <Dropdown.Menu>
                             <Dropdown.Item active={(font === "Arial") ? true : false} onSelect={e => {setFont("Arial");setEdited(true);}} style={{fontFamily: "Arial"}}>Arial</Dropdown.Item>
@@ -275,9 +275,10 @@ export const Home = (props) => {
                     <br></br>
                     <Dropdown id="collapsible-nav-dropdown">
                         <Dropdown.Toggle className="bg-transparent text-dark" id="dropdown-custom-components">
-                        Font size: <b style={{fontFamily: font, fontSize: size}}>{size === "75%" ? "Small Text" : null}
-                                                                                    {size === "100%" ? "Medium Text" : null}
-                                                                                    {size === "125%" ? "Large Text" : null}</b>
+                        Font size: <b style={{fontFamily: font, fontSize: size}}>
+                        {profile[0].font_size === "75%" ? "Small Text" : null}
+                        {profile[0].font_size === "100%" ? "Medium Text" : null}
+                        {profile[0].font_size === "125%" ? "Large Text" : null}</b>
                         </Dropdown.Toggle>
                         <Dropdown.Menu>
                             <Dropdown.Item active={(size === "75%") ? true : false} onSelect={e => {setSize("75%");setEdited(true);}} style={{fontSize: '75%'}}>Small text</Dropdown.Item>
