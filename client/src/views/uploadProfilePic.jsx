@@ -26,7 +26,8 @@ class UploadProfilePicture extends React.Component{
       }
       
       onClose() {
-        this.setState({preview: null})
+        this.setState({preview: null});
+        console.log("Closed")
       }
       
       onCrop(preview) {

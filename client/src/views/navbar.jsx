@@ -12,7 +12,10 @@ export const NavBar = (props) => {
     return(
 
         <Navbar sticky="top" style={{background:'rgba(255,255,255,1)'}}>
-            <Navbar.Brand><img style={{height: "30px"}} src="/mp-new-logo.png" alt="logo"/>&nbsp;&nbsp;&nbsp;</Navbar.Brand>
+            <Navbar.Brand href={loggedIn ? `/${requestedBy.username}` : '/'}>
+                <img style={{height: "30px"}} src="/mp-new-logo.png" alt="logo"/>
+                &nbsp;&nbsp;&nbsp;
+            </Navbar.Brand>
             <Navbar.Toggle aria-controls="responsive-navbar-nav" />
             <Navbar.Collapse className="justify-content-end">
                 <Nav.Item>
@@ -28,7 +31,7 @@ export const NavBar = (props) => {
                                         props.history.push({
                                             pathname:"/",
                                             state: {loggedOut: true}
-                                        });
+                                     });
                                     });
                                 }}>Logout</Nav.Link>
                             </Dropdown.Item>

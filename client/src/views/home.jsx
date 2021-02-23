@@ -3,7 +3,8 @@ import { useState } from 'react';
 import { Modal, Button, Form, Dropdown } from 'react-bootstrap';
 import { PencilFill } from 'react-bootstrap-icons';
 import { AlertDismissible } from '../components/alertDismissible';
-import UploadProfilePicture from './uploadProfilePic'
+import UploadProfilePicture from './uploadProfilePic';
+import Switch  from '../components/switch';
 
 export const Home = (props) => {
     //console.log("Home Component Recieved Props: ", props);
@@ -216,10 +217,19 @@ export const Home = (props) => {
 
                     <Form.Row className='mt-3'>
                         <Form.Label>
-                            Profile Picture
+                            Edit Profile Picture
                         </Form.Label>
-                        <Button variant="outline-success" onClick={()  => setShowEditPic(!showEditPic)}>Edit Profile Picture</Button>
 
+                        <Switch
+                            isOn={showEditPic}
+                            handleToggle={() => {      
+                                    setEdited(true);                              
+                                    setShowEditPic(!showEditPic);
+                            }}
+                        />
+                    </Form.Row>
+
+                    <Form.Row className='mt-3'>
                         {showEditPic 
                         ? <UploadProfilePicture 
                             stagePreview={stagePreview}
@@ -228,8 +238,9 @@ export const Home = (props) => {
                                 ? prefix + `${binaryToBase64(images[0].base64image.data)}` 
                                 : null}
                         />
-                        : null}
-
+                        : <img src={typeof(images[0]) !== 'undefined'
+                            ? prefix + `${binaryToBase64(images[0].base64preview.data)}` 
+                            : ''} alt="Preview"/>}
                     </Form.Row>
 
                     <br></br>

@@ -4,7 +4,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 
 // Components
-import { Welcome } from "./views/welcome";
+// import { Welcome } from "./views/welcome";
 import UploadProfilePicture from './views/uploadProfilePic'
 import Profile from './views/profile';
 import {TestRegisterForm} from './components/slider/form';
