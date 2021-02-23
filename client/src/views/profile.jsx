@@ -811,6 +811,28 @@ class Profile extends Component{
         return;
     }
 
+    updateSize = async(user_id, updatedSize) => {
+        this.setState({loading: true})
+        console.log("Profile recieved size:", updatedSize)
+        const response = await fetch('http://localhost:5000/updateSize',  {
+            method: 'POST', 
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            mode: 'cors',
+            credentials: 'include',
+            withCredentials: true,
+            body: JSON.stringify({
+                user_id: user_id,
+                size: updatedSize
+            })
+        });
+        const data = await response.json();
+        console.log("Client Recieved Response: ", data);
+        return;
+    }
+
     render(){
 
         return(
@@ -820,7 +842,7 @@ class Profile extends Component{
                 ? <><Spinner animation="border" variant="success" /></>
                 
                 : <><NavBar {...this.props} data={this.state}/>
-                <div className="tabulation-container" style={{fontFamily: this.state.profile[0].font}}>
+                <div className="tabulation-container" style={{fontFamily: this.state.profile[0].font, fontSize: this.state.profile[0].size}}>
                 <div className="user-container">
                     <Tabs
                     className="tab-style"
@@ -843,6 +865,7 @@ class Profile extends Component{
                             createCurrentOrganization={this.createCurrentOrganization}
                             updateCurrentOrganization={this.updateCurrentOrganization}
                             updateFont={this.updateFont}
+                            updateSize={this.updateSize}
                             createProfileImages={this.createProfileImages}
                             updateProfileImages={this.updateProfileImages}
                         />

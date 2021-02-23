@@ -18,7 +18,8 @@ export const Home = (props) => {
     const [fullname, setFullname] = useState(user.fullname);
     const [currentOccupation, setCurrentOccupation] = useState(profile[0].current_occupation);
     const [currentOrganization, setCurrentOrganization] = useState(profile[0].current_organization);
-    const [font, setFont] = useState(profile[0].font !== null ? profile[0].font : "Arial"); //could use profile[0].font to store?
+    const [font, setFont] = useState(profile[0].font !== null ? profile[0].font : "Arial");
+    const [size, setSize] = useState(profile[0].size !== null ? profile[0].size : "100%") 
     const [showEditPic, setShowEditPic] = useState(false);
 
     const [profilePic, setProfilePic] 
@@ -106,6 +107,10 @@ export const Home = (props) => {
             await props.updateFont(user.user_id, font);
         }
 
+        const updateSize = async() => {
+            await props.updateSize(user.user_id, size);
+        }
+
         // Conditionally Call Functions
         if(fullname !== user.fullname) await updateFullname();
 
@@ -122,6 +127,9 @@ export const Home = (props) => {
         if(font !== null)
             await updateFont();
         
+        if(size !== null)
+            await updateSize();
+            
         // Create Profile Picture
         if(typeof(images[0]) == 'undefined' && (profileAvatar || profilePic)){
             await createProfileImages();
@@ -261,6 +269,20 @@ export const Home = (props) => {
                             <Dropdown.Item active={(font === "Brush Script MT") ? true : false} onSelect={e => {setFont("Brush Script MT");setEdited(true);}} style={{fontFamily: "Brush Script MT"}}>Brush Script MT</Dropdown.Item>
                             <Dropdown.Item active={(font === "Lucida Handwriting") ? true : false} onSelect={e => {setFont("Lucida Handwriting");setEdited(true);}} style={{fontFamily: "Lucida Handwriting"}}>Lucida Handwriting</Dropdown.Item>
                             <Dropdown.Item active={(font === "Copperplate") ? true : false} onSelect={e => {setFont("Copperplate");setEdited(true);}} style={{fontFamily: "Copperplate"}}>Copperplate</Dropdown.Item>
+                        </Dropdown.Menu>
+                    </Dropdown>
+
+                    <br></br>
+                    <Dropdown id="collapsible-nav-dropdown">
+                        <Dropdown.Toggle className="bg-transparent text-dark" id="dropdown-custom-components">
+                        Font size: <b style={{fontFamily: font, fontSize: size}}>{size === "75%" ? "Small Text" : null}
+                                                                                    {size === "100%" ? "Medium Text" : null}
+                                                                                    {size === "125%" ? "Large Text" : null}</b>
+                        </Dropdown.Toggle>
+                        <Dropdown.Menu>
+                            <Dropdown.Item active={(size === "75%") ? true : false} onSelect={e => {setSize("75%");setEdited(true);}} style={{fontSize: '75%'}}>Small text</Dropdown.Item>
+                            <Dropdown.Item active={(size === "100%") ? true : false} onSelect={e => {setSize("100%");setEdited(true);}} style={{fontSize: '100%'}}>Normal Text</Dropdown.Item>
+                            <Dropdown.Item active={(size === "125%") ? true : false} onSelect={e => {setSize("125%");setEdited(true);}} style={{fontSize: '125%'}}>Large Text</Dropdown.Item>
                         </Dropdown.Menu>
                     </Dropdown>
 
