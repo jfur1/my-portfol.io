@@ -1,5 +1,5 @@
 // Home Tab on a User's Profile
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Modal, Button, Form, Dropdown } from 'react-bootstrap';
 import { PencilFill } from 'react-bootstrap-icons';
 import { AlertDismissible } from '../components/alertDismissible';
@@ -18,6 +18,7 @@ export const Home = (props) => {
     const [currentOccupation, setCurrentOccupation] = useState(profile[0].current_occupation);
     const [currentOrganization, setCurrentOrganization] = useState(profile[0].current_organization);
     const [font, setFont] = useState("Arial"); //could use profile[0].font to store?
+    const [showEditPic, setShowEditPic] = useState(false);
 
     const [profilePic, setProfilePic] 
     = useState(
@@ -46,7 +47,8 @@ export const Home = (props) => {
         if(edited){
             setShowAlert(true);
         } else{
-            setShow(false);    
+            setShow(false);
+            setShowEditPic(false);
         }
     }
     const discardChanges = () => {
@@ -55,6 +57,7 @@ export const Home = (props) => {
         setCurrentOrganization(profile.current_organization);
         setProfilePic('');
         setProfileAvatar('');
+        setShowEditPic(false);
     }
 
     const stageImage = (fullImage) => {
@@ -215,15 +218,20 @@ export const Home = (props) => {
                         <Form.Label>
                             Profile Picture
                         </Form.Label>
-                        <UploadProfilePicture 
+                        
+
+                        {showEditPic 
+                        ? <UploadProfilePicture 
                             stagePreview={stagePreview}
                             stageImage={stageImage}
                             src={typeof(images[0]) !== 'undefined'
-                            ? prefix + `${binaryToBase64(images[0].base64image.data)}` 
-                            : null}
+                                ? prefix + `${binaryToBase64(images[0].base64image.data)}` 
+                                : null}
                         />
-                    </Form.Row>
+                        : null}
 
+                    </Form.Row>
+                    <Button variant="outline-success" onClick={()  => setShowEditPic(!showEditPic)}>Edit Profile Picture</Button>
                     <br></br>
                     <Dropdown id="collapsible-nav-dropdown">
                         <Dropdown.Toggle className="bg-transparent text-dark" id="dropdown-custom-components">
@@ -258,7 +266,7 @@ export const Home = (props) => {
                 <h4>Profile Picture:</h4>
                 <img src={typeof(images[0]) !== 'undefined'
                     ? prefix + `${binaryToBase64(images[0].base64preview.data)}` 
-                    : ''} />
+                    : ''} alt="Preview"/>
 
                 <br></br>
 

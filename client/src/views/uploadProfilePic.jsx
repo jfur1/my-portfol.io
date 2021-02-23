@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import Avatar from 'react-avatar-edit';
 
 function getBase64(file, cb) {
@@ -23,6 +22,7 @@ class UploadProfilePicture extends React.Component{
         this.onCrop = this.onCrop.bind(this)
         this.onClose = this.onClose.bind(this)
         this.onFileLoad = this.onFileLoad.bind(this)
+        console.log(props)
       }
       
       onClose() {
@@ -53,6 +53,7 @@ class UploadProfilePicture extends React.Component{
               closeIconColor={"black"}
               onFileLoad={this.onFileLoad}
               src={this.state.src}
+              
             />
 
             <br></br>

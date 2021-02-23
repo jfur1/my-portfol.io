@@ -378,15 +378,6 @@ export const Contact = (props) => {
         setEdited(true);
     }
 
-    function NewlineText(props) {
-        const text = props.text;
-        if(text == null) return null;
-        return text.split("\\n").map((str, idx) => 
-            <div key={idx}>{str.length === 0 ? <br/> : str}</div>
-        );
-    }
-
-
     function handleOnDragEnd(result) {
         console.log(result)
       if (!result.destination) return;
