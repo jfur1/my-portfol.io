@@ -8,8 +8,6 @@ import './form.css';
 export const TestRegisterForm = (props) => {
     console.log("Test Registration Recieved props:", props);
 
-    let postData = {};
-
     // Login Hooks
     const [loginEmail, setLoginEmail] = useState();
     const [loginPassword, setLoginPassword] = useState();
@@ -40,6 +38,7 @@ export const TestRegisterForm = (props) => {
     const [showAlertLoginFail, setShowAlertLoginFail] = useState(false);
 
     useEffect(() => {
+        let postData = {};
         if(typeof(props.location.state) !== 'undefined'){
             postData = props.location.state;
             console.log("Recieved POST Response:", postData);
@@ -66,8 +65,7 @@ export const TestRegisterForm = (props) => {
                 setShowAlertRegistered(true);
                 document.getElementById('slider-container').classList.remove("sign-up-container-2");
 
-                document.getElementById('slider-container').
-                classList.remove("right-panel-active");
+                document.getElementById('slider-container').classList.remove("right-panel-active");
             }
         }
     }, [props])
@@ -293,7 +291,7 @@ export const TestRegisterForm = (props) => {
                         onChange={e => setLoginPassword(e.target.value)}
                     /><br/>
                     {/* eslint-disable-next-line} */}
-                    <a href="#">Forgot your password?</a>
+                    <a href="/forgot">Forgot your password?</a>
                     <button className="form-button" 
                         onClick={() => {
                             auth.login(loginEmail, loginPassword, 

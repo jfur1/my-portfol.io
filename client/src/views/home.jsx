@@ -3,7 +3,8 @@ import { useState } from 'react';
 import { Modal, Button, Form, Dropdown } from 'react-bootstrap';
 import { PencilFill } from 'react-bootstrap-icons';
 import { AlertDismissible } from '../components/alertDismissible';
-import UploadProfilePicture from './uploadProfilePic'
+import UploadProfilePicture from './uploadProfilePic';
+import Switch  from '../components/switch';
 
 export const Home = (props) => {
     //console.log("Home Component Recieved Props: ", props);
@@ -17,7 +18,7 @@ export const Home = (props) => {
     const [fullname, setFullname] = useState(user.fullname);
     const [currentOccupation, setCurrentOccupation] = useState(profile[0].current_occupation);
     const [currentOrganization, setCurrentOrganization] = useState(profile[0].current_organization);
-    const [font, setFont] = useState("Arial"); //could use profile[0].font to store?
+    const [font, setFont] = useState(profile[0].font !== null ? profile[0].font : "Arial"); //could use profile[0].font to store?
     const [showEditPic, setShowEditPic] = useState(false);
 
     const [profilePic, setProfilePic] 
@@ -102,7 +103,7 @@ export const Home = (props) => {
         }
 
         const updateFont = async() => {
-            await props.updateFont(font);
+            await props.updateFont(user.user_id, font);
         }
 
         // Conditionally Call Functions
@@ -118,7 +119,7 @@ export const Home = (props) => {
         else if(typeof(profile.current_organization) !== 'undefined' && currentOrganization)
             await updateCurrentOrganization();
 
-        if(font !== "Arial")
+        if(font !== null)
             await updateFont();
         
         // Create Profile Picture
@@ -216,10 +217,19 @@ export const Home = (props) => {
 
                     <Form.Row className='mt-3'>
                         <Form.Label>
-                            Profile Picture
+                            Edit Profile Picture
                         </Form.Label>
-                        <Button variant="outline-success" onClick={()  => setShowEditPic(!showEditPic)}>Edit Profile Picture</Button>
 
+                        <Switch
+                            isOn={showEditPic}
+                            handleToggle={() => {      
+                                    setEdited(true);                              
+                                    setShowEditPic(!showEditPic);
+                            }}
+                        />
+                    </Form.Row>
+
+                    <Form.Row className='mt-3'>
                         {showEditPic 
                         ? <UploadProfilePicture 
                             stagePreview={stagePreview}
@@ -228,8 +238,9 @@ export const Home = (props) => {
                                 ? prefix + `${binaryToBase64(images[0].base64image.data)}` 
                                 : null}
                         />
-                        : null}
-
+                        : <img src={typeof(images[0]) !== 'undefined'
+                            ? prefix + `${binaryToBase64(images[0].base64preview.data)}` 
+                            : ''} alt="Preview"/>}
                     </Form.Row>
 
                     <br></br>
