@@ -790,20 +790,37 @@ class Profile extends Component{
     }
 
     updateFont = async(user_id, updatedFont) => {
-        this.setState({font: updatedFont});
-        console.log("recieved new font: ", this.state.font);
+        this.setState({loading: true})
+        console.log("Profile recieved font:", updatedFont)
+        const response = await fetch('http://localhost:5000/updateFont',  {
+            method: 'POST', 
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            mode: 'cors',
+            credentials: 'include',
+            withCredentials: true,
+            body: JSON.stringify({
+                user_id: user_id,
+                font: updatedFont
+            })
+        });
+        const data = await response.json();
+        console.log("Client Recieved Response: ", data);
+        return;
     }
 
     render(){
 
         return(
-            <div className="container" style={{fontFamily: this.state.font}}>
+            <div className="container">
                 {this.state.loading
                 
                 ? <><Spinner animation="border" variant="success" /></>
                 
                 : <><NavBar {...this.props} data={this.state}/>
-                <div className="tabulation-container">
+                <div className="tabulation-container" style={{fontFamily: this.state.profile[0].font}}>
                 <div className="user-container">
                     <Tabs
                     className="tab-style"

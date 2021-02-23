@@ -636,6 +636,22 @@ app.post('/updateProfileImages', (req, res) => {
     .catch(err => console.log(err));
 })
 
+app.post('/updateFont', (req, res) => {
+    const {user_id, font} = req.body;
+    console.log("Server recieved font:", font)
+    db.tx(async t => {
+        return t.none('UPDATE profile SET font=${font} WHERE uid=${user_id};', 
+        {
+            user_id, 
+            font
+        });
+    })
+    .then(data => {
+        return res.json({errors: false});
+    })
+    .catch(err => console.log(err));
+})
+
 // ----------- [BEGIN] Edit About Tab -----------
 
 app.post('/createLocation', (req, res) => {

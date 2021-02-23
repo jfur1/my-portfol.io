@@ -18,7 +18,7 @@ export const Home = (props) => {
     const [fullname, setFullname] = useState(user.fullname);
     const [currentOccupation, setCurrentOccupation] = useState(profile[0].current_occupation);
     const [currentOrganization, setCurrentOrganization] = useState(profile[0].current_organization);
-    const [font, setFont] = useState("Arial"); //could use profile[0].font to store?
+    const [font, setFont] = useState(profile[0].font !== null ? profile[0].font : "Arial"); //could use profile[0].font to store?
     const [showEditPic, setShowEditPic] = useState(false);
 
     const [profilePic, setProfilePic] 
@@ -103,7 +103,7 @@ export const Home = (props) => {
         }
 
         const updateFont = async() => {
-            await props.updateFont(font);
+            await props.updateFont(user.user_id, font);
         }
 
         // Conditionally Call Functions
@@ -119,7 +119,7 @@ export const Home = (props) => {
         else if(typeof(profile.current_organization) !== 'undefined' && currentOrganization)
             await updateCurrentOrganization();
 
-        if(font !== "Arial")
+        if(font !== null)
             await updateFont();
         
         // Create Profile Picture
