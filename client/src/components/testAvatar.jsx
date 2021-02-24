@@ -61,8 +61,12 @@ class Avatar extends React.Component {
       containerId,
       loaderId,
       lastMouseY: 0,
+      cropX: props.cropX,
+      cropY: props.cropY,
       showLoader: !(this.props.src || this.props.img)
     }
+    console.log("Recieved src from parent:", this.props.src)
+    console.log("Recieved coords from parent:", this.state.cropX, this.state.cropY);
   }
 
   get lineWidth() {
@@ -137,17 +141,20 @@ class Avatar extends React.Component {
     return this.state.image
   }
 
+
   generateHash(prefix) {
     const s4 = () => Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
     return prefix + '-' + s4() + '-' + s4() + '-' + s4()
   }
 
   onCloseCallback() {
-    this.props.onClose()
+    this.props.onClose();
   }
 
-  onCropCallback(img) {
-    this.props.onCrop(img)
+  onCropCallback(crop, img) {
+    this.props.onCrop(img);
+    if((typeof(crop.x()) !== 'undefined') && (typeof(crop.y()) !== 'undefined'))
+        this.props.getCropCoords(crop.x(), crop.y());
   }
 
   onFileLoadCallback(file) {
@@ -294,10 +301,10 @@ class Avatar extends React.Component {
       resize.fire('resize')
     };
 
-    this.onCropCallback(getPreview());
+    this.onCropCallback(crop, getPreview());
 
     crop.on("dragmove", () => crop.fire('resize'));
-    crop.on("dragend", () => this.onCropCallback(getPreview()));
+    crop.on("dragend", () => this.onCropCallback(crop, getPreview()));
 
     crop.on('resize', () => {
       const x = isLeftCorner() ? calcLeft() : (isRightCorner() ? calcRight() : crop.x());
@@ -333,7 +340,7 @@ class Avatar extends React.Component {
       });
       onScaleCallback(scaleY)
     });
-    resize.on("dragend", () => this.onCropCallback(getPreview()));
+    resize.on("dragend", () => this.onCropCallback(crop, getPreview()));
 
     resize.on('resize', () => moveResizer(crop.x(), crop.y()));
 
@@ -380,13 +387,17 @@ class Avatar extends React.Component {
 
   initCrop() {
     return new Konva.Circle({
-      x: this.halfWidth,
-      y: this.halfHeight,
+      x: this.state.cropX !== null ? this.state.cropX : this.halfWidth,
+      y: this.state.cropY !== null ? this.state.cropY : this.halfHeight,
       radius: this.cropRadius,
       fillPatternImage: this.image,
       fillPatternOffset: {
-        x: this.halfWidth / this.scale,
-        y: this.halfHeight / this.scale
+        x: this.state.cropX !== null 
+            ? (this.state.cropX / this.scale) 
+            : this.halfWidth / this.scale,
+        y: this.state.cropY !== null 
+            ? (this.state.cropY / this.scale) 
+            : this.halfHeight / this.scale
       },
       fillPatternScale: {
         x: this.scale,
@@ -401,8 +412,8 @@ class Avatar extends React.Component {
 
   initCropStroke() {
     return new Konva.Circle({
-      x: this.halfWidth,
-      y: this.halfHeight,
+      x: this.state.cropX !== null ? this.state.cropX : this.halfWidth,
+      y: this.state.cropY !== null ? this.state.cropY : this.halfHeight,
       radius: this.cropRadius,
       stroke: this.cropColor,
       strokeWidth: this.lineWidth,
@@ -414,8 +425,12 @@ class Avatar extends React.Component {
 
   initResize() {
     return new Konva.Rect({
-      x: this.halfWidth + this.cropRadius * 0.86 - 8,
-      y: this.halfHeight + this.cropRadius * -0.5 - 8,
+      x: this.state.cropX !== null 
+        ? (this.state.cropX + this.cropRadius * 0.86 - 8) 
+        : (this.halfWidth + this.cropRadius * 0.86 - 8),
+      y: this.state.cropY !== null 
+        ? (this.state.cropY + this.cropRadius * -0.5 - 8) 
+        : (this.halfHeight + this.cropRadius * -0.5 - 8),
       width: 16,
       height: 16,
       draggable: true,
@@ -430,8 +445,12 @@ class Avatar extends React.Component {
 
   initResizeIcon() {
     return new Konva.Path({
-      x: this.halfWidth + this.cropRadius * 0.86 - 8,
-      y: this.halfHeight + this.cropRadius * -0.5 - 10,
+      x: this.state.cropX !== null 
+        ? (this.state.cropX + this.cropRadius * 0.86 - 8) 
+        : (this.halfWidth + this.cropRadius * 0.86 - 8),
+      y: this.state.cropY !== null 
+        ? (this.state.cropY + this.cropRadius * -0.5 - 10) 
+        : (this.halfHeight + this.cropRadius * -0.5 - 10),
       data: 'M47.624,0.124l12.021,9.73L44.5,24.5l10,10l14.661-15.161l9.963,12.285v-31.5H47.624z M24.5,44.5   L9.847,59.653L0,47.5V79h31.5l-12.153-9.847L34.5,54.5L24.5,44.5z',
       fill: this.cropColor,
       scale: {
@@ -482,6 +501,8 @@ class Avatar extends React.Component {
 
     return (
       <div>
+          {/* {this.state.crop !== null  ? "(x: " + this.state.crop.x() + ", " : null}
+          {this.state.crop !== null  ? "y: " + this.state.crop.y() + ")" : null} */}
         {
           this.state.showLoader
             ? <div style={borderStyle}>

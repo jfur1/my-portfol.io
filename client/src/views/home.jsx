@@ -21,24 +21,26 @@ export const Home = (props) => {
     const [font, setFont] = useState(null);
     const [size, setSize] = useState(null);
     const [showEditPic, setShowEditPic] = useState(false);
+    const [x, setX] = useState(typeof(images[0]) !== 'undefined' ? images[0].x : null);
+    const [y, setY] = useState(typeof(images[0]) !== 'undefined' ? images[0].y : null);
 
     const [profilePic, setProfilePic] 
     = useState(
-        typeof(images[0].base64image) !== 'undefined' 
+        typeof(images[0]) !== 'undefined' 
             ? binaryToBase64(images[0].base64image.data) 
             : ""
     );
     
     const [profileAvatar, setProfileAvatar] 
     = useState(
-        typeof(images[0].base64preview) !== 'undefined' 
+        typeof(images[0]) !== 'undefined' 
             ? binaryToBase64(images[0].base64preview.data) 
             : ""
     );
     
     const [prefix, setPrefix] 
     = useState(
-        typeof(images[0].prefix) !== 'undefined' 
+        typeof(images[0]) !== 'undefined' 
             ? images[0].prefix 
             : ""
     );
@@ -57,8 +59,8 @@ export const Home = (props) => {
         setFullname(user.fullname);
         setCurrentOccupation(profile.current_occupation);
         setCurrentOrganization(profile.current_organization);
-        setProfilePic('');
-        setProfileAvatar('');
+        setX(typeof(images[0]) !== 'undefined' ? images[0].x : null);
+        setY(typeof(images[0]) !== 'undefined' ? images[0].y : null);
         setShowEditPic(false);
     }
 
@@ -70,6 +72,12 @@ export const Home = (props) => {
     const stagePreview = (preview) => {
         //console.log("Recieved Base64 Preview:", preview);
         setProfileAvatar(preview.substring(preview.indexOf(',')+1));
+    }
+
+    const stageCoords = (x, y) => {
+        console.log("Home tab recieved crop coords:");
+        console.log("(x: " + x ,", y: " + y + ")");
+        setX(x); setY(y);
     }
 
     const handleSave = async() => {
@@ -111,6 +119,10 @@ export const Home = (props) => {
             await props.updateSize(user.user_id, size);
         }
 
+        const updatePreviewCoords = async() => {
+            await props.updatePreviewCoords(user.user_id, x, y);
+        }
+
         // Conditionally Call Functions
         if(fullname !== user.fullname) await updateFullname();
 
@@ -137,6 +149,10 @@ export const Home = (props) => {
         else if(profilePic !== images[0].base64image || profileAvatar !== images[0].base64preview){
             await updateProfileImages();
         }
+        if((images[0].x !== x && x) || (images[0].y !== y && y)){
+            await updatePreviewCoords();
+        }
+
 
         window.location.reload();
     }
@@ -242,6 +258,9 @@ export const Home = (props) => {
                         ? <UploadProfilePicture 
                             stagePreview={stagePreview}
                             stageImage={stageImage}
+                            stageCoords={stageCoords}
+                            x={x}
+                            y={y}
                             src={typeof(images[0]) !== 'undefined'
                                 ? prefix + `${binaryToBase64(images[0].base64image.data)}` 
                                 : null}
