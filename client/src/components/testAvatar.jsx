@@ -63,6 +63,7 @@ class Avatar extends React.Component {
       lastMouseY: 0,
       cropX: props.cropX,
       cropY: props.cropY,
+      new: props.new,
       showLoader: !(this.props.src || this.props.img)
     }
     console.log("Recieved src from parent:", this.props.src)
@@ -152,12 +153,17 @@ class Avatar extends React.Component {
   }
 
   onCropCallback(crop, img) {
-    this.props.onCrop(img);
+    if(this.state.cropX == null && this.state.cropY == null) {
+        crop.x(this.halfWidth);
+        crop.y(this.halfHeight);
+    }
     if((typeof(crop.x()) !== 'undefined') && (typeof(crop.y()) !== 'undefined'))
         this.props.getCropCoords(crop.x(), crop.y());
+    this.props.onCrop(img);
   }
 
   onFileLoadCallback(file) {
+    this.setState({new: true})
     this.props.onFileLoad(file)
   }
 
@@ -241,7 +247,9 @@ class Avatar extends React.Component {
     this.setState({
       imgWidth,
       imgHeight,
-      scale,
+      scale, 
+      cropX: this.state.new ? imgWidth/2 : this.props.cropX,
+      cropY: this.state.new ? imgHeight/2 : this.props.cropY,
       cropRadius: calculatedRadius
     }, this.initCanvas)
   }
