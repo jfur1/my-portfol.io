@@ -63,6 +63,7 @@ export const Home = (props) => {
         setCurrentOrganization(profile[0].current_organization);
         setX(typeof(images[0]) !== 'undefined' ? images[0].x : null);
         setY(typeof(images[0]) !== 'undefined' ? images[0].y : null);
+        setR(typeof(images[0]) !== 'undefined' ? images[0].radius : null);
         setShowEditPic(false);
     }
 
