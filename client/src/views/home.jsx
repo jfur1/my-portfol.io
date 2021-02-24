@@ -5,11 +5,12 @@ import { PencilFill } from 'react-bootstrap-icons';
 import { AlertDismissible } from '../components/alertDismissible';
 import UploadProfilePicture from './uploadProfilePic';
 import Switch  from '../components/switch';
+import { setRef } from '@material-ui/core';
 
 export const Home = (props) => {
     //console.log("Home Component Recieved Props: ", props);
     const user = props.data.user;
-    let profile = (props.data.profile !== null) ? props.data.profile : props.location.state.profile;
+    const profile = (props.data.profile !== null) ? props.data.profile : props.location.state.profile;
     const images = (props.data.images !== null) ? props.data.images : props.location.state.images;
 
     const [show, setShow] = useState(false);
@@ -23,6 +24,7 @@ export const Home = (props) => {
     const [showEditPic, setShowEditPic] = useState(false);
     const [x, setX] = useState(typeof(images[0]) !== 'undefined' ? images[0].x : null);
     const [y, setY] = useState(typeof(images[0]) !== 'undefined' ? images[0].y : null);
+    const [r, setR] = useState(typeof(images[0]) !== 'undefined' ? images[0].radius : null)
 
     const [profilePic, setProfilePic] 
     = useState(
@@ -74,10 +76,10 @@ export const Home = (props) => {
         setProfileAvatar(preview.substring(preview.indexOf(',')+1));
     }
 
-    const stageCoords = (x, y) => {
+    const stageCoords = (x, y, r) => {
         console.log("Home tab recieved crop coords:");
-        console.log("(x: " + x ,", y: " + y + ")");
-        setX(x); setY(y);
+        console.log("(x: " + x ,", y: " + y + ", Radius: ", + r + ")");
+        setX(x); setY(y); setR(r);
     }
 
     const handleSave = async() => {
@@ -120,7 +122,7 @@ export const Home = (props) => {
         }
 
         const updatePreviewCoords = async() => {
-            await props.updatePreviewCoords(user.user_id, x, y);
+            await props.updatePreviewCoords(user.user_id, x, y, r);
         }
 
         // Conditionally Call Functions
@@ -261,6 +263,7 @@ export const Home = (props) => {
                             stageCoords={stageCoords}
                             x={x}
                             y={y}
+                            r={r}
                             src={typeof(images[0]) !== 'undefined'
                                 ? prefix + `${binaryToBase64(images[0].base64image.data)}` 
                                 : null}

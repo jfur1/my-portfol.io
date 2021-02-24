@@ -789,7 +789,7 @@ class Profile extends Component{
         return;
     }
 
-    updatePreviewCoords = async(user_id, x, y) => {
+    updatePreviewCoords = async(user_id, x, y, r) => {
         this.setState({loading: true})
         const response = await fetch('http://localhost:5000/updatePreviewCoords',  {
             method: 'POST', 
@@ -803,7 +803,8 @@ class Profile extends Component{
             body: JSON.stringify({
                 user_id: user_id,
                 x: x,
-                y: y
+                y: y,
+                radius: r
             })
         });
         const data = await response.json();

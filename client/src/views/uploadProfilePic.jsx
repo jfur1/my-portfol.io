@@ -20,6 +20,7 @@ class UploadProfilePicture extends React.Component{
           src: props.src,
           initXcoord: props.x,
           initYcoord: props.y,
+          initRadius: props.r,
           new: false
         }
         this.onCrop = this.onCrop.bind(this)
@@ -49,10 +50,10 @@ class UploadProfilePicture extends React.Component{
         })
       }
 
-      getCropCoords(x, y){
+      getCropCoords(x, y, r){
         console.log("Middle Component Recieved Crop Coordinates:");
-        console.log("(x: " + x ,", y: " + y + ")");
-        this.props.stageCoords(x, y);
+        console.log("(x: " + x ,", y: " + y + ", Radius: ", + r + ")");
+        this.props.stageCoords(x, y, r);
       }
 
       render () {
@@ -69,6 +70,7 @@ class UploadProfilePicture extends React.Component{
               new={this.state.new}
               cropX={this.state.initXcoord}
               cropY={this.state.initYcoord}
+              cropR={this.state.initRadius}
               getCropCoords={this.getCropCoords}
             />
             <br></br>

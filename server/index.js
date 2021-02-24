@@ -219,17 +219,6 @@ app.post('/logout', (req, res) => {
     return;
 });
 
-app.get('/getData', ensureAuthenticated, (req, res) => {
-    db.tx(t => {
-        return t.any('SELECT * FROM users;');
-    })
-    .then((d) => {
-        console.log("Successfully returned users table!");
-        return res.json(d);
-    })
-    .catch((err) => console.log(err));
-});
-
 function ensureAuthenticated(req, res, next) {
     if (req.isAuthenticated()) { 
         //console.log(req.session);
@@ -247,8 +236,9 @@ app.get('/getUserData', (req, res) => {
     const username = req.headers.username;
     //console.log("Server recieved header:", username);
 
-    db.tx(t => {
-        return t.oneOrNone('SELECT * FROM users WHERE \'' + username + '\' = username;');
+    db.tx(async t => {
+        const data = await t.oneOrNone('SELECT * FROM users WHERE \'' + username + '\' = username;');
+        return data
     })
     .then((user) => {
         if(!(typeof user !== 'undefined')){
@@ -277,50 +267,6 @@ app.get('/getUserData', (req, res) => {
     });
 })
 
-app.post('/createPost', (req, res) => {
-
-    const {
-        user_id,
-        username,
-        post
-    } = req.body;
-
-    db.task(async t => {
-        const max_id = await t.one('SELECT MAX(pid) FROM post;');
-        
-        if(max_id !== null){
-            const newPostId = max_id.max + 1;
-            const logs = await t.none('INSERT INTO post (pid, body, uid, author) VALUES ($1, $2, $3, $4)', 
-            [newPostId, post, user_id, username]);
-            res.json({status: "success"});
-        }
-        else{
-            res.json({status: "failed"});
-        }
-    })
-    .then(() => {
-        return;
-    })
-    .catch((err) => console.log(err));
-});
-
-app.get('/getPosts', (req, res) => {
-    const username = req.headers.username;
-    //console.log("Attempting to get posts for user:", username);
-
-    db.tx(t => {
-        return t.any('SELECT * FROM post WHERE \''+ username +'\' = author;');
-    })
-    .then((posts) => {
-        return res.json({posts});
-    })
-    .catch((err) => {
-        console.log(err);
-        res.json({error: true});
-    });
-    
-})
-
 app.get('/about', (req, res) => {
     const username = req.headers.username;
     
@@ -331,7 +277,8 @@ app.get('/about', (req, res) => {
             return res.json({error: true});
         }
 
-        return t.oneOrNone('SELECT * FROM profile WHERE \''+ user.user_id + '\' = uid;');
+        const data = await t.oneOrNone('SELECT * FROM profile WHERE \''+ user.user_id + '\' = uid;');
+        return data;
     })
     .then((about) => {
         return res.json(about);
@@ -350,7 +297,8 @@ app.get('/profile', (req, res) => {
             return res.json({error: true});
         }
 
-        return t.any('SELECT * FROM profile WHERE uid = $1', user.user_id);
+        const data = await t.any('SELECT * FROM profile WHERE uid = $1', user.user_id);
+        return data;
     })
     .then((profile) => {
         return res.json(profile);
@@ -371,7 +319,8 @@ app.get('/portfolio', (req, res) => {
             return res.json({error: true});
         }
 
-        return t.any('SELECT portfolio_id, uid, occupation, organization, from_when::varchar, to_when::varchar, description FROM portfolio WHERE uid = $1 ORDER BY position', user.user_id);
+        const data = await t.any('SELECT portfolio_id, uid, occupation, organization, from_when::varchar, to_when::varchar, description FROM portfolio WHERE uid = $1 ORDER BY position', user.user_id);
+        return data;
     })
     .then((portfolio) => {
         return res.json(portfolio);
@@ -412,7 +361,8 @@ app.get('/education', (req, res) => {
             return res.json({error: true});
         }
 
-        return t.any('SELECT education_id, uid, organization, education, from_when::varchar, to_when::varchar, description FROM education WHERE \''+ user.user_id +'\' = uid ORDER BY position;');
+        const data = await t.any('SELECT education_id, uid, organization, education, from_when::varchar, to_when::varchar, description FROM education WHERE \''+ user.user_id +'\' = uid ORDER BY position;');
+        return data;
     })
     .then((eduaction) => {
         return res.json(eduaction);
@@ -430,7 +380,8 @@ app.get('/hobbies', (req, res) => {
             return res.json({error: true});
         }
 
-        return t.any('SELECT * FROM hobbies WHERE \''+ user.user_id +'\' = uid ORDER BY position;');
+        const data = await t.any('SELECT * FROM hobbies WHERE \''+ user.user_id +'\' = uid ORDER BY position;');
+        return data;
     })
     .then((hobbies) => {
         return res.json(hobbies);
@@ -448,7 +399,8 @@ app.get('/skills', (req, res) => {
             return res.json({error: true});
         }
 
-        return t.any('SELECT * FROM skills WHERE \''+ user.user_id +'\' = uid ORDER BY position;');
+        const data = await t.any('SELECT * FROM skills WHERE \''+ user.user_id +'\' = uid ORDER BY position;');
+        return data;
     })
     .then((skills) => {
         return res.json(skills);
@@ -466,7 +418,8 @@ app.get('/projects', (req, res) => {
             return res.json({error: true});
         }
 
-        return t.any('SELECT project_id, uid, title, description, organization, from_when::varchar, to_when::varchar, link, position FROM projects WHERE \''+ user.user_id +'\' = uid ORDER BY position;');
+        const data = await t.any('SELECT project_id, uid, title, description, organization, from_when::varchar, to_when::varchar, link, position FROM projects WHERE \''+ user.user_id +'\' = uid ORDER BY position;');
+        return data;
     })
     .then((skills) => {
         return res.json(skills);
@@ -484,7 +437,7 @@ app.get('/images', (req, res) => {
             return res.json({error: true});
         }
 
-        const data = await t.any('SELECT uid, base64image, base64preview, prefix, x, y FROM images WHERE \''+ user.user_id +'\' = uid;');
+        const data = await t.any('SELECT uid, base64image, base64preview, prefix, x, y, radius FROM images WHERE \''+ user.user_id +'\' = uid;');
         return data;
     })
     .then((images) => {
@@ -672,14 +625,15 @@ app.post('/updateFontSize', (req, res) => {
 })
 
 app.post('/updatePreviewCoords', (req, res) => {
-    const {user_id, x, y} = req.body;
+    const {user_id, x, y, radius} = req.body;
 
     db.tx(async t => {
-        const data = await t.none('UPDATE images SET x=${x}, y=${y} WHERE uid=${user_id};', 
+        const data = await t.none('UPDATE images SET x=${x}, y=${y}, radius=${radius} WHERE uid=${user_id};', 
         {
             user_id, 
             x,
-            y
+            y,
+            radius
         });
         return data;
     })
