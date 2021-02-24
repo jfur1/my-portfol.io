@@ -59,8 +59,8 @@ export const Home = (props) => {
     }
     const discardChanges = () => {
         setFullname(user.fullname);
-        setCurrentOccupation(profile.current_occupation);
-        setCurrentOrganization(profile.current_organization);
+        setCurrentOccupation(profile[0].current_occupation);
+        setCurrentOrganization(profile[0].current_organization);
         setX(typeof(images[0]) !== 'undefined' ? images[0].x : null);
         setY(typeof(images[0]) !== 'undefined' ? images[0].y : null);
         setShowEditPic(false);
