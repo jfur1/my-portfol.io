@@ -24,7 +24,7 @@ export const Home = (props) => {
 
     const [profilePic, setProfilePic] 
     = useState(
-        typeof(images[0].base64image) !== 'undefined' 
+        typeof(images[0].base64image) !== 'undefined'
             ? binaryToBase64(images[0].base64image.data) 
             : ""
     );
