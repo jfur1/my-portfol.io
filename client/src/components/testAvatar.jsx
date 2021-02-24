@@ -63,12 +63,11 @@ class Avatar extends React.Component {
       lastMouseY: 0,
       cropX: props.cropX,
       cropY: props.cropY,
-      cropR: props.cropR,
       new: props.new,
       showLoader: !(this.props.src || this.props.img)
     }
     console.log("Recieved src from parent:", this.props.src);
-    console.log("Recieved coords from parent:", this.state.cropX, this.state.cropY, this.state.cropR);
+    console.log("Recieved coords from parent:", this.state.cropX, this.state.cropY, this.props.cropRadius);
   }
 
   get lineWidth() {
@@ -227,6 +226,10 @@ class Avatar extends React.Component {
     const { imageWidth, imageHeight } = this.props;
     let imgHeight;
     let imgWidth;
+    let cropR = cropRadius;
+
+    if(this.state.new)
+        cropR = 0;
 
     if (imageHeight && imageWidth) {
       console.warn('The imageWidth and imageHeight properties can not be set together, using only imageWidth.');
@@ -244,7 +247,7 @@ class Avatar extends React.Component {
     }
 
     const scale = imgHeight / originalHeight;
-    const calculatedRadius = Math.max(minCropRadius, (cropRadius || Math.min(imgWidth, imgHeight) / 3));
+    const calculatedRadius = Math.max(minCropRadius, (cropR || Math.min(imgWidth, imgHeight) / 3));
 
     this.setState({
       imgWidth,
@@ -399,7 +402,7 @@ class Avatar extends React.Component {
     return new Konva.Circle({
       x: this.state.cropX !== null ? this.state.cropX : this.halfWidth,
       y: this.state.cropY !== null ? this.state.cropY : this.halfHeight,
-      radius: this.state.cropR !== null ? this.state.cropR : this.cropRadius,
+      radius: this.cropRadius,
       fillPatternImage: this.image,
       fillPatternOffset: {
         x: this.state.cropX !== null 
@@ -424,7 +427,7 @@ class Avatar extends React.Component {
     return new Konva.Circle({
       x: this.state.cropX !== null ? this.state.cropX : this.halfWidth,
       y: this.state.cropY !== null ? this.state.cropY : this.halfHeight,
-      radius: this.state.cropR !== null ? this.state.cropR : this.cropRadius,
+      radius: this.cropRadius,
       stroke: this.cropColor,
       strokeWidth: this.lineWidth,
       strokeScaleEnabled: true,
@@ -434,19 +437,13 @@ class Avatar extends React.Component {
   }
 
   initResize() {
-    let radius;
-    if(this.state.cropR !== null){
-        radius = this.state.cropR;
-    } else{
-        radius = this.cropRadius;
-    }
 
     return new Konva.Rect({
       x: this.state.cropX !== null 
-        ? (this.state.cropX + radius * 0.86 - 8) 
+        ? (this.state.cropX + this.cropRadius * 0.86 - 8) 
         : (this.halfWidth + this.cropRadius * 0.86 - 8),
       y: this.state.cropY !== null 
-        ? (this.state.cropY + radius * -0.5 - 8) 
+        ? (this.state.cropY + this.cropRadius * -0.5 - 8) 
         : (this.halfHeight + this.cropRadius * -0.5 - 8),
       width: 16,
       height: 16,
@@ -461,19 +458,13 @@ class Avatar extends React.Component {
   }
 
   initResizeIcon() {
-    let radius;
-    if(this.state.cropR !== null){
-        radius = this.state.cropR;
-    } else{
-        radius = this.cropRadius;
-    }
 
     return new Konva.Path({
       x: this.state.cropX !== null 
-        ? (this.state.cropX + radius * 0.86 - 8) 
+        ? (this.state.cropX + this.cropRadius * 0.86 - 8) 
         : (this.halfWidth + this.cropRadius * 0.86 - 8),
       y: this.state.cropY !== null 
-        ? (this.state.cropY + radius * -0.5 - 10) 
+        ? (this.state.cropY + this.cropRadius * -0.5 - 10) 
         : (this.halfHeight + this.cropRadius * -0.5 - 10),
       data: 'M47.624,0.124l12.021,9.73L44.5,24.5l10,10l14.661-15.161l9.963,12.285v-31.5H47.624z M24.5,44.5   L9.847,59.653L0,47.5V79h31.5l-12.153-9.847L34.5,54.5L24.5,44.5z',
       fill: this.cropColor,
