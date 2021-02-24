@@ -17,11 +17,14 @@ class UploadProfilePicture extends React.Component{
         super(props)
         this.state = {
           preview: null,
-          src: props.src
+          src: props.src,
+          initXcoord: props.x,
+          initYcoord: props.y
         }
         this.onCrop = this.onCrop.bind(this)
         this.onClose = this.onClose.bind(this)
         this.onFileLoad = this.onFileLoad.bind(this)
+        this.getCropCoords = this.getCropCoords.bind(this)
         console.log(props)
       }
       
@@ -42,7 +45,13 @@ class UploadProfilePicture extends React.Component{
           this.props.stageImage(fullImg);
         })
       }
-      
+
+      getCropCoords(x, y){
+        console.log("Middle Component Recieved Crop Coordinates:");
+        console.log("(x: " + x ,", y: " + y + ")");
+        this.props.stageCoords(x, y)
+      }
+
       render () {
         return (
           <div>
@@ -54,8 +63,10 @@ class UploadProfilePicture extends React.Component{
               closeIconColor={"black"}
               onFileLoad={this.onFileLoad}
               src={this.state.src}
+              cropX={this.state.initXcoord}
+              cropY={this.state.initYcoord}
+              getCropCoords={this.getCropCoords}
             />
-
             <br></br>
             <img src={this.state.preview} alt="Preview" />
             

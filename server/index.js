@@ -484,7 +484,8 @@ app.get('/images', (req, res) => {
             return res.json({error: true});
         }
 
-        return t.any('SELECT uid, base64image, base64preview, prefix FROM images WHERE \''+ user.user_id +'\' = uid;');
+        const data = await t.any('SELECT uid, base64image, base64preview, prefix, x, y FROM images WHERE \''+ user.user_id +'\' = uid;');
+        return data;
     })
     .then((images) => {
 
@@ -604,13 +605,14 @@ app.post('/createProfileImages', (req, res) => {
     
     db.tx(async t => {
 
-        return t.none('INSERT INTO images (uid, base64image, base64preview, prefix) VALUES(${user_id}, decode(${base64image}, \'base64\') , decode(${base64preview}, \'base64\'), ${prefix});', 
+        const data = await t.none('INSERT INTO images (uid, base64image, base64preview, prefix) VALUES(${user_id}, decode(${base64image}, \'base64\') , decode(${base64preview}, \'base64\'), ${prefix});', 
         {
             user_id,
             base64image,
             base64preview,
             prefix
         });
+        return data;
     })
     .then(data => {
         return res.json({errors: false});
@@ -622,13 +624,14 @@ app.post('/updateProfileImages', (req, res) => {
     const {user_id, base64image, base64preview, prefix} = req.body;
 
     db.tx(async t => {
-        return t.none('UPDATE images SET base64image=decode(${base64image}, \'base64\'), base64preview=decode(${base64preview}, \'base64\'), prefix=${prefix} WHERE uid=${user_id};', 
+        const data = await t.none('UPDATE images SET base64image=decode(${base64image}, \'base64\'), base64preview=decode(${base64preview}, \'base64\'), prefix=${prefix} WHERE uid=${user_id};', 
         {
             user_id,
             base64image,
             base64preview,
             prefix
         });
+        return data;
     })
     .then(data => {
         return res.json({errors: false});
@@ -667,6 +670,25 @@ app.post('/updateFontSize', (req, res) => {
     })
     .catch(err => console.log(err));
 })
+
+app.post('/updatePreviewCoords', (req, res) => {
+    const {user_id, x, y} = req.body;
+
+    db.tx(async t => {
+        const data = await t.none('UPDATE images SET x=${x}, y=${y} WHERE uid=${user_id};', 
+        {
+            user_id, 
+            x,
+            y
+        });
+        return data;
+    })
+    .then(data => {
+        return res.json({errors: false});
+    })
+    .catch(err => console.log(err));
+})
+
 
 // ----------- [BEGIN] Edit About Tab -----------
 

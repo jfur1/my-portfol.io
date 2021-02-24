@@ -789,6 +789,28 @@ class Profile extends Component{
         return;
     }
 
+    updatePreviewCoords = async(user_id, x, y) => {
+        this.setState({loading: true})
+        const response = await fetch('http://localhost:5000/updatePreviewCoords',  {
+            method: 'POST', 
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            mode: 'cors',
+            credentials: 'include',
+            withCredentials: true,
+            body: JSON.stringify({
+                user_id: user_id,
+                x: x,
+                y: y
+            })
+        });
+        const data = await response.json();
+        console.log("Client Recieved Response: ", data);
+        return;
+    }
+
     updateFont = async(user_id, updatedFont) => {
         this.setState({loading: true})
         console.log("Profile recieved font:", updatedFont)
@@ -868,6 +890,7 @@ class Profile extends Component{
                             updateSize={this.updateSize}
                             createProfileImages={this.createProfileImages}
                             updateProfileImages={this.updateProfileImages}
+                            updatePreviewCoords={this.updatePreviewCoords}
                         />
                     : null }
 

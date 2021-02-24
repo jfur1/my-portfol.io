@@ -4,11 +4,10 @@ import { Modal, Button, Form, Col } from 'react-bootstrap';
 import { AlertDismissible } from '../components/alertDismissible';
 import Switch  from '../components/switch';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import { Editor } from '@tinymce/tinymce-react';
 
 export const About = props => {
     //console.log("About Recieved Parent Props: ", props);
-    
+
     // User Data
     const info = (props.data.about !== null) ? props.data.about : props.location.state.about;
     const user = (props.location.state.user !== null) ? props.location.state.user : props.data.user;
@@ -607,28 +606,17 @@ export const About = props => {
                         <Form.Label column sm={2}>
                             Bio
                         </Form.Label>
-                        <Editor
-                            initialValue={(info !== null && info.bio !== null) 
-                                ? info.bio.substring(1, info.bio.length-1).replace(/\\n/g, '\n')
-                                : null}
-                            init={{
-                            height: 500,
-                            menubar: false,
-                            plugins: [
-                                'advlist autolink lists link image charmap print preview anchor',
-                                'searchreplace visualblocks code fullscreen',
-                                'insertdatetime media table paste code help wordcount'
-                            ],
-                            toolbar:
-                                'undo redo | formatselect | bold italic backcolor | \ alignleft aligncenter alignright alignjustify | \ bullist numlist outdent indent | removeformat | help'
-                            }}
-                            onEditorChange={e => {
-                                setBio(e.target.value); 
-                                setEdited(true);
-                            }}
-                        />
-                    </Form.Row>
-                    
+                            <textarea 
+                                className="form-control" 
+                                rows="5" 
+                                id="bio" 
+                                defaultValue={(info !== null && info.bio !== null) 
+                                    ? info.bio.substring(1, info.bio.length-1).replace(/\\n/g, '\n')
+                                    : null} 
+                                onChange={e => {
+                                    setBio(e.target.value); 
+                                    setEdited(true);
+                                }}/>
                     <Form.Group className="mt-4">
                         {(hobbiesData.length > 1 || skillsData.length > 1)
                         ? <>
