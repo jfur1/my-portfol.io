@@ -5,7 +5,6 @@ import { PencilFill } from 'react-bootstrap-icons';
 import { AlertDismissible } from '../components/alertDismissible';
 import UploadProfilePicture from './uploadProfilePic';
 import Switch  from '../components/switch';
-import { setRef } from '@material-ui/core';
 
 export const Home = (props) => {
     //console.log("Home Component Recieved Props: ", props);
@@ -78,8 +77,8 @@ export const Home = (props) => {
     }
 
     const stageCoords = (x, y, r) => {
-        console.log("Home tab recieved crop coords:");
-        console.log("(x: " + x ,", y: " + y + ", Radius: ", + r + ")");
+        //console.log("Home tab recieved crop coords:");
+        //console.log("(x: " + x ,", y: " + y + ", Radius: ", + r + ")");
         setX(x); setY(y); setR(r);
     }
 
@@ -152,7 +151,7 @@ export const Home = (props) => {
         else if(profilePic !== images[0].base64image || profileAvatar !== images[0].base64preview){
             await updateProfileImages();
         }
-        if((images[0].x !== x && x) || (images[0].y !== y && y)){
+        if(typeof(images[0]) !== 'undefined' && ((images[0].x !== x && x) || (images[0].y !== y && y))){
             await updatePreviewCoords();
         }
 
@@ -268,6 +267,10 @@ export const Home = (props) => {
                             src={typeof(images[0]) !== 'undefined'
                                 ? prefix + `${binaryToBase64(images[0].base64image.data)}` 
                                 : null}
+                            img={typeof(images[0]) !== 'undefined'
+                            ?  null
+                            : null}
+
                         />
                         : <img src={typeof(images[0]) !== 'undefined'
                             ? prefix + `${binaryToBase64(images[0].base64preview.data)}` 

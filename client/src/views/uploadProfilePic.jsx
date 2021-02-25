@@ -18,16 +18,18 @@ class UploadProfilePicture extends React.Component{
         this.state = {
           preview: null,
           src: props.src,
+          img: props.img,
           initXcoord: props.x,
           initYcoord: props.y,
           initRadius: props.r,
-          new: false
+          new: false,
+          currentPrefix: null,
         }
         this.onCrop = this.onCrop.bind(this)
         this.onClose = this.onClose.bind(this)
         this.onFileLoad = this.onFileLoad.bind(this)
         this.getCropCoords = this.getCropCoords.bind(this)
-        console.log(props)
+        //console.log(props)
       }
       
       onClose() {
@@ -36,7 +38,8 @@ class UploadProfilePicture extends React.Component{
       }
       
       onCrop(preview) {
-        this.setState({preview: preview});
+        this.setState({preview});
+        //console.log("Recieved Preview:", preview)
         this.props.stagePreview(preview);
       }
 
@@ -46,17 +49,18 @@ class UploadProfilePicture extends React.Component{
         getBase64(file, (result) => {
           fullImg = result;
           this.props.stageImage(fullImg);
-          // console.log("Middle Component State:", this.state);
+          //console.log("Image orientation:", file)
         })
       }
 
       getCropCoords(x, y, r){
-        console.log("Middle Component Recieved Crop Coordinates:");
-        console.log("(x: " + x ,", y: " + y + ", Radius: ", + r + ")");
+        // console.log("Middle Component Recieved Crop Coordinates:");
+        // console.log("(x: " + x ,", y: " + y + ", Radius: ", + r + ")");
         this.props.stageCoords(x, y, r);
       }
 
       render () {
+        
         return (
           <div>
             <Avatar

@@ -66,8 +66,8 @@ class Avatar extends React.Component {
       new: props.new,
       showLoader: !(this.props.src || this.props.img)
     }
-    console.log("Recieved src from parent:", this.props.src);
-    console.log("Recieved coords from parent:", this.state.cropX, this.state.cropY, this.props.cropRadius);
+    //console.log("Recieved src from parent:", this.props.src);
+    //console.log("Recieved coords from parent:", this.state.cropX, this.state.cropY, this.props.cropRadius);
   }
 
   get lineWidth() {
@@ -153,17 +153,19 @@ class Avatar extends React.Component {
   }
 
   onCropCallback(crop, img) {
+ 
     if(this.state.cropX == null && this.state.cropY == null) {
         crop.x(this.halfWidth);
         crop.y(this.halfHeight);
     }
-    console.log("Crop Radius:", crop.radius());
+    //console.log("Crop Radius:", crop.radius());
     if((typeof(crop.x()) !== 'undefined') && (typeof(crop.y()) !== 'undefined'))
         this.props.getCropCoords(crop.x(), crop.y(), crop.radius());
+    console.log("Img preview in onCrop:", img)
     this.props.onCrop(img);
   }
 
-  onFileLoadCallback(file) {
+  onFileLoadCallback(file, img) {
     this.setState({new: true})
     this.props.onFileLoad(file)
   }
@@ -181,11 +183,13 @@ class Avatar extends React.Component {
 
     const image = this.props.img || new Image();
     if (!this.props.img && this.props.src) image.src = this.props.src;
+
     this.setState({ image }, () => {
-      if (this.image.complete) return this.init();
-      this.image.onload = () => {
-        this.onImageLoadCallback(this.image);
-        this.init()
+        console.log("image in componentDidMount:", image)
+        if (this.image.complete) return this.init();
+        this.image.onload = () => {
+            this.onImageLoadCallback(this.image);
+            this.init()
       }
     })
   }
@@ -197,17 +201,17 @@ class Avatar extends React.Component {
     if(!e.target.value) return;
 
     let file = e.target.files[0];
-
     this.onFileLoadCallback(file);
 
     const ref = this;
     EXIF.getData(file, function() {
       let exifOrientation = EXIF.getTag(this, "Orientation");
+      console.log("Orientation:", exifOrientation)
       LoadImage(
         file,
         function (image, data) {
-          ref.setState({ image, file, showLoader: false});
-          ref.init();
+            ref.setState({ image, file, data, showLoader: false});
+            ref.init();
         },
         {orientation: exifOrientation, meta: true}
       );
@@ -516,8 +520,6 @@ class Avatar extends React.Component {
 
     return (
       <div>
-          {/* {this.state.crop !== null  ? "(x: " + this.state.crop.x() + ", " : null}
-          {this.state.crop !== null  ? "y: " + this.state.crop.y() + ")" : null} */}
         {
           this.state.showLoader
             ? <div style={borderStyle}>
