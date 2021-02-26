@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Tabs, Tab, Spinner } from 'react-bootstrap';
 import { AlertMsg } from '../components/alerts';
 
+
 // Import Components
 import { NavBar } from './navbar';
 import { Home } from './home';

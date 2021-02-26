@@ -322,7 +322,7 @@ export const Home = (props) => {
                 <h3>{user.fullname}</h3>
 
                 <h4>Profile Picture:</h4>
-                <img src={typeof(images[0]) !== 'undefined'
+                <img height="200px" src={typeof(images[0]) !== 'undefined'
                     ? prefix + `${binaryToBase64(images[0].base64preview.data)}` 
                     : ''} alt="Preview"/>
 

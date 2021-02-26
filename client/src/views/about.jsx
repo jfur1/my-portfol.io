@@ -7,7 +7,7 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
 export const About = props => {
     //console.log("About Recieved Parent Props: ", props);
-
+    
     // User Data
     const info = (props.data.about !== null) ? props.data.about : props.location.state.about;
     const user = (props.location.state.user !== null) ? props.location.state.user : props.data.user;
@@ -617,6 +617,7 @@ export const About = props => {
                                     setBio(e.target.value); 
                                     setEdited(true);
                                 }}/>
+                    </Form.Row>
                     <Form.Group className="mt-4">
                         {(hobbiesData.length > 1 || skillsData.length > 1)
                         ? <>
