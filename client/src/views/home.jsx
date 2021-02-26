@@ -46,6 +46,9 @@ export const Home = (props) => {
             : ""
     );
 
+    var img = new Image();
+    img.src =  prefix + `${binaryToBase64(images[0].base64image.data)}`
+
     // Modal Alert
     const handleShow = () => setShow(true);
     const handleClose = () => {
@@ -268,7 +271,7 @@ export const Home = (props) => {
                                 ? prefix + `${binaryToBase64(images[0].base64image.data)}` 
                                 : null}
                             img={typeof(images[0]) !== 'undefined'
-                            ?  null
+                            ?  img
                             : null}
 
                         />

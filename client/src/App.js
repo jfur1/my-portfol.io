@@ -5,7 +5,7 @@ import './App.css';
 
 // Components
 // import { Welcome } from "./views/welcome";
-import UploadProfilePicture from './views/uploadProfilePic'
+import ForgotPassword from './views/ForgotPassword'
 import Profile from './views/profile';
 import {TestRegisterForm} from './components/slider/form';
 
@@ -15,7 +15,7 @@ function App() {
     <div className="App" style={{backgroundImage: 'url(/geo-bg.png)', backgroundRepeat: 'no-repeat', backgroundSize: 'cover', backgroundAttachment: 'fixed', minHeight:'100vh', minWidth: '100vw'}}>
       <Switch>
         <Route exact path="/" component={TestRegisterForm} />
-        <Route exact path="/profilepic" component={UploadProfilePicture} />
+        <Route exact path="/forgot" component={ForgotPassword} />
         <Route exact path="/:username" component={Profile} />
         <Route path="*" component={() => "404 Not Found"} />
       </Switch>

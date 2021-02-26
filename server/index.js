@@ -3,6 +3,8 @@ var cors = require('cors');
 const bcrypt = require('bcryptjs');
 var db = require("./config/db");
 const session = require('express-session');
+const nodemailer = require('nodemailer');
+const crypto = require('crypto');
 const passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
 
@@ -90,6 +92,14 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
+// Configure Mail Server Responsible for Sending/Recieving Mail
+var smtpTransport = nodemailer.createTransport({
+    service: "Gmail",
+    auth: {
+        user: "myportfolio.help@gmail.com",
+        pass: "mppassword"
+    }
+});
 
 // ------------------------ END Passport.js Middleware ------------------------------
 
@@ -210,6 +220,51 @@ app.post('/login', (req, res, next) => {
       console.log(err);
     });
 });
+
+app.post('/forgotPassword', (req, res) => {
+    const {email} = req.body;
+    
+    db.tx(async t => {
+        if(email.includes('@')){
+            return t.oneOrNone('SELECT * FROM users WHERE ${email} = email;', {email});
+        }else{
+            return t.oneOrNone('SELECT * FROM users WHERE ${email}=username;', {email});
+        }
+    })
+    .then((data) => {
+        if(data == null){
+            console.log('No users registered with that email or username!');
+            return res.status(403).send('No users registered with that email/username.');
+        } else{
+            const token = crypto.randomBytes(20).toString('hex');
+            data.resetPasswordToken = token;
+            data.resetTokenExpires = Date.now() + 3600000;  // 1 hour
+
+            const mailOptions = {
+                from: 'myportfolio.help@gmail.com',
+                to: data.email,
+                subject: 'Link to Reset Password',
+                text: 'You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n' +
+                'Please click on the following link, or paste this into your browser to complete the process:\n\n'+
+                'http://' + req.headers.host + '/reset/' + token + '\n\n' + 
+                'If you did not request this, please ignore this email and your password will remain unchanged.\n'
+            };
+
+            smtpTransport.sendMail(mailOptions, function(err){
+                if(err) console.log(err);
+            });
+
+            data.tx([
+                data.none('UPDATE users SET reset_token=$1, token_expires=$2 WHERE email=$3', [data.resetPasswordToken, data.resetTokenExpires, data.email])
+            ]);
+
+            return res.status(200).json('Recovery email sent.');
+        }
+    })
+    .catch((err) => console.log(err));
+})
+
+
 
 // Logout
 app.post('/logout', (req, res) => {
