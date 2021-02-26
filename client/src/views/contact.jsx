@@ -23,8 +23,8 @@ export const Contact = (props) => {
     const [changingOrder, setChangingOrder] = useState(false);
 
     // Data to be Modified
-    const [publicEmail, setPublicEmail] = useState(typeof(profile) !== 'undefined' ? profile[0].public_email : '');
-    const [phone, setPhone] = useState(typeof(profile) !== 'undefined' ? profile[0].phone : '');
+    const [publicEmail, setPublicEmail] = useState(typeof(profile[0]) !== 'undefined' ? profile[0].public_email : '');
+    const [phone, setPhone] = useState(typeof(profile[0]) !== 'undefined' ? profile[0].phone : '');
     const [links, setLinks] = useState({values: linksData});
 
     // POST request hooks

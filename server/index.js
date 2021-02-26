@@ -224,7 +224,7 @@ app.post('/login', (req, res, next) => {
 app.post('/forgotPassword', (req, res) => {
     const {email} = req.body;
     
-    db.tx(async t => {
+    db.tx(t => {
         if(email.includes('@')){
             return t.oneOrNone('SELECT * FROM users WHERE ${email} = email;', {email});
         }else{
@@ -232,39 +232,119 @@ app.post('/forgotPassword', (req, res) => {
         }
     })
     .then((data) => {
+
         if(data == null){
             console.log('No users registered with that email or username!');
-            return res.status(403).send('No users registered with that email/username.');
+            return -1;
         } else{
             const token = crypto.randomBytes(20).toString('hex');
             data.resetPasswordToken = token;
             data.resetTokenExpires = Date.now() + 3600000;  // 1 hour
 
+            const link = "http://localhost:3000/reset/" + token;
             const mailOptions = {
                 from: 'myportfolio.help@gmail.com',
                 to: data.email,
                 subject: 'Link to Reset Password',
-                text: 'You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n' +
-                'Please click on the following link, or paste this into your browser to complete the process:\n\n'+
-                'http://' + req.headers.host + '/reset/' + token + '\n\n' + 
-                'If you did not request this, please ignore this email and your password will remain unchanged.\n'
+                text: `You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n` + 
+                `Please click on the following link, or paste this into your browser to complete the process within an hour of receiving it:\n\n` + 
+                `http://localhost:3000/reset/${token}\n\n` +
+                `If you did not request this, please ignore this email and your password will remain unchanged.\n`
             };
 
             smtpTransport.sendMail(mailOptions, function(err){
                 if(err) console.log(err);
             });
 
-            data.tx([
-                data.none('UPDATE users SET reset_token=$1, token_expires=$2 WHERE email=$3', [data.resetPasswordToken, data.resetTokenExpires, data.email])
-            ]);
-
-            return res.status(200).json('Recovery email sent.');
+            db.tx(token => {
+                return token.none('UPDATE users SET reset_token=$1, token_expires=$2 WHERE email=$3', [data.resetPasswordToken, data.resetTokenExpires, data.email]);
+            })
+        }
+    })
+    .then((response) => {
+        if(response === -1){
+            return res.json({data: 'No users registered with that email/username.'});
+        }
+        else{
+            return res.status(200).json({data: 'Recovery email sent.'});
         }
     })
     .catch((err) => console.log(err));
 })
 
+app.get('/reset/:token', (req, res) => {
+    console.log(req.params.token)
+    db.tx(check => {
+        return check.oneOrNone('SELECT * FROM users WHERE reset_token=${token} AND CAST(token_expires AS BIGINT) > ${currentTime};', 
+            {
+                token: req.params.token, 
+                currentTime: Date.now()
+            });
+    })
+    .then((data) => {
+        console.log(data)
+        if(!data){
+            return res.json({authenticated: false});
+        }
+        else{
+            console.log("Authenticated Token!")
+            return res.json({authenticated: true, email: data.email});
+        }
+    })
+    .catch(err => console.log(err));
+})
 
+app.post('/reset/:token', (req, res) => {
+    const {email, password} = req.body;
+
+    db.tx(async reset => {
+        const data = await reset.oneOrNone('SELECT * FROM users WHERE email=${email}', {email});
+        return data;
+    })
+    .then(async data => {
+        console.log(data)
+        if(!data){
+            return res.json({error: true});
+        }
+        else if(data.token_expires < Date.now() || data.reset_token === 0){
+            return res.json({error: true, invalidToken: true});
+        }
+        else{
+            // Hash Password
+            const salt = await bcrypt.genSalt(12);
+            const hashedPassword = await bcrypt.hash(password, salt);
+
+            db.tx(reset => {
+                return reset.none('UPDATE users SET password=$1, reset_token=$2, token_expires=$3 WHERE email=$4', 
+                [
+                    hashedPassword, 
+                    0,
+                    0, 
+                    email
+                ]);
+            })
+            .then(d => {
+                var confirmChange = {
+                    to: email,
+                    from: 'myportfolio.help@gmail.com',
+                    subject: 'Your password has been changed',
+                    text: 'Hello ' + data.fullname + ',\n\n'+
+                        'This email is a confirmation that the password for your account' + data.username + ' has just been changed.\n'
+                };
+                smtpTransport.sendMail(confirmChange, function(err){
+                    if(err) console.log(err);
+                })
+                return res.json({error: false, updated: true});
+            })
+            .catch(error =>{
+                console.log('ERROR', error);
+            })
+        }
+    })
+    .catch(error =>{
+        console.log('ERROR', error);
+    })
+})
 
 // Logout
 app.post('/logout', (req, res) => {

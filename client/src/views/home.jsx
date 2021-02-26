@@ -16,10 +16,10 @@ export const Home = (props) => {
     const [edited, setEdited] = useState(false);
     const [showAlert, setShowAlert] = useState(false);
     const [fullname, setFullname] = useState(user.fullname);
-    const [currentOccupation, setCurrentOccupation] = useState(profile[0].current_occupation);
-    const [currentOrganization, setCurrentOrganization] = useState(profile[0].current_organization);
-    const [font, setFont] = useState(null);
-    const [size, setSize] = useState(null);
+    const [currentOccupation, setCurrentOccupation] = useState(typeof(profile[0]) !== 'undefined' ? profile[0].current_occupation : null);
+    const [currentOrganization, setCurrentOrganization] = useState(typeof(profile[0]) !== 'undefined' ? profile[0].current_organization : null);
+    const [font, setFont] = useState(typeof(profile[0]) !== 'undefined' ? profile[0].font : null);
+    const [size, setSize] = useState(typeof(profile[0]) !== 'undefined' ? profile[0].font_size : null);
     const [showEditPic, setShowEditPic] = useState(false);
     const [x, setX] = useState(typeof(images[0]) !== 'undefined' ? images[0].x : null);
     const [y, setY] = useState(typeof(images[0]) !== 'undefined' ? images[0].y : null);
@@ -45,9 +45,6 @@ export const Home = (props) => {
             ? images[0].prefix 
             : ""
     );
-
-    var img = new Image();
-    img.src =  prefix + `${binaryToBase64(images[0].base64image.data)}`
 
     // Modal Alert
     const handleShow = () => setShow(true);
@@ -270,9 +267,6 @@ export const Home = (props) => {
                             src={typeof(images[0]) !== 'undefined'
                                 ? prefix + `${binaryToBase64(images[0].base64image.data)}` 
                                 : null}
-                            img={typeof(images[0]) !== 'undefined'
-                            ?  img
-                            : null}
 
                         />
                         : <img src={typeof(images[0]) !== 'undefined'
@@ -283,7 +277,9 @@ export const Home = (props) => {
                     <br></br>
                     <Dropdown id="collapsible-nav-dropdown">
                         <Dropdown.Toggle className="bg-transparent text-dark" id="dropdown-custom-components">
-                        Your font: <b style={{fontFamily: profile[0].font}}>{profile[0].font}</b>
+                        Your font: <b style={{
+                            fontFamily: font
+                        }}>{font}</b>
                         </Dropdown.Toggle>
                         <Dropdown.Menu>
                             <Dropdown.Item active={(font === "Arial") ? true : false} onSelect={e => {setFont("Arial");setEdited(true);}} style={{fontFamily: "Arial"}}>Arial</Dropdown.Item>
@@ -305,9 +301,9 @@ export const Home = (props) => {
                     <Dropdown id="collapsible-nav-dropdown">
                         <Dropdown.Toggle className="bg-transparent text-dark" id="dropdown-custom-components">
                         Font size: <b style={{fontFamily: font, fontSize: size}}>
-                        {profile[0].font_size === "75%" ? "Small Text" : null}
-                        {profile[0].font_size === "100%" ? "Medium Text" : null}
-                        {profile[0].font_size === "125%" ? "Large Text" : null}</b>
+                        {size === "75%" ? "Small Text" : null}
+                        {size === "100%" ? "Medium Text" : null}
+                        {size === "125%" ? "Large Text" : null}</b>
                         </Dropdown.Toggle>
                         <Dropdown.Menu>
                             <Dropdown.Item active={(size === "75%") ? true : false} onSelect={e => {setSize("75%");setEdited(true);}} style={{fontSize: '75%'}}>Small text</Dropdown.Item>
@@ -336,11 +332,11 @@ export const Home = (props) => {
                 <p><b>Username:</b> {user.username}</p>
                 <p><b>Email: </b>{user.email}</p>
 
-                {profile[0].current_occupation
-                ? <p><b>Currently: </b>{profile[0].current_occupation}</p>
+                {currentOccupation
+                ? <p><b>Currently: </b>{currentOccupation}</p>
                 : null}
-                {profile[0].current_organization
-                    ? <p>at {profile[0].current_organization}</p>
+                {currentOrganization
+                    ? <p>at {currentOrganization}</p>
                     : null}
                 <br></br>
                 </> 

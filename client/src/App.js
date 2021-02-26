@@ -8,6 +8,7 @@ import './App.css';
 import ForgotPassword from './views/ForgotPassword'
 import Profile from './views/profile';
 import {TestRegisterForm} from './components/slider/form';
+import ResetPassword from './views/ResetPassword';
 
 
 function App() {
@@ -16,6 +17,7 @@ function App() {
       <Switch>
         <Route exact path="/" component={TestRegisterForm} />
         <Route exact path="/forgot" component={ForgotPassword} />
+        <Route exact path="/reset/:token" component={ResetPassword} />
         <Route exact path="/:username" component={Profile} />
         <Route path="*" component={() => "404 Not Found"} />
       </Switch>

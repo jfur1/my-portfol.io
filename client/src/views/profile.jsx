@@ -865,7 +865,13 @@ class Profile extends Component{
                 ? <><Spinner animation="border" variant="success" /></>
                 
                 : <><NavBar {...this.props} data={this.state}/>
-                <div className="tabulation-container" style={{fontFamily: this.state.profile[0].font, fontSize: this.state.profile[0].font_size}}>
+                <div className="tabulation-container" 
+                    style={{
+                        fontFamily: typeof(this.state.profile[0]) !== 'undefined'
+                            ? this.state.profile[0].font : null, 
+                        fontSize: typeof(this.state.profile[0]) !== 'undefined'
+                            ? this.state.profile[0].font_size : null
+                        }}>
                 <div className="user-container">
                     <Tabs
                     className="tab-style"

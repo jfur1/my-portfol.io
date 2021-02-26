@@ -37,26 +37,24 @@ class ForgotPassword extends Component{
                     email: this.state.email
                 })
             })
-            .then((response) => {
-                if(response.data === 'No users registered with that email/username.'){
-                    this.setState({
-                        error: true,
-                        msgFromServer:'No users registered with that email/username.' 
-                    })
-                } else if(response.data === 'Recovery email sent'){
-                    this.setState({
-                        errors: false,
-                        msgFromServer: 'An email has been sent to reset your password!'
-                    })
-                }
-            })
-            .catch((err) => console.log(err));
+            const res = await response.json();
+
+            if(res.data === 'No users registered with that email/username.'){
+                this.setState({
+                    error: true,
+                    msgFromServer:'No users registered with that email/username.' 
+                });
+            } else if(res.data === 'Recovery email sent.'){
+                this.setState({
+                    error: false,
+                    msgFromServer: 'An email has been sent to reset your password!'
+                });
+            }
         }
     }
 
     render(){
         const {email, error, msgFromServer} = this.state;
-
         return(
             <div className="register-body">
                 <div className="slider-container" id="slider-container">
@@ -70,16 +68,21 @@ class ForgotPassword extends Component{
                         <button className="form-button" onClick={e => {
                             this.sendEmail(e)
                         }}>Reset</button>
-                    </div>
-                    {error
+                    
+
+                    {error && email !== ''
                     ? <p>Email/Username is not recognized. Please try again or register for a new account.</p>
                     : null}
-                    {msgFromServer === 'An email has been sent to reset your password!'
-                    ? <h3>{msgFromServer}</h3>
+
+                    {msgFromServer && !error
+                    ? <><p>{msgFromServer}</p>
+                        <button className="form-button" onClick={e => {
+                            this.props.history.push('/')
+                        }}>Home</button>
+                        </>
                     : null}
-                    <button className="form-button" onClick={e => {
-                        this.props.history.push('/')
-                    }}>Home</button>
+
+                    </div>
                 </div>
             </div>
         );
