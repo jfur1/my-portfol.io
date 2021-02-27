@@ -516,15 +516,15 @@ export const Contact = (props) => {
             <div className="info-container">
                 
                 <h4>Email: </h4>
-                {publicEmail
-                ? <p>{publicEmail}</p>
+                {typeof(profile[0]) !== 'undefined' && profile[0].public_email
+                ? <p>{profile[0].public_email}</p>
                 : null }
 
                 <br/>
 
                 <h4>Phone: </h4>
-                {phone
-                ? <p>{phone}</p>
+                {typeof(profile[0]) !== 'undefined' && profile[0].phone
+                ? <p>{profile[0].phone}</p>
                 : null }
 
                 </div>

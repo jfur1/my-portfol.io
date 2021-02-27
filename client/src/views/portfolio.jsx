@@ -1272,11 +1272,11 @@ export const Portfolio = props => {
                                     <div className='draggable-container mb-4 ml-3 mr-3' ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
 
                                     {row.title
-                                        ? row.title
+                                        ? <b>{row.title}</b>
                                         : null}
                                     <br></br>
                                     {row.description
-                                        ? <NewlineText text={row.description} key={idx}/>
+                                        ? row.description.substring(1, row.description.length-1).replace(/\\n/g, '\n')
                                         : null} 
                                     <br></br>
                                     {row.organization
@@ -1318,7 +1318,7 @@ export const Portfolio = props => {
                                     <div className='draggable-container mb-4 ml-3 mr-3' ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
 
                                     {row.occupation
-                                        ? row.occupation
+                                        ? <b>{row.occupation}</b>
                                         : null}
                                     </div>
                                 )}
@@ -1343,7 +1343,7 @@ export const Portfolio = props => {
                                     <div className='draggable-container mb-4 ml-3 mr-3' ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
 
                                     {row.education
-                                        ? row.education
+                                        ? <b>{row.education}</b>
                                         : null}
                                         
                                     </div>
@@ -1357,14 +1357,6 @@ export const Portfolio = props => {
             </Droppable>
             : null}
             </DragDropContext>
-        );
-    }
-
-    function NewlineText(props) {
-        const text = props.text;
-        if(text == null) return null;
-        return text.split("\\n").map((str, idx) => 
-            <div key={idx}>{str.length === 0 ? <br/> : str}</div>
         );
     }
 
@@ -1587,9 +1579,9 @@ export const Portfolio = props => {
                     : null}
 
                     {(row.link && row.link !== "null")
-                    ? <p><b>Link: </b>{row.link}</p>
+                    ? <><b>Link: </b><a href={row.link} target="_blank" rel="noreferrer">{row.link}</a></>
                     : null}
-                    
+                    <br/>
                     
                     {(row.from_when && row.from_when !== "infinity")
                     ? <p><b>From:</b> <FormatDate dateString={row.from_when} key={idx}/> </p>

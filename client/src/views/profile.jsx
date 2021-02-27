@@ -8,6 +8,7 @@ import { Home } from './home';
 import { About } from './about';
 import { Portfolio } from './portfolio';
 import { Contact } from './contact';
+import { Footer } from './Footer';
 
 
 class Profile extends Component{
@@ -941,9 +942,10 @@ class Profile extends Component{
                         />
                     : null }
                 </div> 
-                </div>
-                </>}
+                <Footer/>
             </div>
+            </>}
+        </div>
         );
     }
 

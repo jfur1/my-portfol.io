@@ -70,8 +70,8 @@ export const About = props => {
 
     // Replace state with original data
     const discardChanges = () => {
-        setLocation(info.location);
-        setBio(info.bio);
+        setLocation((info !== null && info.location !== null) ? info.location : null);
+        setBio((info !== null && info.bio !== null) ? info.bio : null);
         setHobbies({values: hobbiesData});
         setSkills({values: skillsData});
         setHobbyToDelete([]);

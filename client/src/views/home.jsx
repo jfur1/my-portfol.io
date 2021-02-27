@@ -16,10 +16,20 @@ export const Home = (props) => {
     const [edited, setEdited] = useState(false);
     const [showAlert, setShowAlert] = useState(false);
     const [fullname, setFullname] = useState(user.fullname);
-    const [currentOccupation, setCurrentOccupation] = useState(typeof(profile[0]) !== 'undefined' ? profile[0].current_occupation : null);
-    const [currentOrganization, setCurrentOrganization] = useState(typeof(profile[0]) !== 'undefined' ? profile[0].current_organization : null);
+    const [currentOccupation, setCurrentOccupation] 
+    = useState(
+        typeof(profile[0]) !== 'undefined' 
+            ? profile[0].current_occupation 
+            : null
+    );
+    const [currentOrganization, setCurrentOrganization] 
+    = useState(
+        typeof(profile[0]) !== 'undefined' 
+            ? profile[0].current_organization 
+            : null
+    );
     const [font, setFont] = useState(typeof(profile[0]) !== 'undefined' ? profile[0].font : null);
-    const [size, setSize] = useState(typeof(profile[0]) !== 'undefined' ? profile[0].font_size : null);
+    const [size, setSize] = useState(typeof(profile[0]) !== 'undefined' && !profile[0].font_size ? profile[0].font_size : "100%");
     const [showEditPic, setShowEditPic] = useState(false);
     const [x, setX] = useState(typeof(images[0]) !== 'undefined' ? images[0].x : null);
     const [y, setY] = useState(typeof(images[0]) !== 'undefined' ? images[0].y : null);
@@ -27,21 +37,21 @@ export const Home = (props) => {
 
     const [profilePic, setProfilePic] 
     = useState(
-        typeof(images[0]) !== 'undefined' 
+        typeof(images[0]) !== 'undefined' && typeof(images[0].base64image) !== 'undefined'
             ? binaryToBase64(images[0].base64image.data) 
             : ""
     );
     
     const [profileAvatar, setProfileAvatar] 
     = useState(
-        typeof(images[0]) !== 'undefined' 
+        typeof(images[0]) !== 'undefined' && typeof(images[0].base64preview) !== 'undefined'
             ? binaryToBase64(images[0].base64preview.data) 
             : ""
     );
     
     const [prefix, setPrefix] 
     = useState(
-        typeof(images[0]) !== 'undefined' 
+        typeof(images[0]) !== 'undefined' && typeof(images[0].prefix) !== 'undefined'
             ? images[0].prefix 
             : ""
     );
@@ -58,8 +68,8 @@ export const Home = (props) => {
     }
     const discardChanges = () => {
         setFullname(user.fullname);
-        setCurrentOccupation(profile[0].current_occupation);
-        setCurrentOrganization(profile[0].current_organization);
+        setCurrentOccupation(typeof(profile[0]) !== 'undefined' ? profile[0].current_occupation : null);
+        setCurrentOrganization(typeof(profile[0]) !== 'undefined' ? profile[0].current_organization : null);
         setX(typeof(images[0]) !== 'undefined' ? images[0].x : null);
         setY(typeof(images[0]) !== 'undefined' ? images[0].y : null);
         setR(typeof(images[0]) !== 'undefined' ? images[0].radius : null);
@@ -279,7 +289,7 @@ export const Home = (props) => {
                         <Dropdown.Toggle className="bg-transparent text-dark" id="dropdown-custom-components">
                         Your font: <b style={{
                             fontFamily: font
-                        }}>{font}</b>
+                        }}>{!font ? "Arial" : font}</b>
                         </Dropdown.Toggle>
                         <Dropdown.Menu>
                             <Dropdown.Item active={(font === "Arial") ? true : false} onSelect={e => {setFont("Arial");setEdited(true);}} style={{fontFamily: "Arial"}}>Arial</Dropdown.Item>
@@ -321,23 +331,24 @@ export const Home = (props) => {
             ? 
                 <>
                 <h3>{user.fullname}</h3>
-
-                <h4>Profile Picture:</h4>
-                <img src={typeof(images[0]) !== 'undefined'
-                    ? prefix + `${binaryToBase64(images[0].base64preview.data)}` 
-                    : ''} alt="Preview"/>
+                
+                {typeof(images[0]) !== 'undefined' && typeof(images[0].base64preview) !== 'undefined'
+                 ? <><h4>Profile Picture:</h4><img src={prefix + `${binaryToBase64(images[0].base64preview.data)}`}  alt="Preview"/></>
+                 : null}
 
                 <br></br>
 
                 <p><b>Username:</b> {user.username}</p>
                 <p><b>Email: </b>{user.email}</p>
 
-                {currentOccupation
-                ? <p><b>Currently: </b>{currentOccupation}</p>
+                <p>
+                {typeof(profile[0]) !== 'undefined' && profile[0].current_occupation
+                ? <><b>Currently: </b>{profile[0].current_occupation}</>
                 : null}
-                {currentOrganization
-                    ? <p>at {currentOrganization}</p>
+                {typeof(profile[0]) !== 'undefined' && profile[0].current_organization
+                    ? <> at {profile[0].current_organization}</>
                     : null}
+                </p>
                 <br></br>
                 </> 
 
