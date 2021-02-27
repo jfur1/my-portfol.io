@@ -916,7 +916,7 @@ class Profile extends Component{
                             deleteHobby={this.deleteHobby}
                             deleteSkill={this.deleteSkill}
                         />
-                    : null }
+                    : null } 
 
                     { this.state.key === "portfolio" ?
                         <Portfolio {...this.props} data={this.state}
