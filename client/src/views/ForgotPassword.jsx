@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { Form } from 'react-bootstrap';
 
 class ForgotPassword extends Component{
     constructor(){
@@ -7,7 +8,8 @@ class ForgotPassword extends Component{
         this.state = {
             email: '',
             error: false,
-            msgFromServer: ''
+            msgFromServer: '',
+            errors: {email: '',  notFound: '', none: ''}
         }
     }
 
@@ -17,9 +19,12 @@ class ForgotPassword extends Component{
 
     sendEmail = async(e) => {
         e.preventDefault();
+        var tmpErr = {email: '', notFound: '', none: ''};
         if(this.state.email === ''){
+            tmpErr["email"] = "Please enter your username or email.";
             this.setState({
                 error: false,
+                errors: tmpErr,
                 msgFromServer: ''
             });
         }   
@@ -40,13 +45,18 @@ class ForgotPassword extends Component{
             const res = await response.json();
 
             if(res.data === 'No users registered with that email/username.'){
+                tmpErr["notFound"] = "Please enter your username or email.";
                 this.setState({
                     error: true,
+                    errors: tmpErr,
                     msgFromServer:'No users registered with that email/username.' 
                 });
             } else if(res.data === 'Recovery email sent.'){
+                tmpErr['email'] = ''; tmpErr['notFound'] = '';
+                tmpErr["none"] = "An email has been sent to reset your password!";
                 this.setState({
                     error: false,
+                    errors: tmpErr,
                     msgFromServer: 'An email has been sent to reset your password!'
                 });
             }
@@ -61,18 +71,33 @@ class ForgotPassword extends Component{
                     <div className="form-box">
                         <h2>Reset Password</h2><br/>
 
-                        <input type="email" placeholder="Email or Username" value={email}
+                        <Form.Control
+                        custom
+                        isInvalid={this.state.errors['email'] || this.state.errors['notFound']} 
+                        type="email" 
+                        placeholder="Email or Username" 
+                        value={email}
                             onChange={e => this.setState({email: e.target.value})}
                         /><br/>
 
+                        <Form.Control.Feedback type="invalid">
+                            {this.state.errors['email'] && email === ''
+                            ? "Please enter your username or email."
+                            : null}
+                            {this.state.errors['notFound']
+                            ? "Email/Username is not recognized. Please try again or register for a new account."
+                            : null}
+                        </Form.Control.Feedback>      
+                        <Form.Control.Feedback type="valid">
+                            {this.state.errors['none']
+                            ? this.state.errors['none']
+                            : null}
+                        </Form.Control.Feedback>      
+                    
                         <button className="form-button" onClick={e => {
                             this.sendEmail(e)
                         }}>Reset</button>
-                    
 
-                    {error && email !== ''
-                    ? <p>Email/Username is not recognized. Please try again or register for a new account.</p>
-                    : null}
 
                     {msgFromServer && !error
                     ? <><p>{msgFromServer}</p>

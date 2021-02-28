@@ -1010,10 +1010,10 @@ app.post('/updatePublicEmail', (req, res) => {
     const {user_id, public_email} = req.headers;
 
     db.tx(async t => {
-        return t.one('UPDATE profile SET public_email = ${public_email} WHERE uid = \'' + user_id + '\' RETURNING public_email;', {public_email});
+        return t.none('UPDATE profile SET public_email = ${public_email} WHERE uid = \'' + user_id + '\';', {public_email});
     })
     .then((data) => {
-        return res.json(data.public_email);
+        return res.json(data);
     })
     .catch((err) => {
         console.log(err);
@@ -1025,10 +1025,10 @@ app.post('/updatePhone', (req, res) => {
     const {user_id, phone} = req.headers;
 
     db.tx(async t => {
-        return t.one('UPDATE profile SET phone = ${phone} WHERE uid = ${user_id} RETURNING phone;', {user_id, phone});
+        return t.none('UPDATE profile SET phone = ${phone} WHERE uid = ${user_id};', {user_id, phone});
     })
     .then((data) => {
-        return res.json(data.phone);
+        return res.json(data);
     })
     .catch((err) => {
         console.log(err);

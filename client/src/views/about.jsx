@@ -384,15 +384,16 @@ export const About = props => {
         
         if(info === null && location){
             locationToCreate.push(JSON.stringify(location));
-        } else if(info.location !== location){
+        } else if(info !== null && info.location !== location){
             //console.log(`Set location update from: ${info.location} to: ${location}`);
             locationToUpdate.push(JSON.stringify(location));
         }
 
         // Bio
+        // Need a better check for creates
         if(info === null && bio){
             bioToCreate.push(JSON.stringify(bio));
-        } else if(info.bio !== bio){
+        } else if(info !== null &&  info.bio !== bio){
             //console.log(`Set bio update from: ${info.bio} to: ${bio}`);
             bioToUpdate.push(JSON.stringify(bio));
         }
