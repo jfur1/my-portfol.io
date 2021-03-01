@@ -1,4 +1,5 @@
 import React, {Component} from 'react'
+import { Form } from 'react-bootstrap';
 
 export default class ResetPassword extends Component{
     constructor(){
@@ -9,7 +10,8 @@ export default class ResetPassword extends Component{
             password: '',
             confirmPassword: '',
             updated: false,
-            error: false
+            error: false,
+            errors: {null: '', noMatch: '', length: ''}
         }
     }
 
@@ -49,60 +51,73 @@ export default class ResetPassword extends Component{
         });
     };
 
+    length(obj) {
+        if((!(typeof(obj) !== 'undefined')) || (obj == null)) return 0;
+        return Object.keys(obj).length;
+    }
+
     updatePassword = async(e) => {
-        e.preventDefault();
-        const response = await fetch(`http://localhost:5000/reset/${this.props.match.params.token}`, {
-            method: 'POST', 
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-            },
-            mode: 'cors',
-            credentials: 'include',
-            withCredentials: true,
-            body: JSON.stringify({
-                email: this.state.email,
-                password: this.state.password
+        const tmpErrs = this.validatePasswords();
+        console.log(tmpErrs)
+        if(tmpErrs['null'] || tmpErrs['noMatch'] || tmpErrs['length']){
+            this.setState({errors: tmpErrs});
+        }
+        else{
+            this.setState({errors: {null: '', noMatch: '', length: ''}})
+            const response = await fetch(`http://localhost:5000/reset/${this.props.match.params.token}`, {
+                method: 'POST', 
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                mode: 'cors',
+                credentials: 'include',
+                withCredentials: true,
+                body: JSON.stringify({
+                    email: this.state.email,
+                    password: this.state.password
+                })
             })
-        })
-        const res = await response.json();
-        if(res.updated){
-            this.setState({
-                email: res.email,
-                updated: true,
-                error: false
-            });
-        } else{
-            this.setState({
-                updated: false,
-                error: true
-            });
+            const res = await response.json();
+            if(res.updated){
+                this.setState({
+                    email: res.email,
+                    updated: true,
+                    error: false
+                });
+            } else{
+                this.setState({
+                    updated: false,
+                    error: true
+                });
+            }
         }
     }
 
-    validatePasswords = (e) => {
+    validatePasswords = () => {
+        const errors = {null: '', noMatch: '', length: ''}
         const {password, confirmPassword} = this.state;
-        e.preventDefault();
         
         if(!password){
-            
+            errors['null'] = 'Please enter a password.';
         } else if(password.length < 7 || password.length > 19){
-
+            errors['length'] = 'Passwords must be between 8 and 20 characters.';
         }
 
         if(!confirmPassword){
-
+            errors['null'] = 'Please enter a password.';
         } else if(confirmPassword.length < 7 || confirmPassword.length > 19){
-
+            errors['length'] = 'Passwords must be between 8 and 20 characters.';
         }
 
         if(password !== confirmPassword){
-
+            errors['noMatch'] = 'Passwords do not match.'
         }
+        return errors;
     }
 
     render(){
-        const {password, confirmPassword, error, updated} = this.state;
+        const {password, confirmPassword, error, updated, errors} = this.state;
 
         if(error){
             return(
@@ -120,21 +135,42 @@ export default class ResetPassword extends Component{
                     <div className="slider-container" id="slider-container">
                         <div className="form-box">
                             <h4>Reset Password</h4>
-                            <input type="password" placeholder="New Password" value={password}
+
+                            <Form.Control
+                            custom
+                            isInvalid={errors['null'] || errors['length'] || errors['noMatch']} 
+                            type="password" placeholder="New Password" value={password}
                             onChange={e => 
                                 this.setState({password: e.target.value})
                             }/><br/>
-                            <input type="password" placeholder="Confirm Password" value={confirmPassword}
+
+                            <Form.Control
+                            custom
+                            isInvalid={errors['null'] || errors['length'] || errors['noMatch']} 
+                            type="password" placeholder="Confirm Password" value={confirmPassword}
                             onChange={e => 
                                 this.setState({confirmPassword: e.target.value})
                             }/><br/>
-
+                            <Form.Control.Feedback type="invalid">
+                                {errors['null'] && !confirmPassword && !password
+                                ? errors['null']
+                                : null}
+                                {errors['noMatch']
+                                ? errors['noMatch'] + '\n'
+                                : null}
+                                {errors['length']
+                                ? errors['length']+ '\n'
+                                : null}
+                            </Form.Control.Feedback>      
                             <button className="form-button" onClick={e => {
                                 this.updatePassword(e)
                             }}>Reset</button>
 
                             {updated
-                            ? <p>Your password has been successfully reset, please try logging in again.</p>
+                            ? <><br/><p>Your password has been successfully reset, please try logging in again.</p>
+                            <button className="form-button" onClick={e => {
+                                this.props.history.push('/')
+                            }}>Home</button></>
                             : null}
                         </div>
                     </div>
