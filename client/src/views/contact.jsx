@@ -509,7 +509,8 @@ export const Contact = (props) => {
 
             {/* After integrating backend, render original data not tmpHooks */}
             {props.data.ownedByUser ? <Button variant="warning" className="edit-button" onClick={handleShow}>Edit&nbsp;<PencilFill size={25}/></Button> : null}
-            <h3>Contact Information</h3><br/>
+            <h3>Contact Information</h3>
+            <hr color="black"/>
             <h3>{user.firstname} {user.lastname}</h3>
             <br/>
 
