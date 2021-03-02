@@ -1639,14 +1639,16 @@ export const Portfolio = props => {
                     ? <><b>Organization:</b><p>{row.organization}</p></>
                     : null}
 
+                    <p>
                     {(row.from_when && row.from_when !== "infinity")
-                    ? <p><b>From:</b> <FormatDate dateString={row.from_when} key={idx}/> </p>
+                    ? <b>From:<FormatDate dateString={row.from_when} key={idx}/> </b> 
                     : null
                     }
                     
                     {(row.to_when && row.to_when !== "infinity")
-                    ? <p><b>To:</b> <FormatDate dateString={row.to_when} key={idx}/></p>
-                    : <p><b>To:</b> Current</p>}
+                    ? <b>To: <FormatDate dateString={row.to_when} key={idx}/></b>
+                    : <b>To: Current</b>}
+                    </p>
 
                     {row.description
                     ? <><FormatTextarea text={row.description} key={idx}/></>
