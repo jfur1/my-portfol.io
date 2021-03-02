@@ -557,6 +557,7 @@ export const About = props => {
         ? <Button variant="warning" className="edit-button" onClick={handleShow}>Edit&nbsp;<PencilFill size={25}/></Button>
         : null}
         <h3>About</h3>
+        <hr color="black"/>
         <h3>{user.firstname} {user.lastname}</h3>
         <br/>
 
@@ -687,17 +688,13 @@ export const About = props => {
         </Modal>
 
         <div className="info-container">
-            <div className="draggable-container">
                 <h4><b>Location:</b></h4>
                     {info !== null 
                     ? <FormatTextarea text={info !== null ? info.location : ''}/>
                     : null}
-            </div>
             <br></br>
-            <div className="draggable-container">
                 <h4><b>Bio:</b></h4>
             <><FormatTextarea text={info !== null ? info.bio : ''}/></>
-            </div>
             <br></br>
         </div>
 

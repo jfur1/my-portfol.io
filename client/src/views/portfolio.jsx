@@ -1566,7 +1566,7 @@ export const Portfolio = props => {
         <div className="info-container">
             {projectsData
             ? projectsData.map((row, idx) => 
-                <div className="draggable-container mb-4 ml-3 mr-3" key={idx}>
+                <div className="mb-3 ml-3 mr-3" key={idx}>
                     <h4><b>{row.title}</b></h4>
                     
                     {row.description 
@@ -1599,11 +1599,11 @@ export const Portfolio = props => {
         </div>
 
         <h3>Work Experience</h3>
-        <div className="info-container">
         <hr color="black"/>
+        <div className="info-container">
         {portfolioData
         ? portfolioData.map((row, idx) => 
-            <div className="draggable-container" key={idx}>
+            <div className="mb-3 ml-3 mr-3" key={idx}>
                 <p><b>Occupation:</b> {row.occupation}</p>
                 <p><b>Organization:</b> {row.organization}</p>
                 
@@ -1632,7 +1632,7 @@ export const Portfolio = props => {
         <div className="info-container">
             {educationData 
             ? educationData.map((row, idx) => 
-                <div className="draggable-container" key={idx}>
+                <div className="mb-3 ml-3 mr-3" key={idx}>
                     <p><b>Education: </b>{row.education}</p>
 
                     {row.organization 
