@@ -1362,13 +1362,13 @@ export const Portfolio = props => {
 
     const FormatDate = (props) => {
         let date = props.dateString;
-        const months = {"01": "Jan", "02": "Feb", "03": "Mar", "04": "Apr", "05": "May", "06": "Jun", 
-                        "07": "Jul", "08": "Aug", "09": "Sep", "10": "Oct", "11": "Nov", "12": "Dec"};
+        const months = {"01": "January", "02": "February", "03": "March", "04": "April", "05": "May", "06": "June", 
+                        "07": "July", "08": "August", "09": "September", "10": "October", "11": "November", "12": "December"};
         const year = date.substring(0, 4);
         const monthDecimal = date.substring(5, 7);
         const month = months[monthDecimal];
         const formattedDate = month + ' ' + year;
-        return formattedDate;
+        return ' ' + formattedDate + ' ';
     }
 
     function length(obj) {
@@ -1566,7 +1566,7 @@ export const Portfolio = props => {
         <div className="info-container">
             {projectsData
             ? projectsData.map((row, idx) => 
-                <div className="mb-3 ml-3 mr-3" key={idx}>
+                <div className="mb-2 ml-3 mr-3" key={idx}>
                     <h4><b>{row.title}</b></h4>
                     
                     {row.description 
@@ -1584,15 +1584,17 @@ export const Portfolio = props => {
                     : null}
                     <br/>
                     
+                    <p>
                     {(row.from_when && row.from_when !== "infinity")
-                    ? <p><b>From:</b> <FormatDate dateString={row.from_when} key={idx}/> </p>
+                    ? <FormatDate dateString={row.from_when} key={idx}/>
                     : null
                     }
-                    
+                    -
                     {(row.to_when && row.to_when !== "infinity")
-                    ? <p><b>To:</b> <FormatDate dateString={row.to_when} key={idx}/></p>
-                    : <p><b>To:</b> Current</p>}
-                    <br></br>
+                    ?  <FormatDate dateString={row.to_when} key={idx}/>
+                    : "Present"}
+                    </p>
+                    <hr/>
                 </div>
             )
             : null}
@@ -1604,24 +1606,23 @@ export const Portfolio = props => {
         {portfolioData
         ? portfolioData.map((row, idx) => 
             <div className="mb-3 ml-3 mr-3" key={idx}>
-                <p><b>Occupation:</b> {row.occupation}</p>
-                <p><b>Organization:</b> {row.organization}</p>
-                
+                <h4><b>{row.occupation}</b></h4>
+                <h5>{row.organization}</h5>
+                <p>
                 {(row.from_when && row.from_when !== "infinity")
-                ? <p><b>From:</b> <FormatDate dateString={row.from_when} key={idx}/> </p>
-                : null
-                }
-                
+                ? <FormatDate dateString={row.from_when} key={idx}/>
+                : null}
+                -
                 {(row.to_when && row.to_when !== "infinity")
-                ? <p><b>To:</b> <FormatDate dateString={row.to_when} key={idx}/></p>
-                : <p><b>To:</b> Current</p>}
+                ? <FormatDate dateString={row.to_when} key={idx}/>
+                : "Present"}
+                </p>
 
                 {(row.description)
-                ? <><b>Description: </b>
-                    <><FormatTextarea text={row.description} key={idx}/></>
-                </>
+                ? <FormatTextarea text={row.description} key={idx}/>
                 : null}
-                <br></br>
+
+                <hr/>
             </div>
         )
         : null } 
@@ -1633,27 +1634,27 @@ export const Portfolio = props => {
             {educationData 
             ? educationData.map((row, idx) => 
                 <div className="mb-3 ml-3 mr-3" key={idx}>
-                    <p><b>Education: </b>{row.education}</p>
+                    <h4><b>{row.education}</b></h4>
 
                     {row.organization 
-                    ? <><b>Organization:</b><p>{row.organization}</p></>
+                    ? <h5><p>{row.organization}</p></h5>
                     : null}
 
                     <p>
                     {(row.from_when && row.from_when !== "infinity")
-                    ? <b>From:<FormatDate dateString={row.from_when} key={idx}/> </b> 
-                    : null
-                    }
+                    ? <FormatDate dateString={row.from_when} key={idx}/>
+                    : null}
                     
+                    -
                     {(row.to_when && row.to_when !== "infinity")
-                    ? <b>To: <FormatDate dateString={row.to_when} key={idx}/></b>
-                    : <b>To: Current</b>}
+                    ? <FormatDate dateString={row.to_when} key={idx}/>
+                    : " Present"}
                     </p>
 
                     {row.description
                     ? <><FormatTextarea text={row.description} key={idx}/></>
                     : null}
-                    <br></br>
+                    <hr/>
                 </div>
             )
             : null}
