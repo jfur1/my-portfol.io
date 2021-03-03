@@ -92,7 +92,7 @@ export const About = props => {
                 <Form.Row className='mb-4 ml-3 mr-3' key={idx}>
                     <Form.Control 
                         required
-                        style={{width: '70%'}}
+                        style={{textAlign: "left", width: "70%"}}
                         isInvalid={(errs["hobby"] && row.hobby === "") || (typeof(duplicateHobby["Idx"+idx]) !== 'undefined' && row.hobby !== "")}
                         type="text" 
                         value={row.hobby} 
@@ -172,7 +172,7 @@ export const About = props => {
                 <Form.Row className='mb-4 ml-3 mr-3' key={idx}>
                     <Form.Control 
                             required
-                            style={{width: '70%'}}
+                            style={{textAlign: "left", width: "70%"}}
                             isInvalid={(errs["skill"] && row.skill === "") || (typeof(duplicateSkill["Idx"+idx]) !== 'undefined' && row.skill !== "")}
                             type="text" 
                             value={row.skill} 
@@ -592,6 +592,7 @@ export const About = props => {
                         </Form.Label>
                         <input 
                             type="text" 
+                            style={{textAlign: "left"}}
                             className="form-control" 
                             id="location" 
                             defaultValue={(info !== null && info.location !== null) 
@@ -702,16 +703,17 @@ export const About = props => {
             <h4><b>Hobbies:</b>
             {hobbiesData
             ? hobbiesData.map((row, idx) => 
-                <div className="simple-border" key={idx}>
+                <div className="mt-2" key={idx}>
                     <p>{row.hobby}</p>
                 </div>
             ) 
             : null}</h4>
             <br></br>
+            
             <h4><b>Skills:</b>
             {skillsData 
             ? skillsData.map((row, idx) => 
-                <div className="simple-border" key={idx}>
+                <div className="mt-2" key={idx}>
                     <p>{row.skill}</p>
                 </div>
             ) 

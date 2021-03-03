@@ -213,6 +213,7 @@ export const Home = (props) => {
                         </Form.Label>
                         <input 
                             type="text" 
+                            style={{textAlign:"left"}}
                             className="form-control" 
                             defaultValue={fullname} 
                             onChange={e => 
@@ -228,6 +229,7 @@ export const Home = (props) => {
                         </Form.Label>
                         <input 
                             type="text" 
+                            style={{textAlign:"left"}}
                             className="form-control" 
                             defaultValue={currentOccupation} 
                             onChange={e => 
@@ -242,6 +244,7 @@ export const Home = (props) => {
                         </Form.Label>
                         <input 
                             type="text" 
+                            style={{textAlign:"left"}}
                             className="form-control" 
                             defaultValue={currentOrganization} 
                             onChange={e => 
@@ -336,7 +339,7 @@ export const Home = (props) => {
                  : null}
                 
                 <div className="mt-4">
-                <h3>{user.fullname}</h3>
+                <h3><b>{user.fullname}</b></h3>
                 <p>
                 {typeof(profile[0]) !== 'undefined' && profile[0].current_occupation
                 ? <b>{profile[0].current_occupation}</b>
