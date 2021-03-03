@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { registerUser } from '../newRegistration/RegisterUser';
 import { Alert, Form } from 'react-bootstrap';
+import { Footer } from '../../views/Footer'
 import Switch  from '../switch';
 import auth from '../auth';
 import './form.css';
@@ -339,9 +340,7 @@ export const TestRegisterForm = (props) => {
             </div>
         </div>
         </div>
-        <footer>
-            my-portfol.io (2021). All Rights Reserved.
-        </footer>
+        <Footer/>
     </>
     )
 }

@@ -427,8 +427,6 @@ class Avatar extends React.Component {
         y: this.scale
       },
       opacity: 1,
-      stroke: 'black',
-      strokeWidth: 3,
       draggable: true,
       dashEnabled: true,
       dash: [10, 5]
