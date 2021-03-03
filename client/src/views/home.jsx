@@ -4,13 +4,13 @@ import { Modal, Button, Form, Dropdown, DropdownButton } from 'react-bootstrap';
 import { PencilFill } from 'react-bootstrap-icons';
 import { AlertDismissible } from '../components/alertDismissible';
 import UploadProfilePicture from './uploadProfilePic';
-import Switch  from '../components/switch';
 
 export const Home = (props) => {
     //console.log("Home Component Recieved Props: ", props);
     const user = props.data.user;
     const profile = (props.data.profile !== null) ? props.data.profile : props.location.state.profile;
     const images = (props.data.images !== null) ? props.data.images : props.location.state.images;
+    const info = (props.data.about !== null) ? props.data.about : props.location.state.about;
 
     const [show, setShow] = useState(false);
     const [showDelete, setShowDelete] = useState(false);
@@ -177,30 +177,13 @@ export const Home = (props) => {
         return image;
     }
 
-    const confirmDelete = () => {
-        return(
-            <>
-            <Modal
-                show={showDelete}
-                onHide={() => setShowDelete(false)}
-                backdrop="static"
-                keyboard={false}
-                size="sm"
-                centered
-                scrollable={false}
-            >
-            <Modal.Dialog>
-                <Modal.Body>
-                    <p>Are you sure you want to remove your current avatar?</p>
-                </Modal.Body>
-            </Modal.Dialog>
-            <Modal.Footer>
-                <Button variant="secondary">Cancel</Button>
-                <Button variant="danger">OK</Button>
-            </Modal.Footer>
-            </Modal>
-            </>
-        );
+    function FormatTextarea(props) {
+        let text = props.text;
+        if(text == null) return null;
+        if(text.length>2) text = text.substring(1, text.length-1);
+        return text.split("\\n").map((str, idx) => 
+            <div key={idx}>{str.length === 0 ? <br/> : str}</div>
+        )
     }
 
     return(
@@ -398,18 +381,45 @@ export const Home = (props) => {
                  ? <><img src={prefix + `${binaryToBase64(images[0].base64preview.data)}`}  alt="Preview"/></>
                  : null}
                 
-                <div className="mt-4">
-                <h3><b>{user.fullname}</b></h3>
-                <p>
-                {typeof(profile[0]) !== 'undefined' && profile[0].current_occupation
-                ? <b>{profile[0].current_occupation}</b>
-                : null}
-                {typeof(profile[0]) !== 'undefined' && profile[0].current_organization
-                    ? <> at {profile[0].current_organization}</>
-                    : null}
-                </p>
+                <div className="mt-4 ml-1">
+                    <h3><b>{user.fullname}</b></h3>
+                    
+                    <p>
+                        {typeof(profile[0]) !== 'undefined' && profile[0].current_occupation
+                        ? <b>{profile[0].current_occupation}</b>
+                        : null}
+                        {typeof(profile[0]) !== 'undefined' && profile[0].current_organization
+                            ? <> at {profile[0].current_organization}</>
+                            : null}
+                    </p>
+
+                    <div className="row ml-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" className="align-self-center mr-2 bi bi-geo-alt-fill" viewBox="0 0 16 16">
+                            <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/>
+                        </svg>
+                        {info !== null 
+                            ? <FormatTextarea text={info !== null ? info.location : ''}/>
+                            : null}
+                    </div>
+                    
+                    <div className="row ml-1 mt-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" className="align-self-center mr-2 bi bi-envelope-fill" viewBox="0 0 16 16">
+                            <path d="M.05 3.555A2 2 0 0 1 2 2h12a2 2 0 0 1 1.95 1.555L8 8.414.05 3.555zM0 4.697v7.104l5.803-3.558L0 4.697zM6.761 8.83l-6.57 4.027A2 2 0 0 0 2 14h12a2 2 0 0 0 1.808-1.144l-6.57-4.027L8 9.586l-1.239-.757zm3.436-.586L16 11.801V4.697l-5.803 3.546z"/>
+                        </svg>
+                        {info !== null 
+                            ? info.public_email
+                            : null}
+                    </div>
+
+                    <div className="row ml-1 mt-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="align-self-center mr-2 bi bi-telephone-fill" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M1.885.511a1.745 1.745 0 0 1 2.61.163L6.29 2.98c.329.423.445.974.315 1.494l-.547 2.19a.678.678 0 0 0 .178.643l2.457 2.457a.678.678 0 0 0 .644.178l2.189-.547a1.745 1.745 0 0 1 1.494.315l2.306 1.794c.829.645.905 1.87.163 2.611l-1.034 1.034c-.74.74-1.846 1.065-2.877.702a18.634 18.634 0 0 1-7.01-4.42 18.634 18.634 0 0 1-4.42-7.009c-.362-1.03-.037-2.137.703-2.877L1.885.511z"/>
+                    </svg>
+                        {info !== null 
+                            ? info.phone
+                            : null}
+                    </div>
                 </div>
-                
 
                 {/* <p><b>Username:</b> {user.username}</p>
                 <p><b>Email: </b>{user.email}</p> */}
