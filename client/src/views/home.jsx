@@ -277,9 +277,9 @@ export const Home = (props) => {
                             x={x}
                             y={y}
                             r={r}
-                            src={typeof(images[0]) !== 'undefined'
-                                ? prefix + `${binaryToBase64(images[0].base64image.data)}` 
-                                : null}
+                            // src={typeof(images[0]) !== 'undefined'
+                            //     ? prefix + `${binaryToBase64(images[0].base64image.data)}` 
+                            //     : null}
 
                         />
                         : <img src={typeof(images[0]) !== 'undefined'
