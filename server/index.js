@@ -185,7 +185,6 @@ app.post('/login', (req, res, next) => {
         }
     })
     .then((data) => {
-        console.log("DATA:",data);
          if (data == null) {
             console.log('No users registered with that email or username!');
             res.json({authenticated: false});

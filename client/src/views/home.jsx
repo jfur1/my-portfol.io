@@ -330,25 +330,27 @@ export const Home = (props) => {
             {(user !== null && typeof user !== 'undefined')
             ? 
                 <>
-                <h3>{user.fullname}</h3>
                 
                 {typeof(images[0]) !== 'undefined' && typeof(images[0].base64preview) !== 'undefined'
-                 ? <><h4>Profile Picture:</h4><img src={prefix + `${binaryToBase64(images[0].base64preview.data)}`}  alt="Preview"/></>
+                 ? <><img src={prefix + `${binaryToBase64(images[0].base64preview.data)}`}  alt="Preview"/></>
                  : null}
-
-                <br></br>
-
-                <p><b>Username:</b> {user.username}</p>
-                <p><b>Email: </b>{user.email}</p>
-
+                
+                <div className="mt-4">
+                <h3>{user.fullname}</h3>
                 <p>
                 {typeof(profile[0]) !== 'undefined' && profile[0].current_occupation
-                ? <><b>Currently: </b>{profile[0].current_occupation}</>
+                ? <b>{profile[0].current_occupation}</b>
                 : null}
                 {typeof(profile[0]) !== 'undefined' && profile[0].current_organization
                     ? <> at {profile[0].current_organization}</>
                     : null}
                 </p>
+                </div>
+                
+
+                {/* <p><b>Username:</b> {user.username}</p>
+                <p><b>Email: </b>{user.email}</p> */}
+
                 <br></br>
                 </> 
 

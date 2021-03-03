@@ -962,6 +962,7 @@ export const Portfolio = props => {
                 <Col>
                     <Form.Control 
                         required
+                        style={{textAlign: "left"}}
                         isInvalid={(length(errs["project"]) > 0 && row.title==="") || (typeof(duplicateProject["Idx"+idx]) !== 'undefined' && row.title !== "")}
                         type="text" 
                         value={row.title || ''} 
@@ -1006,7 +1007,7 @@ export const Portfolio = props => {
                     Organization
                 </Form.Label>
                 <Col>
-                    <Form.Control type="text" id="project-organization" 
+                    <Form.Control type="text" id="project-organization" style={{textAlign: "left"}}
                     value={row.organization !== null ? row.organization : ''} 
                     placeholder={"Add an organization (Optional)"} 
                     onChange={e => handleProjectOrganizationChange(e, idx)}></Form.Control>
@@ -1053,7 +1054,7 @@ export const Portfolio = props => {
                     Link
                 </Form.Label>
                 <Col>
-                    <Form.Control type="text" id="project-link" value={row.link !== null ? row.link : ''} placeholder={"Add an link for your project! (Optional)"} 
+                    <Form.Control type="text" id="project-link" style={{textAlign: "left"}} value={row.link !== null ? row.link : ''} placeholder={"Add an link for your project! (Optional)"} 
                         onChange={e => handleProjectLinkChange(e, idx)}
                     />
                 </Col>
@@ -1074,6 +1075,7 @@ export const Portfolio = props => {
                     <Form.Control 
                         type="text" 
                         required
+                        style={{textAlign: "left"}}
                         isInvalid={(length(errs["portfolio"]) > 0 && row.occupation === "") || (typeof(duplicateWork["Idx"+idx]) !== 'undefined' && row.occupation !== "")}
                         value={row.occupation !== null ? row.occupation : ''} 
                         placeholder={"Occupation Title"} 
@@ -1099,7 +1101,7 @@ export const Portfolio = props => {
                     Organization
                 </Form.Label>
                 <Col>
-                    <Form.Control type="text" id="organization" value={row.organization !== null ? row.organization : ''} placeholder={"Add an organization. (Optional)"} 
+                    <Form.Control type="text" id="organization" style={{textAlign: "left"}} value={row.organization !== null ? row.organization : ''} placeholder={"Add an organization. (Optional)"} 
                         onChange={e => {handlePortfolioOrganizationChange(e, idx)}}>
                     </Form.Control>
                 </Col>
@@ -1145,6 +1147,7 @@ export const Portfolio = props => {
                 </Form.Label>
                 <Col>
                     <Form.Control as="textarea" rows="3" 
+                    style={{textAlign: "left"}}
                     defaultValue={row.description !== null 
                         ? row.description.substring(1, row.description.length-1).replace(/\\n/g, '\n') 
                         : ''}
@@ -1168,6 +1171,7 @@ export const Portfolio = props => {
                     <Form.Control 
                         type="text" 
                         required
+                        style={{textAlign: "left"}}
                         isInvalid={(length(errs["education"]) > 0 && row.education === "") || (typeof(duplicateEducation["Idx"+idx]) !== 'undefined' && row.education !== "")}
                         value={row.education !== null ? row.education : ''} 
                         placeholder={"Education (Required)"} 
@@ -1189,7 +1193,7 @@ export const Portfolio = props => {
                     Organization
                 </Form.Label>
                 <Col>
-                    <Form.Control type="text" id="education-organization" value={row.organization !== null ? row.organization : ''} placeholder={"Add an organization (Optional)"}
+                    <Form.Control type="text" id="education-organization" style={{textAlign: "left"}} value={row.organization !== null ? row.organization : ''} placeholder={"Add an organization (Optional)"}
                         onChange={e => {handleEducationOrganizationChange(e, idx)}}
                     ></Form.Control>
                 </Col>
@@ -1242,6 +1246,7 @@ export const Portfolio = props => {
                 </Form.Label>
                 <Col>
                     <Form.Control as="textarea" rows="3" 
+                    style={{textAlign: "left"}}
                     defaultValue={row.description !== null
                         ? row.description.substring(1, row.description.length-1).replace(/\\n/g, '\n')  
                         : ''}
@@ -1378,8 +1383,8 @@ export const Portfolio = props => {
 
     function FormatTextarea(props) {
         let text = props.text;
-        if(text == null) return null;
-        if(text.length>2) text = text.substring(1, text.length-1);
+        if(text == null || text.length < 3) return null;
+        if(text.length > 2) text = text.substring(1, text.length-1);
         return text.split("\\n").map((str, idx) => 
             <div key={idx}>{str.length === 0 ? <br/> : str}</div>
         )
@@ -1570,10 +1575,10 @@ export const Portfolio = props => {
                     <h4><b>{row.title}</b></h4>
                     
                     {row.description 
-                    ? <><FormatTextarea text={row.description} key={idx}/></>
+                    ? <><FormatTextarea text={row.description.replace(/\\n/g, '\n')} key={idx}/></>
                     : null}
 
-                    <br></br>
+                    <br/>
 
                     {(row.organization && row.organization !== "null")
                     ? <p><b>Organization:</b> {row.organization}</p>
@@ -1582,7 +1587,6 @@ export const Portfolio = props => {
                     {(row.link && row.link !== "null")
                     ? <><b>Link: </b><a href={row.link} target="_blank" rel="noreferrer">{row.link}</a></>
                     : null}
-                    <br/>
                     
                     <p>
                     {(row.from_when && row.from_when !== "infinity")
@@ -1608,6 +1612,7 @@ export const Portfolio = props => {
             <div className="mb-3 ml-3 mr-3" key={idx}>
                 <h4><b>{row.occupation}</b></h4>
                 <h5>{row.organization}</h5>
+                
                 <p>
                 {(row.from_when && row.from_when !== "infinity")
                 ? <FormatDate dateString={row.from_when} key={idx}/>
@@ -1619,7 +1624,7 @@ export const Portfolio = props => {
                 </p>
 
                 {(row.description)
-                ? <FormatTextarea text={row.description} key={idx}/>
+                ? <FormatTextarea text={row.description.replace(/\\n/g, '\n')} key={idx}/>
                 : null}
 
                 <hr/>
@@ -1640,6 +1645,7 @@ export const Portfolio = props => {
                     ? <h5><p>{row.organization}</p></h5>
                     : null}
 
+                    
                     <p>
                     {(row.from_when && row.from_when !== "infinity")
                     ? <FormatDate dateString={row.from_when} key={idx}/>
@@ -1652,7 +1658,7 @@ export const Portfolio = props => {
                     </p>
 
                     {row.description
-                    ? <><FormatTextarea text={row.description} key={idx}/></>
+                    ? <><FormatTextarea text={row.description.replace(/\\n/g, '\n')} key={idx}/></>
                     : null}
                     <hr/>
                 </div>

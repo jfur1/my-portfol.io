@@ -393,7 +393,7 @@ export const Contact = (props) => {
 
     function FormatTextarea(props) {
         let text = props.text;
-        if(text == null) return null;
+        if(text == null || text.length < 2) return null;
         if(text.length>2) text = text.substring(1, text.length-1);
         return text.split("\\n").map((str, idx) => 
             <div key={idx}>{str.length === 0 ? <br/> : str}</div>
@@ -516,10 +516,10 @@ export const Contact = (props) => {
 
             <div className="info-container">
                 
-                <h4>Email: </h4>
+                <p><h4>Email: </h4>
                 {typeof(profile[0]) !== 'undefined' && profile[0].public_email
-                ? <p>{profile[0].public_email}</p>
-                : null }
+                ? profile[0].public_email
+                : null }</p>
 
                 <br/>
 
@@ -532,15 +532,15 @@ export const Contact = (props) => {
                 <br></br>
                 
                 <h4>My Links</h4>
-
+                <hr/>
                 <div className="info-container">
                 {linksData 
                 ? linksData.map((row, idx) => 
                 
-                    <div className="draggable-container mb-4 ml-3 mr-3" key={idx}>
+                    <div className="mb-4 ml-3 mr-3" key={idx}>
                         
                         {row.title 
-                        ? <b>{row.title}: </b>
+                        ? <b>{row.title}</b>
                         : null }
                         
                         <br></br>
@@ -554,7 +554,7 @@ export const Contact = (props) => {
                         ? <FormatTextarea text={row.description} key={idx}/>
                         : null }
                         
-                        <br></br>
+                        <hr/>
                     </div>
                     )
                 : null }
