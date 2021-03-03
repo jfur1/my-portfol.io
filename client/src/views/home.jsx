@@ -1,6 +1,6 @@
 // Home Tab on a User's Profile
 import { useState } from 'react';
-import { Modal, Button, Form, Dropdown } from 'react-bootstrap';
+import { Modal, Button, Form, Dropdown, DropdownButton } from 'react-bootstrap';
 import { PencilFill } from 'react-bootstrap-icons';
 import { AlertDismissible } from '../components/alertDismissible';
 import UploadProfilePicture from './uploadProfilePic';
@@ -13,6 +13,7 @@ export const Home = (props) => {
     const images = (props.data.images !== null) ? props.data.images : props.location.state.images;
 
     const [show, setShow] = useState(false);
+    const [showDelete, setShowDelete] = useState(false);
     const [edited, setEdited] = useState(false);
     const [showAlert, setShowAlert] = useState(false);
     const [fullname, setFullname] = useState(user.fullname);
@@ -176,6 +177,32 @@ export const Home = (props) => {
         return image;
     }
 
+    const confirmDelete = () => {
+        return(
+            <>
+            <Modal
+                show={showDelete}
+                onHide={() => setShowDelete(false)}
+                backdrop="static"
+                keyboard={false}
+                size="sm"
+                centered
+                scrollable={false}
+            >
+            <Modal.Dialog>
+                <Modal.Body>
+                    <p>Are you sure you want to remove your current avatar?</p>
+                </Modal.Body>
+            </Modal.Dialog>
+            <Modal.Footer>
+                <Button variant="secondary">Cancel</Button>
+                <Button variant="danger">OK</Button>
+            </Modal.Footer>
+            </Modal>
+            </>
+        );
+    }
+
     return(
         <div className="tab-container"> 
         {props.data.ownedByUser 
@@ -258,17 +285,9 @@ export const Home = (props) => {
                         <Form.Label>
                             Edit Profile Picture
                         </Form.Label>
-
-                        <Switch
-                            isOn={showEditPic}
-                            handleToggle={() => {      
-                                    setEdited(true);                              
-                                    setShowEditPic(!showEditPic);
-                            }}
-                        />
                     </Form.Row>
 
-                    <Form.Row className='mt-3'>
+                    <Form.Row className='justify-content-center'>
                         {showEditPic 
                         ? <UploadProfilePicture 
                             stagePreview={stagePreview}
@@ -277,17 +296,58 @@ export const Home = (props) => {
                             x={x}
                             y={y}
                             r={r}
-                            // src={typeof(images[0]) !== 'undefined'
-                            //     ? prefix + `${binaryToBase64(images[0].base64image.data)}` 
-                            //     : null}
-
                         />
                         : <img src={typeof(images[0]) !== 'undefined'
-                            ? prefix + `${binaryToBase64(images[0].base64preview.data)}` 
+                            ? prefix + profileAvatar
                             : ''} alt="Preview"/>}
+                        
+                        {showDelete
+                            ? <Modal
+                                show={showDelete}
+                                onHide={() => setShowDelete(false)}
+                                backdrop="static"
+                                keyboard={false}
+                                size="sm"
+                                centered
+                                scrollable={false}
+                            >
+                            <Modal.Header closeButton>
+                            <Modal.Title>Modal title</Modal.Title>
+                            </Modal.Header>
+                                <Modal.Body>
+                                    <p>Are you sure you want to remove your current avatar?</p>
+                                </Modal.Body>
+                            <Modal.Footer>
+                                <Button variant="secondary" onClick={() => setShowDelete(false)}>Cancel</Button>
+                                <Button variant="danger" 
+                                    onClick={() => {
+                                        setProfileAvatar('');
+                                        setProfilePic('');
+                                        setEdited(true);
+                                        setShowDelete(false);
+                                    }}>    
+                                OK</Button>
+                            </Modal.Footer>
+                            </Modal>
+                        :null}
+
+                        {!showEditPic
+                        ? <DropdownButton id="avatar-dropdown" title="edit" size="sm">
+                            <Dropdown.Item eventKey="1" 
+                                onClick={() => {setShowEditPic(!showEditPic);setEdited(true);}}>
+                                Upload a photo...
+                            </Dropdown.Item>
+                            <Dropdown.Item eventKey="2" onClick={() => setShowDelete(true)}>Remove Photo</Dropdown.Item>
+                        </DropdownButton>
+                        : null}
                     </Form.Row>
 
                     <br></br>
+                    <Form.Row className='mt-3'>
+                        <Form.Label>
+                            Edit Font
+                        </Form.Label>
+                    </Form.Row>
                     <Dropdown id="collapsible-nav-dropdown">
                         <Dropdown.Toggle className="bg-transparent text-dark" id="dropdown-custom-components">
                         Your font: <b style={{
