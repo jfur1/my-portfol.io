@@ -23,8 +23,8 @@ export const Contact = (props) => {
     const [changingOrder, setChangingOrder] = useState(false);
 
     // Data to be Modified
-    const [publicEmail, setPublicEmail] = useState(typeof(profile) !== 'undefined' ? profile[0].public_email : '');
-    const [phone, setPhone] = useState(typeof(profile) !== 'undefined' ? profile[0].phone : '');
+    const [publicEmail, setPublicEmail] = useState(typeof(profile[0]) !== 'undefined' ? profile[0].public_email : '');
+    const [phone, setPhone] = useState(typeof(profile[0]) !== 'undefined' ? profile[0].phone : '');
     const [links, setLinks] = useState({values: linksData});
 
     // POST request hooks
@@ -393,7 +393,7 @@ export const Contact = (props) => {
 
     function FormatTextarea(props) {
         let text = props.text;
-        if(text == null) return null;
+        if(text == null || text.length < 2) return null;
         if(text.length>2) text = text.substring(1, text.length-1);
         return text.split("\\n").map((str, idx) => 
             <div key={idx}>{str.length === 0 ? <br/> : str}</div>
@@ -509,37 +509,38 @@ export const Contact = (props) => {
 
             {/* After integrating backend, render original data not tmpHooks */}
             {props.data.ownedByUser ? <Button variant="warning" className="edit-button" onClick={handleShow}>Edit&nbsp;<PencilFill size={25}/></Button> : null}
-            <h3>Contact Information</h3><br/>
+            <h3>Contact Information</h3>
+            <hr color="black"/>
             <h3>{user.firstname} {user.lastname}</h3>
             <br/>
 
             <div className="info-container">
                 
-                <h4>Email: </h4>
-                {publicEmail
-                ? <p>{publicEmail}</p>
-                : null }
+                <p><h4>Email: </h4>
+                {typeof(profile[0]) !== 'undefined' && profile[0].public_email
+                ? profile[0].public_email
+                : null }</p>
 
                 <br/>
 
                 <h4>Phone: </h4>
-                {phone
-                ? <p>{phone}</p>
+                {typeof(profile[0]) !== 'undefined' && profile[0].phone
+                ? <p>{profile[0].phone}</p>
                 : null }
 
                 </div>
                 <br></br>
                 
                 <h4>My Links</h4>
-
+                <hr/>
                 <div className="info-container">
                 {linksData 
                 ? linksData.map((row, idx) => 
                 
-                    <div className="draggable-container mb-4 ml-3 mr-3" key={idx}>
+                    <div className="mb-4 ml-3 mr-3" key={idx}>
                         
                         {row.title 
-                        ? <b>{row.title}: </b>
+                        ? <b>{row.title}</b>
                         : null }
                         
                         <br></br>
@@ -553,7 +554,7 @@ export const Contact = (props) => {
                         ? <FormatTextarea text={row.description} key={idx}/>
                         : null }
                         
-                        <br></br>
+                        <hr/>
                     </div>
                     )
                 : null }

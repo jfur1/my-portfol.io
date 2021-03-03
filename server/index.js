@@ -3,6 +3,8 @@ var cors = require('cors');
 const bcrypt = require('bcryptjs');
 var db = require("./config/db");
 const session = require('express-session');
+const nodemailer = require('nodemailer');
+const crypto = require('crypto');
 const passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
 
@@ -90,6 +92,14 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
+// Configure Mail Server Responsible for Sending/Recieving Mail
+var smtpTransport = nodemailer.createTransport({
+    service: "Gmail",
+    auth: {
+        user: "myportfolio.help@gmail.com",
+        pass: "mppassword"
+    }
+});
 
 // ------------------------ END Passport.js Middleware ------------------------------
 
@@ -105,8 +115,8 @@ app.post('/newUser', async(req, res) => {
     } = req.body;
 
     db.task(async t => {
-        const email_check = await t.oneOrNone('SELECT * FROM users WHERE \'' + email + '\' = email;');
-        const username_check = await t.oneOrNone('SELECT * FROM users WHERE \'' + username + '\' = username;');
+        const email_check = await t.oneOrNone('SELECT * FROM users WHERE email=${email};', {email});
+        const username_check = await t.oneOrNone('SELECT * FROM users WHERE username=${username};', {username});
         
         if(email_check !== null && username_check !== null){
             return 3;
@@ -175,7 +185,6 @@ app.post('/login', (req, res, next) => {
         }
     })
     .then((data) => {
-        console.log("DATA:",data);
          if (data == null) {
             console.log('No users registered with that email or username!');
             res.json({authenticated: false});
@@ -211,6 +220,131 @@ app.post('/login', (req, res, next) => {
     });
 });
 
+app.post('/forgotPassword', (req, res) => {
+    const {email} = req.body;
+    
+    db.tx(t => {
+        if(email.includes('@')){
+            return t.oneOrNone('SELECT * FROM users WHERE ${email} = email;', {email});
+        }else{
+            return t.oneOrNone('SELECT * FROM users WHERE ${email}=username;', {email});
+        }
+    })
+    .then((data) => {
+
+        if(data == null){
+            console.log('No users registered with that email or username!');
+            return -1;
+        } else{
+            const token = crypto.randomBytes(20).toString('hex');
+            data.resetPasswordToken = token;
+            data.resetTokenExpires = Date.now() + 3600000;  // 1 hour
+
+            const link = "http://localhost:3000/reset/" + token;
+            const mailOptions = {
+                from: 'myportfolio.help@gmail.com',
+                to: `${data.email}`,
+                subject: 'Link to Reset Password',
+                text: `You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n` + 
+                `Please click on the following link, or paste this into your browser to complete the process within an hour of receiving it:\n\n` + 
+                `http://localhost:3000/reset/${token}\n\n` +
+                `If you did not request this, please ignore this email and your password will remain unchanged.\n`
+            };
+
+            smtpTransport.sendMail(mailOptions, function(err){
+                if(err) console.log(err);
+            });
+
+            db.tx(token => {
+                return token.none('UPDATE users SET reset_token=$1, token_expires=$2 WHERE email=$3', [data.resetPasswordToken, data.resetTokenExpires, data.email]);
+            })
+        }
+    })
+    .then((response) => {
+        if(response === -1){
+            return res.json({data: 'No users registered with that email/username.'});
+        }
+        else{
+            return res.status(200).json({data: 'Recovery email sent.'});
+        }
+    })
+    .catch((err) => console.log(err));
+})
+
+app.get('/reset/:token', (req, res) => {
+    console.log(req.params.token)
+    db.tx(check => {
+        return check.oneOrNone('SELECT * FROM users WHERE reset_token=${token} AND CAST(token_expires AS BIGINT) > ${currentTime};', 
+            {
+                token: req.params.token, 
+                currentTime: Date.now()
+            });
+    })
+    .then((data) => {
+        console.log(data)
+        if(!data){
+            return res.json({authenticated: false});
+        }
+        else{
+            console.log("Authenticated Token!")
+            return res.json({authenticated: true, email: data.email});
+        }
+    })
+    .catch(err => console.log(err));
+})
+
+app.post('/reset/:token', (req, res) => {
+    const {email, password} = req.body;
+
+    db.tx(async reset => {
+        const data = await reset.oneOrNone('SELECT * FROM users WHERE email=${email}', {email});
+        return data;
+    })
+    .then(async data => {
+        console.log(data)
+        if(!data){
+            return res.json({error: true});
+        }
+        else if(data.token_expires < Date.now() || data.reset_token === 0){
+            return res.json({error: true, invalidToken: true});
+        }
+        else{
+            // Hash Password
+            const salt = await bcrypt.genSalt(12);
+            const hashedPassword = await bcrypt.hash(password, salt);
+
+            db.tx(reset => {
+                return reset.none('UPDATE users SET password=$1, reset_token=$2, token_expires=$3 WHERE email=$4', 
+                [
+                    hashedPassword, 
+                    0,
+                    0, 
+                    email
+                ]);
+            })
+            .then(d => {
+                var confirmChange = {
+                    to: `${email}`,
+                    from: 'myportfolio.help@gmail.com',
+                    subject: 'Your password has been changed',
+                    text: 'Hello ' + data.fullname + ',\n\n'+
+                        'This email is a confirmation that the password for your account ' + data.username + ' has just been changed.\n'
+                };
+                smtpTransport.sendMail(confirmChange, function(err){
+                    if(err) console.log(err);
+                })
+                return res.json({error: false, updated: true});
+            })
+            .catch(error =>{
+                console.log('ERROR', error);
+            })
+        }
+    })
+    .catch(error =>{
+        console.log('ERROR', error);
+    })
+})
+
 // Logout
 app.post('/logout', (req, res) => {
     req.logout();
@@ -237,7 +371,7 @@ app.get('/getUserData', (req, res) => {
     //console.log("Server recieved header:", username);
 
     db.tx(async t => {
-        const data = await t.oneOrNone('SELECT * FROM users WHERE \'' + username + '\' = username;');
+        const data = await t.oneOrNone('SELECT * FROM users WHERE username = ${username};', {username});
         return data
     })
     .then((user) => {
@@ -271,13 +405,13 @@ app.get('/about', (req, res) => {
     const username = req.headers.username;
     
     db.task(async t => {
-        const user = await t.oneOrNone('SELECT user_id FROM users WHERE \''+ username + '\' = username;');
+        const user = await t.oneOrNone('SELECT user_id FROM users WHERE username = ${username};', {username});
 
         if(!user){
             return res.json({error: true});
         }
 
-        const data = await t.oneOrNone('SELECT * FROM profile WHERE \''+ user.user_id + '\' = uid;');
+        const data = await t.oneOrNone('SELECT * FROM profile WHERE uid = ${user_id};', {user_id: user.user_id});
         return data;
     })
     .then((about) => {
@@ -291,13 +425,14 @@ app.get('/profile', (req, res) => {
     const username = req.headers.username;
     
     db.tx(async t => {
-        const user = await t.oneOrNone('SELECT user_id FROM users WHERE \''+ username + '\' = username;');
+        const user = await t.oneOrNone('SELECT user_id FROM users WHERE username = ${username};', {username});
         
         if(!user){
             return res.json({error: true});
         }
 
-        const data = await t.any('SELECT * FROM profile WHERE uid = $1', user.user_id);
+        const data = await t.any('SELECT * FROM profile WHERE uid = ${user_id};', 
+        {user_id: user.user_id});
         return data;
     })
     .then((profile) => {
@@ -313,7 +448,7 @@ app.get('/portfolio', (req, res) => {
     const username = req.headers.username;
     
     db.tx(async t => {
-        const user = await t.oneOrNone('SELECT user_id FROM users WHERE \''+ username + '\' = username;');
+        const user = await t.oneOrNone('SELECT user_id FROM users WHERE username = ${username};', {username});
         
         if(!user){
             return res.json({error: true});
@@ -336,13 +471,13 @@ app.get('/contact', (req, res) => {
     const username = req.headers.username;
 
     db.tx(async t => {
-        const user = await t.oneOrNone('SELECT user_id FROM users WHERE \''+ username + '\' = username;');
+        const user = await t.oneOrNone('SELECT user_id FROM users WHERE username = ${username};', {username});
 
         if(!user){
             return res.json({error: true});
         }
 
-        return t.any('SELECT * FROM links WHERE \''+ user.user_id +'\' = uid ORDER BY position;');
+        return t.any('SELECT * FROM links WHERE uid=${user_id} ORDER BY position;', {user_id: user.user_id});
     })
     .then((links) => {
         return res.json(links);
@@ -355,13 +490,13 @@ app.get('/education', (req, res) => {
     const username = req.headers.username;
 
     db.tx(async t => {
-        const user = await t.oneOrNone('SELECT user_id FROM users WHERE \''+ username + '\' = username;');
+        const user = await t.oneOrNone('SELECT user_id FROM users WHERE username = ${username};', {username});
 
         if(!user){
             return res.json({error: true});
         }
 
-        const data = await t.any('SELECT education_id, uid, organization, education, from_when::varchar, to_when::varchar, description FROM education WHERE \''+ user.user_id +'\' = uid ORDER BY position;');
+        const data = await t.any('SELECT education_id, uid, organization, education, from_when::varchar, to_when::varchar, description FROM education WHERE uid=${user_id} ORDER BY position;', {user_id: user.user_id});
         return data;
     })
     .then((eduaction) => {
@@ -374,13 +509,13 @@ app.get('/hobbies', (req, res) => {
     const username = req.headers.username;
 
     db.tx(async t => {
-        const user = await t.oneOrNone('SELECT user_id FROM users WHERE \''+ username + '\' = username;');
+        const user = await t.oneOrNone('SELECT user_id FROM users WHERE username = ${username};', {username});
 
         if(!user){
             return res.json({error: true});
         }
 
-        const data = await t.any('SELECT * FROM hobbies WHERE \''+ user.user_id +'\' = uid ORDER BY position;');
+        const data = await t.any('SELECT * FROM hobbies WHERE uid=${user_id} ORDER BY position;', {user_id: user.user_id});
         return data;
     })
     .then((hobbies) => {
@@ -393,13 +528,13 @@ app.get('/skills', (req, res) => {
     const username = req.headers.username;
 
     db.tx(async t => {
-        const user = await t.oneOrNone('SELECT user_id FROM users WHERE \''+ username + '\' = username;');
+        const user = await t.oneOrNone('SELECT user_id FROM users WHERE username = ${username};', {username});
 
         if(!user){
             return res.json({error: true});
         }
 
-        const data = await t.any('SELECT * FROM skills WHERE \''+ user.user_id +'\' = uid ORDER BY position;');
+        const data = await t.any('SELECT * FROM skills WHERE uid=${user_id} ORDER BY position;', {user_id: user.user_id});
         return data;
     })
     .then((skills) => {
@@ -412,13 +547,13 @@ app.get('/projects', (req, res) => {
     const username = req.headers.username;
 
     db.tx(async t => {
-        const user = await t.oneOrNone('SELECT user_id FROM users WHERE \''+ username + '\' = username;');
+        const user = await t.oneOrNone('SELECT user_id FROM users WHERE username = ${username};', {username});
 
         if(!user){
             return res.json({error: true});
         }
 
-        const data = await t.any('SELECT project_id, uid, title, description, organization, from_when::varchar, to_when::varchar, link, position FROM projects WHERE \''+ user.user_id +'\' = uid ORDER BY position;');
+        const data = await t.any('SELECT project_id, uid, title, description, organization, from_when::varchar, to_when::varchar, link, position FROM projects WHERE uid=${user_id} ORDER BY position;', {user_id: user.user_id});
         return data;
     })
     .then((skills) => {
@@ -431,13 +566,13 @@ app.get('/images', (req, res) => {
     const username = req.headers.username;
 
     db.tx(async t => {
-        const user = await t.oneOrNone('SELECT user_id FROM users WHERE \''+ username + '\' = username;');
+        const user = await t.oneOrNone('SELECT user_id FROM users WHERE username = ${username};', {username});
 
         if(!user){
             return res.json({error: true});
         }
 
-        const data = await t.any('SELECT uid, base64image, base64preview, prefix, x, y, radius FROM images WHERE \''+ user.user_id +'\' = uid;');
+        const data = await t.any('SELECT uid, base64image, base64preview, prefix, x, y, radius FROM images WHERE uid = ${user_id};', {user_id: user.user_id});
         return data;
     })
     .then((images) => {
@@ -482,7 +617,7 @@ app.post('/createCurrentOccupation', (req, res) => {
         }
         // User may already have profile entry via createBio etc. But no occupation
         else{
-            return t.none('UPDATE profile SET current_occupation=${occupation} WHERE uid = \'' + user_id + '\';', 
+            return t.none('UPDATE profile SET current_occupation=${occupation} WHERE uid = ${user_id};', 
             {
                 user_id,
                 occupation
@@ -526,7 +661,7 @@ app.post('/createCurrentOrganization', (req, res) => {
         }
         // User may already have profile entry via createBio etc. But no organization
         else{
-            return t.none('UPDATE profile SET current_organization=${organization} WHERE uid = \'' + user_id + '\';', 
+            return t.none('UPDATE profile SET current_organization=${organization} WHERE uid = ${user_id};', 
             {
                 user_id,
                 organization
@@ -755,7 +890,7 @@ app.post('/updateLocation', (req, res) => {
     //console.log("Server recieved location:", location);
 
     db.tx(async t => {
-        return t.one('UPDATE profile SET location = ${location} WHERE uid = \'' + user_id + '\' RETURNING location;', {location: location});
+        return t.one('UPDATE profile SET location = ${location} WHERE uid = ${user_id} RETURNING location;', {user_id: user_id, location: location});
     })
     .then((data) => {
         return res.json(data.location);
@@ -775,7 +910,7 @@ app.post('/updateBio', (req, res) => {
 
     db.tx(async t => {
         // return t.one('UPDATE profile SET bio = \'' + bio + '\' WHERE uid = \'' + user_id + '\' RETURNING bio;');
-        return t.one('UPDATE profile SET bio = ${bio} WHERE uid = \'' + user_id + '\' RETURNING bio;', {bio: bio});
+        return t.one('UPDATE profile SET bio = ${bio} WHERE uid = ${user_id} RETURNING bio;', {user_id: user_id, bio: bio});
     })
     .then((data) => {
         return res.json(data.bio);
@@ -839,7 +974,7 @@ app.post('/deleteHobby', (req, res) => {
     const {hobby_id} = req.headers;
 
     db.tx(async t => {
-        return t.none('DELETE FROM hobbies WHERE hobby_id = \'' + hobby_id + '\';');
+        return t.none('DELETE FROM hobbies WHERE hobby_id = ${hobby_id};', {hobby_id});
     })
     .then((data) => {
         return res.json({errors: false});
@@ -854,7 +989,7 @@ app.post('/deleteSkill', (req, res) => {
     const {skill_id} = req.headers;
 
     db.tx(async t => {
-        return t.none('DELETE FROM skills WHERE skill_id = \'' + skill_id + '\';');
+        return t.none('DELETE FROM skills WHERE skill_id = ${skill_id};', {skill_id});
     })
     .then((data) => {
         return res.json({errors: false});
@@ -874,10 +1009,10 @@ app.post('/updatePublicEmail', (req, res) => {
     const {user_id, public_email} = req.headers;
 
     db.tx(async t => {
-        return t.one('UPDATE profile SET public_email = ${public_email} WHERE uid = \'' + user_id + '\' RETURNING public_email;', {public_email});
+        return t.none('UPDATE profile SET public_email = ${public_email} WHERE uid = \'' + user_id + '\';', {public_email});
     })
     .then((data) => {
-        return res.json(data.public_email);
+        return res.json(data);
     })
     .catch((err) => {
         console.log(err);
@@ -889,10 +1024,10 @@ app.post('/updatePhone', (req, res) => {
     const {user_id, phone} = req.headers;
 
     db.tx(async t => {
-        return t.one('UPDATE profile SET phone = ${phone} WHERE uid = \'' + user_id + '\' RETURNING phone;', {phone});
+        return t.none('UPDATE profile SET phone = ${phone} WHERE uid = ${user_id};', {user_id, phone});
     })
     .then((data) => {
-        return res.json(data.phone);
+        return res.json(data);
     })
     .catch((err) => {
         console.log(err);

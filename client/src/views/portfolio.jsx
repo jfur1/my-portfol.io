@@ -962,6 +962,7 @@ export const Portfolio = props => {
                 <Col>
                     <Form.Control 
                         required
+                        style={{textAlign: "left"}}
                         isInvalid={(length(errs["project"]) > 0 && row.title==="") || (typeof(duplicateProject["Idx"+idx]) !== 'undefined' && row.title !== "")}
                         type="text" 
                         value={row.title || ''} 
@@ -1006,7 +1007,7 @@ export const Portfolio = props => {
                     Organization
                 </Form.Label>
                 <Col>
-                    <Form.Control type="text" id="project-organization" 
+                    <Form.Control type="text" id="project-organization" style={{textAlign: "left"}}
                     value={row.organization !== null ? row.organization : ''} 
                     placeholder={"Add an organization (Optional)"} 
                     onChange={e => handleProjectOrganizationChange(e, idx)}></Form.Control>
@@ -1053,7 +1054,7 @@ export const Portfolio = props => {
                     Link
                 </Form.Label>
                 <Col>
-                    <Form.Control type="text" id="project-link" value={row.link !== null ? row.link : ''} placeholder={"Add an link for your project! (Optional)"} 
+                    <Form.Control type="text" id="project-link" style={{textAlign: "left"}} value={row.link !== null ? row.link : ''} placeholder={"Add an link for your project! (Optional)"} 
                         onChange={e => handleProjectLinkChange(e, idx)}
                     />
                 </Col>
@@ -1074,6 +1075,7 @@ export const Portfolio = props => {
                     <Form.Control 
                         type="text" 
                         required
+                        style={{textAlign: "left"}}
                         isInvalid={(length(errs["portfolio"]) > 0 && row.occupation === "") || (typeof(duplicateWork["Idx"+idx]) !== 'undefined' && row.occupation !== "")}
                         value={row.occupation !== null ? row.occupation : ''} 
                         placeholder={"Occupation Title"} 
@@ -1099,7 +1101,7 @@ export const Portfolio = props => {
                     Organization
                 </Form.Label>
                 <Col>
-                    <Form.Control type="text" id="organization" value={row.organization !== null ? row.organization : ''} placeholder={"Add an organization. (Optional)"} 
+                    <Form.Control type="text" id="organization" style={{textAlign: "left"}} value={row.organization !== null ? row.organization : ''} placeholder={"Add an organization. (Optional)"} 
                         onChange={e => {handlePortfolioOrganizationChange(e, idx)}}>
                     </Form.Control>
                 </Col>
@@ -1145,6 +1147,7 @@ export const Portfolio = props => {
                 </Form.Label>
                 <Col>
                     <Form.Control as="textarea" rows="3" 
+                    style={{textAlign: "left"}}
                     defaultValue={row.description !== null 
                         ? row.description.substring(1, row.description.length-1).replace(/\\n/g, '\n') 
                         : ''}
@@ -1168,6 +1171,7 @@ export const Portfolio = props => {
                     <Form.Control 
                         type="text" 
                         required
+                        style={{textAlign: "left"}}
                         isInvalid={(length(errs["education"]) > 0 && row.education === "") || (typeof(duplicateEducation["Idx"+idx]) !== 'undefined' && row.education !== "")}
                         value={row.education !== null ? row.education : ''} 
                         placeholder={"Education (Required)"} 
@@ -1189,7 +1193,7 @@ export const Portfolio = props => {
                     Organization
                 </Form.Label>
                 <Col>
-                    <Form.Control type="text" id="education-organization" value={row.organization !== null ? row.organization : ''} placeholder={"Add an organization (Optional)"}
+                    <Form.Control type="text" id="education-organization" style={{textAlign: "left"}} value={row.organization !== null ? row.organization : ''} placeholder={"Add an organization (Optional)"}
                         onChange={e => {handleEducationOrganizationChange(e, idx)}}
                     ></Form.Control>
                 </Col>
@@ -1242,6 +1246,7 @@ export const Portfolio = props => {
                 </Form.Label>
                 <Col>
                     <Form.Control as="textarea" rows="3" 
+                    style={{textAlign: "left"}}
                     defaultValue={row.description !== null
                         ? row.description.substring(1, row.description.length-1).replace(/\\n/g, '\n')  
                         : ''}
@@ -1272,11 +1277,11 @@ export const Portfolio = props => {
                                     <div className='draggable-container mb-4 ml-3 mr-3' ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
 
                                     {row.title
-                                        ? row.title
+                                        ? <b>{row.title}</b>
                                         : null}
                                     <br></br>
                                     {row.description
-                                        ? <NewlineText text={row.description} key={idx}/>
+                                        ? row.description.substring(1, row.description.length-1).replace(/\\n/g, '\n')
                                         : null} 
                                     <br></br>
                                     {row.organization
@@ -1318,7 +1323,7 @@ export const Portfolio = props => {
                                     <div className='draggable-container mb-4 ml-3 mr-3' ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
 
                                     {row.occupation
-                                        ? row.occupation
+                                        ? <b>{row.occupation}</b>
                                         : null}
                                     </div>
                                 )}
@@ -1343,7 +1348,7 @@ export const Portfolio = props => {
                                     <div className='draggable-container mb-4 ml-3 mr-3' ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
 
                                     {row.education
-                                        ? row.education
+                                        ? <b>{row.education}</b>
                                         : null}
                                         
                                     </div>
@@ -1360,23 +1365,15 @@ export const Portfolio = props => {
         );
     }
 
-    function NewlineText(props) {
-        const text = props.text;
-        if(text == null) return null;
-        return text.split("\\n").map((str, idx) => 
-            <div key={idx}>{str.length === 0 ? <br/> : str}</div>
-        );
-    }
-
     const FormatDate = (props) => {
         let date = props.dateString;
-        const months = {"01": "Jan", "02": "Feb", "03": "Mar", "04": "Apr", "05": "May", "06": "Jun", 
-                        "07": "Jul", "08": "Aug", "09": "Sep", "10": "Oct", "11": "Nov", "12": "Dec"};
+        const months = {"01": "January", "02": "February", "03": "March", "04": "April", "05": "May", "06": "June", 
+                        "07": "July", "08": "August", "09": "September", "10": "October", "11": "November", "12": "December"};
         const year = date.substring(0, 4);
         const monthDecimal = date.substring(5, 7);
         const month = months[monthDecimal];
         const formattedDate = month + ' ' + year;
-        return formattedDate;
+        return ' ' + formattedDate + ' ';
     }
 
     function length(obj) {
@@ -1386,8 +1383,8 @@ export const Portfolio = props => {
 
     function FormatTextarea(props) {
         let text = props.text;
-        if(text == null) return null;
-        if(text.length>2) text = text.substring(1, text.length-1);
+        if(text == null || text.length < 3) return null;
+        if(text.length > 2) text = text.substring(1, text.length-1);
         return text.split("\\n").map((str, idx) => 
             <div key={idx}>{str.length === 0 ? <br/> : str}</div>
         )
@@ -1570,93 +1567,100 @@ export const Portfolio = props => {
         <br></br>
 
         <h3>Projects</h3>
+        <hr color="black"/>
         <div className="info-container">
             {projectsData
             ? projectsData.map((row, idx) => 
-                <div className="draggable-container mb-4 ml-3 mr-3" key={idx}>
+                <div className="mb-2 ml-3 mr-3" key={idx}>
                     <h4><b>{row.title}</b></h4>
                     
                     {row.description 
-                    ? <><FormatTextarea text={row.description} key={idx}/></>
+                    ? <><FormatTextarea text={row.description.replace(/\\n/g, '\n')} key={idx}/></>
                     : null}
 
-                    <br></br>
+                    <br/>
 
                     {(row.organization && row.organization !== "null")
                     ? <p><b>Organization:</b> {row.organization}</p>
                     : null}
 
                     {(row.link && row.link !== "null")
-                    ? <p><b>Link: </b>{row.link}</p>
+                    ? <><b>Link: </b><a href={row.link} target="_blank" rel="noreferrer">{row.link}</a></>
                     : null}
                     
-                    
+                    <p>
                     {(row.from_when && row.from_when !== "infinity")
-                    ? <p><b>From:</b> <FormatDate dateString={row.from_when} key={idx}/> </p>
+                    ? <FormatDate dateString={row.from_when} key={idx}/>
                     : null
                     }
-                    
+                    -
                     {(row.to_when && row.to_when !== "infinity")
-                    ? <p><b>To:</b> <FormatDate dateString={row.to_when} key={idx}/></p>
-                    : <p><b>To:</b> Current</p>}
-                    <br></br>
+                    ?  <FormatDate dateString={row.to_when} key={idx}/>
+                    : "Present"}
+                    </p>
+                    <hr/>
                 </div>
             )
             : null}
         </div>
 
-        <h3>Work Experience:</h3>
+        <h3>Work Experience</h3>
+        <hr color="black"/>
         <div className="info-container">
         {portfolioData
         ? portfolioData.map((row, idx) => 
-            <div className="draggable-container" key={idx}>
-                <p><b>Occupation:</b> {row.occupation}</p>
-                <p><b>Organization:</b> {row.organization}</p>
+            <div className="mb-3 ml-3 mr-3" key={idx}>
+                <h4><b>{row.occupation}</b></h4>
+                <h5>{row.organization}</h5>
                 
+                <p>
                 {(row.from_when && row.from_when !== "infinity")
-                ? <p><b>From:</b> <FormatDate dateString={row.from_when} key={idx}/> </p>
-                : null
-                }
-                
+                ? <FormatDate dateString={row.from_when} key={idx}/>
+                : null}
+                -
                 {(row.to_when && row.to_when !== "infinity")
-                ? <p><b>To:</b> <FormatDate dateString={row.to_when} key={idx}/></p>
-                : <p><b>To:</b> Current</p>}
+                ? <FormatDate dateString={row.to_when} key={idx}/>
+                : "Present"}
+                </p>
 
                 {(row.description)
-                ? <><b>Description: </b>
-                    <><FormatTextarea text={row.description} key={idx}/></>
-                </>
+                ? <FormatTextarea text={row.description.replace(/\\n/g, '\n')} key={idx}/>
                 : null}
-                <br></br>
+
+                <hr/>
             </div>
         )
         : null } 
         </div>
 
         <h3>Education</h3>
+        <hr color="black"/>
         <div className="info-container">
             {educationData 
             ? educationData.map((row, idx) => 
-                <div className="draggable-container" key={idx}>
-                    <p><b>Education: </b>{row.education}</p>
+                <div className="mb-3 ml-3 mr-3" key={idx}>
+                    <h4><b>{row.education}</b></h4>
 
                     {row.organization 
-                    ? <><b>Organization:</b><p>{row.organization}</p></>
+                    ? <h5><p>{row.organization}</p></h5>
                     : null}
 
-                    {(row.from_when && row.from_when !== "infinity")
-                    ? <p><b>From:</b> <FormatDate dateString={row.from_when} key={idx}/> </p>
-                    : null
-                    }
                     
+                    <p>
+                    {(row.from_when && row.from_when !== "infinity")
+                    ? <FormatDate dateString={row.from_when} key={idx}/>
+                    : null}
+                    
+                    -
                     {(row.to_when && row.to_when !== "infinity")
-                    ? <p><b>To:</b> <FormatDate dateString={row.to_when} key={idx}/></p>
-                    : <p><b>To:</b> Current</p>}
+                    ? <FormatDate dateString={row.to_when} key={idx}/>
+                    : " Present"}
+                    </p>
 
                     {row.description
-                    ? <><FormatTextarea text={row.description} key={idx}/></>
+                    ? <><FormatTextarea text={row.description.replace(/\\n/g, '\n')} key={idx}/></>
                     : null}
-                    <br></br>
+                    <hr/>
                 </div>
             )
             : null}

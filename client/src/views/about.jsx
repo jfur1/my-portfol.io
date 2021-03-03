@@ -70,8 +70,8 @@ export const About = props => {
 
     // Replace state with original data
     const discardChanges = () => {
-        setLocation(info.location);
-        setBio(info.bio);
+        setLocation((info !== null && info.location !== null) ? info.location : null);
+        setBio((info !== null && info.bio !== null) ? info.bio : null);
         setHobbies({values: hobbiesData});
         setSkills({values: skillsData});
         setHobbyToDelete([]);
@@ -92,7 +92,7 @@ export const About = props => {
                 <Form.Row className='mb-4 ml-3 mr-3' key={idx}>
                     <Form.Control 
                         required
-                        style={{width: '70%'}}
+                        style={{textAlign: "left", width: "70%"}}
                         isInvalid={(errs["hobby"] && row.hobby === "") || (typeof(duplicateHobby["Idx"+idx]) !== 'undefined' && row.hobby !== "")}
                         type="text" 
                         value={row.hobby} 
@@ -172,7 +172,7 @@ export const About = props => {
                 <Form.Row className='mb-4 ml-3 mr-3' key={idx}>
                     <Form.Control 
                             required
-                            style={{width: '70%'}}
+                            style={{textAlign: "left", width: "70%"}}
                             isInvalid={(errs["skill"] && row.skill === "") || (typeof(duplicateSkill["Idx"+idx]) !== 'undefined' && row.skill !== "")}
                             type="text" 
                             value={row.skill} 
@@ -384,15 +384,16 @@ export const About = props => {
         
         if(info === null && location){
             locationToCreate.push(JSON.stringify(location));
-        } else if(info.location !== location){
+        } else if(info !== null && info.location !== location){
             //console.log(`Set location update from: ${info.location} to: ${location}`);
             locationToUpdate.push(JSON.stringify(location));
         }
 
         // Bio
+        // Need a better check for creates
         if(info === null && bio){
             bioToCreate.push(JSON.stringify(bio));
-        } else if(info.bio !== bio){
+        } else if(info !== null &&  info.bio !== bio){
             //console.log(`Set bio update from: ${info.bio} to: ${bio}`);
             bioToUpdate.push(JSON.stringify(bio));
         }
@@ -556,6 +557,7 @@ export const About = props => {
         ? <Button variant="warning" className="edit-button" onClick={handleShow}>Edit&nbsp;<PencilFill size={25}/></Button>
         : null}
         <h3>About</h3>
+        <hr color="black"/>
         <h3>{user.firstname} {user.lastname}</h3>
         <br/>
 
@@ -590,6 +592,7 @@ export const About = props => {
                         </Form.Label>
                         <input 
                             type="text" 
+                            style={{textAlign: "left"}}
                             className="form-control" 
                             id="location" 
                             defaultValue={(info !== null && info.location !== null) 
@@ -684,17 +687,13 @@ export const About = props => {
         </Modal>
 
         <div className="info-container">
-            <div className="draggable-container">
                 <h4><b>Location:</b></h4>
                     {info !== null 
                     ? <FormatTextarea text={info !== null ? info.location : ''}/>
                     : null}
-            </div>
             <br></br>
-            <div className="draggable-container">
                 <h4><b>Bio:</b></h4>
             <><FormatTextarea text={info !== null ? info.bio : ''}/></>
-            </div>
             <br></br>
         </div>
 
@@ -702,16 +701,17 @@ export const About = props => {
             <h4><b>Hobbies:</b>
             {hobbiesData
             ? hobbiesData.map((row, idx) => 
-                <div className="simple-border" key={idx}>
+                <div className="mt-2" key={idx}>
                     <p>{row.hobby}</p>
                 </div>
             ) 
             : null}</h4>
             <br></br>
+            
             <h4><b>Skills:</b>
             {skillsData 
             ? skillsData.map((row, idx) => 
-                <div className="simple-border" key={idx}>
+                <div className="mt-2" key={idx}>
                     <p>{row.skill}</p>
                 </div>
             ) 

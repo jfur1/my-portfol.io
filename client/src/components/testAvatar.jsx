@@ -185,7 +185,8 @@ class Avatar extends React.Component {
     if (!this.props.img && this.props.src) image.src = this.props.src;
 
     this.setState({ image }, () => {
-        console.log("image in componentDidMount:", image)
+        //console.log("image in componentDidMount:", image)
+        // This is a HTML image object
         if (this.image.complete) return this.init();
         this.image.onload = () => {
             this.onImageLoadCallback(this.image);
@@ -210,12 +211,15 @@ class Avatar extends React.Component {
       LoadImage(
         file,
         function (image, data) {
+            console.log(data)
             ref.setState({ image, file, data, showLoader: false});
             ref.init();
         },
         {orientation: exifOrientation, meta: true}
       );
     })
+    // This is a HTML image object
+    //console.log("Image in onFileLoad:", this.image)
   }
 
   onCloseClick() {
@@ -381,6 +385,7 @@ class Avatar extends React.Component {
   }
 
   initBackground() {
+      console.log("Init background:", this.image)
     return new Konva.Image({
       x: 0,
       y: 0,
@@ -403,6 +408,7 @@ class Avatar extends React.Component {
   }
 
   initCrop() {
+      console.log("Init Crop:",this.image)
     return new Konva.Circle({
       x: this.state.cropX !== null ? this.state.cropX : this.halfWidth,
       y: this.state.cropY !== null ? this.state.cropY : this.halfHeight,
@@ -421,6 +427,8 @@ class Avatar extends React.Component {
         y: this.scale
       },
       opacity: 1,
+      stroke: 'black',
+      strokeWidth: 3,
       draggable: true,
       dashEnabled: true,
       dash: [10, 5]
@@ -441,7 +449,6 @@ class Avatar extends React.Component {
   }
 
   initResize() {
-
     return new Konva.Rect({
       x: this.state.cropX !== null 
         ? (this.state.cropX + this.cropRadius * 0.86 - 8) 
@@ -549,6 +556,7 @@ class Avatar extends React.Component {
               </svg>
               <div id={this.containerId} />
             </div>
+        
         }
       </div>
     )

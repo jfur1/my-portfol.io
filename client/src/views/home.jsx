@@ -16,10 +16,20 @@ export const Home = (props) => {
     const [edited, setEdited] = useState(false);
     const [showAlert, setShowAlert] = useState(false);
     const [fullname, setFullname] = useState(user.fullname);
-    const [currentOccupation, setCurrentOccupation] = useState(profile[0].current_occupation);
-    const [currentOrganization, setCurrentOrganization] = useState(profile[0].current_organization);
-    const [font, setFont] = useState((profile[0].font !== null) ? profile[0].font : null);
-    const [size, setSize] = useState((profile[0].font_size !== null) ? profile[0].font_size : null);
+    const [currentOccupation, setCurrentOccupation] 
+    = useState(
+        typeof(profile[0]) !== 'undefined' 
+            ? profile[0].current_occupation 
+            : null
+    );
+    const [currentOrganization, setCurrentOrganization] 
+    = useState(
+        typeof(profile[0]) !== 'undefined' 
+            ? profile[0].current_organization 
+            : null
+    );
+    const [font, setFont] = useState(typeof(profile[0]) !== 'undefined' ? profile[0].font : null);
+    const [size, setSize] = useState(typeof(profile[0]) !== 'undefined' && !profile[0].font_size ? profile[0].font_size : "100%");
     const [showEditPic, setShowEditPic] = useState(false);
     const [x, setX] = useState(typeof(images[0]) !== 'undefined' ? images[0].x : null);
     const [y, setY] = useState(typeof(images[0]) !== 'undefined' ? images[0].y : null);
@@ -27,21 +37,21 @@ export const Home = (props) => {
 
     const [profilePic, setProfilePic] 
     = useState(
-        typeof(images[0]) !== 'undefined' 
+        typeof(images[0]) !== 'undefined' && typeof(images[0].base64image) !== 'undefined'
             ? binaryToBase64(images[0].base64image.data) 
             : ""
     );
     
     const [profileAvatar, setProfileAvatar] 
     = useState(
-        typeof(images[0]) !== 'undefined' 
+        typeof(images[0]) !== 'undefined' && typeof(images[0].base64preview) !== 'undefined'
             ? binaryToBase64(images[0].base64preview.data) 
             : ""
     );
     
     const [prefix, setPrefix] 
     = useState(
-        typeof(images[0]) !== 'undefined' 
+        typeof(images[0]) !== 'undefined' && typeof(images[0].prefix) !== 'undefined'
             ? images[0].prefix 
             : ""
     );
@@ -58,8 +68,8 @@ export const Home = (props) => {
     }
     const discardChanges = () => {
         setFullname(user.fullname);
-        setCurrentOccupation(profile[0].current_occupation);
-        setCurrentOrganization(profile[0].current_organization);
+        setCurrentOccupation(typeof(profile[0]) !== 'undefined' ? profile[0].current_occupation : null);
+        setCurrentOrganization(typeof(profile[0]) !== 'undefined' ? profile[0].current_organization : null);
         setX(typeof(images[0]) !== 'undefined' ? images[0].x : null);
         setY(typeof(images[0]) !== 'undefined' ? images[0].y : null);
         setR(typeof(images[0]) !== 'undefined' ? images[0].radius : null);
@@ -203,6 +213,7 @@ export const Home = (props) => {
                         </Form.Label>
                         <input 
                             type="text" 
+                            style={{textAlign:"left"}}
                             className="form-control" 
                             defaultValue={fullname} 
                             onChange={e => 
@@ -218,6 +229,7 @@ export const Home = (props) => {
                         </Form.Label>
                         <input 
                             type="text" 
+                            style={{textAlign:"left"}}
                             className="form-control" 
                             defaultValue={currentOccupation} 
                             onChange={e => 
@@ -232,6 +244,7 @@ export const Home = (props) => {
                         </Form.Label>
                         <input 
                             type="text" 
+                            style={{textAlign:"left"}}
                             className="form-control" 
                             defaultValue={currentOrganization} 
                             onChange={e => 
@@ -267,9 +280,6 @@ export const Home = (props) => {
                             src={typeof(images[0]) !== 'undefined'
                                 ? prefix + `${binaryToBase64(images[0].base64image.data)}` 
                                 : null}
-                            img={typeof(images[0]) !== 'undefined'
-                            ?  null
-                            : null}
 
                         />
                         : <img src={typeof(images[0]) !== 'undefined'
@@ -280,7 +290,9 @@ export const Home = (props) => {
                     <br></br>
                     <Dropdown id="collapsible-nav-dropdown">
                         <Dropdown.Toggle className="bg-transparent text-dark" id="dropdown-custom-components">
-                        Your font: <b style={{fontFamily: font}}>{font}</b>
+                        Your font: <b style={{
+                            fontFamily: font
+                        }}>{!font ? "Arial" : font}</b>
                         </Dropdown.Toggle>
                         <Dropdown.Menu>
                             <Dropdown.Item active={(font === "Arial") ? true : false} onSelect={e => {setFont("Arial");setEdited(true);}} style={{fontFamily: "Arial"}}>Arial</Dropdown.Item>
@@ -301,11 +313,10 @@ export const Home = (props) => {
                     <br></br>
                     <Dropdown id="collapsible-nav-dropdown">
                         <Dropdown.Toggle className="bg-transparent text-dark" id="dropdown-custom-components">
-                        Font size: <b style={{fontSize: size}}>
+                        Font size: <b style={{fontFamily: font, fontSize: size}}>
                         {size === "75%" ? "Small Text" : null}
-                        {size === "100%" ? "Normal Text" : null}
-                        {size === "125%" ? "Large Text" : null}
-                        {size === null ? "Normal Text" : null}</b>
+                        {size === "100%" ? "Medium Text" : null}
+                        {size === "125%" ? "Large Text" : null}</b>
                         </Dropdown.Toggle>
                         <Dropdown.Menu>
                             <Dropdown.Item active={(size === "75%") ? true : false} onSelect={e => {setSize("75%");setEdited(true);}} style={{fontSize: '75%'}}>Small text</Dropdown.Item>
@@ -322,24 +333,27 @@ export const Home = (props) => {
             {(user !== null && typeof user !== 'undefined')
             ? 
                 <>
-                <h3>{user.fullname}</h3>
-
-                <h4>Profile Picture:</h4>
-                <img height="200px" src={typeof(images[0]) !== 'undefined'
-                    ? prefix + `${binaryToBase64(images[0].base64preview.data)}` 
-                    : ''} alt="Preview"/>
-
-                <br></br>
-
-                <p><b>Username:</b> {user.username}</p>
-                <p><b>Email: </b>{user.email}</p>
-
-                {profile[0].current_occupation
-                ? <p><b>Currently: </b>{profile[0].current_occupation}</p>
+                
+                {typeof(images[0]) !== 'undefined' && typeof(images[0].base64preview) !== 'undefined'
+                 ? <><img src={prefix + `${binaryToBase64(images[0].base64preview.data)}`}  alt="Preview"/></>
+                 : null}
+                
+                <div className="mt-4">
+                <h3><b>{user.fullname}</b></h3>
+                <p>
+                {typeof(profile[0]) !== 'undefined' && profile[0].current_occupation
+                ? <b>{profile[0].current_occupation}</b>
                 : null}
-                {profile[0].current_organization
-                    ? <p>at {profile[0].current_organization}</p>
+                {typeof(profile[0]) !== 'undefined' && profile[0].current_organization
+                    ? <> at {profile[0].current_organization}</>
                     : null}
+                </p>
+                </div>
+                
+
+                {/* <p><b>Username:</b> {user.username}</p>
+                <p><b>Email: </b>{user.email}</p> */}
+
                 <br></br>
                 </> 
 

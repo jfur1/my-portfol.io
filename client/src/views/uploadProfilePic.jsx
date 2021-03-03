@@ -77,6 +77,7 @@ class UploadProfilePicture extends React.Component{
               cropRadius={this.state.initRadius}
               getCropCoords={this.getCropCoords}
               minCropRadius={60}
+              img={this.state.img}
             />
             <br></br>
             <img src={this.state.preview} alt="Preview" />
