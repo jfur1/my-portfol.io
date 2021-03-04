@@ -785,7 +785,7 @@ export const Portfolio = props => {
                 } else {
                     projectsToCreate.push({
                         title: row.title,
-                        description: JSON.stringify(row.description),
+                        description: row.description,
                         organization: row.organization,
                         from_when: row.from_when,
                         to_when: row.to_when,
@@ -797,7 +797,7 @@ export const Portfolio = props => {
                 projectsToUpdate.push({
                     project_id: row.project_id,
                     title: row.title,
-                    description: JSON.stringify(row.description),
+                    description: row.description,
                     organization: row.organization,
                     from_when: row.from_when,
                     to_when: row.to_when,
@@ -816,7 +816,7 @@ export const Portfolio = props => {
                         organization: row.organization,
                         from_when: row.from_when,
                         to_when: row.to_when,
-                        description: JSON.stringify(row.description),
+                        description: row.description,
                         rowIdx: idx
                     });
                 }
@@ -827,7 +827,7 @@ export const Portfolio = props => {
                     organization: row.organization,
                     from_when: row.from_when,
                     to_when: row.to_when,
-                    description: JSON.stringify(row.description),
+                    description: row.description,
                     rowIdx: idx
                 })
             }
@@ -842,7 +842,7 @@ export const Portfolio = props => {
                         education: row.education,
                         from_when: row.from_when,
                         to_when: row.to_when,
-                        description: JSON.stringify(row.description),
+                        description: row.description,
                         rowIdx: idx
                     });
                 }
@@ -853,7 +853,7 @@ export const Portfolio = props => {
                     education: row.education,
                     from_when: row.from_when,
                     to_when: row.to_when,
-                    description: JSON.stringify(row.description),
+                    description: row.description,
                     rowIdx: idx
                 })
             }
@@ -1666,7 +1666,7 @@ export const Portfolio = props => {
                 
                 <div className='row'>
                     <h5 className='mr-1'><b>{row.occupation}</b></h5>
-                    <h5 className='align-self-center'>{' | ' + row.organization}</h5>
+                    <h5 className='align-self-center'>{!row.organization ? '' :  ' | ' + row.organization}</h5>
                 </div>
 
                 <p className='mb-3'>

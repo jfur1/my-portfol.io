@@ -1035,7 +1035,12 @@ app.post('/updatePhone', (req, res) => {
 })
 
 app.post('/createLink', (req, res) => {
-    const {user_id, title, link, description, position} = req.headers;
+    console.log(req.body)
+    const {user_id, linkObj, position} = req.body;
+    const link = linkObj.link;
+    const title = linkObj.title;
+    const description = linkObj.description;
+
 
     db.tx(async t => {
         const max_id = await t.one('SELECT MAX(link_id) FROM links;');
@@ -1062,8 +1067,11 @@ app.post('/createLink', (req, res) => {
 })
 
 app.post('/updateLink', (req, res) => {
-    const {link_id, link, title, description, user_id, position} = req.headers;
-    console.log("Server recieved position: ", position);
+    const {linkObj, user_id, position} = req.body;
+    const link = linkObj.link;
+    const title = linkObj.title;
+    const description = linkObj.description;
+    const link_id = linkObj.link_id;
 
     db.tx(async t => {
         return t.one('UPDATE links SET link = ${link}, title = ${title}, description = ${description}, position=${position} WHERE uid = ${user_id} AND link_id = ${link_id} RETURNING link_id, uid, link, title, description, position;', 

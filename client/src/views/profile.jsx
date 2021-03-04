@@ -377,29 +377,29 @@ class Profile extends Component{
         return;
     }
 
-    createLink = async(user_id, link, idx) =>{
+    createLink = async(user_id, linkObj, idx) =>{
         this.setState({loading: true});
-        console.log("[Profile.jsx] Recieved Link:", link);
         const response = await fetch('http://localhost:5000/createLink',  {
             method: 'POST', 
             mode: 'cors',
             credentials: 'include',
             withCredentials: true,
             headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
                 user_id: user_id,
-                title: link.title,
-                link: link.link,
-                description: link.description,
+                linkObj: linkObj,
                 position: idx
-            }
+            })
         });
         const data = await response.json();
         console.log("Client Recieved Response: ", data);
         return;
     }
 
-    updateLink = async(link_id, link, title, description, user_id, rowIdx) => {
-        console.log("[Profile.jsx] Recieved Position:", rowIdx);
+    updateLink = async(linkObj, user_id, rowIdx) => {
         this.setState({loading: true});
         const response = await fetch('http://localhost:5000/updateLink',  {
             method: 'POST', 
@@ -407,13 +407,14 @@ class Profile extends Component{
             credentials: 'include',
             withCredentials: true,
             headers: {
-                link_id: link_id, 
-                link: link,
-                title: title,
-                description: description,
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+                linkObj: linkObj,
                 user_id: user_id,
                 position: rowIdx
-            }
+            })
         });
         const data = await response.json();
         console.log("Client Recieved Response: ", data);

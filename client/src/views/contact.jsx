@@ -130,7 +130,7 @@ export const Contact = (props) => {
                     linksToCreate.push({
                         title: row.title,
                         link: row.link,
-                        description: JSON.stringify(row.description),
+                        description: row.description,
                         rowIdx: idx
                     });
                 }
@@ -139,7 +139,7 @@ export const Contact = (props) => {
                     link_id: row.link_id,
                     title: row.title,
                     link: row.link,
-                    description: JSON.stringify(row.description),
+                    description: row.description,
                     rowIdx: idx
                 });
             }
@@ -173,7 +173,7 @@ export const Contact = (props) => {
 
         const updateLinks = async() => {
             for await(let linkToUpdate of linksToUpdate){
-                await props.updateLink(linkToUpdate.link_id, linkToUpdate.link, linkToUpdate.title, linkToUpdate.description, user.user_id, linkToUpdate.rowIdx);
+                await props.updateLink(linkToUpdate, user.user_id, linkToUpdate.rowIdx);
             }
         }
         if(linksToUpdate.length) await updateLinks();
