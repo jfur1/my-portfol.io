@@ -12,7 +12,7 @@ export const NavBar = (props) => {
 
     return(
 
-        <Navbar sticky="top" className="navbar-style-time" style={{background:'rgba(255,255,255,1)'}}>
+        <Navbar sticky="top" style={{background:'rgba(255,255,255,1)'}}>
             <Navbar.Brand href={loggedIn ? `/${requestedBy.username}` : '/'}>
                 <img style={{height: "30px"}} src="/mp-new-logo.png" alt="logo"/>
                 &nbsp;&nbsp;&nbsp;
@@ -22,8 +22,11 @@ export const NavBar = (props) => {
                 <Nav.Item>
                     {loggedIn ?
                     <Dropdown id="collapsible-nav-dropdown">
-                        <Dropdown.Toggle className="bg-transparent text-dark" id="dropdown-custom-components">
-                        Signed in as: <b>{requestedBy.fullname}</b>
+                        <Dropdown.Toggle 
+                            className="bg-transparent text-dark" 
+                            id="dropdown-custom-components"
+                        >
+                            Signed in as: <b>{requestedBy.fullname}</b>
                         </Dropdown.Toggle>
                         <Dropdown.Menu>
                             <Dropdown.Item>

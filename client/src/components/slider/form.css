@@ -27,6 +27,15 @@ span {
 	font-size: 18px;
 }
 
+.noHover{
+    pointer-events: none;
+}
+
+.vl {
+    border-left: 1px solid grey;
+    height: 275px;
+  }
+
 button {
     border: 1px solid #06D6A0;
     border-radius: 20px;
@@ -80,7 +89,6 @@ input {
 
 .slider-container {
     margin: auto;
-    margin-top: 150px;
     background-color: #ffffff;
     border-radius: 10px;
     box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
@@ -348,3 +356,15 @@ footer a {
     color: #3c97bf;
     text-decoration: none;
 }
+
+@media only screen and (max-width: 900px) {
+    .slider-container{
+        width:500px;
+    }
+    .form-box{
+        padding:0 0;
+    }
+    .form-button.register-btn{
+        margin-top:85%;
+    }
+  }

@@ -1,22 +1,26 @@
 // Home Tab on a User's Profile
 import { useState } from 'react';
-import { Modal, Button, Form, Dropdown } from 'react-bootstrap';
+import { Modal, Button, Form, Dropdown, DropdownButton, Col } from 'react-bootstrap';
 import { PencilFill } from 'react-bootstrap-icons';
 import { AlertDismissible } from '../components/alertDismissible';
 import UploadProfilePicture from './uploadProfilePic';
-import Switch  from '../components/switch';
 
 export const Home = (props) => {
     //console.log("Home Component Recieved Props: ", props);
     const user = props.data.user;
     const profile = (props.data.profile !== null) ? props.data.profile : props.location.state.profile;
     const images = (props.data.images !== null) ? props.data.images : props.location.state.images;
+    const info = (props.data.about !== null) ? props.data.about : props.location.state.about;
 
     const [show, setShow] = useState(false);
+    const [showDelete, setShowDelete] = useState(false);
     const [edited, setEdited] = useState(false);
     const [showAlert, setShowAlert] = useState(false);
     const [fullname, setFullname] = useState(user.fullname);
-    const [currentOccupation, setCurrentOccupation] 
+    const [publicEmail, setPublicEmail] = useState(typeof(profile[0]) !== 'undefined' ? profile[0].public_email : '');
+    const [phone, setPhone] = useState(typeof(profile[0]) !== 'undefined' ? profile[0].phone : '');
+    const [location, setLocation] = useState((info !== null && info.location !== null) ? info.location : null);
+    const [currentOccupation, setCurrentOccupation]
     = useState(
         typeof(profile[0]) !== 'undefined' 
             ? profile[0].current_occupation 
@@ -93,7 +97,9 @@ export const Home = (props) => {
     }
 
     const handleSave = async() => {
-
+        let locationToCreate = [];
+        let locationToUpdate = [];
+        
         // Declare Funcation Prototypes
         const updateFullname = async() => {
             await props.updateFullname(user.user_id, fullname);
@@ -138,6 +144,23 @@ export const Home = (props) => {
         // Conditionally Call Functions
         if(fullname !== user.fullname) await updateFullname();
 
+        if(info === null && location){
+            locationToCreate.push(JSON.stringify(location));
+        } else if(info !== null && info.location !== location){
+            //console.log(`Set location update from: ${info.location} to: ${location}`);
+            locationToUpdate.push(JSON.stringify(location));
+        }
+
+        const createLocation = async() => {
+            await props.createLocation(user.user_id, locationToCreate[0]);
+        }
+        if(locationToCreate.length) await createLocation();
+
+        const updateLocation = async() => {
+            await props.updateLocation(locationToUpdate[0], user.user_id);
+        }
+        if(locationToUpdate.length) await updateLocation();
+
         if((!typeof(profile.current_occupation) !== 'undefined') && currentOccupation)
             await createCurrentOccupation();
         else if(typeof(profile.current_occupation) !== 'undefined' && currentOccupation)
@@ -147,6 +170,17 @@ export const Home = (props) => {
             await createCurrentOrganization();
         else if(typeof(profile.current_organization) !== 'undefined' && currentOrganization)
             await updateCurrentOrganization();
+
+        const updatePhone = async() => {
+            await props.updatePhone(user.user_id, phone);
+        }
+        if(phone !== profile[0].phone) await updatePhone();
+
+        
+        const updateEmail = async() => {
+            await props.updateEmail(user.user_id, publicEmail);
+        }
+        if(publicEmail !== profile[0].public_email) await updateEmail();
 
         if(font !== null)
             await updateFont();
@@ -174,6 +208,15 @@ export const Home = (props) => {
             return tmp + String.fromCharCode(byte);
         }, ''));
         return image;
+    }
+
+    function FormatTextarea(props) {
+        let text = props.text;
+        if(text == null) return null;
+        if(text.length>2) text = text.substring(1, text.length-1);
+        return text.split("\\n").map((str, idx) => 
+            <div key={idx}>{str.length === 0 ? <br/> : str}</div>
+        )
     }
 
     return(
@@ -208,13 +251,13 @@ export const Home = (props) => {
                 <Form noValidate onSubmit={handleSave}>
                     
                     <Form.Row className='mt-3'>
-                        <Form.Label>
+                        <Form.Label column sm={2}>
                             Full Name
                         </Form.Label>
                         <input 
                             type="text" 
-                            style={{textAlign:"left"}}
-                            className="form-control" 
+                            style={{textAlign:"left", width: "45%"}} 
+                            className="form-control ml-1" 
                             defaultValue={fullname} 
                             onChange={e => 
                                 {    
@@ -224,28 +267,28 @@ export const Home = (props) => {
                         ></input>
                     </Form.Row>
                     <Form.Row className='mt-3'>
-                        <Form.Label>
+                        <Form.Label column sm={2}>
                             Current Occupation
                         </Form.Label>
                         <input 
                             type="text" 
-                            style={{textAlign:"left"}}
-                            className="form-control" 
+                            style={{textAlign:"left", width: "45%"}} 
+                            className="form-control ml-1 mt-2" 
                             defaultValue={currentOccupation} 
                             onChange={e => 
                                 {setCurrentOccupation(e.target.value); 
-                                setEdited(true);
+                                setEdited(true); 
                             }}
                         ></input>
                     </Form.Row>
                     <Form.Row className='mt-3'>
-                        <Form.Label>
+                        <Form.Label column sm={2}>
                             Current Organization
                         </Form.Label>
                         <input 
                             type="text" 
-                            style={{textAlign:"left"}}
-                            className="form-control" 
+                            style={{textAlign:"left", width: "45%"}} 
+                            className="form-control ml-1 mt-2" 
                             defaultValue={currentOrganization} 
                             onChange={e => 
                                 {setCurrentOrganization(e.target.value); 
@@ -255,20 +298,66 @@ export const Home = (props) => {
                     </Form.Row>
 
                     <Form.Row className='mt-3'>
-                        <Form.Label>
-                            Edit Profile Picture
+                        <Form.Label column sm={2}>
+                            Location
                         </Form.Label>
-
-                        <Switch
-                            isOn={showEditPic}
-                            handleToggle={() => {      
-                                    setEdited(true);                              
-                                    setShowEditPic(!showEditPic);
+                        <input 
+                            type="text" 
+                            style={{textAlign:"left", width: "45%"}} 
+                            className="form-control ml-1" 
+                            id="location" 
+                            defaultValue={(info !== null && info.location !== null) 
+                                ? info.location.substring(1, info.location.length-1) 
+                                : ''} 
+                            onChange={e => 
+                                {setLocation(e.target.value); 
+                                setEdited(true);
                             }}
-                        />
+                        ></input>
+                    </Form.Row>
+
+                    <Form.Row className='mt-4'>
+                        <Form.Label column sm={2}>
+                            Public Email
+                        </Form.Label>
+                        <Col>
+                            <Form.Control 
+                                type="email" 
+                                style={{textAlign:"left", width: "55%"}} 
+                                defaultValue={profile[0].public_email}  
+                                onChange={e => {
+                                    setPublicEmail(e.target.value); 
+                                    setEdited(true);
+                                }}/>
+                            <Form.Text className="text-muted">
+                            Public email to display on your profile.
+                            </Form.Text>
+                        </Col>
                     </Form.Row>
 
                     <Form.Row className='mt-3'>
+                        <Form.Label column sm={2}>
+                            Phone Number
+                        </Form.Label>
+                        <Col>
+                            <Form.Control 
+                            type="text" 
+                            style={{textAlign:"left", width: "55%"}} 
+                            defaultValue={profile[0].phone} 
+                            onChange={e => {
+                                setPhone(e.target.value);
+                                setEdited(true);
+                            }}/>
+                        </Col>
+                    </Form.Row>
+
+                    <Form.Row className='mt-3'>
+                        <Form.Label>
+                            Edit Profile Picture
+                        </Form.Label>
+                    </Form.Row>
+
+                    <Form.Row className='justify-content-center'>
                         {showEditPic 
                         ? <UploadProfilePicture 
                             stagePreview={stagePreview}
@@ -277,17 +366,58 @@ export const Home = (props) => {
                             x={x}
                             y={y}
                             r={r}
-                            // src={typeof(images[0]) !== 'undefined'
-                            //     ? prefix + `${binaryToBase64(images[0].base64image.data)}` 
-                            //     : null}
-
                         />
                         : <img src={typeof(images[0]) !== 'undefined'
-                            ? prefix + `${binaryToBase64(images[0].base64preview.data)}` 
+                            ? prefix + profileAvatar
                             : ''} alt="Preview"/>}
+                        
+                        {showDelete
+                            ? <Modal
+                                show={showDelete}
+                                onHide={() => setShowDelete(false)}
+                                backdrop="static"
+                                keyboard={false}
+                                size="sm"
+                                centered
+                                scrollable={false}
+                            >
+                            <Modal.Header closeButton>
+                            <Modal.Title>Modal title</Modal.Title>
+                            </Modal.Header>
+                                <Modal.Body>
+                                    <p>Are you sure you want to remove your current avatar?</p>
+                                </Modal.Body>
+                            <Modal.Footer>
+                                <Button variant="secondary" onClick={() => setShowDelete(false)}>Cancel</Button>
+                                <Button variant="danger" 
+                                    onClick={() => {
+                                        setProfileAvatar('');
+                                        setProfilePic('');
+                                        setEdited(true);
+                                        setShowDelete(false);
+                                    }}>    
+                                OK</Button>
+                            </Modal.Footer>
+                            </Modal>
+                        :null}
+
+                        {!showEditPic
+                        ? <DropdownButton id="avatar-dropdown" title="edit" size="sm">
+                            <Dropdown.Item eventKey="1" 
+                                onClick={() => {setShowEditPic(!showEditPic);setEdited(true);}}>
+                                Upload a photo...
+                            </Dropdown.Item>
+                            <Dropdown.Item eventKey="2" onClick={() => setShowDelete(true)}>Remove Photo</Dropdown.Item>
+                        </DropdownButton>
+                        : null}
                     </Form.Row>
 
                     <br></br>
+                    <Form.Row className='mt-3'>
+                        <Form.Label>
+                            Edit Font
+                        </Form.Label>
+                    </Form.Row>
                     <Dropdown id="collapsible-nav-dropdown">
                         <Dropdown.Toggle className="bg-transparent text-dark" id="dropdown-custom-components">
                         Your font: <b style={{
@@ -332,30 +462,57 @@ export const Home = (props) => {
         </Modal>
             {(user !== null && typeof user !== 'undefined')
             ? 
-                <>
-                
-                {typeof(images[0]) !== 'undefined' && typeof(images[0].base64preview) !== 'undefined'
-                 ? <><img src={prefix + `${binaryToBase64(images[0].base64preview.data)}`}  alt="Preview"/></>
+            <div className='home-container'>
+                <div className="mt-3 ml-2 mr-4">
+                {typeof(images[0]) !== 'undefined' && images[0].base64preview.data.length > 0
+                 ? <img src={prefix + `${binaryToBase64(images[0].base64preview.data)}`}  alt="Preview"/>
                  : null}
-                
-                <div className="mt-4">
-                <h3><b>{user.fullname}</b></h3>
-                <p>
-                {typeof(profile[0]) !== 'undefined' && profile[0].current_occupation
-                ? <b>{profile[0].current_occupation}</b>
-                : null}
-                {typeof(profile[0]) !== 'undefined' && profile[0].current_organization
-                    ? <> at {profile[0].current_organization}</>
-                    : null}
-                </p>
-                </div>
-                
+                </div> 
 
-                {/* <p><b>Username:</b> {user.username}</p>
-                <p><b>Email: </b>{user.email}</p> */}
+
+                <div className="mt-4 ml-4">
+                    <h3><b>{user.fullname}</b></h3>
+                    
+                    <p>
+                        {typeof(profile[0]) !== 'undefined' && profile[0].current_occupation
+                        ? <b>{profile[0].current_occupation}</b>
+                        : null}
+                        {typeof(profile[0]) !== 'undefined' && profile[0].current_organization
+                            ? <> at {profile[0].current_organization}</>
+                            : null}
+                    </p>
+
+                    {info !== null && info.location !== null
+                    ? <div className="row ml-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" className="align-self-center mr-2 bi bi-geo-alt-fill" viewBox="0 0 16 16">
+                            <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/>
+                        </svg>
+                        <FormatTextarea text={info !== null ? info.location : ''}/>
+                        </div>
+                    : null}
+                    
+                    {info !== null && info.public_email !== null
+                    ?<div className="row ml-1 mt-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" className="align-self-center mr-2 bi bi-envelope-fill" viewBox="0 0 16 16">
+                            <path d="M.05 3.555A2 2 0 0 1 2 2h12a2 2 0 0 1 1.95 1.555L8 8.414.05 3.555zM0 4.697v7.104l5.803-3.558L0 4.697zM6.761 8.83l-6.57 4.027A2 2 0 0 0 2 14h12a2 2 0 0 0 1.808-1.144l-6.57-4.027L8 9.586l-1.239-.757zm3.436-.586L16 11.801V4.697l-5.803 3.546z"/>
+                        </svg>
+                        {info.public_email}
+                        </div>
+                    : null}
+                    
+
+                    {info !== null && info.phone !== null 
+                    ? <div className="row ml-1 mt-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" className="align-self-center mr-2 bi bi-telephone-fill" viewBox="0 0 16 16">
+                        <path fillRule="evenodd" d="M1.885.511a1.745 1.745 0 0 1 2.61.163L6.29 2.98c.329.423.445.974.315 1.494l-.547 2.19a.678.678 0 0 0 .178.643l2.457 2.457a.678.678 0 0 0 .644.178l2.189-.547a1.745 1.745 0 0 1 1.494.315l2.306 1.794c.829.645.905 1.87.163 2.611l-1.034 1.034c-.74.74-1.846 1.065-2.877.702a18.634 18.634 0 0 1-7.01-4.42 18.634 18.634 0 0 1-4.42-7.009c-.362-1.03-.037-2.137.703-2.877L1.885.511z"/>
+                        </svg>
+                        {info.phone}
+                    </div>
+                    : null}
+                </div>
 
                 <br></br>
-                </> 
+            </div> 
 
             : null}
 

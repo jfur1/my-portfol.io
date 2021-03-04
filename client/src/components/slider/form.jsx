@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { registerUser } from '../newRegistration/RegisterUser';
 import { Alert, Form } from 'react-bootstrap';
-import { Footer } from '../../views/Footer'
 import Switch  from '../switch';
 import auth from '../auth';
 import './form.css';
@@ -143,6 +142,7 @@ export const TestRegisterForm = (props) => {
     return(
         <>
         <div className="register-body">
+        <img style={{height: "50px", margin: "2%"}} src="/mp-new-logo.png" alt="logo"/>
         <div className="slider-container" id="slider-container">
             <div className="form-container back-btn-container" id="back">
                 <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="white" className="bi bi-arrow-left-circle" viewBox="0 0 16 16">
@@ -340,7 +340,6 @@ export const TestRegisterForm = (props) => {
             </div>
         </div>
         </div>
-        <Footer/>
     </>
     )
 }

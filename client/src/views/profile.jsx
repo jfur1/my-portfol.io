@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Tabs, Tab, Spinner } from 'react-bootstrap';
+import { Tabs, Tab } from 'react-bootstrap';
 import { AlertMsg } from '../components/alerts';
 
 
@@ -9,8 +9,6 @@ import { Home } from './home';
 import { About } from './about';
 import { Portfolio } from './portfolio';
 import { Contact } from './contact';
-import { Footer } from './Footer';
-
 
 class Profile extends Component{
     constructor(props){
@@ -862,9 +860,23 @@ class Profile extends Component{
 
         return(
             <div className="container">
+
                 {this.state.loading
                 
-                ? <><Spinner animation="border" variant="success" /></>
+                ? <div className="loading-container">
+                    <div className="holder">
+                        <div className='box'>
+                        </div>
+                    </div>
+                    <div className="holder">
+                        <div className='box'>
+                        </div>
+                    </div>
+                    <div className="holder">
+                        <div className='box'>
+                        </div>
+                    </div>
+                </div>
                 
                 : <><NavBar {...this.props} data={this.state}/>
                 <div className="tabulation-container" 
@@ -895,6 +907,10 @@ class Profile extends Component{
                             updateCurrentOccupation={this.updateCurrentOccupation}
                             createCurrentOrganization={this.createCurrentOrganization}
                             updateCurrentOrganization={this.updateCurrentOrganization}
+                            updateEmail={this.updateEmail}
+                            updatePhone={this.updatePhone}
+                            createLocation={this.createLocation}
+                            updateLocation={this.updateLocation}
                             updateFont={this.updateFont}
                             updateSize={this.updateSize}
                             createProfileImages={this.createProfileImages}
@@ -943,7 +959,6 @@ class Profile extends Component{
                         />
                     : null }
                 </div> 
-                <Footer/>
             </div>
             </>}
         </div>
