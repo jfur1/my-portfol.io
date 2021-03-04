@@ -33,7 +33,7 @@ export const Home = (props) => {
             : null
     );
     const [font, setFont] = useState(typeof(profile[0]) !== 'undefined' ? profile[0].font : null);
-    const [size, setSize] = useState(typeof(profile[0]) !== 'undefined' && !profile[0].font_size ? profile[0].font_size : "100%");
+    const [size, setSize] = useState(typeof(profile[0]) !== 'undefined' && profile[0].font_size ? profile[0].font_size : "100%");
     const [showEditPic, setShowEditPic] = useState(false);
     const [x, setX] = useState(typeof(images[0]) !== 'undefined' ? images[0].x : null);
     const [y, setY] = useState(typeof(images[0]) !== 'undefined' ? images[0].y : null);
