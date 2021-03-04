@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { PencilFill } from 'react-bootstrap-icons';
 import { Modal, Button, Form, Col } from 'react-bootstrap';
 import { AlertDismissible } from '../components/alertDismissible';
+import { AreYouSure } from '../components/AreYouSure'
 import Switch  from '../components/switch';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
@@ -19,6 +20,9 @@ export const Contact = (props) => {
     const [show, setShow] = useState(false);
     const [edited, setEdited] = useState(false);
     const [showAlert, setShowAlert] = useState(false); 
+    const [showDelete, setShowDelete] = useState(false);
+    const [requestedDelete, setRequestedDelete] = useState('');
+    const [requestedDeleteIdx, setRequestedDeleteIdx] = useState(null);
     
     const [reordered, setReordered] = useState(false);
     const [changingOrder, setChangingOrder] = useState(false);
@@ -239,7 +243,11 @@ export const Contact = (props) => {
                     </Form.Row>
 
                     <Col className='mt-1' style={{width: "75%"}}>
-                        <Button onClick={() => removeLink(idx)} variant="outline-danger" size="sm">Delete Link</Button>
+                        <Button onClick={() => {
+                            setRequestedDelete('link');
+                            setRequestedDeleteIdx(idx);
+                            setShowDelete(true);
+                        }} variant="outline-danger" size="sm">Delete Link</Button>
                     </Col>   
                 
                     <Form.Row className='mt-1' style={{width: "75%"}}>
@@ -285,20 +293,9 @@ export const Contact = (props) => {
                                     <div className='draggable-container mb-4 ml-3 mr-3' ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
 
                                     {row.title
-                                        ? row.title
+                                        ? <b>{row.title}</b>
                                         : null}
-                                        
-                                        <br></br>
-                        
-                                        {row.link
-                                        ? row.link
-                                        : null }
 
-                                        <br></br>
-                                    
-                                        {row.description
-                                        ? row.description
-                                        : null}
                                     </div>
                                 )}
                             </Draggable>
@@ -501,6 +498,18 @@ export const Contact = (props) => {
                                 /></>
                             : null}
 
+                            {showDelete
+                                ?    <AreYouSure
+                                        showDelete={showDelete}
+                                        setShowDelete={setShowDelete}
+                                        delete={removeLink}
+                                        setEdited={setEdited}
+                                        requestedDelete={requestedDelete}
+                                        setRequestedDelete={setRequestedDelete}
+                                        idx={requestedDeleteIdx}
+                                        setRequestedDeleteIdx={setRequestedDeleteIdx}
+                                    />
+                                :null}
                        
 
                         {changingOrder 

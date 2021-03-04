@@ -3,6 +3,7 @@ import { PencilFill } from 'react-bootstrap-icons';
 import { Nav, Tab, Modal, Button, Form, Row, Col, Badge } from 'react-bootstrap';
 import { AlertDismissible } from '../components/alertDismissible';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import { AreYouSure } from '../components/AreYouSure';
 import Switch  from '../components/switch';
 import DatePicker from 'react-datepicker'
 
@@ -18,6 +19,9 @@ export const Portfolio = props => {
     const [show, setShow] = useState(false);
     const [edited, setEdited] = useState(false);
     const [showAlert, setShowAlert] = useState(false); 
+    const [showDelete, setShowDelete] = useState(false);
+    const [requestedDelete, setRequestedDelete] = useState('');
+    const [requestedDeleteIdx, setRequestedDeleteIdx] = useState(null);
 
     const [reordered, setReordered] = useState(false);
     const [changingOrder, setChangingOrder] = useState(false);
@@ -43,6 +47,7 @@ export const Portfolio = props => {
             setDuplicateProject({});
             setDuplicateWork({});
             setDuplicateEducation({});
+            setRequestedDelete('');
         }
     }
 
@@ -983,7 +988,11 @@ export const Portfolio = props => {
 
             <Col className='mt-1'>
                 <Button variant="outline-danger" size="sm"
-                    onClick={() => deleteProject(idx)}
+                    onClick={() => {
+                        setShowDelete(true);
+                        setRequestedDelete('project');
+                        setRequestedDeleteIdx(idx);
+                    }}
                 >Delete Project</Button>
             </Col>   
 
@@ -1093,7 +1102,11 @@ export const Portfolio = props => {
             </Form.Row>
 
             <Col className='mt-1'><Button variant="outline-danger" size="sm"
-                onClick={() => deleteWorkExperience(idx)}
+                onClick={() => {
+                    setShowDelete(true);
+                    setRequestedDelete('work experience');
+                    setRequestedDeleteIdx(idx);
+                }}
             >Delete Work</Button></Col>   
 
             <Form.Row className='mt-1' style={{width: "75%"}}>
@@ -1202,7 +1215,11 @@ export const Portfolio = props => {
 
             <Col className='mt-1'>
                 <Button variant="outline-danger" size="sm"
-                    onClick={() => deleteEducation(idx)}
+                    onClick={() => {
+                        setShowDelete(true);
+                        setRequestedDelete('education');
+                        setRequestedDeleteIdx(idx);
+                    }}
                 >Delete Education</Button>
             </Col>   
         
@@ -1279,26 +1296,6 @@ export const Portfolio = props => {
                                     {row.title
                                         ? <b>{row.title}</b>
                                         : null}
-                                    <br></br>
-                                    {row.description
-                                        ? row.description.substring(1, row.description.length-1).replace(/\\n/g, '\n')
-                                        : null} 
-                                    <br></br>
-                                    {row.organization
-                                        ? row.organization
-                                        : null} 
-                                    <br></br>
-                                    {(row.from_when && row.from_when !== "infinity")
-                                        ? row.from_when
-                                        : null} 
-                                    <br></br>
-                                    {(row.to_when && row.to_when !== "infinity")
-                                        ? row.to_when
-                                        : null}
-                                    <br></br> 
-                                    {row.link
-                                        ? row.link
-                                        : null} 
 
                                     </div>
                                 )}
@@ -1325,6 +1322,10 @@ export const Portfolio = props => {
                                     {row.occupation
                                         ? <b>{row.occupation}</b>
                                         : null}
+                                    {row.organization
+                                        ? <>{' | ' + row.organization}</>
+                                        : null}
+
                                     </div>
                                 )}
                             </Draggable>
@@ -1492,6 +1493,19 @@ export const Portfolio = props => {
                                         }}
                                     /></>
                                 : null}
+                                
+                                {showDelete
+                                ?    <AreYouSure
+                                        showDelete={showDelete}
+                                        setShowDelete={setShowDelete}
+                                        delete={deleteProject}
+                                        setEdited={setEdited}
+                                        requestedDelete={requestedDelete}
+                                        setRequestedDelete={setRequestedDelete}
+                                        idx={requestedDeleteIdx}
+                                        setRequestedDeleteIdx={setRequestedDeleteIdx}
+                                    />
+                                :null}
 
                                 {changingOrder
                                 ? <ChangeOrder droppableId="projects"></ChangeOrder>
@@ -1520,6 +1534,19 @@ export const Portfolio = props => {
                                     /></>
                                 : null}
 
+                                {showDelete
+                                ?    <AreYouSure
+                                        showDelete={showDelete}
+                                        setShowDelete={setShowDelete}
+                                        delete={deleteWorkExperience}
+                                        setEdited={setEdited}
+                                        requestedDelete={requestedDelete}
+                                        setRequestedDelete={setRequestedDelete}
+                                        idx={requestedDeleteIdx}
+                                        setRequestedDeleteIdx={setRequestedDeleteIdx}
+                                    />
+                                :null}
+
                                 {changingOrder
                                 ? <ChangeOrder droppableId="work-experience"></ChangeOrder>
                                 : renderWorkExperienceForm()}
@@ -1544,6 +1571,19 @@ export const Portfolio = props => {
                                         }}}
                                     /></>
                                 : null} 
+
+                                {showDelete
+                                ?    <AreYouSure
+                                        showDelete={showDelete}
+                                        setShowDelete={setShowDelete}
+                                        delete={deleteEducation}
+                                        setEdited={setEdited}
+                                        requestedDelete={requestedDelete}
+                                        setRequestedDelete={setRequestedDelete}
+                                        idx={requestedDeleteIdx}
+                                        setRequestedDeleteIdx={setRequestedDeleteIdx}
+                                    />
+                                :null}
                                 
                                 {changingOrder
                                 ? <ChangeOrder droppableId="education"></ChangeOrder>
