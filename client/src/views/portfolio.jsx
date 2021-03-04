@@ -272,7 +272,8 @@ export const Portfolio = props => {
         let tmpProjects = [...projects.values];
         let errors = {};
         let duplicates = {}
-        if((typeof(tmpProjects[idx].project_id) !== 'undefined')){
+        if(typeof(tmpProjects[idx]) == 'undefined'){}
+        else if((typeof(tmpProjects[idx].project_id) !== 'undefined')){
             setProjectsToDelete(
                 [
                     ...projectsToDelete, 
@@ -495,7 +496,8 @@ export const Portfolio = props => {
         let tmpPortfolio = [...portfolio.values];
         let errors = {};
         let duplicates = {};
-        if((typeof(tmpPortfolio[idx].portfolio_id) !== 'undefined')){
+        if(typeof(tmpPortfolio[idx]) == 'undefined'){}
+        else if((typeof(tmpPortfolio[idx].portfolio_id) !== 'undefined')){
             setWorkExperienceToDelete(
                 [
                     ...workExperienceToDelete, 
@@ -675,7 +677,10 @@ export const Portfolio = props => {
         let tmpEducation = [...education.values];
         let duplicates = {};
         let errors = {};
-        if((typeof(tmpEducation[idx].education_id) !== 'undefined')){
+        if(typeof(tmpEducation[idx]) == 'undefined'){
+            
+        }
+        else if((typeof(tmpEducation[idx].education_id) !== 'undefined')){
             setEducationToDelete(
                 [
                     ...educationToDelete, 

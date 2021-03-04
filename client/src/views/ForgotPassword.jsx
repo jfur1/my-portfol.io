@@ -101,6 +101,7 @@ class ForgotPassword extends Component{
 
                     {msgFromServer && !error
                     ? <><p>{msgFromServer}</p>
+                        <p>Check your spam folder if you do not see the email.</p>
                         <button className="form-button" onClick={e => {
                             this.props.history.push('/')
                         }}>Home</button>

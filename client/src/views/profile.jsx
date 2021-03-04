@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Tabs, Tab, Spinner } from 'react-bootstrap';
+import { Tabs, Tab } from 'react-bootstrap';
 import { AlertMsg } from '../components/alerts';
 
 // Import Components
@@ -8,8 +8,6 @@ import { Home } from './home';
 import { About } from './about';
 import { Portfolio } from './portfolio';
 import { Contact } from './contact';
-import { Footer } from './Footer';
-
 
 class Profile extends Component{
     constructor(props){
@@ -861,6 +859,7 @@ class Profile extends Component{
 
         return(
             <div className="container">
+
                 {this.state.loading
                 
                 ? <div className="loading-container">

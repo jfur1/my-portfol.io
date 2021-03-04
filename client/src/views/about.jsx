@@ -698,13 +698,13 @@ export const About = props => {
 
         <div className="info-container d-flex flex-row-reverse">
             <div>
-            {typeof(images[0]) !== 'undefined' && typeof(images[0].base64preview) !== 'undefined'
+            {typeof(images[0]) !== 'undefined' && images[0].base64preview.data.length > 0
                  ? <img src={images[0].prefix + `${binaryToBase64(images[0].base64preview.data)}`}  alt="Preview"/>
                  : null}
             </div>
 
             <div className="col ml-1">
-                {info !== null 
+                {info !== null && info.location !== null
                 ? <div className="row ml-1 mb-4">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" className="align-self-center mr-2 bi bi-geo-alt-fill" viewBox="0 0 16 16">
                         <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/>
@@ -714,7 +714,7 @@ export const About = props => {
                 : null}
 
 
-                {info !== null 
+                {info !== null && info.bio !== null
                 ? <div className="d-flex flex-row mr-4">
                     <div>
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" className="align-self-center mr-3 bi bi-person-lines-fill" viewBox="0 0 16 16">
