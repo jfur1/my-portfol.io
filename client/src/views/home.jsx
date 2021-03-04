@@ -163,29 +163,28 @@ export const Home = (props) => {
 
         if((!typeof(profile.current_occupation) !== 'undefined') && currentOccupation)
             await createCurrentOccupation();
-        else if(typeof(profile.current_occupation) !== 'undefined' && currentOccupation)
+        else if(typeof(profile[0]) !== 'undefined' && currentOccupation !== profile[0].current_occupation)
             await updateCurrentOccupation();
 
         if((!typeof(profile.current_organization) !== 'undefined') && currentOrganization)
             await createCurrentOrganization();
-        else if(typeof(profile.current_organization) !== 'undefined' && currentOrganization)
+        else if(typeof(profile[0]) !== 'undefined' && currentOrganization !== profile[0].current_organization)
             await updateCurrentOrganization();
 
         const updatePhone = async() => {
             await props.updatePhone(user.user_id, phone);
         }
-        if(phone !== profile[0].phone) await updatePhone();
+        if((typeof(profile[0]) == 'undefined' && phone) || (phone !== profile[0].phone)) await updatePhone();
 
-        
         const updateEmail = async() => {
             await props.updateEmail(user.user_id, publicEmail);
         }
-        if(publicEmail !== profile[0].public_email) await updateEmail();
+        if((typeof(profile[0]) == 'undefined' && publicEmail) || (publicEmail !== profile[0].public_email)) await updateEmail();
 
-        if(font !== null)
+        if(typeof(profile[0]) == 'undefined' && font !== profile[0].font)
             await updateFont();
         
-        if(size !== null)
+        if(typeof(profile[0]) == 'undefined' && size !== profile[0].font_size)
             await updateSize();
             
         // Create Profile Picture
@@ -487,7 +486,7 @@ export const Home = (props) => {
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" className="align-self-center mr-2 bi bi-geo-alt-fill" viewBox="0 0 16 16">
                             <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/>
                         </svg>
-                        <FormatTextarea text={info !== null ? info.location : ''}/>
+                        <FormatTextarea text={info.location === "" ? '' : info.location.substring(1, info.location.length-1)}/>
                         </div>
                     : null}
                     
