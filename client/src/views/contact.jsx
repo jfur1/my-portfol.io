@@ -292,8 +292,8 @@ export const Contact = (props) => {
                                 
                                     <div className='draggable-container mb-4 ml-3 mr-3' ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
 
-                                    {row.title
-                                        ? <b>{row.title}</b>
+                                    {row.link
+                                        ? <b>{row.link}</b>
                                         : null}
 
                                     </div>
@@ -399,7 +399,7 @@ export const Contact = (props) => {
 
     function FormatTextarea(props) {
         let text = props.text;
-        if(text == null || text.length < 2) return null;
+        if(text == null || text.length < 3) return null;
         if(text.length>2) text = text.substring(1, text.length-1);
         return text.split("\\n").map((str, idx) => 
             <div key={idx}>{str.length === 0 ? <br/> : str}</div>
@@ -569,8 +569,6 @@ export const Contact = (props) => {
                                 {row.title 
                                 ? <b>{row.title}</b>
                                 : null }
-                                
-                                <br></br>
 
                                 {(row.link && row.link !== "null")
                                 ? <div className='my-1'>

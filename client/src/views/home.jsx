@@ -211,7 +211,7 @@ export const Home = (props) => {
 
     function FormatTextarea(props) {
         let text = props.text;
-        if(text == null) return null;
+        if(text == null || text.length < 3) return null;
         if(text.length>2) text = text.substring(1, text.length-1);
         return text.split("\\n").map((str, idx) => 
             <div key={idx}>{str.length === 0 ? <br/> : str}</div>
