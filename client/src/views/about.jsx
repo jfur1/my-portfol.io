@@ -12,6 +12,7 @@ export const About = props => {
     const info = (props.data.about !== null) ? props.data.about : props.location.state.about;
     const user = (props.location.state.user !== null) ? props.location.state.user : props.data.user;
     const hobbiesData = (props.data.hobbies !== null) ? props.data.hobbies : props.location.state.hobbies;
+    const images = (props.data.images !== null) ? props.data.images : props.location.state.images;
     const skillsData = (props.data.skills !== null) ? props.data.skills : props.location.state.skills;
 
     // Hooks used to keep track of current edits
@@ -551,6 +552,13 @@ export const About = props => {
         )
     }
 
+    function binaryToBase64(data){
+        var image = btoa(new Uint8Array(data).reduce(function (tmp, byte) {
+            return tmp + String.fromCharCode(byte);
+        }, ''));
+        return image;
+    }
+
     return(
         <div className="tab-container">
         {props.data.ownedByUser 
@@ -688,37 +696,66 @@ export const About = props => {
             </Modal.Footer>
         </Modal>
 
-        <div className="info-container">
-                <h4><b>Location:</b></h4>
-                    {info !== null 
-                    ? <FormatTextarea text={info !== null ? info.location : ''}/>
+        <div className="info-container d-flex flex-row-reverse">
+            <div>
+            {typeof(images[0]) !== 'undefined' && typeof(images[0].base64preview) !== 'undefined'
+                 ? <img src={images[0].prefix + `${binaryToBase64(images[0].base64preview.data)}`}  alt="Preview"/>
+                 : null}
+            </div>
+
+            <div className="col ml-1">
+                {info !== null 
+                ? <div className="row ml-1 mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" className="align-self-center mr-2 bi bi-geo-alt-fill" viewBox="0 0 16 16">
+                        <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/>
+                    </svg>
+                    <FormatTextarea text={info.location}/>
+                    </div>
+                : null}
+
+
+                {info !== null 
+                ? <div className="d-flex flex-row mr-4">
+                    <div>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" className="align-self-center mr-3 bi bi-person-lines-fill" viewBox="0 0 16 16">
+                            <path d="M6 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm-5 6s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H1zM11 3.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 1-.5-.5zm.5 2.5a.5.5 0 0 0 0 1h4a.5.5 0 0 0 0-1h-4zm2 3a.5.5 0 0 0 0 1h2a.5.5 0 0 0 0-1h-2zm0 3a.5.5 0 0 0 0 1h2a.5.5 0 0 0 0-1h-2z"/>
+                        </svg>
+                    </div>
+                    <div className="d-flex flex-column">
+                        <FormatTextarea text={info.bio}/>
+                    </div>
+                </div>
+                : null}
+                
+                <hr className='float-left' style={{width: '95%'}}/><br/>
+
+                <div className="user-container d-flex flex-row">
+                    <div className='d-flex flex-column'>
+                        <h4><b>Hobbies:</b></h4>
+                        {hobbiesData
+                        ? hobbiesData.map((row, idx) => 
+                            <Button className="my-1 noHover" style={{backgroundColor: '#45d2bce9', border: 'none'}} key={idx}>
+                                {row.hobby}
+                            </Button>
+                        ) 
+                        : null}
+                    </div>
+                    
+                    <div className='d-flex flex-column'>
+                    <h4><b>Skills:</b></h4>
+                    {skillsData 
+                    ? skillsData.map((row, idx) => 
+                        <Button className="my-1 noHover" style={{backgroundColor: '#45d2bce9', border: 'none'}} key={idx}>
+                            {row.skill}
+                        </Button>
+                    ) 
                     : null}
-            <br></br>
-                <h4><b>Bio:</b></h4>
-            <><FormatTextarea text={info !== null ? info.bio : ''}/></>
-            <br></br>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <div className="user-container">
-            <h4><b>Hobbies:</b>
-            {hobbiesData
-            ? hobbiesData.map((row, idx) => 
-                <div className="mt-2" key={idx}>
-                    <p>{row.hobby}</p>
-                </div>
-            ) 
-            : null}</h4>
-            <br></br>
-            
-            <h4><b>Skills:</b>
-            {skillsData 
-            ? skillsData.map((row, idx) => 
-                <div className="mt-2" key={idx}>
-                    <p>{row.skill}</p>
-                </div>
-            ) 
-            : null}</h4>
-        </div>
+
     </div>
     );
 }

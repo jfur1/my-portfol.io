@@ -27,6 +27,15 @@ span {
 	font-size: 18px;
 }
 
+.noHover{
+    pointer-events: none;
+}
+
+.vl {
+    border-left: 1px solid grey;
+    height: 275px;
+  }
+
 button {
     border: 1px solid #06D6A0;
     border-radius: 20px;

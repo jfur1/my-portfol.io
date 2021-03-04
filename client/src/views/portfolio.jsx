@@ -1572,23 +1572,16 @@ export const Portfolio = props => {
             {projectsData
             ? projectsData.map((row, idx) => 
                 <div className="mb-2 ml-3 mr-3" key={idx}>
-                    <h4><b>{row.title}</b></h4>
                     
-                    {row.description 
-                    ? <><FormatTextarea text={row.description} key={idx}/></>
-                    : null}
-
-                    <br/>
-
-                    {(row.organization && row.organization !== "null")
-                    ? <p><b>Organization:</b> {row.organization}</p>
-                    : null}
-
-                    {(row.link && row.link !== "null")
-                    ? <><b>Link: </b><a href={row.link} target="_blank" rel="noreferrer">{row.link}</a></>
-                    : null}
+                    <div className='row'>
+                        <h5 className='mr-1'><b>{row.title}</b></h5>
                     
-                    <p>
+                        {(row.organization && row.organization !== "null")
+                        ? <h5 className='align-self-center'>{' | ' + row.organization}</h5>
+                        : null}
+                    </div>
+
+                    <p className='mb-2'>
                     {(row.from_when && row.from_when !== "infinity")
                     ? <FormatDate dateString={row.from_when} key={idx}/>
                     : null
@@ -1598,6 +1591,21 @@ export const Portfolio = props => {
                     ?  <FormatDate dateString={row.to_when} key={idx}/>
                     : "Present"}
                     </p>
+                    
+                    {row.description 
+                    ? <><FormatTextarea text={row.description} key={idx}/></>
+                    : null}
+
+                    {(row.link && row.link !== "null")
+                    ? <div className='my-1'>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" className="mr-1 bi bi-link-45deg" viewBox="0 0 16 16">
+                            <path d="M4.715 6.542L3.343 7.914a3 3 0 1 0 4.243 4.243l1.828-1.829A3 3 0 0 0 8.586 5.5L8 6.086a1.001 1.001 0 0 0-.154.199 2 2 0 0 1 .861 3.337L6.88 11.45a2 2 0 1 1-2.83-2.83l.793-.792a4.018 4.018 0 0 1-.128-1.287z"/>
+                            <path d="M6.586 4.672A3 3 0 0 0 7.414 9.5l.775-.776a2 2 0 0 1-.896-3.346L9.12 3.55a2 2 0 0 1 2.83 2.83l-.793.792c.112.42.155.855.128 1.287l1.372-1.372a3 3 0 0 0-4.243-4.243L6.586 4.672z"/>
+                        </svg>
+                        <a href={row.link} target="_blank" rel="noreferrer">{row.link}</a>
+                    </div>
+                    : null}
+                    
                     <hr/>
                 </div>
             )
@@ -1610,10 +1618,13 @@ export const Portfolio = props => {
         {portfolioData
         ? portfolioData.map((row, idx) => 
             <div className="mb-3 ml-3 mr-3" key={idx}>
-                <h4><b>{row.occupation}</b></h4>
-                <h5>{row.organization}</h5>
                 
-                <p>
+                <div className='row'>
+                    <h5 className='mr-1'><b>{row.occupation}</b></h5>
+                    <h5 className='align-self-center'>{' | ' + row.organization}</h5>
+                </div>
+
+                <p className='mb-3'>
                 {(row.from_when && row.from_when !== "infinity")
                 ? <FormatDate dateString={row.from_when} key={idx}/>
                 : null}
@@ -1638,13 +1649,15 @@ export const Portfolio = props => {
         <div className="info-container">
             {educationData 
             ? educationData.map((row, idx) => 
-                <div className="mb-3 ml-3 mr-3" key={idx}>
-                    <h4><b>{row.education}</b></h4>
+                <div className="ml-3 mr-3" key={idx}>
+                    
+                    <div className='row'>
+                        <h5 className='mr-1'><b>{row.education}</b></h5>
 
-                    {row.organization 
-                    ? <h5><p>{row.organization}</p></h5>
-                    : null}
-
+                        {row.organization 
+                        ? <h5><p>{' | ' + row.organization}</p></h5>
+                        : null}
+                    </div>
                     
                     <p>
                     {(row.from_when && row.from_when !== "infinity")
@@ -1654,7 +1667,7 @@ export const Portfolio = props => {
                     -
                     {(row.to_when && row.to_when !== "infinity")
                     ? <FormatDate dateString={row.to_when} key={idx}/>
-                    : " Present"}
+                    : "-  Present"}
                     </p>
 
                     {row.description
