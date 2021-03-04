@@ -894,6 +894,8 @@ class Profile extends Component{
                             updateCurrentOccupation={this.updateCurrentOccupation}
                             createCurrentOrganization={this.createCurrentOrganization}
                             updateCurrentOrganization={this.updateCurrentOrganization}
+                            updateEmail={this.updateEmail}
+                            updatePhone={this.updatePhone}
                             updateFont={this.updateFont}
                             updateSize={this.updateSize}
                             createProfileImages={this.createProfileImages}

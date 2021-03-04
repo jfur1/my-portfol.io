@@ -1,6 +1,6 @@
 // Home Tab on a User's Profile
 import { useState } from 'react';
-import { Modal, Button, Form, Dropdown, DropdownButton } from 'react-bootstrap';
+import { Modal, Button, Form, Dropdown, DropdownButton, Col } from 'react-bootstrap';
 import { PencilFill } from 'react-bootstrap-icons';
 import { AlertDismissible } from '../components/alertDismissible';
 import UploadProfilePicture from './uploadProfilePic';
@@ -17,7 +17,9 @@ export const Home = (props) => {
     const [edited, setEdited] = useState(false);
     const [showAlert, setShowAlert] = useState(false);
     const [fullname, setFullname] = useState(user.fullname);
-    const [currentOccupation, setCurrentOccupation] 
+    const [publicEmail, setPublicEmail] = useState(typeof(profile[0]) !== 'undefined' ? profile[0].public_email : '');
+    const [phone, setPhone] = useState(typeof(profile[0]) !== 'undefined' ? profile[0].phone : '');
+    const [currentOccupation, setCurrentOccupation]
     = useState(
         typeof(profile[0]) !== 'undefined' 
             ? profile[0].current_occupation 
@@ -149,6 +151,17 @@ export const Home = (props) => {
         else if(typeof(profile.current_organization) !== 'undefined' && currentOrganization)
             await updateCurrentOrganization();
 
+        const updatePhone = async() => {
+            await props.updatePhone(user.user_id, phone);
+        }
+        if(phone !== profile[0].phone) await updatePhone();
+
+        
+        const updateEmail = async() => {
+            await props.updateEmail(user.user_id, publicEmail);
+        }
+        if(publicEmail !== profile[0].public_email) await updateEmail();
+
         if(font !== null)
             await updateFont();
         
@@ -218,13 +231,13 @@ export const Home = (props) => {
                 <Form noValidate onSubmit={handleSave}>
                     
                     <Form.Row className='mt-3'>
-                        <Form.Label>
+                        <Form.Label column sm={2}>
                             Full Name
                         </Form.Label>
                         <input 
                             type="text" 
-                            style={{textAlign:"left"}}
-                            className="form-control" 
+                            style={{textAlign:"left", width: "45%"}} 
+                            className="form-control ml-1" 
                             defaultValue={fullname} 
                             onChange={e => 
                                 {    
@@ -234,34 +247,69 @@ export const Home = (props) => {
                         ></input>
                     </Form.Row>
                     <Form.Row className='mt-3'>
-                        <Form.Label>
+                        <Form.Label column sm={2}>
                             Current Occupation
                         </Form.Label>
                         <input 
                             type="text" 
-                            style={{textAlign:"left"}}
-                            className="form-control" 
+                            style={{textAlign:"left", width: "45%"}} 
+                            className="form-control ml-1 mt-2" 
                             defaultValue={currentOccupation} 
                             onChange={e => 
                                 {setCurrentOccupation(e.target.value); 
-                                setEdited(true);
+                                setEdited(true); 
                             }}
                         ></input>
                     </Form.Row>
                     <Form.Row className='mt-3'>
-                        <Form.Label>
+                        <Form.Label column sm={2}>
                             Current Organization
                         </Form.Label>
                         <input 
                             type="text" 
-                            style={{textAlign:"left"}}
-                            className="form-control" 
+                            style={{textAlign:"left", width: "45%"}} 
+                            className="form-control ml-1 mt-2" 
                             defaultValue={currentOrganization} 
                             onChange={e => 
                                 {setCurrentOrganization(e.target.value); 
                                 setEdited(true);
                             }}
                         ></input>
+                    </Form.Row>
+
+                    <Form.Row className='mt-4'>
+                        <Form.Label column sm={2}>
+                            Public Email
+                        </Form.Label>
+                        <Col>
+                            <Form.Control 
+                                type="email" 
+                                style={{textAlign:"left", width: "55%"}} 
+                                defaultValue={profile[0].public_email}  
+                                onChange={e => {
+                                    setPublicEmail(e.target.value); 
+                                    setEdited(true);
+                                }}/>
+                            <Form.Text className="text-muted">
+                            Public email to display on your profile.
+                            </Form.Text>
+                        </Col>
+                    </Form.Row>
+
+                    <Form.Row className='mt-3'>
+                        <Form.Label column sm={2}>
+                            Phone Number
+                        </Form.Label>
+                        <Col>
+                            <Form.Control 
+                            type="text" 
+                            style={{textAlign:"left", width: "55%"}} 
+                            defaultValue={profile[0].phone} 
+                            onChange={e => {
+                                setPhone(e.target.value);
+                                setEdited(true);
+                            }}/>
+                        </Col>
                     </Form.Row>
 
                     <Form.Row className='mt-3'>
@@ -417,15 +465,12 @@ export const Home = (props) => {
                     {info !== null
                     ? <div className="row ml-1 mt-3">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" className="align-self-center mr-2 bi bi-telephone-fill" viewBox="0 0 16 16">
-                        <path fill-rule="evenodd" d="M1.885.511a1.745 1.745 0 0 1 2.61.163L6.29 2.98c.329.423.445.974.315 1.494l-.547 2.19a.678.678 0 0 0 .178.643l2.457 2.457a.678.678 0 0 0 .644.178l2.189-.547a1.745 1.745 0 0 1 1.494.315l2.306 1.794c.829.645.905 1.87.163 2.611l-1.034 1.034c-.74.74-1.846 1.065-2.877.702a18.634 18.634 0 0 1-7.01-4.42 18.634 18.634 0 0 1-4.42-7.009c-.362-1.03-.037-2.137.703-2.877L1.885.511z"/>
+                        <path fillRule="evenodd" d="M1.885.511a1.745 1.745 0 0 1 2.61.163L6.29 2.98c.329.423.445.974.315 1.494l-.547 2.19a.678.678 0 0 0 .178.643l2.457 2.457a.678.678 0 0 0 .644.178l2.189-.547a1.745 1.745 0 0 1 1.494.315l2.306 1.794c.829.645.905 1.87.163 2.611l-1.034 1.034c-.74.74-1.846 1.065-2.877.702a18.634 18.634 0 0 1-7.01-4.42 18.634 18.634 0 0 1-4.42-7.009c-.362-1.03-.037-2.137.703-2.877L1.885.511z"/>
                         </svg>
                         {info.phone}
                     </div>
                     : null}
                 </div>
-
-                {/* <p><b>Username:</b> {user.username}</p>
-                <p><b>Email: </b>{user.email}</p> */}
 
                 <br></br>
             </div> 
