@@ -340,7 +340,6 @@ export const TestRegisterForm = (props) => {
             </div>
         </div>
         </div>
-        <Footer/>
     </>
     )
 }
