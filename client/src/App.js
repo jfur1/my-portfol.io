@@ -9,11 +9,21 @@ import ForgotPassword from './views/ForgotPassword'
 import Profile from './views/profile';
 import {TestRegisterForm} from './components/slider/form';
 import ResetPassword from './views/ResetPassword';
-
+import { Footer } from './views/Footer'
 
 function App() {
   return (
-    <div className="App" style={{backgroundImage: 'url(/geo-bg.png)', backgroundRepeat: 'no-repeat', backgroundSize: 'cover', backgroundAttachment: 'fixed', minHeight:'100vh', minWidth: '100vw'}}>
+    <>
+    <div className="App" 
+      style={{
+        backgroundImage: 'url(/geo-bg.png)', 
+        backgroundRepeat: 'no-repeat',
+         backgroundSize: 'cover', 
+         backgroundAttachment: 'fixed', 
+         minHeight:'100vh', 
+         minWidth: '100vw',
+         paddingBottom: '140px'
+      }}>
       <Switch>
         <Route exact path="/" component={TestRegisterForm} />
         <Route exact path="/forgot" component={ForgotPassword} />
@@ -22,6 +32,7 @@ function App() {
         <Route path="*" component={() => "404 Not Found"} />
       </Switch>
     </div>
+    <Footer/></>
   );
 }
 

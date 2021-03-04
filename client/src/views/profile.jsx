@@ -959,7 +959,6 @@ class Profile extends Component{
                         />
                     : null }
                 </div> 
-                <Footer/>
             </div>
             </>}
         </div>
