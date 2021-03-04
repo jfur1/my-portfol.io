@@ -1575,7 +1575,7 @@ export const Portfolio = props => {
                     <h4><b>{row.title}</b></h4>
                     
                     {row.description 
-                    ? <><FormatTextarea text={row.description.replace(/\\n/g, '\n')} key={idx}/></>
+                    ? <><FormatTextarea text={row.description} key={idx}/></>
                     : null}
 
                     <br/>
@@ -1624,7 +1624,7 @@ export const Portfolio = props => {
                 </p>
 
                 {(row.description)
-                ? <FormatTextarea text={row.description.replace(/\\n/g, '\n')} key={idx}/>
+                ? <FormatTextarea text={row.description} key={idx}/>
                 : null}
 
                 <hr/>
@@ -1658,7 +1658,7 @@ export const Portfolio = props => {
                     </p>
 
                     {row.description
-                    ? <><FormatTextarea text={row.description.replace(/\\n/g, '\n')} key={idx}/></>
+                    ? <FormatTextarea text={row.description} key={idx}/>
                     : null}
                     <hr/>
                 </div>

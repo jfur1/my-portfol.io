@@ -6,12 +6,13 @@ export const NavBar = (props) => {
     //console.log("NavBar Component Recieved Props: ", props);
     const loggedIn = (props.data.loggedIn !== null) ? props.data.loggedIn : false;
     const requestedBy = (typeof props.location.state !== 'undefined' && typeof props.location.state.requestedBy !== 'undefined') ? props.location.state.requestedBy : props.data.requestedBy;
+    
     //const user = (props.data.user !== null) ? props.data.user : null;
     
 
     return(
 
-        <Navbar sticky="top" style={{background:'rgba(255,255,255,1)'}}>
+        <Navbar sticky="top" className="navbar-style-time" style={{background:'rgba(255,255,255,1)'}}>
             <Navbar.Brand href={loggedIn ? `/${requestedBy.username}` : '/'}>
                 <img style={{height: "30px"}} src="/mp-new-logo.png" alt="logo"/>
                 &nbsp;&nbsp;&nbsp;
@@ -38,10 +39,7 @@ export const NavBar = (props) => {
                         </Dropdown.Menu>
                     </Dropdown>
                     :                              
-                    <div className="order"><Nav.Link onClick={() => {props.history.push("/");
-                        }}>Login</Nav.Link><p className="my-bar"></p>
-                    <Nav.Link onClick={() => {props.history.push("/");
-                        }}>Register</Nav.Link></div>
+                    <Nav.Link onClick={() => {props.history.push("/");}}>Login or Register</Nav.Link>
                     }
                 </Nav.Item>
             </Navbar.Collapse>

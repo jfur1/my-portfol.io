@@ -284,13 +284,6 @@ table.center {
   flex-direction:row;
 }
 
-.my-bar{
-  margin-top: 5%;
-  border-left: 2px solid black;
-  height:25px;
-}
-
-
 .register-switch-checkbox {
   height: 0;
   width: 0;
@@ -329,4 +322,15 @@ table.center {
 
 .register-switch-label:active .register-switch-button {
   width: 30px;
+}
+
+@media only screen and (max-width: 800px) {
+  .user-container {
+    display:flex;
+    flex-direction:column-reverse;
+  }
+  .navbar-style-time{
+    display:flex;
+    flex-direction:column;
+  }
 }

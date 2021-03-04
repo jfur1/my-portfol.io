@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { PencilFill } from 'react-bootstrap-icons';
+import { PencilFill, Phone, Envelope } from 'react-bootstrap-icons';
 import { Modal, Button, Form, Col } from 'react-bootstrap';
 import { AlertDismissible } from '../components/alertDismissible';
 import Switch  from '../components/switch';
@@ -511,19 +511,18 @@ export const Contact = (props) => {
             {props.data.ownedByUser ? <Button variant="warning" className="edit-button" onClick={handleShow}>Edit&nbsp;<PencilFill size={25}/></Button> : null}
             <h3>Contact Information</h3>
             <hr color="black"/>
-            <h3>{user.firstname} {user.lastname}</h3>
             <br/>
 
             <div className="info-container">
                 
-                <p><h4>Email: </h4>
+                <h4>Email:</h4>
                 {typeof(profile[0]) !== 'undefined' && profile[0].public_email
-                ? profile[0].public_email
-                : null }</p>
+                ? <p>{profile[0].public_email}</p>
+                : null }
 
                 <br/>
 
-                <h4>Phone: </h4>
+                <h4>Phone:</h4>
                 {typeof(profile[0]) !== 'undefined' && profile[0].phone
                 ? <p>{profile[0].phone}</p>
                 : null }
