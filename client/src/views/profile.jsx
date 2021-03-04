@@ -863,7 +863,20 @@ class Profile extends Component{
             <div className="container">
                 {this.state.loading
                 
-                ? <><Spinner animation="border" variant="success" /></>
+                ? <div className="loading-container">
+                    <div className="holder">
+                        <div className='box'>
+                        </div>
+                    </div>
+                    <div className="holder">
+                        <div className='box'>
+                        </div>
+                    </div>
+                    <div className="holder">
+                        <div className='box'>
+                        </div>
+                    </div>
+                </div>
                 
                 : <><NavBar {...this.props} data={this.state}/>
                 <div className="tabulation-container" 
