@@ -375,7 +375,6 @@ class Profile extends Component{
     }
 
     // CONTACT Tab
-
     updateEmail = async(user_id, public_email) => {
         this.setState({loading: true});
         const response = await fetch('http://localhost:5000/updatePublicEmail',  {

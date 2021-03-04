@@ -64,7 +64,7 @@ passport.serializeUser((user, done) => {
 });
 
 passport.deserializeUser((user_id, done) => {
-
+    
     db.tx(t => {
         return t.one('SELECT * FROM users WHERE \'' + user_id + '\' = user_id;');
     })
@@ -634,8 +634,9 @@ app.post('/createCurrentOccupation', (req, res) => {
 
 app.post('/updateCurrentOccupation', (req, res) => {
     const {user_id, occupation} = req.headers;
+    console.log('update occupation recieved headers:', req.headers)
     db.tx(async t => {
-        return t.none('UDPATE profile SET current_occupation=${occupation} WHERE uid=${user_id};', {user_id, occupation});
+        return t.none('UPDATE profile SET current_occupation=${occupation} WHERE uid=${user_id};', {user_id, occupation});
     })
     .then(data => {
         return res.json(data);
@@ -679,7 +680,7 @@ app.post('/createCurrentOrganization', (req, res) => {
 app.post('/updateCurrentOrganization', (req, res) => {
     const {user_id, organization} = req.headers;
     db.tx(async t => {
-        return t.none('UDPATE profile SET current_organization=${organization} WHERE uid=${user_id};', {user_id, organization});
+        return t.none('UPDATE profile SET current_organization=${organization} WHERE uid=${user_id};', {user_id, organization});
     })
     .then(data => {
         return res.json(data);
@@ -1009,7 +1010,17 @@ app.post('/updatePublicEmail', (req, res) => {
     const {user_id, public_email} = req.headers;
 
     db.tx(async t => {
-        return t.none('UPDATE profile SET public_email = ${public_email} WHERE uid = \'' + user_id + '\';', {public_email});
+        const user = await t.oneOrNone('SELECT * FROM profile WHERE uid=${user_id};', {user_id});
+
+        if(!user){
+            const max_id = await t.one('SELECT MAX(profile_id) FROM profile;');
+            let newProfileId = max_id.max;
+            newProfileId++;
+            return t.none('INSERT INTO profile (profile_id, uid, public_email) VALUES (${newProfileId}, ${user_id}, ${public_email});', {newProfileId, user_id, public_email})
+        }
+        else{
+            return t.none('UPDATE profile SET public_email = ${public_email} WHERE uid = \'' + user_id + '\';', {public_email});
+        }
     })
     .then((data) => {
         return res.json(data);
@@ -1024,7 +1035,17 @@ app.post('/updatePhone', (req, res) => {
     const {user_id, phone} = req.headers;
 
     db.tx(async t => {
-        return t.none('UPDATE profile SET phone = ${phone} WHERE uid = ${user_id};', {user_id, phone});
+        const user = await t.oneOrNone('SELECT * FROM profile WHERE uid=${user_id};', {user_id});
+
+        if(!user){
+            const max_id = await t.one('SELECT MAX(profile_id) FROM profile;');
+            let newProfileId = max_id.max;
+            newProfileId++;
+            return t.none('INSERT INTO profile (profile_id, uid, phone) VALUES (${newProfileId}, ${user_id}, ${phone});', {newProfileId, user_id, phone})
+        }
+        else{
+            return t.none('UPDATE profile SET phone = ${phone} WHERE uid = \'' + user_id + '\';', {phone});
+        }
     })
     .then((data) => {
         return res.json(data);
