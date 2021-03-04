@@ -782,56 +782,6 @@ app.post('/updatePreviewCoords', (req, res) => {
 
 // ----------- [BEGIN] Edit About Tab -----------
 
-app.post('/createLocation', (req, res) => {
-    const {user_id, location} = req.headers;
-
-    db.task(async t => {
-        const max_id = await t.one('SELECT MAX(profile_id) FROM profile;');
-        let newId = max_id.max;
-        newId++;
-
-        return t.one('INSERT INTO profile (profile_id, uid, location) VALUES(${newId}, ${user_id}, ${location}) RETURNING profile_id, uid, location', 
-        {
-            newId,
-            user_id,
-            location
-        })
-    })
-    .then((data) => {
-        console.log("Inserted!");
-        return res.json(data);
-    })
-    .catch((err) => {
-        console.log(err);
-        res.json({error: true})
-    })
-})
-
-app.post('/createBio', (req, res) => {
-    const {user_id, bio} = req.headers;
-
-    db.task(async t => {
-        const max_id = await t.one('SELECT MAX(profile_id) FROM profile;');
-        let newId = max_id.max;
-        newId++;
-
-        return t.one('INSERT INTO profile (profile_id, uid, bio) VALUES(${newId}, ${user_id}, ${bio}) RETURNING profile_id, uid, bio', 
-        {
-            newId,
-            user_id,
-            bio
-        })
-    })
-    .then((data) => {
-        console.log("Inserted!");
-        return res.json(data);
-    })
-    .catch((err) => {
-        console.log(err);
-        res.json({error: true})
-    })
-})
-
 app.post('/createHobby', (req, res) => {
     const {user_id, hobby, position} = req.headers;
 
@@ -891,7 +841,21 @@ app.post('/updateLocation', (req, res) => {
     //console.log("Server recieved location:", location);
 
     db.tx(async t => {
-        return t.one('UPDATE profile SET location = ${location} WHERE uid = ${user_id} RETURNING location;', {user_id: user_id, location: location});
+        const user = await t.oneOrNone('SELECT * FROM profile WHERE uid = ${user_id};', {user_id});
+        if(!user){
+            const max_id = await t.one('SELECT MAX(profile_id) FROM profile;');
+            let newId = max_id.max;
+            newId++;
+            return t.one('INSERT INTO profile (profile_id, uid, location) VALUES(${newId}, ${user_id}, ${location}) RETURNING profile_id, uid, location', 
+            {
+                newId,
+                user_id,
+                location
+            })
+        }
+        else{
+            return t.one('UPDATE profile SET location = ${location} WHERE uid = ${user_id} RETURNING location;', {user_id: user_id, location: location});
+        }
     })
     .then((data) => {
         return res.json(data.location);
@@ -910,8 +874,22 @@ app.post('/updateBio', (req, res) => {
     console.log("Bio Data Type:", typeof(bio))
 
     db.tx(async t => {
-        // return t.one('UPDATE profile SET bio = \'' + bio + '\' WHERE uid = \'' + user_id + '\' RETURNING bio;');
-        return t.one('UPDATE profile SET bio = ${bio} WHERE uid = ${user_id} RETURNING bio;', {user_id: user_id, bio: bio});
+        const user = await t.oneOrNone('SELECT * FROM profile WHERE uid = ${user_id};', {user_id});
+        if(!user){
+            const max_id = await t.one('SELECT MAX(profile_id) FROM profile;');
+            let newId = max_id.max;
+            newId++;
+
+            return t.one('INSERT INTO profile (profile_id, uid, bio) VALUES(${newId}, ${user_id}, ${bio}) RETURNING profile_id, uid, bio', 
+            {
+                newId,
+                user_id,
+                bio
+            })
+        }
+        else{
+            return t.one('UPDATE profile SET bio = ${bio} WHERE uid = ${user_id} RETURNING bio;', {user_id: user_id, bio: bio});
+        }
     })
     .then((data) => {
         return res.json(data.bio);

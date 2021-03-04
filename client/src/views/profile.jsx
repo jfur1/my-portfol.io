@@ -204,22 +204,6 @@ class Profile extends Component{
     }
     
     // ABOUT Tab
-    createLocation = async(user_id, location) => {
-        this.setState({loading: true});
-        const response = await fetch('http://localhost:5000/createLocation',  {
-            method: 'POST', 
-            mode: 'cors',
-            credentials: 'include',
-            withCredentials: true,
-            headers: {
-                user_id: user_id, 
-                location: location
-            }
-        });
-        const data = await response.json();
-        console.log("Client Recieved Response: ", data);
-        return;
-    }
     updateLocation = async (locationToUpdate, user_id) => {
         this.setState({loading: true});
         const response = await fetch('http://localhost:5000/updateLocation',  {
@@ -237,22 +221,6 @@ class Profile extends Component{
         return;
     }
 
-    createBio = async(user_id, bio) => {
-        this.setState({loading: true});
-        const response = await fetch('http://localhost:5000/createBio',  {
-            method: 'POST', 
-            mode: 'cors',
-            credentials: 'include',
-            withCredentials: true,
-            headers: {
-                user_id: user_id, 
-                bio: bio
-            }
-        });
-        const data = await response.json();
-        console.log("Client Recieved Response: ", data);
-        return;
-    }
     updateBio = async(bioToUpdate, user_id) => {
         this.setState({loading: true});
         const response = await fetch('http://localhost:5000/updateBio',  {
@@ -908,7 +876,6 @@ class Profile extends Component{
                             updateCurrentOrganization={this.updateCurrentOrganization}
                             updateEmail={this.updateEmail}
                             updatePhone={this.updatePhone}
-                            createLocation={this.createLocation}
                             updateLocation={this.updateLocation}
                             updateFont={this.updateFont}
                             updateSize={this.updateSize}
@@ -921,9 +888,7 @@ class Profile extends Component{
                     { this.state.key === "about" ?  
                         <About {...this.props} 
                             data={this.state} 
-                            createLocation={this.createLocation}
                             updateLocation={this.updateLocation}
-                            createBio={this.createBio}
                             updateBio={this.updateBio}
                             updateHobby={this.updateHobby}
                             updateSkill={this.updateSkill}

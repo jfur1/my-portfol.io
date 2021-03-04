@@ -374,27 +374,21 @@ export const About = props => {
         } else{
         
         // Location
-        let locationToCreate = [];
         let locationToUpdate = [];
-        let bioToCreate = [];
         let bioToUpdate = [];
         var hobbiesToCreate = [];
         var hobbiesToUpdate = [];
         var skillsToCreate = [];
         var skillsToUpdate = [];
         
-        if(info === null && location){
-            locationToCreate.push(JSON.stringify(location));
-        } else if(info !== null && info.location !== location){
+        if((!info && location) || (info !== null && info.location !== location)){
             //console.log(`Set location update from: ${info.location} to: ${location}`);
             locationToUpdate.push(JSON.stringify(location));
         }
 
         // Bio
         // Need a better check for creates
-        if(info === null && bio){
-            bioToCreate.push(JSON.stringify(bio));
-        } else if(info !== null &&  info.bio !== bio){
+        if((!info && bio) || (info !== null &&  info.bio !== bio)){
             //console.log(`Set bio update from: ${info.bio} to: ${bio}`);
             bioToUpdate.push(JSON.stringify(bio));
         }
@@ -452,9 +446,7 @@ export const About = props => {
             }
         })
         
-        console.log("Location to Update:", locationToCreate);
         console.log("Location to Update:", locationToUpdate);
-        console.log("Bio to Create:", bioToCreate);
         console.log("Bio to Update:", bioToUpdate);
         console.log("Hobbies to Create", hobbiesToCreate);
         console.log("Hobbies to Update:", hobbiesToUpdate);
@@ -466,20 +458,10 @@ export const About = props => {
         
         // Begin POST requests
 
-        const createLocation = async() => {
-            await props.createLocation(user.user_id, locationToCreate[0]);
-        }
-        if(locationToCreate.length) await createLocation();
-
         const updateLocation = async() => {
             await props.updateLocation(locationToUpdate[0], user.user_id);
         }
         if(locationToUpdate.length) await updateLocation();
-
-        const createBio = async() => {
-            await props.createBio(user.user_id, bioToCreate[0]);
-        }
-        if(bioToCreate.length) await createBio();
 
         const updateBio = async() => {
             await props.updateBio(bioToUpdate[0], user.user_id)
@@ -545,8 +527,8 @@ export const About = props => {
 
     function FormatTextarea(props) {
         let text = props.text;
-        if(text == null) return null;
-        if(text.length>2) text = text.substring(1, text.length-1);
+        if(text == null || text.length < 3) return null;
+        if(text.length > 2) text = text.substring(1, text.length-1);
         return text.split("\\n").map((str, idx) => 
             <div key={idx}>{str.length === 0 ? <br/> : str}</div>
         )
@@ -706,7 +688,7 @@ export const About = props => {
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" className="align-self-center mr-2 bi bi-geo-alt-fill" viewBox="0 0 16 16">
                         <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/>
                     </svg>
-                    <FormatTextarea text={info.location}/>
+                    <FormatTextarea text={info.location === "" ? '' : info.location}/>
                     </div>
                 : null}
 
@@ -719,7 +701,7 @@ export const About = props => {
                         </svg>
                     </div>
                     <div className="d-flex flex-column">
-                        <FormatTextarea text={info.bio}/>
+                        <FormatTextarea text={info.bio === "" ? null : info.bio}/>
                     </div>
                 </div>
                 : null}
