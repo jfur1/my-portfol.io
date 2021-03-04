@@ -7,7 +7,7 @@ import './App.css';
 // import { Welcome } from "./views/welcome";
 import ForgotPassword from './views/ForgotPassword'
 import Profile from './views/profile';
-import {TestRegisterForm} from './components/slider/form';
+import {HomeSlider} from './components/slider/form';
 import ResetPassword from './views/ResetPassword';
 import { Footer } from './views/Footer'
 
@@ -25,7 +25,7 @@ function App() {
          paddingBottom: '140px'
       }}>
       <Switch>
-        <Route exact path="/" component={TestRegisterForm} />
+        <Route exact path="/" component={HomeSlider} />
         <Route exact path="/forgot" component={ForgotPassword} />
         <Route exact path="/reset/:token" component={ResetPassword} />
         <Route exact path="/:username" component={Profile} />

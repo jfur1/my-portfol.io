@@ -324,7 +324,7 @@ export const Home = (props) => {
                             <Form.Control 
                                 type="email" 
                                 style={{textAlign:"left", width: "55%"}} 
-                                defaultValue={profile[0].public_email}  
+                                defaultValue={typeof(profile[0]) !== 'undefined' ? profile[0].public_email : null}  
                                 onChange={e => {
                                     setPublicEmail(e.target.value); 
                                     setEdited(true);
@@ -343,7 +343,7 @@ export const Home = (props) => {
                             <Form.Control 
                             type="text" 
                             style={{textAlign:"left", width: "55%"}} 
-                            defaultValue={profile[0].phone} 
+                            defaultValue={typeof(profile[0]) !== 'undefined' ? profile[0].phone : null} 
                             onChange={e => {
                                 setPhone(e.target.value);
                                 setEdited(true);
