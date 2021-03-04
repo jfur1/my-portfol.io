@@ -19,6 +19,7 @@ export const Home = (props) => {
     const [fullname, setFullname] = useState(user.fullname);
     const [publicEmail, setPublicEmail] = useState(typeof(profile[0]) !== 'undefined' ? profile[0].public_email : '');
     const [phone, setPhone] = useState(typeof(profile[0]) !== 'undefined' ? profile[0].phone : '');
+    const [location, setLocation] = useState((info !== null && info.location !== null) ? info.location : null);
     const [currentOccupation, setCurrentOccupation]
     = useState(
         typeof(profile[0]) !== 'undefined' 
@@ -96,7 +97,10 @@ export const Home = (props) => {
     }
 
     const handleSave = async() => {
-
+        let locationToCreate = [];
+        let locationToUpdate = [];
+        let bioToCreate = [];
+        let bioToUpdate = [];
         // Declare Funcation Prototypes
         const updateFullname = async() => {
             await props.updateFullname(user.user_id, fullname);
@@ -140,6 +144,23 @@ export const Home = (props) => {
 
         // Conditionally Call Functions
         if(fullname !== user.fullname) await updateFullname();
+
+        if(info === null && location){
+            locationToCreate.push(JSON.stringify(location));
+        } else if(info !== null && info.location !== location){
+            //console.log(`Set location update from: ${info.location} to: ${location}`);
+            locationToUpdate.push(JSON.stringify(location));
+        }
+
+        const createLocation = async() => {
+            await props.createLocation(user.user_id, locationToCreate[0]);
+        }
+        if(locationToCreate.length) await createLocation();
+
+        const updateLocation = async() => {
+            await props.updateLocation(locationToUpdate[0], user.user_id);
+        }
+        if(locationToUpdate.length) await updateLocation();
 
         if((!typeof(profile.current_occupation) !== 'undefined') && currentOccupation)
             await createCurrentOccupation();
@@ -272,6 +293,25 @@ export const Home = (props) => {
                             defaultValue={currentOrganization} 
                             onChange={e => 
                                 {setCurrentOrganization(e.target.value); 
+                                setEdited(true);
+                            }}
+                        ></input>
+                    </Form.Row>
+
+                    <Form.Row className='mt-3'>
+                        <Form.Label column sm={2}>
+                            Location
+                        </Form.Label>
+                        <input 
+                            type="text" 
+                            style={{textAlign:"left", width: "45%"}} 
+                            className="form-control ml-1" 
+                            id="location" 
+                            defaultValue={(info !== null && info.location !== null) 
+                                ? info.location.substring(1, info.location.length-1) 
+                                : ''} 
+                            onChange={e => 
+                                {setLocation(e.target.value); 
                                 setEdited(true);
                             }}
                         ></input>
