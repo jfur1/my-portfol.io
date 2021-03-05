@@ -16,7 +16,7 @@ export const AreYouSure = (props) => {
             <Modal.Title>Modal title</Modal.Title>
             </Modal.Header>
                 <Modal.Body>
-                    <p>Are you sure you want to remove this {props.requestedDelete} at index {props.idx}?</p>
+                    <p>Are you sure you want to remove this {props.requestedDelete}?</p>
                 </Modal.Body>
             <Modal.Footer>
                 <Button variant="secondary" 

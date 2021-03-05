@@ -1008,7 +1008,7 @@ export const Portfolio = props => {
                 <Col>
                     <Form.Control as="textarea" id="description" rows="3" 
                     defaultValue={row.description !== null 
-                        ? row.description.substring(1, row.description.length-1).replace(/\\n/g, '\n') 
+                        ? row.description.replace(/\\n/g, '\n') 
                         : ''} 
                     placeholder={"Add a description for your project!"} 
                     onChange={e => handleProjectDescriptionChange(e, idx)}
@@ -1038,7 +1038,7 @@ export const Portfolio = props => {
                     //eslint-disable-next-line
                     ? new Date(row.from_when.replace(/-/g, '\/').replace(/T.+/, ''))
                     : ''}
-                    placeholder={"Add a start date for your project! (Optional)"} 
+                    placeholder={"Add a start date for your project (Optional)"} 
                     onChange={ date => {
                             handleProjectStartChange(date, idx);
                     }}></Form.Control>
@@ -1055,7 +1055,7 @@ export const Portfolio = props => {
                     //eslint-disable-next-line
                     ? new Date(row.to_when.replace(/-/g, '\/').replace(/T.+/, ''))
                     : ''}  
-                    placeholder={"Add a finish date for your project! (Optional)"} 
+                    placeholder={"Add a finish date for your project (Optional)"} 
                     onChange={date => {
                         handleProjectFinishChange(date, idx);
                     }}></Form.Control>
@@ -1068,7 +1068,7 @@ export const Portfolio = props => {
                     Link
                 </Form.Label>
                 <Col>
-                    <Form.Control type="text" id="project-link" style={{textAlign: "left"}} value={row.link !== null ? row.link : ''} placeholder={"Add an link for your project! (Optional)"} 
+                    <Form.Control type="text" id="project-link" style={{textAlign: "left"}} value={row.link !== null ? row.link : ''} placeholder={"Add an link for your project (Optional)"} 
                         onChange={e => handleProjectLinkChange(e, idx)}
                     />
                 </Col>
@@ -1119,7 +1119,7 @@ export const Portfolio = props => {
                     Organization
                 </Form.Label>
                 <Col>
-                    <Form.Control type="text" id="organization" style={{textAlign: "left"}} value={row.organization !== null ? row.organization : ''} placeholder={"Add an organization. (Optional)"} 
+                    <Form.Control type="text" id="organization" style={{textAlign: "left"}} value={row.organization !== null ? row.organization : ''} placeholder={"Add an organization (Optional)"} 
                         onChange={e => {handlePortfolioOrganizationChange(e, idx)}}>
                     </Form.Control>
                 </Col>
@@ -1167,7 +1167,7 @@ export const Portfolio = props => {
                     <Form.Control as="textarea" rows="3" 
                     style={{textAlign: "left"}}
                     defaultValue={row.description !== null 
-                        ? row.description.substring(1, row.description.length-1).replace(/\\n/g, '\n') 
+                        ? row.description.replace(/\\n/g, '\n') 
                         : ''}
                     placeholder={"Add a description (Optional)"} 
                     onChange={e => handlePortfolioDescriptionChange(e, idx)}
