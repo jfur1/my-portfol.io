@@ -834,10 +834,7 @@ app.post('/createSkill', (req, res) => {
 })
 
 app.post('/updateLocation', (req, res) => {
-    //console.log("Req.headers:", req.headers);
     const {user_id, location} = req.body;
-    //console.log("Server recieved user_id:", user_id);
-    //console.log("Server recieved location:", location);
 
     db.tx(async t => {
         const user = await t.oneOrNone('SELECT * FROM profile WHERE uid = ${user_id};', {user_id});
@@ -868,8 +865,6 @@ app.post('/updateLocation', (req, res) => {
 
 app.post('/updateBio', (req, res) => {
     const {user_id, bio} = req.body;
-    //console.log("Server recieved user_id:", user_id);
-    //console.log("Server recieved bio:", bio);
     console.log("Bio Data Type:", typeof(bio))
 
     db.tx(async t => {
@@ -901,8 +896,6 @@ app.post('/updateBio', (req, res) => {
 
 app.post('/updateHobby', (req, res) => {
     const {hobby_id, hobby, user_id, position} = req.headers;
-    //console.log("Server recieved user_id:", user_id);
-    //console.log("Server recieved hobby:", hobby)
     console.log("Server recieved position:", position);
 
     db.tx(async t => {
@@ -925,8 +918,6 @@ app.post('/updateHobby', (req, res) => {
 
 app.post('/updateSkill', (req, res) => {
     const {skill_id, skill, user_id, position} = req.headers;
-    //console.log("Server recieved user_id:", user_id);
-    //console.log("Server recieved skill:", skill)
     console.log("Server recieved position:", position);
 
     db.tx(async t => {
@@ -1349,7 +1340,6 @@ app.post('/updateEducation', (req,res) => {
         position
     } = req.body;
 
-    //console.log(description, organization, from_when, to_when, link)
     if(to_when == "null" || to_when == "undefined") to_when = "infinity";
     if(from_when == "null" || from_when == "undefined") from_when = "infinity";
 
