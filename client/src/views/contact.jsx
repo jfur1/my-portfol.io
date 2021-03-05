@@ -256,7 +256,7 @@ export const Contact = (props) => {
                             </Form.Label>
                             <Col>
                                 <Form.Control as="textarea" rows={3}
-                                defaultValue={(row.description !== null) ? row.description.substring(1, row.description.length-1).replace(/\\n/g, '\n') : ''} 
+                                defaultValue={(row.description !== null) ? row.description.replace(/\\n/g, '\n') : ''} 
                                 placeholder={"Add a description for your link! (Optional)"} 
                                 onChange={e => {
                                     handleLinkDescriptionChange(e, idx);
@@ -399,9 +399,8 @@ export const Contact = (props) => {
 
     function FormatTextarea(props) {
         let text = props.text;
-        if(text == null || text.length < 3) return null;
-        if(text.length>2) text = text.substring(1, text.length-1);
-        return text.split("\\n").map((str, idx) => 
+        if(text == null) return null;
+        return text.split("\n").map((str, idx) => 
             <div key={idx}>{str.length === 0 ? <br/> : str}</div>
         )
     }

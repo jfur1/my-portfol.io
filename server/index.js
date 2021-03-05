@@ -835,7 +835,7 @@ app.post('/createSkill', (req, res) => {
 
 app.post('/updateLocation', (req, res) => {
     //console.log("Req.headers:", req.headers);
-    const {user_id, location} = req.headers;
+    const {user_id, location} = req.body;
     //console.log("Server recieved user_id:", user_id);
     //console.log("Server recieved location:", location);
 
@@ -867,7 +867,7 @@ app.post('/updateLocation', (req, res) => {
 })
 
 app.post('/updateBio', (req, res) => {
-    const {user_id, bio} = req.headers;
+    const {user_id, bio} = req.body;
     //console.log("Server recieved user_id:", user_id);
     //console.log("Server recieved bio:", bio);
     console.log("Bio Data Type:", typeof(bio))

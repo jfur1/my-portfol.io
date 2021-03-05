@@ -1390,7 +1390,7 @@ export const Portfolio = props => {
     function FormatTextarea(props) {
         let text = props.text;
         if(text == null) return null;
-        return text.split("\\n").map((str, idx) => 
+        return text.split("\n").map((str, idx) => 
             <div key={idx}>{str.length === 0 ? <br/> : str}</div>
         )
     }

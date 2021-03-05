@@ -212,9 +212,13 @@ class Profile extends Component{
             credentials: 'include',
             withCredentials: true,
             headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
                 user_id: user_id, 
                 location: locationToUpdate
-            }
+            })
         });
         const data = await response.json();
         console.log("Client Recieved Response: ", data);
@@ -229,9 +233,13 @@ class Profile extends Component{
             credentials: 'include',
             withCredentials: true,
             headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
                 user_id: user_id, 
                 bio: bioToUpdate
-            }
+            })
         });
         const data = await response.json();
         console.log("Client Recieved Response: ", data);

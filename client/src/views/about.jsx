@@ -383,14 +383,14 @@ export const About = props => {
         
         if((!info && location) || (info !== null && info.location !== location)){
             //console.log(`Set location update from: ${info.location} to: ${location}`);
-            locationToUpdate.push(JSON.stringify(location));
+            locationToUpdate.push(location);
         }
 
         // Bio
         // Need a better check for creates
         if((!info && bio) || (info !== null &&  info.bio !== bio)){
             //console.log(`Set bio update from: ${info.bio} to: ${bio}`);
-            bioToUpdate.push(JSON.stringify(bio));
+            bioToUpdate.push(bio);
         }
 
         // Hobbies: 
@@ -527,9 +527,8 @@ export const About = props => {
 
     function FormatTextarea(props) {
         let text = props.text;
-        if(text == null || text.length < 3) return null;
-        if(text.length > 2) text = text.substring(1, text.length-1);
-        return text.split("\\n").map((str, idx) => 
+        if(text == null) return null;
+        return text.split("\n").map((str, idx) => 
             <div key={idx}>{str.length === 0 ? <br/> : str}</div>
         )
     }
@@ -585,7 +584,7 @@ export const About = props => {
                             className="form-control" 
                             id="location" 
                             defaultValue={(info !== null && info.location !== null) 
-                                ? info.location.substring(1, info.location.length-1) 
+                                ? info.location
                                 : ''} 
                             onChange={e => 
                                 {setLocation(e.target.value); 
@@ -603,7 +602,7 @@ export const About = props => {
                                 rows="5" 
                                 id="bio" 
                                 defaultValue={(info !== null && info.bio !== null) 
-                                    ? info.bio.substring(1, info.bio.length-1).replace(/\\n/g, '\n')
+                                    ? info.bio.replace(/\\n/g, '\n')
                                     : null} 
                                 onChange={e => {
                                     setBio(e.target.value); 
@@ -688,7 +687,7 @@ export const About = props => {
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" className="align-self-center mr-2 bi bi-geo-alt-fill" viewBox="0 0 16 16">
                         <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/>
                     </svg>
-                    <FormatTextarea text={info.location === "" ? '' : info.location}/>
+                    <FormatTextarea text={info.location}/>
                     </div>
                 : null}
 
@@ -701,7 +700,7 @@ export const About = props => {
                         </svg>
                     </div>
                     <div className="d-flex flex-column">
-                        <FormatTextarea text={info.bio === "" ? null : info.bio}/>
+                        <FormatTextarea text={info.bio}/>
                     </div>
                 </div>
                 : null}

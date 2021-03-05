@@ -144,11 +144,9 @@ export const Home = (props) => {
         // Conditionally Call Functions
         if(fullname !== user.fullname) await updateFullname();
 
-        if(info === null && location){
-            locationToCreate.push(JSON.stringify(location));
-        } else if(info !== null && info.location !== location){
+        if((!info && location) || (info !== null && info.location !== location)){
             //console.log(`Set location update from: ${info.location} to: ${location}`);
-            locationToUpdate.push(JSON.stringify(location));
+            locationToUpdate.push(location);
         }
 
         const createLocation = async() => {
@@ -211,8 +209,7 @@ export const Home = (props) => {
 
     function FormatTextarea(props) {
         let text = props.text;
-        if(text == null || text.length < 3) return null;
-        if(text.length>2) text = text.substring(1, text.length-1);
+        if(text == null) return null;
         return text.split("\\n").map((str, idx) => 
             <div key={idx}>{str.length === 0 ? <br/> : str}</div>
         )
@@ -306,7 +303,7 @@ export const Home = (props) => {
                             className="form-control ml-1" 
                             id="location" 
                             defaultValue={(info !== null && info.location !== null) 
-                                ? info.location.substring(1, info.location.length-1) 
+                                ? info.location 
                                 : ''} 
                             onChange={e => 
                                 {setLocation(e.target.value); 
