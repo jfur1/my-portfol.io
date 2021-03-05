@@ -447,6 +447,10 @@ class Profile extends Component{
             credentials: 'include',
             withCredentials: true,
             headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
                 user_id: user_id,
                 title: project.title,
                 description: project.description,
@@ -455,7 +459,7 @@ class Profile extends Component{
                 to_when: project.to_when,
                 link: project.link,
                 position: idx
-            }
+            })
         });
         const data = await response.json();
         console.log("Client Recieved Response: ", data);
@@ -471,6 +475,10 @@ class Profile extends Component{
             credentials: 'include',
             withCredentials: true,
             headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
                 project_id: project.project_id, 
                 user_id: user_id,
                 title: project.title,
@@ -480,7 +488,7 @@ class Profile extends Component{
                 to_when: project.to_when,
                 link: project.link,
                 position: rowIdx
-            }
+            })
         });
         const data = await response.json();
         console.log("Client Recieved Response: ", data);
@@ -511,6 +519,10 @@ class Profile extends Component{
             credentials: 'include',
             withCredentials: true,
             headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
                 user_id: user_id,
                 occupation: workExperience.occupation,
                 organization: workExperience.organization,
@@ -518,7 +530,7 @@ class Profile extends Component{
                 to_when: workExperience.to_when,
                 description: workExperience.description,
                 position: idx
-            }
+            })
         });
         const data = await response.json();
         console.log("Client Recieved Response: ", data);
@@ -533,6 +545,10 @@ class Profile extends Component{
             credentials: 'include',
             withCredentials: true,
             headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
                 portfolio_id: workExperience.portfolio_id, 
                 user_id: user_id,
                 occupation: workExperience.occupation,
@@ -541,7 +557,7 @@ class Profile extends Component{
                 to_when: workExperience.to_when,
                 description: workExperience.description,
                 position: rowIdx
-            }
+            })
         });
         const data = await response.json();
         console.log("Client Recieved Response: ", data);
@@ -572,6 +588,10 @@ class Profile extends Component{
             credentials: 'include',
             withCredentials: true,
             headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
                 user_id: user_id,
                 organization: education.organization,
                 education: education.education,
@@ -579,7 +599,7 @@ class Profile extends Component{
                 to_when: education.to_when,
                 description: education.description,
                 position: idx
-            }
+            })
         });
         const data = await response.json();
         console.log("Client Recieved Response: ", data);
@@ -594,6 +614,10 @@ class Profile extends Component{
             credentials: 'include',
             withCredentials: true,
             headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
                 education_id: education.education_id, 
                 user_id: user_id,
                 organization: education.organization,
@@ -602,7 +626,7 @@ class Profile extends Component{
                 to_when: education.to_when,
                 description: education.description,
                 position: rowIdx
-            }
+            })
         });
         const data = await response.json();
         console.log("Client Recieved Response: ", data);

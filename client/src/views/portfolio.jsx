@@ -1270,7 +1270,7 @@ export const Portfolio = props => {
                     <Form.Control as="textarea" rows="3" 
                     style={{textAlign: "left"}}
                     defaultValue={row.description !== null
-                        ? row.description.substring(1, row.description.length-1).replace(/\\n/g, '\n')  
+                        ? row.description.replace(/\\n/g, '\n')  
                         : ''}
                     placeholder={"Add a description (Optional)"}
                     onChange={e => {handleEducationDescriptionChange(e, idx)}}
@@ -1389,8 +1389,7 @@ export const Portfolio = props => {
 
     function FormatTextarea(props) {
         let text = props.text;
-        if(text == null || text.length < 3) return null;
-        if(text.length > 2) text = text.substring(1, text.length-1);
+        if(text == null) return null;
         return text.split("\\n").map((str, idx) => 
             <div key={idx}>{str.length === 0 ? <br/> : str}</div>
         )
@@ -1498,19 +1497,7 @@ export const Portfolio = props => {
                                         }}
                                     /></>
                                 : null}
-                                
-                                {showDelete
-                                ?    <AreYouSure
-                                        showDelete={showDelete}
-                                        setShowDelete={setShowDelete}
-                                        delete={deleteProject}
-                                        setEdited={setEdited}
-                                        requestedDelete={requestedDelete}
-                                        setRequestedDelete={setRequestedDelete}
-                                        idx={requestedDeleteIdx}
-                                        setRequestedDeleteIdx={setRequestedDeleteIdx}
-                                    />
-                                :null}
+
 
                                 {changingOrder
                                 ? <ChangeOrder droppableId="projects"></ChangeOrder>
@@ -1538,19 +1525,6 @@ export const Portfolio = props => {
                                         }}
                                     /></>
                                 : null}
-
-                                {showDelete
-                                ?    <AreYouSure
-                                        showDelete={showDelete}
-                                        setShowDelete={setShowDelete}
-                                        delete={deleteWorkExperience}
-                                        setEdited={setEdited}
-                                        requestedDelete={requestedDelete}
-                                        setRequestedDelete={setRequestedDelete}
-                                        idx={requestedDeleteIdx}
-                                        setRequestedDeleteIdx={setRequestedDeleteIdx}
-                                    />
-                                :null}
 
                                 {changingOrder
                                 ? <ChangeOrder droppableId="work-experience"></ChangeOrder>
@@ -1581,7 +1555,9 @@ export const Portfolio = props => {
                                 ?    <AreYouSure
                                         showDelete={showDelete}
                                         setShowDelete={setShowDelete}
-                                        delete={deleteEducation}
+                                        deleteWork={deleteWorkExperience}
+                                        deleteEdu={deleteEducation}
+                                        deleteProject={deleteProject}
                                         setEdited={setEdited}
                                         requestedDelete={requestedDelete}
                                         setRequestedDelete={setRequestedDelete}

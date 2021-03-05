@@ -634,7 +634,6 @@ app.post('/createCurrentOccupation', (req, res) => {
 
 app.post('/updateCurrentOccupation', (req, res) => {
     const {user_id, occupation} = req.headers;
-    console.log('update occupation recieved headers:', req.headers)
     db.tx(async t => {
         return t.none('UPDATE profile SET current_occupation=${occupation} WHERE uid=${user_id};', {user_id, occupation});
     })
@@ -1124,7 +1123,7 @@ app.post('/createProject', (req, res) => {
         to_when,
         link,
         position
-    } = req.headers;
+    } = req.body;
 
     db.tx(async t => {
         const max_id = await t.one('SELECT MAX(project_id) FROM projects;');
@@ -1164,7 +1163,7 @@ app.post('/updateProject', (req, res) => {
         to_when, 
         link,
         position
-    } = req.headers;
+    } = req.body;
 
     // console.log("From When:", from_when);
     // console.log("To When:", to_when);
@@ -1219,7 +1218,7 @@ app.post('/createWorkExperience', (req, res) => {
         to_when,
         description,
         position
-    } = req.headers;
+    } = req.body;
 
     db.tx(async t => {
         const max_id = await t.one('SELECT MAX(portfolio_id) FROM portfolio;');
@@ -1257,7 +1256,7 @@ app.post('/updateWorkExperience', (req, res) => {
         to_when, 
         description,
         position
-    } = req.headers;
+    } = req.body;
 
     //console.log(description, organization, from_when, to_when, link)
     if(to_when == "null" || to_when == "undefined") to_when = "infinity";
@@ -1310,7 +1309,7 @@ app.post('/createEducation', (req, res) => {
         to_when,
         description,
         position
-    } = req.headers;
+    } = req.body;
 
     db.tx(async t => {
         const max_id = await t.one('SELECT MAX(education_id) FROM education;');
@@ -1348,7 +1347,7 @@ app.post('/updateEducation', (req,res) => {
         to_when, 
         description,
         position
-    } = req.headers;
+    } = req.body;
 
     //console.log(description, organization, from_when, to_when, link)
     if(to_when == "null" || to_when == "undefined") to_when = "infinity";
