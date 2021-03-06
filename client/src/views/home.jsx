@@ -12,6 +12,8 @@ export const Home = (props) => {
     const images = (props.data.images !== null) ? props.data.images : props.location.state.images;
     const info = (props.data.about !== null) ? props.data.about : props.location.state.about;
 
+    // NOTE TO SELF: Type check for images -- (e.g. new user)
+
     const [show, setShow] = useState(false);
     const [showDelete, setShowDelete] = useState(false);
     const [edited, setEdited] = useState(false);
