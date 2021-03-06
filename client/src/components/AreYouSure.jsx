@@ -1,6 +1,7 @@
 import { Modal, Button } from 'react-bootstrap';
 
 export const AreYouSure = (props) => {
+    console.log("AreYouSure recieved props:", props)
     return(
         <Modal
             show={props.showDelete}
@@ -26,7 +27,12 @@ export const AreYouSure = (props) => {
                     }}>Cancel</Button>
                 <Button variant="danger" 
                     onClick={() => {
-                        props.delete(props.idx);
+                        if(props.requestedDelete === 'project')
+                            props.deleteProject(props.idx);
+                        else if(props.requestedDelete === 'work experience')
+                            props.deleteWork(props.idx)
+                        else if(props.requestedDelete === 'education')
+                            props.deleteEdu(props.idx)
                         props.setEdited(true);
                         props.setShowDelete(false);
                         props.setRequestedDelete('');   

@@ -374,29 +374,23 @@ export const About = props => {
         } else{
         
         // Location
-        let locationToCreate = [];
         let locationToUpdate = [];
-        let bioToCreate = [];
         let bioToUpdate = [];
         var hobbiesToCreate = [];
         var hobbiesToUpdate = [];
         var skillsToCreate = [];
         var skillsToUpdate = [];
         
-        if(info === null && location){
-            locationToCreate.push(JSON.stringify(location));
-        } else if(info !== null && info.location !== location){
+        if((!info && location) || (info !== null && info.location !== location)){
             //console.log(`Set location update from: ${info.location} to: ${location}`);
-            locationToUpdate.push(JSON.stringify(location));
+            locationToUpdate.push(location);
         }
 
         // Bio
         // Need a better check for creates
-        if(info === null && bio){
-            bioToCreate.push(JSON.stringify(bio));
-        } else if(info !== null &&  info.bio !== bio){
+        if((!info && bio) || (info !== null &&  info.bio !== bio)){
             //console.log(`Set bio update from: ${info.bio} to: ${bio}`);
-            bioToUpdate.push(JSON.stringify(bio));
+            bioToUpdate.push(bio);
         }
 
         // Hobbies: 
@@ -452,9 +446,7 @@ export const About = props => {
             }
         })
         
-        console.log("Location to Update:", locationToCreate);
         console.log("Location to Update:", locationToUpdate);
-        console.log("Bio to Create:", bioToCreate);
         console.log("Bio to Update:", bioToUpdate);
         console.log("Hobbies to Create", hobbiesToCreate);
         console.log("Hobbies to Update:", hobbiesToUpdate);
@@ -466,20 +458,10 @@ export const About = props => {
         
         // Begin POST requests
 
-        const createLocation = async() => {
-            await props.createLocation(user.user_id, locationToCreate[0]);
-        }
-        if(locationToCreate.length) await createLocation();
-
         const updateLocation = async() => {
             await props.updateLocation(locationToUpdate[0], user.user_id);
         }
         if(locationToUpdate.length) await updateLocation();
-
-        const createBio = async() => {
-            await props.createBio(user.user_id, bioToCreate[0]);
-        }
-        if(bioToCreate.length) await createBio();
 
         const updateBio = async() => {
             await props.updateBio(bioToUpdate[0], user.user_id)
@@ -546,8 +528,7 @@ export const About = props => {
     function FormatTextarea(props) {
         let text = props.text;
         if(text == null) return null;
-        if(text.length>2) text = text.substring(1, text.length-1);
-        return text.split("\\n").map((str, idx) => 
+        return text.split("\n").map((str, idx) => 
             <div key={idx}>{str.length === 0 ? <br/> : str}</div>
         )
     }
@@ -603,7 +584,7 @@ export const About = props => {
                             className="form-control" 
                             id="location" 
                             defaultValue={(info !== null && info.location !== null) 
-                                ? info.location.substring(1, info.location.length-1) 
+                                ? info.location
                                 : ''} 
                             onChange={e => 
                                 {setLocation(e.target.value); 
@@ -621,7 +602,7 @@ export const About = props => {
                                 rows="5" 
                                 id="bio" 
                                 defaultValue={(info !== null && info.bio !== null) 
-                                    ? info.bio.substring(1, info.bio.length-1).replace(/\\n/g, '\n')
+                                    ? info.bio.replace(/\\n/g, '\n')
                                     : null} 
                                 onChange={e => {
                                     setBio(e.target.value); 
@@ -727,7 +708,7 @@ export const About = props => {
                 <hr className='float-left' style={{width: '95%'}}/><br/>
 
                 <div className="user-container d-flex flex-row">
-                    <div className='d-flex flex-column'>
+                    <div className='d-flex flex-column mx-3'>
                         <h4><b>Hobbies:</b></h4>
                         {hobbiesData
                         ? hobbiesData.map((row, idx) => 
@@ -738,7 +719,7 @@ export const About = props => {
                         : null}
                     </div>
                     
-                    <div className='d-flex flex-column'>
+                    <div className='d-flex flex-column mx-3'>
                     <h4><b>Skills:</b></h4>
                     {skillsData 
                     ? skillsData.map((row, idx) => 

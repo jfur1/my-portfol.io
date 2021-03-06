@@ -785,7 +785,7 @@ export const Portfolio = props => {
                 } else {
                     projectsToCreate.push({
                         title: row.title,
-                        description: JSON.stringify(row.description),
+                        description: row.description,
                         organization: row.organization,
                         from_when: row.from_when,
                         to_when: row.to_when,
@@ -797,7 +797,7 @@ export const Portfolio = props => {
                 projectsToUpdate.push({
                     project_id: row.project_id,
                     title: row.title,
-                    description: JSON.stringify(row.description),
+                    description: row.description,
                     organization: row.organization,
                     from_when: row.from_when,
                     to_when: row.to_when,
@@ -816,7 +816,7 @@ export const Portfolio = props => {
                         organization: row.organization,
                         from_when: row.from_when,
                         to_when: row.to_when,
-                        description: JSON.stringify(row.description),
+                        description: row.description,
                         rowIdx: idx
                     });
                 }
@@ -827,7 +827,7 @@ export const Portfolio = props => {
                     organization: row.organization,
                     from_when: row.from_when,
                     to_when: row.to_when,
-                    description: JSON.stringify(row.description),
+                    description: row.description,
                     rowIdx: idx
                 })
             }
@@ -842,7 +842,7 @@ export const Portfolio = props => {
                         education: row.education,
                         from_when: row.from_when,
                         to_when: row.to_when,
-                        description: JSON.stringify(row.description),
+                        description: row.description,
                         rowIdx: idx
                     });
                 }
@@ -853,7 +853,7 @@ export const Portfolio = props => {
                     education: row.education,
                     from_when: row.from_when,
                     to_when: row.to_when,
-                    description: JSON.stringify(row.description),
+                    description: row.description,
                     rowIdx: idx
                 })
             }
@@ -1008,7 +1008,7 @@ export const Portfolio = props => {
                 <Col>
                     <Form.Control as="textarea" id="description" rows="3" 
                     defaultValue={row.description !== null 
-                        ? row.description.substring(1, row.description.length-1).replace(/\\n/g, '\n') 
+                        ? row.description.replace(/\\n/g, '\n') 
                         : ''} 
                     placeholder={"Add a description for your project!"} 
                     onChange={e => handleProjectDescriptionChange(e, idx)}
@@ -1038,7 +1038,7 @@ export const Portfolio = props => {
                     //eslint-disable-next-line
                     ? new Date(row.from_when.replace(/-/g, '\/').replace(/T.+/, ''))
                     : ''}
-                    placeholder={"Add a start date for your project! (Optional)"} 
+                    placeholder={"Add a start date for your project (Optional)"} 
                     onChange={ date => {
                             handleProjectStartChange(date, idx);
                     }}></Form.Control>
@@ -1055,7 +1055,7 @@ export const Portfolio = props => {
                     //eslint-disable-next-line
                     ? new Date(row.to_when.replace(/-/g, '\/').replace(/T.+/, ''))
                     : ''}  
-                    placeholder={"Add a finish date for your project! (Optional)"} 
+                    placeholder={"Add a finish date for your project (Optional)"} 
                     onChange={date => {
                         handleProjectFinishChange(date, idx);
                     }}></Form.Control>
@@ -1068,7 +1068,7 @@ export const Portfolio = props => {
                     Link
                 </Form.Label>
                 <Col>
-                    <Form.Control type="text" id="project-link" style={{textAlign: "left"}} value={row.link !== null ? row.link : ''} placeholder={"Add an link for your project! (Optional)"} 
+                    <Form.Control type="text" id="project-link" style={{textAlign: "left"}} value={row.link !== null ? row.link : ''} placeholder={"Add an link for your project (Optional)"} 
                         onChange={e => handleProjectLinkChange(e, idx)}
                     />
                 </Col>
@@ -1119,7 +1119,7 @@ export const Portfolio = props => {
                     Organization
                 </Form.Label>
                 <Col>
-                    <Form.Control type="text" id="organization" style={{textAlign: "left"}} value={row.organization !== null ? row.organization : ''} placeholder={"Add an organization. (Optional)"} 
+                    <Form.Control type="text" id="organization" style={{textAlign: "left"}} value={row.organization !== null ? row.organization : ''} placeholder={"Add an organization (Optional)"} 
                         onChange={e => {handlePortfolioOrganizationChange(e, idx)}}>
                     </Form.Control>
                 </Col>
@@ -1167,7 +1167,7 @@ export const Portfolio = props => {
                     <Form.Control as="textarea" rows="3" 
                     style={{textAlign: "left"}}
                     defaultValue={row.description !== null 
-                        ? row.description.substring(1, row.description.length-1).replace(/\\n/g, '\n') 
+                        ? row.description.replace(/\\n/g, '\n') 
                         : ''}
                     placeholder={"Add a description (Optional)"} 
                     onChange={e => handlePortfolioDescriptionChange(e, idx)}
@@ -1270,7 +1270,7 @@ export const Portfolio = props => {
                     <Form.Control as="textarea" rows="3" 
                     style={{textAlign: "left"}}
                     defaultValue={row.description !== null
-                        ? row.description.substring(1, row.description.length-1).replace(/\\n/g, '\n')  
+                        ? row.description.replace(/\\n/g, '\n')  
                         : ''}
                     placeholder={"Add a description (Optional)"}
                     onChange={e => {handleEducationDescriptionChange(e, idx)}}
@@ -1389,9 +1389,8 @@ export const Portfolio = props => {
 
     function FormatTextarea(props) {
         let text = props.text;
-        if(text == null || text.length < 3) return null;
-        if(text.length > 2) text = text.substring(1, text.length-1);
-        return text.split("\\n").map((str, idx) => 
+        if(text == null) return null;
+        return text.split("\n").map((str, idx) => 
             <div key={idx}>{str.length === 0 ? <br/> : str}</div>
         )
     }
@@ -1498,19 +1497,7 @@ export const Portfolio = props => {
                                         }}
                                     /></>
                                 : null}
-                                
-                                {showDelete
-                                ?    <AreYouSure
-                                        showDelete={showDelete}
-                                        setShowDelete={setShowDelete}
-                                        delete={deleteProject}
-                                        setEdited={setEdited}
-                                        requestedDelete={requestedDelete}
-                                        setRequestedDelete={setRequestedDelete}
-                                        idx={requestedDeleteIdx}
-                                        setRequestedDeleteIdx={setRequestedDeleteIdx}
-                                    />
-                                :null}
+
 
                                 {changingOrder
                                 ? <ChangeOrder droppableId="projects"></ChangeOrder>
@@ -1538,19 +1525,6 @@ export const Portfolio = props => {
                                         }}
                                     /></>
                                 : null}
-
-                                {showDelete
-                                ?    <AreYouSure
-                                        showDelete={showDelete}
-                                        setShowDelete={setShowDelete}
-                                        delete={deleteWorkExperience}
-                                        setEdited={setEdited}
-                                        requestedDelete={requestedDelete}
-                                        setRequestedDelete={setRequestedDelete}
-                                        idx={requestedDeleteIdx}
-                                        setRequestedDeleteIdx={setRequestedDeleteIdx}
-                                    />
-                                :null}
 
                                 {changingOrder
                                 ? <ChangeOrder droppableId="work-experience"></ChangeOrder>
@@ -1581,7 +1555,9 @@ export const Portfolio = props => {
                                 ?    <AreYouSure
                                         showDelete={showDelete}
                                         setShowDelete={setShowDelete}
-                                        delete={deleteEducation}
+                                        deleteWork={deleteWorkExperience}
+                                        deleteEdu={deleteEducation}
+                                        deleteProject={deleteProject}
                                         setEdited={setEdited}
                                         requestedDelete={requestedDelete}
                                         setRequestedDelete={setRequestedDelete}
@@ -1666,7 +1642,7 @@ export const Portfolio = props => {
                 
                 <div className='row'>
                     <h5 className='mr-1'><b>{row.occupation}</b></h5>
-                    <h5 className='align-self-center'>{' | ' + row.organization}</h5>
+                    <h5 className='align-self-center'>{!row.organization ? '' :  ' | ' + row.organization}</h5>
                 </div>
 
                 <p className='mb-3'>

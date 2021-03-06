@@ -634,7 +634,6 @@ app.post('/createCurrentOccupation', (req, res) => {
 
 app.post('/updateCurrentOccupation', (req, res) => {
     const {user_id, occupation} = req.headers;
-    console.log('update occupation recieved headers:', req.headers)
     db.tx(async t => {
         return t.none('UPDATE profile SET current_occupation=${occupation} WHERE uid=${user_id};', {user_id, occupation});
     })
@@ -782,56 +781,6 @@ app.post('/updatePreviewCoords', (req, res) => {
 
 // ----------- [BEGIN] Edit About Tab -----------
 
-app.post('/createLocation', (req, res) => {
-    const {user_id, location} = req.headers;
-
-    db.task(async t => {
-        const max_id = await t.one('SELECT MAX(profile_id) FROM profile;');
-        let newId = max_id.max;
-        newId++;
-
-        return t.one('INSERT INTO profile (profile_id, uid, location) VALUES(${newId}, ${user_id}, ${location}) RETURNING profile_id, uid, location', 
-        {
-            newId,
-            user_id,
-            location
-        })
-    })
-    .then((data) => {
-        console.log("Inserted!");
-        return res.json(data);
-    })
-    .catch((err) => {
-        console.log(err);
-        res.json({error: true})
-    })
-})
-
-app.post('/createBio', (req, res) => {
-    const {user_id, bio} = req.headers;
-
-    db.task(async t => {
-        const max_id = await t.one('SELECT MAX(profile_id) FROM profile;');
-        let newId = max_id.max;
-        newId++;
-
-        return t.one('INSERT INTO profile (profile_id, uid, bio) VALUES(${newId}, ${user_id}, ${bio}) RETURNING profile_id, uid, bio', 
-        {
-            newId,
-            user_id,
-            bio
-        })
-    })
-    .then((data) => {
-        console.log("Inserted!");
-        return res.json(data);
-    })
-    .catch((err) => {
-        console.log(err);
-        res.json({error: true})
-    })
-})
-
 app.post('/createHobby', (req, res) => {
     const {user_id, hobby, position} = req.headers;
 
@@ -885,13 +834,24 @@ app.post('/createSkill', (req, res) => {
 })
 
 app.post('/updateLocation', (req, res) => {
-    //console.log("Req.headers:", req.headers);
-    const {user_id, location} = req.headers;
-    //console.log("Server recieved user_id:", user_id);
-    //console.log("Server recieved location:", location);
+    const {user_id, location} = req.body;
 
     db.tx(async t => {
-        return t.one('UPDATE profile SET location = ${location} WHERE uid = ${user_id} RETURNING location;', {user_id: user_id, location: location});
+        const user = await t.oneOrNone('SELECT * FROM profile WHERE uid = ${user_id};', {user_id});
+        if(!user){
+            const max_id = await t.one('SELECT MAX(profile_id) FROM profile;');
+            let newId = max_id.max;
+            newId++;
+            return t.one('INSERT INTO profile (profile_id, uid, location) VALUES(${newId}, ${user_id}, ${location}) RETURNING profile_id, uid, location', 
+            {
+                newId,
+                user_id,
+                location
+            })
+        }
+        else{
+            return t.one('UPDATE profile SET location = ${location} WHERE uid = ${user_id} RETURNING location;', {user_id: user_id, location: location});
+        }
     })
     .then((data) => {
         return res.json(data.location);
@@ -904,14 +864,26 @@ app.post('/updateLocation', (req, res) => {
 })
 
 app.post('/updateBio', (req, res) => {
-    const {user_id, bio} = req.headers;
-    //console.log("Server recieved user_id:", user_id);
-    //console.log("Server recieved bio:", bio);
+    const {user_id, bio} = req.body;
     console.log("Bio Data Type:", typeof(bio))
 
     db.tx(async t => {
-        // return t.one('UPDATE profile SET bio = \'' + bio + '\' WHERE uid = \'' + user_id + '\' RETURNING bio;');
-        return t.one('UPDATE profile SET bio = ${bio} WHERE uid = ${user_id} RETURNING bio;', {user_id: user_id, bio: bio});
+        const user = await t.oneOrNone('SELECT * FROM profile WHERE uid = ${user_id};', {user_id});
+        if(!user){
+            const max_id = await t.one('SELECT MAX(profile_id) FROM profile;');
+            let newId = max_id.max;
+            newId++;
+
+            return t.one('INSERT INTO profile (profile_id, uid, bio) VALUES(${newId}, ${user_id}, ${bio}) RETURNING profile_id, uid, bio', 
+            {
+                newId,
+                user_id,
+                bio
+            })
+        }
+        else{
+            return t.one('UPDATE profile SET bio = ${bio} WHERE uid = ${user_id} RETURNING bio;', {user_id: user_id, bio: bio});
+        }
     })
     .then((data) => {
         return res.json(data.bio);
@@ -924,8 +896,6 @@ app.post('/updateBio', (req, res) => {
 
 app.post('/updateHobby', (req, res) => {
     const {hobby_id, hobby, user_id, position} = req.headers;
-    //console.log("Server recieved user_id:", user_id);
-    //console.log("Server recieved hobby:", hobby)
     console.log("Server recieved position:", position);
 
     db.tx(async t => {
@@ -948,8 +918,6 @@ app.post('/updateHobby', (req, res) => {
 
 app.post('/updateSkill', (req, res) => {
     const {skill_id, skill, user_id, position} = req.headers;
-    //console.log("Server recieved user_id:", user_id);
-    //console.log("Server recieved skill:", skill)
     console.log("Server recieved position:", position);
 
     db.tx(async t => {
@@ -1057,7 +1025,12 @@ app.post('/updatePhone', (req, res) => {
 })
 
 app.post('/createLink', (req, res) => {
-    const {user_id, title, link, description, position} = req.headers;
+    console.log(req.body)
+    const {user_id, linkObj, position} = req.body;
+    const link = linkObj.link;
+    const title = linkObj.title;
+    const description = linkObj.description;
+
 
     db.tx(async t => {
         const max_id = await t.one('SELECT MAX(link_id) FROM links;');
@@ -1084,8 +1057,11 @@ app.post('/createLink', (req, res) => {
 })
 
 app.post('/updateLink', (req, res) => {
-    const {link_id, link, title, description, user_id, position} = req.headers;
-    console.log("Server recieved position: ", position);
+    const {linkObj, user_id, position} = req.body;
+    const link = linkObj.link;
+    const title = linkObj.title;
+    const description = linkObj.description;
+    const link_id = linkObj.link_id;
 
     db.tx(async t => {
         return t.one('UPDATE links SET link = ${link}, title = ${title}, description = ${description}, position=${position} WHERE uid = ${user_id} AND link_id = ${link_id} RETURNING link_id, uid, link, title, description, position;', 
@@ -1138,7 +1114,7 @@ app.post('/createProject', (req, res) => {
         to_when,
         link,
         position
-    } = req.headers;
+    } = req.body;
 
     db.tx(async t => {
         const max_id = await t.one('SELECT MAX(project_id) FROM projects;');
@@ -1178,7 +1154,7 @@ app.post('/updateProject', (req, res) => {
         to_when, 
         link,
         position
-    } = req.headers;
+    } = req.body;
 
     // console.log("From When:", from_when);
     // console.log("To When:", to_when);
@@ -1233,7 +1209,7 @@ app.post('/createWorkExperience', (req, res) => {
         to_when,
         description,
         position
-    } = req.headers;
+    } = req.body;
 
     db.tx(async t => {
         const max_id = await t.one('SELECT MAX(portfolio_id) FROM portfolio;');
@@ -1271,7 +1247,7 @@ app.post('/updateWorkExperience', (req, res) => {
         to_when, 
         description,
         position
-    } = req.headers;
+    } = req.body;
 
     //console.log(description, organization, from_when, to_when, link)
     if(to_when == "null" || to_when == "undefined") to_when = "infinity";
@@ -1324,7 +1300,7 @@ app.post('/createEducation', (req, res) => {
         to_when,
         description,
         position
-    } = req.headers;
+    } = req.body;
 
     db.tx(async t => {
         const max_id = await t.one('SELECT MAX(education_id) FROM education;');
@@ -1362,9 +1338,8 @@ app.post('/updateEducation', (req,res) => {
         to_when, 
         description,
         position
-    } = req.headers;
+    } = req.body;
 
-    //console.log(description, organization, from_when, to_when, link)
     if(to_when == "null" || to_when == "undefined") to_when = "infinity";
     if(from_when == "null" || from_when == "undefined") from_when = "infinity";
 

@@ -130,7 +130,7 @@ export const Contact = (props) => {
                     linksToCreate.push({
                         title: row.title,
                         link: row.link,
-                        description: JSON.stringify(row.description),
+                        description: row.description,
                         rowIdx: idx
                     });
                 }
@@ -139,7 +139,7 @@ export const Contact = (props) => {
                     link_id: row.link_id,
                     title: row.title,
                     link: row.link,
-                    description: JSON.stringify(row.description),
+                    description: row.description,
                     rowIdx: idx
                 });
             }
@@ -173,7 +173,7 @@ export const Contact = (props) => {
 
         const updateLinks = async() => {
             for await(let linkToUpdate of linksToUpdate){
-                await props.updateLink(linkToUpdate.link_id, linkToUpdate.link, linkToUpdate.title, linkToUpdate.description, user.user_id, linkToUpdate.rowIdx);
+                await props.updateLink(linkToUpdate, user.user_id, linkToUpdate.rowIdx);
             }
         }
         if(linksToUpdate.length) await updateLinks();
@@ -256,7 +256,7 @@ export const Contact = (props) => {
                             </Form.Label>
                             <Col>
                                 <Form.Control as="textarea" rows={3}
-                                defaultValue={(row.description !== null) ? row.description.substring(1, row.description.length-1).replace(/\\n/g, '\n') : ''} 
+                                defaultValue={(row.description !== null) ? row.description.replace(/\\n/g, '\n') : ''} 
                                 placeholder={"Add a description for your link! (Optional)"} 
                                 onChange={e => {
                                     handleLinkDescriptionChange(e, idx);
@@ -292,8 +292,8 @@ export const Contact = (props) => {
                                 
                                     <div className='draggable-container mb-4 ml-3 mr-3' ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
 
-                                    {row.title
-                                        ? <b>{row.title}</b>
+                                    {row.link
+                                        ? <b>{row.link}</b>
                                         : null}
 
                                     </div>
@@ -399,9 +399,8 @@ export const Contact = (props) => {
 
     function FormatTextarea(props) {
         let text = props.text;
-        if(text == null || text.length < 2) return null;
-        if(text.length>2) text = text.substring(1, text.length-1);
-        return text.split("\\n").map((str, idx) => 
+        if(text == null) return null;
+        return text.split("\n").map((str, idx) => 
             <div key={idx}>{str.length === 0 ? <br/> : str}</div>
         )
     }
@@ -569,8 +568,6 @@ export const Contact = (props) => {
                                 {row.title 
                                 ? <b>{row.title}</b>
                                 : null }
-                                
-                                <br></br>
 
                                 {(row.link && row.link !== "null")
                                 ? <div className='my-1'>

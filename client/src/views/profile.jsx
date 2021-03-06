@@ -204,22 +204,6 @@ class Profile extends Component{
     }
     
     // ABOUT Tab
-    createLocation = async(user_id, location) => {
-        this.setState({loading: true});
-        const response = await fetch('http://localhost:5000/createLocation',  {
-            method: 'POST', 
-            mode: 'cors',
-            credentials: 'include',
-            withCredentials: true,
-            headers: {
-                user_id: user_id, 
-                location: location
-            }
-        });
-        const data = await response.json();
-        console.log("Client Recieved Response: ", data);
-        return;
-    }
     updateLocation = async (locationToUpdate, user_id) => {
         this.setState({loading: true});
         const response = await fetch('http://localhost:5000/updateLocation',  {
@@ -228,31 +212,19 @@ class Profile extends Component{
             credentials: 'include',
             withCredentials: true,
             headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
                 user_id: user_id, 
                 location: locationToUpdate
-            }
+            })
         });
         const data = await response.json();
         console.log("Client Recieved Response: ", data);
         return;
     }
 
-    createBio = async(user_id, bio) => {
-        this.setState({loading: true});
-        const response = await fetch('http://localhost:5000/createBio',  {
-            method: 'POST', 
-            mode: 'cors',
-            credentials: 'include',
-            withCredentials: true,
-            headers: {
-                user_id: user_id, 
-                bio: bio
-            }
-        });
-        const data = await response.json();
-        console.log("Client Recieved Response: ", data);
-        return;
-    }
     updateBio = async(bioToUpdate, user_id) => {
         this.setState({loading: true});
         const response = await fetch('http://localhost:5000/updateBio',  {
@@ -261,9 +233,13 @@ class Profile extends Component{
             credentials: 'include',
             withCredentials: true,
             headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
                 user_id: user_id, 
                 bio: bioToUpdate
-            }
+            })
         });
         const data = await response.json();
         console.log("Client Recieved Response: ", data);
@@ -409,29 +385,29 @@ class Profile extends Component{
         return;
     }
 
-    createLink = async(user_id, link, idx) =>{
+    createLink = async(user_id, linkObj, idx) =>{
         this.setState({loading: true});
-        console.log("[Profile.jsx] Recieved Link:", link);
         const response = await fetch('http://localhost:5000/createLink',  {
             method: 'POST', 
             mode: 'cors',
             credentials: 'include',
             withCredentials: true,
             headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
                 user_id: user_id,
-                title: link.title,
-                link: link.link,
-                description: link.description,
+                linkObj: linkObj,
                 position: idx
-            }
+            })
         });
         const data = await response.json();
         console.log("Client Recieved Response: ", data);
         return;
     }
 
-    updateLink = async(link_id, link, title, description, user_id, rowIdx) => {
-        console.log("[Profile.jsx] Recieved Position:", rowIdx);
+    updateLink = async(linkObj, user_id, rowIdx) => {
         this.setState({loading: true});
         const response = await fetch('http://localhost:5000/updateLink',  {
             method: 'POST', 
@@ -439,13 +415,14 @@ class Profile extends Component{
             credentials: 'include',
             withCredentials: true,
             headers: {
-                link_id: link_id, 
-                link: link,
-                title: title,
-                description: description,
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+                linkObj: linkObj,
                 user_id: user_id,
                 position: rowIdx
-            }
+            })
         });
         const data = await response.json();
         console.log("Client Recieved Response: ", data);
@@ -478,6 +455,10 @@ class Profile extends Component{
             credentials: 'include',
             withCredentials: true,
             headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
                 user_id: user_id,
                 title: project.title,
                 description: project.description,
@@ -486,7 +467,7 @@ class Profile extends Component{
                 to_when: project.to_when,
                 link: project.link,
                 position: idx
-            }
+            })
         });
         const data = await response.json();
         console.log("Client Recieved Response: ", data);
@@ -502,6 +483,10 @@ class Profile extends Component{
             credentials: 'include',
             withCredentials: true,
             headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
                 project_id: project.project_id, 
                 user_id: user_id,
                 title: project.title,
@@ -511,7 +496,7 @@ class Profile extends Component{
                 to_when: project.to_when,
                 link: project.link,
                 position: rowIdx
-            }
+            })
         });
         const data = await response.json();
         console.log("Client Recieved Response: ", data);
@@ -542,6 +527,10 @@ class Profile extends Component{
             credentials: 'include',
             withCredentials: true,
             headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
                 user_id: user_id,
                 occupation: workExperience.occupation,
                 organization: workExperience.organization,
@@ -549,7 +538,7 @@ class Profile extends Component{
                 to_when: workExperience.to_when,
                 description: workExperience.description,
                 position: idx
-            }
+            })
         });
         const data = await response.json();
         console.log("Client Recieved Response: ", data);
@@ -564,6 +553,10 @@ class Profile extends Component{
             credentials: 'include',
             withCredentials: true,
             headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
                 portfolio_id: workExperience.portfolio_id, 
                 user_id: user_id,
                 occupation: workExperience.occupation,
@@ -572,7 +565,7 @@ class Profile extends Component{
                 to_when: workExperience.to_when,
                 description: workExperience.description,
                 position: rowIdx
-            }
+            })
         });
         const data = await response.json();
         console.log("Client Recieved Response: ", data);
@@ -603,6 +596,10 @@ class Profile extends Component{
             credentials: 'include',
             withCredentials: true,
             headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
                 user_id: user_id,
                 organization: education.organization,
                 education: education.education,
@@ -610,7 +607,7 @@ class Profile extends Component{
                 to_when: education.to_when,
                 description: education.description,
                 position: idx
-            }
+            })
         });
         const data = await response.json();
         console.log("Client Recieved Response: ", data);
@@ -625,6 +622,10 @@ class Profile extends Component{
             credentials: 'include',
             withCredentials: true,
             headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
                 education_id: education.education_id, 
                 user_id: user_id,
                 organization: education.organization,
@@ -633,7 +634,7 @@ class Profile extends Component{
                 to_when: education.to_when,
                 description: education.description,
                 position: rowIdx
-            }
+            })
         });
         const data = await response.json();
         console.log("Client Recieved Response: ", data);
@@ -908,7 +909,6 @@ class Profile extends Component{
                             updateCurrentOrganization={this.updateCurrentOrganization}
                             updateEmail={this.updateEmail}
                             updatePhone={this.updatePhone}
-                            createLocation={this.createLocation}
                             updateLocation={this.updateLocation}
                             updateFont={this.updateFont}
                             updateSize={this.updateSize}
@@ -921,9 +921,7 @@ class Profile extends Component{
                     { this.state.key === "about" ?  
                         <About {...this.props} 
                             data={this.state} 
-                            createLocation={this.createLocation}
                             updateLocation={this.updateLocation}
-                            createBio={this.createBio}
                             updateBio={this.updateBio}
                             updateHobby={this.updateHobby}
                             updateSkill={this.updateSkill}
