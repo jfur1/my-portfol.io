@@ -4,10 +4,9 @@ import { Modal } from 'react-bootstrap';
 export const Footer = () => {
     const [showAbout, setShowAbout] = useState(false);
     const [showContact, setShowContact] = useState(false);
-    
+    // onClose Handlers
     const handleShowAbout = () => setShowAbout(true);
     const handleShowContact = () => setShowContact(true);
-    
     const handleCloseAbout = () => setShowAbout(false);
     const handleCloseContact = () => setShowContact(false);
     
