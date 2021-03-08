@@ -111,7 +111,7 @@ var smtpTransport = nodemailer.createTransport({
 
 // Routes
 
-app.post('/newUser', async(req, res) => {
+app.post('/api/newUser', async(req, res) => {
     console.log('Request Body Recieved by the Server: \n' , req.body);
     const {
         fullname,
