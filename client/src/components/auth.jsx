@@ -21,9 +21,6 @@ class Auth {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
             },
-            withCredentials: true,
-            mode: 'cors',
-            credentials: 'include',
             body: JSON.stringify(data),
         })
         .then(data => data.json())
