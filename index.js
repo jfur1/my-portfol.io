@@ -17,7 +17,7 @@ if(process.env.NODE_ENV === 'production'){
 } 
 
 // Middleware
-app.use(cors({credentials: true, origin: 'http://localhost:3000'}));
+//app.use(cors({credentials: true, origin: 'http://localhost:3000'}));
 app.use(express.json({ limit: '20mb' })); //req.body
 app.use(express.urlencoded({extended: false}));
 
