@@ -13,10 +13,7 @@ const path = require("path");
 const app = express();
 
 app.use(express.static(path.join(__dirname, "client/build")))
-app.get('*', function (req, res) {
-    const index = path.join(__dirname, 'build', 'index.html');
-    res.sendFile(index);
-});
+
 // Middleware
 app.use(express.json({ limit: '20mb' })); //req.body
 app.use(express.urlencoded({extended: false}));
@@ -1385,6 +1382,11 @@ app.post('/deleteEducation', (req, res) => {
         res.json({error: true})
     })
 })
+
+app.get('*', function (req, res) {
+    const index = path.join(__dirname, 'build', 'index.html');
+    res.sendFile(index);
+});
 
 const PORT = process.env.PORT || 5000;
 
