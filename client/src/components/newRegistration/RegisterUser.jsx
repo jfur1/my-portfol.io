@@ -13,7 +13,7 @@ export const registerUser = (credentials, next) => {
         return next({failedAttempt: true, errors: errors});
     }
     else{
-        fetch('/newUser', {
+        fetch('api/newUser', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
