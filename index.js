@@ -17,9 +17,10 @@ const app = express();
 // } 
 
 app.use(express.static(path.join(__dirname, "client/build")))
-app.get('/*', (req, res) => {
-    res.sendFile(path.resolve(__dirname + '/client/build/index.html'))
-  })
+app.get('*', function (req, res) {
+    const index = path.join(__dirname, 'build', 'index.html');
+    res.sendFile(index);
+});
 // Middleware
 //app.use(cors({credentials: true, origin: 'http://localhost:3000'}));
 app.use(express.json({ limit: '20mb' })); //req.body
