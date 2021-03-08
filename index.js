@@ -176,7 +176,7 @@ app.post('/api/newUser', async(req, res) => {
 })
 
 
-app.post('/login', (req, res, next) => {
+app.post('/api/login', (req, res, next) => {
     const { email } = req.body;
     
     let errors = [];
@@ -226,7 +226,7 @@ app.post('/login', (req, res, next) => {
     });
 });
 
-app.post('/forgotPassword', (req, res) => {
+app.post('/api/forgotPassword', (req, res) => {
     const {email} = req.body;
     
     db.tx(t => {
@@ -277,7 +277,7 @@ app.post('/forgotPassword', (req, res) => {
     .catch((err) => console.log(err));
 })
 
-app.get('/reset/:token', (req, res) => {
+app.get('/api/reset/:token', (req, res) => {
     console.log(req.params.token)
     db.tx(check => {
         return check.oneOrNone('SELECT * FROM users WHERE reset_token=${token} AND CAST(token_expires AS BIGINT) > ${currentTime};', 
@@ -299,7 +299,7 @@ app.get('/reset/:token', (req, res) => {
     .catch(err => console.log(err));
 })
 
-app.post('/reset/:token', (req, res) => {
+app.post('/api/reset/:token', (req, res) => {
     const {email, password} = req.body;
 
     db.tx(async reset => {
@@ -352,7 +352,7 @@ app.post('/reset/:token', (req, res) => {
 })
 
 // Logout
-app.post('/logout', (req, res) => {
+app.post('/api/logout', (req, res) => {
     req.logout();
     console.log("You logged out");
     res.json({authenticated: false});
@@ -372,7 +372,7 @@ function ensureAuthenticated(req, res, next) {
     res.json({authenticated: false});
 }
 
-app.get('/getUserData', (req, res) => {
+app.get('/api/getUserData', (req, res) => {
     const username = req.headers.username;
     //console.log("Server recieved header:", username);
 
