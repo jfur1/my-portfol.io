@@ -12,14 +12,15 @@ const path = require("path");
 // Express
 const app = express();
 
+if(process.env.NODE_ENV === 'production'){
+    app.use(express.static(path.join(__dirname, "client/build")));
+} 
+
 // Middleware
 app.use(cors({credentials: true, origin: 'http://localhost:3000'}));
 app.use(express.json({ limit: '20mb' })); //req.body
 app.use(express.urlencoded({extended: false}));
 
-if(process.env.NODE_ENV === 'production'){
-    app.use(express.static(path.join(__dirname, "client/build")));
-} 
 
 // --------------------------- BEGIN Passport.js Middleware ---------------------
 
