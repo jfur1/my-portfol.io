@@ -15,7 +15,7 @@ const proConfig = {
 }
 
 let db = pgp(
-    process.env.NODE_ENV === 'production' ? proConfig : devConfig
+    devConfig
 );
 
 module.exports = db;
