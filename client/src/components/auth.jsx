@@ -15,7 +15,7 @@ class Auth {
         const data = { email, password };
 
 
-        fetch('http://localhost:5000/login', {
+        fetch('/login', {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
@@ -47,7 +47,7 @@ class Auth {
 
     // User remains authenticated until they log out
     logout(next){
-        fetch('http://localhost:5000/logout', {
+        fetch('/logout', {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',

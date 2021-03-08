@@ -29,7 +29,7 @@ class ForgotPassword extends Component{
             });
         }   
         else{
-            const response = await fetch('http://localhost:5000/forgotPassword',  {
+            const response = await fetch('/forgotPassword',  {
                 method: 'POST', 
                 headers: {
                     'Accept': 'application/json',

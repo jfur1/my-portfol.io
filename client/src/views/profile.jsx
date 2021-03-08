@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { Tabs, Tab } from 'react-bootstrap';
 import { AlertMsg } from '../components/alerts';
 
-
 // Import Components
 import { NavBar } from './navbar';
 import { Home } from './home';
@@ -52,22 +51,20 @@ class Profile extends Component{
 
     // GET profile data, then determine if the user owns this profile
     async componentDidMount(){
-        //console.log("Auth.isAuthenitcated(): ", auth.isAuthenticated());
-        //console.log("Component Mounted with STATE:", this.state);
-        //console.log("Component Mounted with PROPS:", this.props.location.state);
+
         var pathname = window.location.pathname.substr(1, window.location.pathname.length);
         
         const urls = [
-            'http://localhost:5000/getUserData',
-            'http://localhost:5000/about',
-            'http://localhost:5000/profile',
-            'http://localhost:5000/portfolio',
-            'http://localhost:5000/contact',
-            'http://localhost:5000/education',
-            'http://localhost:5000/hobbies',
-            'http://localhost:5000/skills',
-            'http://localhost:5000/projects',
-            'http://localhost:5000/images',
+            '/getUserData',
+            '/about',
+            '/profile',
+            '/portfolio',
+            '/contact',
+            '/education',
+            '/hobbies',
+            '/skills',
+            '/projects',
+            '/images',
         ];
 
         let [data, about, profile, portfolio, contact, education, hobbies, skills, projects, images] = await 
@@ -81,8 +78,6 @@ class Profile extends Component{
             })
             .then((res) => res.json())
         ))
-
-        //console.log("Profile Recieved Server Response: ", data);
 
         // If no profile found, redirect back to splash page w/ error msg
         if((typeof data !== 'undefined') && data["error"] && window.location.hostname === 'localhost'){
@@ -206,7 +201,7 @@ class Profile extends Component{
     // ABOUT Tab
     updateLocation = async (locationToUpdate, user_id) => {
         this.setState({loading: true});
-        const response = await fetch('http://localhost:5000/updateLocation',  {
+        const response = await fetch('/updateLocation',  {
             method: 'POST', 
             mode: 'cors',
             credentials: 'include',
@@ -227,7 +222,7 @@ class Profile extends Component{
 
     updateBio = async(bioToUpdate, user_id) => {
         this.setState({loading: true});
-        const response = await fetch('http://localhost:5000/updateBio',  {
+        const response = await fetch('/updateBio',  {
             method: 'POST', 
             mode: 'cors',
             credentials: 'include',
@@ -248,7 +243,7 @@ class Profile extends Component{
     
     createHobby = async(user_id, hobby, idx) => {
         this.setState({loading: true});
-        const response = await fetch('http://localhost:5000/createHobby',  {
+        const response = await fetch('/createHobby',  {
             method: 'POST', 
             mode: 'cors',
             credentials: 'include',
@@ -266,7 +261,7 @@ class Profile extends Component{
     updateHobby = async(hobby_id, hobby, user_id, rowIdx) => {
         this.setState({loading: true});
         console.log("[Profile.jsx] Recieved Position:", rowIdx);
-        const response = await fetch('http://localhost:5000/updateHobby',  {
+        const response = await fetch('/updateHobby',  {
             method: 'POST', 
             mode: 'cors',
             credentials: 'include',
@@ -284,7 +279,7 @@ class Profile extends Component{
     }
     deleteHobby = async(hobby_id) => {
         this.setState({loading: true});
-        const response = await fetch('http://localhost:5000/deleteHobby',  {
+        const response = await fetch('/deleteHobby',  {
             method: 'POST', 
             mode: 'cors',
             credentials: 'include',
@@ -300,7 +295,7 @@ class Profile extends Component{
 
     createSkill = async(user_id, skill, idx) => {
         this.setState({loading: true});
-        const response = await fetch('http://localhost:5000/createSkill',  {
+        const response = await fetch('/createSkill',  {
             method: 'POST', 
             mode: 'cors',
             credentials: 'include',
@@ -318,7 +313,7 @@ class Profile extends Component{
     updateSkill = async(skill_id, skill, user_id, rowIdx) => {
         this.setState({loading: true});
         console.log("[Profile.jsx] Recieved Position:", rowIdx);
-        const response = await fetch('http://localhost:5000/updateSkill',  {
+        const response = await fetch('/updateSkill',  {
             method: 'POST', 
             mode: 'cors',
             credentials: 'include',
@@ -336,7 +331,7 @@ class Profile extends Component{
     }
     deleteSkill = async(skill_id) => {
         this.setState({loading: true});
-        const response = await fetch('http://localhost:5000/deleteSkill',  {
+        const response = await fetch('/deleteSkill',  {
             method: 'POST', 
             mode: 'cors',
             credentials: 'include',
@@ -353,7 +348,7 @@ class Profile extends Component{
     // CONTACT Tab
     updateEmail = async(user_id, public_email) => {
         this.setState({loading: true});
-        const response = await fetch('http://localhost:5000/updatePublicEmail',  {
+        const response = await fetch('/updatePublicEmail',  {
             method: 'POST', 
             mode: 'cors',
             credentials: 'include',
@@ -370,7 +365,7 @@ class Profile extends Component{
 
     updatePhone = async(user_id, phone) => {
         this.setState({loading: true});
-        const response = await fetch('http://localhost:5000/updatePhone',  {
+        const response = await fetch('/updatePhone',  {
             method: 'POST', 
             mode: 'cors',
             credentials: 'include',
@@ -387,7 +382,7 @@ class Profile extends Component{
 
     createLink = async(user_id, linkObj, idx) =>{
         this.setState({loading: true});
-        const response = await fetch('http://localhost:5000/createLink',  {
+        const response = await fetch('/createLink',  {
             method: 'POST', 
             mode: 'cors',
             credentials: 'include',
@@ -409,7 +404,7 @@ class Profile extends Component{
 
     updateLink = async(linkObj, user_id, rowIdx) => {
         this.setState({loading: true});
-        const response = await fetch('http://localhost:5000/updateLink',  {
+        const response = await fetch('/updateLink',  {
             method: 'POST', 
             mode: 'cors',
             credentials: 'include',
@@ -431,7 +426,7 @@ class Profile extends Component{
 
     deleteLink = async(link_id) => {
         this.setState({loading: true});
-        const response = await fetch('http://localhost:5000/deleteLink',  {
+        const response = await fetch('/deleteLink',  {
             method: 'POST', 
             mode: 'cors',
             credentials: 'include',
@@ -449,7 +444,7 @@ class Profile extends Component{
 
     createProject = async(user_id, project, idx) => {
         this.setState({loading: true});
-        const response = await fetch('http://localhost:5000/createProject',  {
+        const response = await fetch('/createProject',  {
             method: 'POST', 
             mode: 'cors',
             credentials: 'include',
@@ -477,7 +472,7 @@ class Profile extends Component{
     updateProject = async(user_id, project, rowIdx) => {
         this.setState({loading: true});
         //console.log("Profile.jsx Recieved Project:", project)
-        const response = await fetch('http://localhost:5000/updateProject',  {
+        const response = await fetch('/updateProject',  {
             method: 'POST', 
             mode: 'cors',
             credentials: 'include',
@@ -505,7 +500,7 @@ class Profile extends Component{
     
     deleteProject = async(project_id) => {
         this.setState({loading: true});
-        const response = await fetch('http://localhost:5000/deleteProject',  {
+        const response = await fetch('/deleteProject',  {
             method: 'POST', 
             mode: 'cors',
             credentials: 'include',
@@ -521,7 +516,7 @@ class Profile extends Component{
 
     createWorkExperience = async(user_id, workExperience, idx) => {
         this.setState({loading: true});
-        const response = await fetch('http://localhost:5000/createWorkExperience',  {
+        const response = await fetch('/createWorkExperience',  {
             method: 'POST', 
             mode: 'cors',
             credentials: 'include',
@@ -547,7 +542,7 @@ class Profile extends Component{
 
     updateWorkExperience = async(user_id, workExperience, rowIdx) => {
         this.setState({loading: true});
-        const response = await fetch('http://localhost:5000/updateWorkExperience',  {
+        const response = await fetch('/updateWorkExperience',  {
             method: 'POST', 
             mode: 'cors',
             credentials: 'include',
@@ -574,7 +569,7 @@ class Profile extends Component{
 
     deleteWorkExperience = async(portfolio_id) => {
         this.setState({loading: true});
-        const response = await fetch('http://localhost:5000/deleteWorkExperience',  {
+        const response = await fetch('/deleteWorkExperience',  {
             method: 'POST', 
             mode: 'cors',
             credentials: 'include',
@@ -590,7 +585,7 @@ class Profile extends Component{
 
     createEducation = async(user_id, education, idx) => {
         this.setState({loading: true});
-        const response = await fetch('http://localhost:5000/createEducation',  {
+        const response = await fetch('/createEducation',  {
             method: 'POST', 
             mode: 'cors',
             credentials: 'include',
@@ -616,7 +611,7 @@ class Profile extends Component{
 
     updateEducation = async(user_id, education, rowIdx) => {
         this.setState({loading: true});
-        const response = await fetch('http://localhost:5000/updateEducation',  {
+        const response = await fetch('/updateEducation',  {
             method: 'POST', 
             mode: 'cors',
             credentials: 'include',
@@ -643,7 +638,7 @@ class Profile extends Component{
 
     deleteEducation = async(education_id) => {
         this.setState({loading: true});
-        const response = await fetch('http://localhost:5000/deleteEducation',  {
+        const response = await fetch('/deleteEducation',  {
             method: 'POST', 
             mode: 'cors',
             credentials: 'include',
@@ -660,7 +655,7 @@ class Profile extends Component{
     // HOME Tab
     updateFullname = async(user_id, fullname) => {
         this.setState({loading: true});
-        const response = await fetch('http://localhost:5000/updateFullname',  {
+        const response = await fetch('/updateFullname',  {
             method: 'POST', 
             mode: 'cors',
             credentials: 'include',
@@ -677,7 +672,7 @@ class Profile extends Component{
 
     createCurrentOccupation = async(user_id, occupation) => {
         this.setState({loading: true});
-        const response = await fetch('http://localhost:5000/createCurrentOccupation',  {
+        const response = await fetch('/createCurrentOccupation',  {
             method: 'POST', 
             mode: 'cors',
             credentials: 'include',
@@ -694,7 +689,7 @@ class Profile extends Component{
 
     updateCurrentOccupation = async(user_id, occupation) => {
         this.setState({loading: true});
-        const response = await fetch('http://localhost:5000/updateCurrentOccupation',  {
+        const response = await fetch('/updateCurrentOccupation',  {
             method: 'POST', 
             mode: 'cors',
             credentials: 'include',
@@ -711,7 +706,7 @@ class Profile extends Component{
 
     createCurrentOrganization = async(user_id, organization) => {
         this.setState({loading: true});
-        const response = await fetch('http://localhost:5000/createCurrentOrganization',  {
+        const response = await fetch('/createCurrentOrganization',  {
             method: 'POST', 
             mode: 'cors',
             credentials: 'include',
@@ -728,7 +723,7 @@ class Profile extends Component{
 
     updateCurrentOrganization = async(user_id, organization) => {
         this.setState({loading: true});
-        const response = await fetch('http://localhost:5000/updateCurrentOrganization',  {
+        const response = await fetch('/updateCurrentOrganization',  {
             method: 'POST', 
             mode: 'cors',
             credentials: 'include',
@@ -745,7 +740,7 @@ class Profile extends Component{
     
     createProfileImages = async(user_id, base64image, base64preview, prefix) => {
         this.setState({loading: true});
-        const response = await fetch('http://localhost:5000/createProfileImages',  {
+        const response = await fetch('/createProfileImages',  {
             method: 'POST', 
             headers: {
                 'Accept': 'application/json',
@@ -768,7 +763,7 @@ class Profile extends Component{
 
     updateProfileImages = async(user_id, base64image, base64preview, prefix) => {
         this.setState({loading: true});
-        const response = await fetch('http://localhost:5000/updateProfileImages',  {
+        const response = await fetch('/updateProfileImages',  {
             method: 'POST', 
             headers: {
                 'Accept': 'application/json',
@@ -791,7 +786,7 @@ class Profile extends Component{
 
     updatePreviewCoords = async(user_id, x, y, r) => {
         this.setState({loading: true})
-        const response = await fetch('http://localhost:5000/updatePreviewCoords',  {
+        const response = await fetch('/updatePreviewCoords',  {
             method: 'POST', 
             headers: {
                 'Accept': 'application/json',
@@ -815,7 +810,7 @@ class Profile extends Component{
     updateFont = async(user_id, updatedFont) => {
         this.setState({loading: true})
         console.log("Profile recieved font:", updatedFont)
-        const response = await fetch('http://localhost:5000/updateFont',  {
+        const response = await fetch('/updateFont',  {
             method: 'POST', 
             headers: {
                 'Accept': 'application/json',
@@ -837,7 +832,7 @@ class Profile extends Component{
     updateSize = async(user_id, updatedSize) => {
         this.setState({loading: true})
         console.log("Profile recieved size:", updatedSize)
-        const response = await fetch('http://localhost:5000/updateFontSize',  {
+        const response = await fetch('/updateFontSize',  {
             method: 'POST', 
             headers: {
                 'Accept': 'application/json',

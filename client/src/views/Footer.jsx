@@ -32,7 +32,7 @@ export const Footer = () => {
             centered
             scrollable={false}>
                 <Modal.Header closeButton><Modal.Title><h3>About my-portfol.io</h3></Modal.Title></Modal.Header>
-                <Modal.Body><p>My-portfol.io was created and is managed by developers <a href="http://localhost:3000/johnfurlong" target="_blank" rel="noreferrer">John Furlong</a> and <a href="http://localhost:3000/tristanhanna" target="_blank" rel="noreferrer">Tristan Hanna</a>. We aim to solve all your recruting and job search needs with our platform.</p></Modal.Body>
+                <Modal.Body><p>My-portfol.io was created and is managed by developers <a href="/johnfurlong" target="_blank" rel="noreferrer">John Furlong</a> and <a href="/tristanhanna" target="_blank" rel="noreferrer">Tristan Hanna</a>. We aim to solve all your recruting and job search needs with our platform.</p></Modal.Body>
         </Modal>
 
         <Modal
