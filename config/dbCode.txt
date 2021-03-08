@@ -1,0 +1,160 @@
+// PostgreSQL Command to Connect to AWS:
+psql --host=mp-identifier.cyxo9dxpukfl.us-east-2.rds.amazonaws.com --port=5432 --username=postgres --password --dbname=mpdb
+
+
+CREATE TABLE IF NOT EXISTS users (
+  user_id INT NOT NULL,
+  first_name VARCHAR(45) NOT NULL,
+  last_name VARCHAR(45) NOT NULL,
+  username VARCHAR(32) NOT NULL,
+  email VARCHAR(64) NOT NULL,
+  password VARCHAR(64) NOT NULL,
+  PRIMARY KEY (user_id)
+);
+
+// Insert Test Data
+INSERT INTO users(user_id, first_name, last_name, username, email, password)
+    VALUES(1,'Joe',  'Jackson', '@jo3', 'joe.jackson@gmail.com', 'jackjoe123'),
+    (2,'Sarah', 'Marcus', '@sarahM123', 'Sar.Mar@gmail.com', 'SMAR321'),
+    (3,'Evan', 'Samson', '@evsa', 'evsa7039@colorado.edu', 'smevans1598'),
+    (4,'Sawyer', 'Mack', '@smackThat', 'Smack.backup@gmail.com', 'prez1234'),
+    (5,'Alan', 'Warder', '@warderA', 'alan.mailbox@gmail.com', 'gobuffs'),
+    (6,'Fred', 'Frankerson', '@freddyF', 'franky.frank@hotmail.com', 'frankrules');
+
+CREATE TABLE IF NOT EXISTS post (
+  pid INT NOT NULL PRIMARY KEY,
+  body VARCHAR CONSTRAINT tbl_col_len CHECK (length(body) < 240),
+  uid INT REFERENCES users(user_id),
+  author VARCHAR REFERENCES users(username),
+  date_created DATE NOT NULL DEFAULT CURRENT_DATE,
+  like_user_id INT[] DEFAULT ARRAY[]::INT[],
+  likes INT DEFAULT 0
+);
+
+INSERT INTO post(pid, body, uid, author)
+VALUES(1, 'This is an example of a body for a post! We don''t need to insert post_id because they are auto incremented by postgres!', 8, '@dopamine'),
+(2, 'I love football so much!', 7, 'tristanhanna');
+
+--------------------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS profile(
+  profile_id INT NOT NULL PRIMARY KEY,
+  uid INT REFERENCES users(user_id),
+  bio VARCHAR,
+  location VARCHAR(64),
+  phone VARCHAR
+);
+
+INSERT INTO profile(profile_id, uid, bio, location)
+VALUES(1, 8, 'bios give me anxiety', 'Boulder, CO'),
+(2, 7, 'I love football!', 'Denver, CO'),
+(3, 4, 'I don''t know what to put here :(', NULL);
+
+--------------------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS hobbies(
+  hobby_id INT NOT NULL PRIMARY KEY,
+  uid INT REFERENCES users(user_id),
+  hobby VARCHAR(64) NOT NULL
+);
+
+INSERT INTO hobbies(hobby_id, uid, hobby)
+VALUES(1, 8, 'Skateboarding'),
+(2, 7, 'Running'),
+(3, 8, 'Snowboarding'),
+(4, 7, 'Watching football'),
+(5, 4, 'Long walks on the beach');
+
+--------------------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS skills(
+  skill_id INT NOT NULL PRIMARY KEY,
+  uid INT REFERENCES users(user_id),
+  skill VARCHAR(64) NOT NULL
+);
+
+INSERT INTO skills(skill_id, uid, skill)
+VALUES(1, 8, 'Fast Learner'),
+(2, 7, 'React.js'),
+(3, 8, 'Interpersonal Communication'),
+(4, 7, 'Team Player');
+
+--------------------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS links(
+  link_id INT NOT NULL PRIMARY KEY,
+  uid INT REFERENCES users(user_id),
+  link VARCHAR(255) NOT NULL
+);
+
+INSERT INTO links(link_id, uid, link)
+VALUES(1, 8, 'https://github.com/jfur1'),
+(2, 7, 'https://github.com/tristanhanna'),
+(3, 4, 'www.google.com'),
+(4, 8, 'http://jfur1.github.io/sorting-visualizer/'),
+(5, 7, 'https://www.tristanhanna.com/');
+
+--------------------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS education(
+  education_id INT NOT NULL PRIMARY KEY,
+  uid INT REFERENCES users(user_id),
+  organization VARCHAR(255),
+  education VARCHAR(255) NOT NULL,
+  from_when DATE,
+  to_when DATE
+);
+
+INSERT INTO education(education_id, uid, organization, education, from_when, to_when)
+VALUES(1, 8, 'University of Colorado Boulder', 'B.A. Computer Science', '2016-07-01', '2020-12-23'),
+(2, 7, 'University of Colorado Boulder', 'T.A.M.', '2016-07-01', '2020-05-01'),
+(3, 8, NULL, 'Google I.T. Support Certification', NULL, NULL),
+(4, 7, NULL, 'C.P.R. Certified', NULL, NULL);
+
+--------------------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS portfolio(
+  portfolio_id INT NOT NULL PRIMARY KEY,
+  uid INT REFERENCES users(user_id),
+  occupation VARCHAR(255) NOT NULL,
+  organization VARCHAR(255),
+  from_when DATE,
+  to_when DATE,
+  description VARCHAR
+);
+
+INSERT INTO portfolio(portfolio_id, uid, occupation, organization, from_when, to_when)
+VALUES(1, 8, 'Server', 'Eureka!', '2019-09-01', '2020-04-01'),
+(2, 7, 'Front End Web Development', 'Google', '2016-05-01', '2018-03-01'),
+(3, 8, 'Line Cook', 'Dilly''s Restaurant', '2013-05-01', '2016-04-01'),
+(4, 7, 'Full Stack Web Developer', 'Google', '2016-05-01', '2020-04-01');
+
+--------------------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS projects(
+  project_id INT NOT NULL PRIMARY KEY,
+  uid INT REFERENCES users(user_id),
+  title VARCHAR(64) NOT NULL,
+  description VARCHAR(255),
+  organization VARCHAR(64),
+  from_when DATE NULL,
+  to_when DATE NULL,
+  link VARCHAR(255)
+);
+
+INSERT INTO projects(project_id, uid, title, description, organization, from_when, to_when, link)
+VALUES(1, 8, 'Pathfinding Visualizer', 'Created a React app to visualize various pathfinding algorithms', NULL, '2019-09-01', '2020-04-01', 'https://jfur1.github.io/pathfinding/'),
+(2, 7, 'Google Search', 'Created algorithm for indexing web pages with my roommate Larry', 'Google', '1998-07-04', NULL, 'https://www.google.com/'),
+(3, 8, 'my-portfol.io', 'Created a full stack application originally for my friends to host their portfolios on', 'my-portfol.io', '2021-01-01', NULL, 'my-portfol.io'),
+(4, 7, 'my-portfol.io', 'Created a full stack application originally for my friends to host their portfolios on', 'my-portfol.io' ,'2021-01-01', NULL, 'my-portfol.io');
+
+--------------------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS images(
+  name varchar,
+  uid INT REFERENCES users(user_id),
+  base64image bytea,
+  base64preview bytea
+);
+
+-------------------------------------------------------------------
