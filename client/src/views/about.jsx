@@ -707,8 +707,8 @@ export const About = props => {
                 
                 <hr className='float-left' style={{width: '95%'}}/><br/>
 
-                <div className="user-container d-flex flex-row">
-                    <div className='d-flex flex-column mx-3'>
+                <div className="user-container row">
+                    <div className='d-flex flex-column mx-auto' style={{width: '50%'}}>
                         <h4><b>Hobbies:</b></h4>
                         {hobbiesData
                         ? hobbiesData.map((row, idx) => 
@@ -719,7 +719,7 @@ export const About = props => {
                         : null}
                     </div>
                     
-                    <div className='d-flex flex-column mx-3'>
+                    <div className='d-flex flex-column mx-auto' style={{width:'50%'}}>
                     <h4><b>Skills:</b></h4>
                     {skillsData 
                     ? skillsData.map((row, idx) => 
