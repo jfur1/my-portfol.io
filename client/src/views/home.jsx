@@ -174,12 +174,12 @@ export const Home = (props) => {
         const updatePhone = async() => {
             await props.updatePhone(user.user_id, phone);
         }
-        if((typeof(profile[0]) == 'undefined' && phone) || ((typeof(profile[0]) !== 'undefined' && phone !== profile[0].phone))) await updatePhone();
+        if((typeof(profile[0]) == 'undefined' && phone) || (typeof(profile[0]) !== 'undefined' && phone !== profile[0].phone)) await updatePhone();
 
         const updateEmail = async() => {
             await props.updateEmail(user.user_id, publicEmail);
         }
-        if((typeof(profile[0]) == 'undefined' && publicEmail) || (publicEmail !== profile[0].public_email)) await updateEmail();
+        if((typeof(profile[0]) == 'undefined' && publicEmail) || (typeof(profile[0]) !== 'undefined' && publicEmail !== profile[0].public_email)) await updateEmail();
 
         if(typeof(profile[0]) !== 'undefined' && font !== profile[0].font)
             await updateFont();
