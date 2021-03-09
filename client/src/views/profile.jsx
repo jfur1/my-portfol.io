@@ -883,7 +883,7 @@ class Profile extends Component{
                         }}>
                 <div className="user-container">
                     <Tabs
-                    className="tab-style"
+                    className="tab-style mt-4"
                     activeKey={this.state.key}
                     onSelect={(k) => this.setState({key: k})}
                         >
