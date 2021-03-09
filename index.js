@@ -277,7 +277,7 @@ app.post('/forgotPassword', (req, res) => {
 
 app.get('/resetPassword/:token', (req, res) => {
     console.log(req.params.token)
-    db.tx(check => {
+    db.tx(async check => {
         return check.oneOrNone('SELECT * FROM users WHERE reset_token=${token} AND CAST(token_expires AS BIGINT) > ${currentTime};', 
             {
                 token: req.params.token, 
