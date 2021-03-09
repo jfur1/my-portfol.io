@@ -712,7 +712,7 @@ export const About = props => {
                 
                 <hr className='float-left' style={{width: '95%'}}/><br/>
 
-                <div className="user-container row">
+                <div className="user-container row" style={{width: '95%'}}>
                     <div className='d-flex flex-column mx-auto'>
                         <h4><b>Hobbies:</b></h4>
                         {hobbiesData
