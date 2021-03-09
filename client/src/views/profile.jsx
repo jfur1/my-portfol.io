@@ -175,7 +175,14 @@ class Profile extends Component{
                 })
                 return;
             }
-        } else{
+        } 
+        else if(this.state.username == 'undefined'){
+            this.props.history.push({
+                pathname: '/',
+                errorMsg: `Unable to locate user: ${window.location.pathname.substr(1, window.location.pathname.length)}`
+            })
+        }
+        else{
             this.props.history.push({
                 pathname: `/${this.state.user.username}`,
                 state: {
