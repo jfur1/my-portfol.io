@@ -15,6 +15,12 @@
   }
 }
 
+@media screen and (max-width: 400px) {
+  .row {
+    flex-direction: column;
+  }
+}
+
 .App-header {
   background-color: #282c34;
   min-height: 100vh;
@@ -172,16 +178,9 @@ table.center {
 }
 
 .user-container{
-  display:flex;
-  flex-direction: row;
-  justify-content: space-around;
-  margin-top: 3%;
+  display: flex;
+  flex-wrap: wrap;
   font-size:1.4em;
-}
-
-.skills-hobbies-container{
-  display:flex;
-  flex-direction: row;
 }
 
 .links-container{
@@ -372,10 +371,6 @@ table.center {
     flex-direction:column;
   }
   .contact-container{
-    display:flex;
-    flex-direction:column;
-  }
-  .skills-hobbies-container{
     display:flex;
     flex-direction:column;
   }

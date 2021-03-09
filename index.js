@@ -245,7 +245,6 @@ app.post('/forgotPassword', (req, res) => {
             data.resetPasswordToken = token;
             data.resetTokenExpires = Date.now() + 3600000;  // 1 hour
 
-            const link = "/reset/" + token;
             const mailOptions = {
                 from: 'myportfolio.help@gmail.com',
                 to: `${data.email}`,
