@@ -15,15 +15,12 @@ class Auth {
         const data = { email, password };
 
 
-        fetch('http://localhost:5000/login', {
+        fetch('/login', {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
             },
-            withCredentials: true,
-            mode: 'cors',
-            credentials: 'include',
             body: JSON.stringify(data),
         })
         .then(data => data.json())
@@ -42,12 +39,11 @@ class Auth {
                 return next(user.data);
             }
         })
-        .catch((err) => console.log(err));
     }
 
     // User remains authenticated until they log out
     logout(next){
-        fetch('http://localhost:5000/logout', {
+        fetch('/logout', {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
