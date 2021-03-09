@@ -61,7 +61,7 @@ export const HomeSlider = (props) => {
             else if(postData.loginFailure){
                 setShowAlertLoginFail(true);
             }
-            else if(typeof(props.history.location.errorMsg) !== 'undefined'){
+            else if(postData.errorMsg){
                 setShowAlertNotFound(true);
             }
             else{
@@ -289,7 +289,7 @@ export const HomeSlider = (props) => {
                     : null}
                     
                     {showAlertNotFound
-                    ? <Alert variant="danger" onClose={() => setShowAlertNotFound(false)} dismissible>{props.history.location.errorMsg}</Alert>
+                    ? <Alert variant="danger" onClose={() => setShowAlertNotFound(false)} dismissible>{props.location.state.errorMsg}</Alert>
                     : null}
 
                     <h1>Sign in</h1><br/>

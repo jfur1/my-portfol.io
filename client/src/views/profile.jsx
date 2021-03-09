@@ -179,7 +179,9 @@ class Profile extends Component{
         else if(this.state.username == 'undefined'){
             this.props.history.push({
                 pathname: '/',
-                errorMsg: `Unable to locate user: ${window.location.pathname.substr(1, window.location.pathname.length)}`
+                state: {
+                    errorMsg: `Unable to locate user: ${window.location.pathname.substr(1, window.location.pathname.length)}`
+                }
             })
         }
         else{
