@@ -245,14 +245,13 @@ app.post('/forgotPassword', (req, res) => {
             data.resetPasswordToken = token;
             data.resetTokenExpires = Date.now() + 3600000;  // 1 hour
 
-            const link = "/reset/" + token;
             const mailOptions = {
                 from: 'myportfolio.help@gmail.com',
                 to: `${data.email}`,
                 subject: 'Link to Reset Password',
                 text: `You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n` + 
                 `Please click on the following link, or paste this into your browser to complete the process within an hour of receiving it:\n\n` + 
-                `http://www.my-portfol.io/reset/${token}\n\n` +
+                `www.my-portfol.io/reset/${token}\n\n` +
                 `If you did not request this, please ignore this email and your password will remain unchanged.\n`
             };
 
