@@ -151,7 +151,7 @@ table.center {
 }
 
 .about-container{
-  display:flex;
+  display: flex;
   flex-direction: row-reverse;
 }
 
@@ -177,6 +177,10 @@ table.center {
   display: flex;
   flex-wrap: wrap;
   font-size:1.4em;
+}
+
+.user-container.row{
+  display: inline-flex;
 }
 
 .links-container{
