@@ -80,7 +80,7 @@ class Profile extends Component{
         ))
 
         // If no profile found, redirect back to splash page w/ error msg
-        if((typeof data !== 'undefined') && data["error"] && window.location.hostname === 'localhost'){
+        if((typeof data !== 'undefined') && data["error"]){
             
             if(!(typeof data.requestedBy !== 'undefined')){
                 return this.props.history.push({
@@ -143,8 +143,8 @@ class Profile extends Component{
             this.setState({alert: AlertMsg("error", this.props.location.state.errorMsg)}); 
         }
 
-        //console.log("STATE: ", this.state);
-        //console.log("PROPS: ", this.props.location.state);
+        console.log("STATE: ", this.state);
+        console.log("PROPS: ", this.props.location.state);
         this.setState({loading: false});
     }
 
