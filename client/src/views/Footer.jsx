@@ -43,7 +43,7 @@ export const Footer = () => {
             centered
             scrollable={false}>
                 <Modal.Header closeButton><Modal.Title><h3>Contact my-portfol.io</h3></Modal.Title></Modal.Header>
-                <Modal.Body><p>You can contact us at myportfolio.support@gmail.com</p></Modal.Body>
+                <Modal.Body><p>You can contact us at myportfolio.help@gmail.com</p></Modal.Body>
         </Modal>
             
         </footer>
