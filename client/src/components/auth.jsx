@@ -39,7 +39,6 @@ class Auth {
                 return next(user.data);
             }
         })
-        .catch((err) => console.log(err));
     }
 
     // User remains authenticated until they log out
