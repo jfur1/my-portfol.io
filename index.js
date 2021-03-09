@@ -275,27 +275,27 @@ app.post('/forgotPassword', (req, res) => {
     .catch((err) => console.log(err));
 })
 
-// app.get('/reset/:token', (req, res) => {
-//     console.log(req.params.token)
-//     db.tx(check => {
-//         return check.oneOrNone('SELECT * FROM users WHERE reset_token=${token} AND CAST(token_expires AS BIGINT) > ${currentTime};', 
-//             {
-//                 token: req.params.token, 
-//                 currentTime: Date.now()
-//             });
-//     })
-//     .then((data) => {
-//         console.log(data)
-//         if(!data){
-//             return res.json({authenticated: false});
-//         }
-//         else{
-//             console.log("Authenticated Token!")
-//             return res.json({authenticated: true, email: data.email});
-//         }
-//     })
-//     .catch(err => console.log(err));
-// })
+app.get('/resetPassword/:token', (req, res) => {
+    console.log(req.params.token)
+    db.tx(check => {
+        return check.oneOrNone('SELECT * FROM users WHERE reset_token=${token} AND CAST(token_expires AS BIGINT) > ${currentTime};', 
+            {
+                token: req.params.token, 
+                currentTime: Date.now()
+            });
+    })
+    .then((data) => {
+        console.log(data)
+        if(!data){
+            return res.json({authenticated: false});
+        }
+        else{
+            console.log("Authenticated Token!")
+            return res.json({authenticated: true, email: data.email});
+        }
+    })
+    .catch(err => console.log(err));
+})
 
 app.post('/reset/:token', (req, res) => {
     const {email, password} = req.body;
