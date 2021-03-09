@@ -1385,10 +1385,19 @@ app.post('/deleteEducation', (req, res) => {
     })
 })
 
-// app.get('*', function (req, res) {
-//     const index = path.join(__dirname, 'build', 'index.html');
-//     res.sendFile(index);
-// });
+if (process.env.NODE_ENV === "production") {
+    app.use(express.static("client/build"));
+    app.get("/*", function(req, res) {
+      res.sendFile(path.join(__dirname, "./client/build/index.html"));
+    });
+  }
+  
+  else {
+    app.use(express.static(path.join(__dirname, '/client/public')));
+    app.get("/*", function(req, res) {
+      res.sendFile(path.join(__dirname, "./client/public/index.html"));
+    });
+  }
 
 const PORT = process.env.PORT || 5000;
 
