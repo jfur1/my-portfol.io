@@ -115,7 +115,6 @@ export const HomeSlider = (props) => {
         });
         setShowAlertRegistered(false);
         setShowAlertLoginFail(false);
-        setShowAlertNotFound(false);
     };
 
 
@@ -288,7 +287,7 @@ export const HomeSlider = (props) => {
                     ? <Alert variant="danger" onClose={() => setShowAlertLoginFail(false)} dismissible>Invlaid email or password!</Alert>
                     : null}
                     
-                    {showAlertNotFound || typeof(props.history.location.errorMsg) !== 'undefined'
+                    {showAlertNotFound
                     ? <Alert variant="danger" onClose={() => setShowAlertNotFound(false)} dismissible>{props.history.location.errorMsg}</Alert>
                     : null}
 
