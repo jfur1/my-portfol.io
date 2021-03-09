@@ -131,7 +131,7 @@ class Profile extends Component{
 
         // Regardless of whether the current user matches the profile, a user must always be logged-in in order to edit their profile
         if(typeof this.state.requestedBy !== 'undefined' && typeof this.state.user !== 'undefined' && this.state.requestedBy !== null && this.state.user !== null && this.state.requestedBy.user_id === this.state.user.user_id){
-            console.log("Profile owned by user!");
+            //console.log("Profile owned by user!");
             this.setState({ownedByUser: true});
         }
 
@@ -143,8 +143,8 @@ class Profile extends Component{
             this.setState({alert: AlertMsg("error", this.props.location.state.errorMsg)}); 
         }
 
-        console.log("STATE: ", this.state);
-        console.log("PROPS: ", this.props.location.state);
+        //console.log("STATE: ", this.state);
+        //console.log("PROPS: ", this.props.location.state);
         this.setState({loading: false});
     }
 
@@ -152,7 +152,7 @@ class Profile extends Component{
     componentDidUpdate(){
         if(typeof this.props.location.state !== 'undefined' && typeof this.props.location.state.key !== 'undefined'){
             if(this.state.key !== this.props.location.state.key){
-                console.log("Saving a new Key: ", this.state.key);
+                //console.log("Saving a new Key: ", this.state.key);
                 //console.log("State:", this.state);
                 this.props.history.push({
                     pathname: `/${this.state.user.username}`,
@@ -216,7 +216,7 @@ class Profile extends Component{
             })
         });
         const data = await response.json();
-        console.log("Client Recieved Response: ", data);
+        //console.log("Client Recieved Response: ", data);
         return;
     }
 
@@ -237,7 +237,7 @@ class Profile extends Component{
             })
         });
         const data = await response.json();
-        console.log("Client Recieved Response: ", data);
+        //console.log("Client Recieved Response: ", data);
         return;
     }
     
@@ -255,7 +255,7 @@ class Profile extends Component{
             }
         });
         const data = await response.json();
-        console.log("Client Recieved Response: ", data);
+        //console.log("Client Recieved Response: ", data);
         return;
     } 
     updateHobby = async(hobby_id, hobby, user_id, rowIdx) => {
@@ -274,7 +274,7 @@ class Profile extends Component{
             }
         });
         const data = await response.json();
-        console.log("Client Recieved Response: ", data);
+        //console.log("Client Recieved Response: ", data);
         return;
     }
     deleteHobby = async(hobby_id) => {
@@ -289,7 +289,7 @@ class Profile extends Component{
             }
         });
         const data = await response.json();
-        console.log("Client Recieved Response: ", data);
+        ///console.log("Client Recieved Response: ", data);
         return data;
     }
 
@@ -307,7 +307,7 @@ class Profile extends Component{
             }
         });
         const data = await response.json();
-        console.log("Client Recieved Response: ", data);
+       // console.log("Client Recieved Response: ", data);
         return data;
     }
     updateSkill = async(skill_id, skill, user_id, rowIdx) => {
@@ -341,7 +341,7 @@ class Profile extends Component{
             }
         });
         const data = await response.json();
-        console.log("Client Recieved Response: ", data);
+        //console.log("Client Recieved Response: ", data);
         return data;
     }
 
@@ -359,7 +359,7 @@ class Profile extends Component{
             }
         });
         const data = await response.json();
-        console.log("Client Recieved Response: ", data);
+        //console.log("Client Recieved Response: ", data);
         return;
     }
 
@@ -376,7 +376,7 @@ class Profile extends Component{
             }
         });
         const data = await response.json();
-        console.log("Client Recieved Response: ", data);
+        //console.log("Client Recieved Response: ", data);
         return;
     }
 
@@ -398,7 +398,7 @@ class Profile extends Component{
             })
         });
         const data = await response.json();
-        console.log("Client Recieved Response: ", data);
+        //console.log("Client Recieved Response: ", data);
         return;
     }
 
@@ -436,7 +436,7 @@ class Profile extends Component{
             }
         });
         const data = await response.json();
-        console.log("Client Recieved Response: ", data);
+        //console.log("Client Recieved Response: ", data);
         return data;
     }
 
@@ -465,7 +465,7 @@ class Profile extends Component{
             })
         });
         const data = await response.json();
-        console.log("Client Recieved Response: ", data);
+        //console.log("Client Recieved Response: ", data);
         return data;
     }
 
@@ -494,7 +494,7 @@ class Profile extends Component{
             })
         });
         const data = await response.json();
-        console.log("Client Recieved Response: ", data);
+        //console.log("Client Recieved Response: ", data);
         return data;
     } 
     
@@ -510,7 +510,7 @@ class Profile extends Component{
             }
         });
         const data = await response.json();
-        console.log("Client Recieved Response: ", data);
+        //console.log("Client Recieved Response: ", data);
         return data;
     }
 
@@ -536,7 +536,7 @@ class Profile extends Component{
             })
         });
         const data = await response.json();
-        console.log("Client Recieved Response: ", data);
+        //console.log("Client Recieved Response: ", data);
         return data;
     }
 
@@ -563,7 +563,7 @@ class Profile extends Component{
             })
         });
         const data = await response.json();
-        console.log("Client Recieved Response: ", data);
+        //console.log("Client Recieved Response: ", data);
         return data;
     }
 
@@ -605,7 +605,7 @@ class Profile extends Component{
             })
         });
         const data = await response.json();
-        console.log("Client Recieved Response: ", data);
+        //console.log("Client Recieved Response: ", data);
         return data;
     }
 
@@ -632,7 +632,7 @@ class Profile extends Component{
             })
         });
         const data = await response.json();
-        console.log("Client Recieved Response: ", data);
+        //console.log("Client Recieved Response: ", data);
         return data;
     }
 
@@ -648,7 +648,7 @@ class Profile extends Component{
             }
         });
         const data = await response.json();
-        console.log("Client Recieved Response: ", data);
+        //console.log("Client Recieved Response: ", data);
         return data;
     }
 
@@ -666,7 +666,7 @@ class Profile extends Component{
             }
         });
         const data = await response.json();
-        console.log("Client Recieved Response: ", data);
+        //console.log("Client Recieved Response: ", data);
         return;
     }
 
@@ -683,7 +683,7 @@ class Profile extends Component{
             }
         });
         const data = await response.json();
-        console.log("Client Recieved Response: ", data);
+        //console.log("Client Recieved Response: ", data);
         return;
     }
 
@@ -700,7 +700,7 @@ class Profile extends Component{
             }
         });
         const data = await response.json();
-        console.log("Client Recieved Response: ", data);
+        //console.log("Client Recieved Response: ", data);
         return;
     }
 
@@ -717,7 +717,7 @@ class Profile extends Component{
             }
         });
         const data = await response.json();
-        console.log("Client Recieved Response: ", data);
+        //console.log("Client Recieved Response: ", data);
         return;
     }
 
@@ -734,7 +734,7 @@ class Profile extends Component{
             }
         });
         const data = await response.json();
-        console.log("Client Recieved Response: ", data);
+        //console.log("Client Recieved Response: ", data);
         return;
     }
     
@@ -757,7 +757,7 @@ class Profile extends Component{
             })
         });
         const data = await response.json();
-        console.log("Client Recieved Response: ", data);
+        //console.log("Client Recieved Response: ", data);
         return;
     }
 
@@ -780,7 +780,7 @@ class Profile extends Component{
             })
         });
         const data = await response.json();
-        console.log("Client Recieved Response: ", data);
+        //console.log("Client Recieved Response: ", data);
         return;
     }
 
@@ -803,7 +803,7 @@ class Profile extends Component{
             })
         });
         const data = await response.json();
-        console.log("Client Recieved Response: ", data);
+        //console.log("Client Recieved Response: ", data);
         return;
     }
 
@@ -825,7 +825,7 @@ class Profile extends Component{
             })
         });
         const data = await response.json();
-        console.log("Client Recieved Response: ", data);
+       // console.log("Client Recieved Response: ", data);
         return;
     }
 
@@ -847,7 +847,7 @@ class Profile extends Component{
             })
         });
         const data = await response.json();
-        console.log("Client Recieved Response: ", data);
+        //console.log("Client Recieved Response: ", data);
         return;
     }
 

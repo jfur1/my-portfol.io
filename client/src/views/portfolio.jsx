@@ -1610,7 +1610,7 @@ export const Portfolio = props => {
                     -
                     {(row.to_when && row.to_when !== "infinity")
                     ?  <FormatDate dateString={row.to_when} key={idx}/>
-                    : "Present"}
+                    : null}
                     </p>
                     
                     {row.description 
@@ -1652,7 +1652,7 @@ export const Portfolio = props => {
                 -
                 {(row.to_when && row.to_when !== "infinity")
                 ? <FormatDate dateString={row.to_when} key={idx}/>
-                : "Present"}
+                : null}
                 </p>
 
                 {(row.description)
