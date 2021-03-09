@@ -16,6 +16,6 @@ const proConfig = `postgresql://${process.env.PG_USER}:${process.env.PG_PASSWORD
 //     connectionString: process.env.DATABASE_URL // Heroku Addon
 // }
 
-let db = pgp(process.env.NODE_ENV === 'production' ? devConfig : proConfig);
+let db = pgp(process.env.NODE_ENV === 'production' ? proConfig : devConfig);
 
 module.exports = db;
