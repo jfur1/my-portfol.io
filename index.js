@@ -297,7 +297,7 @@ app.get('/resetPassword/:token', (req, res) => {
     .catch(err => console.log(err));
 })
 
-app.post('/reset/:token', (req, res) => {
+app.post('/resetPassword/:token', (req, res) => {
     const {email, password} = req.body;
 
     db.tx(async reset => {
