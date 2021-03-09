@@ -1603,14 +1603,18 @@ export const Portfolio = props => {
                     </div>
 
                     <p className='mb-2'>
-                    {(row.from_when && row.from_when !== "infinity")
-                    ? <FormatDate dateString={row.from_when} key={idx}/>
-                    : null
-                    }
-                    -
-                    {(row.to_when && row.to_when !== "infinity")
-                    ?  <FormatDate dateString={row.to_when} key={idx}/>
-                    : null}
+                        {(row.from_when && row.from_when !== "infinity")
+                        ? <FormatDate dateString={row.from_when} key={idx}/>
+                        : null
+                        }
+                        
+                        {(row.from_when && row.from_when !== "infinity") && (row.to_when && row.to_when !== "infinity") 
+                        ? ' - '
+                        : null}
+
+                        {(row.to_when && row.to_when !== "infinity")
+                        ?  <FormatDate dateString={row.to_when} key={idx}/>
+                        : null}
                     </p>
                     
                     {row.description 
@@ -1649,7 +1653,11 @@ export const Portfolio = props => {
                 {(row.from_when && row.from_when !== "infinity")
                 ? <FormatDate dateString={row.from_when} key={idx}/>
                 : null}
-                -
+                
+                {(row.from_when && row.from_when !== "infinity") && (row.to_when && row.to_when !== "infinity")
+                ? ' - '
+                : null}
+
                 {(row.to_when && row.to_when !== "infinity")
                 ? <FormatDate dateString={row.to_when} key={idx}/>
                 : null}
@@ -1685,7 +1693,10 @@ export const Portfolio = props => {
                     ? <FormatDate dateString={row.from_when} key={idx}/>
                     : null}
                     
-                    -
+                    {(row.from_when && row.from_when !== "infinity") && (row.to_when && row.to_when !== "infinity")
+                    ? ' - '
+                    : null}
+                    
                     {(row.to_when && row.to_when !== "infinity")
                     ? <FormatDate dateString={row.to_when} key={idx}/>
                     : null}
