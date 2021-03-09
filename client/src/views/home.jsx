@@ -191,7 +191,7 @@ export const Home = (props) => {
         if(typeof(images[0]) == 'undefined' && (profileAvatar || profilePic)){
             await createProfileImages();
         }
-        else if(typeof(images[0]) !== 'undefined' && (profilePic !== images[0].base64image || profileAvatar !== images[0].base64preview)){
+        else if(typeof(images[0]) !== 'undefined' && typeof(images[0].base64image) !== 'undefined' (profilePic !== images[0].base64image || profileAvatar !== images[0].base64preview)){
             await updateProfileImages();
         }
         if(typeof(images[0]) !== 'undefined' && ((images[0].x !== x && x) || (images[0].y !== y && y))){
