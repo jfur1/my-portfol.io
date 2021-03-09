@@ -15,12 +15,6 @@
   }
 }
 
-@media screen and (max-width: 400px) {
-  .row {
-    flex-direction: column;
-  }
-}
-
 .App-header {
   background-color: #282c34;
   min-height: 100vh;
@@ -171,9 +165,11 @@ table.center {
   justify-content:space-around;
 }
 
-.container{
+.profile-container{
   display:flex;
   flex-direction: column;
+  padding-left:5%;
+  padding-right:5%;
   width:100%;
 }
 
@@ -349,10 +345,17 @@ table.center {
   flex-direction:row;
 }
 
+.user-tab-container{
+  padding-left:2.5%;
+  font-size:1.4em;
+}
+
 .tab-style{
   display:flex;
   flex-direction:row;
 }
+
+
 
 @media only screen and (max-width: 800px) {
   #collapsible-nav-dropdown:active{
@@ -376,15 +379,31 @@ table.center {
   }
 }
 
-@media only screen and (max-width: 450px) {
+@media only screen and (max-width: 500px) {
   .tab-style{
-    font-size:73%;
+    font-size:80%;
+  }
+  .profile-container{
+    padding-left:0;
+    padding-right:0;
+  }
+  h5{
+    font-size:10px;
+  }
+}
+
+@media screen and (max-width: 400px) {
+  .row {
+    flex-direction: column;
+  }
+  .tab-style{
+    font-size:72%;
   }
 }
 
 @media only screen and (max-width: 367px) {
   .tab-style{
-    font-size:50%;
+    font-size:60%;
   }
 }
 /* ------------ Loading Animation --------------- */
