@@ -507,6 +507,7 @@ export const Home = (props) => {
                         {info.phone}
                     </div>
                     : null}
+                
                 </div>
 
                 <br></br>

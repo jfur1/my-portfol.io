@@ -1594,11 +1594,11 @@ export const Portfolio = props => {
             ? projectsData.map((row, idx) => 
                 <div className="mb-2 ml-3 mr-3" key={idx}>
                     
-                    <div className='d-flex flex-column'>
-                        <h5 className='mr-1 h5-style'><b>{row.title}</b></h5>
+                    <div className='row'>
+                        <h5 className='d-flex flex-column h5-style h5-style'><b>{row.title}</b></h5>
                     
                         {(row.organization && row.organization !== "null")
-                        ? <h5 className="h5-style">{' ' + row.organization}</h5>
+                        ? <h5 className="d-flex flex-column h5-style h5-style ml-1">{'| ' + row.organization}</h5>
                         : null}
                     </div>
 
@@ -1640,9 +1640,9 @@ export const Portfolio = props => {
         ? portfolioData.map((row, idx) => 
             <div className="mb-3 ml-3 mr-3" key={idx}>
                 
-                <div className='d-flex flex-column'>
-                    <h5 className='mr-1 h5-style'><b>{row.occupation}</b></h5>
-                    <h5 className='h5-style'>{!row.organization ? '' :  ' ' + row.organization}</h5>
+                <div className='row'>
+                    <h5 className='d-flex flex-column h5-style h5-style'><b>{row.occupation}</b></h5>
+                    <h5 className='d-flex flex-column h5-style h5-style ml-1'>{!row.organization ? '' :  ' | ' + row.organization}</h5>
                 </div>
 
                 <p className='mb-3'>
@@ -1672,11 +1672,11 @@ export const Portfolio = props => {
             ? educationData.map((row, idx) => 
                 <div className="ml-3 mr-3" key={idx}>
                     
-                    <div className='d-flex flex-column'>
-                        <h5 className='mr-1 h5-style'><b>{row.education}</b></h5>
+                    <div className='row'>
+                        <h5 className='d-flex flex-column h5-style'><b>{row.education}</b></h5>
 
                         {row.organization 
-                        ? <h5 className="h5-style"><p>{' ' + row.organization}</p></h5>
+                        ? <h5 className="d-flex flex-column h5-style ml-1"><p>{'| ' + row.organization}</p></h5>
                         : null}
                     </div>
                     
