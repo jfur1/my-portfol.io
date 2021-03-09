@@ -61,7 +61,8 @@ export const HomeSlider = (props) => {
             else if(postData.loginFailure){
                 setShowAlertLoginFail(true);
             }
-            else if(postData.errorMsg){
+            else if(typeof(props.location.errorMsg) !== 'undefined'){
+                console.log(props.location.errorMsg)
                 setShowAlertNotFound(true);
             }
             else{
