@@ -683,7 +683,7 @@ export const About = props => {
 
             <div className="col ml-1">
 
-                {info !== null && info.location !== null
+                {info !== null && info.location !== null && location !== ''
                 ? <div className="d-flex flex-row mr-4 mb-2">
                     <div>
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" className="align-self-center mr-3 bi bi-geo-alt-fill" viewBox="0 0 16 16">
@@ -697,7 +697,7 @@ export const About = props => {
                 : null}
 
 
-                {info !== null && info.bio !== null
+                {info !== null && info.bio !== null && bio !== ''
                 ? <div className="d-flex flex-row mr-4">
                     <div>
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" className="align-self-center mr-3 bi bi-person-lines-fill" viewBox="0 0 16 16">
