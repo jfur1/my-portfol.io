@@ -500,7 +500,7 @@ export const Contact = (props) => {
                                 ?    <AreYouSure
                                         showDelete={showDelete}
                                         setShowDelete={setShowDelete}
-                                        delete={removeLink}
+                                        removeLink={removeLink}
                                         setEdited={setEdited}
                                         requestedDelete={requestedDelete}
                                         setRequestedDelete={setRequestedDelete}

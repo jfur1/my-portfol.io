@@ -33,6 +33,9 @@ export const AreYouSure = (props) => {
                             props.deleteWork(props.idx)
                         else if(props.requestedDelete === 'education')
                             props.deleteEdu(props.idx)
+                        else if(props.requestedDelete === 'link'){
+                            props.removeLink(props.idx)
+                        }
                         props.setEdited(true);
                         props.setShowDelete(false);
                         props.setRequestedDelete('');   
