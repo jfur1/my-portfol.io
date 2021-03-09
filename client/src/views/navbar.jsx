@@ -12,7 +12,7 @@ export const NavBar = (props) => {
 
     return(
 
-        <Navbar sticky="top" style={{background:'rgba(255,255,255,1)'}}>
+        <Navbar sticky="top" collapseOnSelect expand="lg" style={{background:'rgba(255,255,255,1)'}}>
             <Navbar.Brand href={loggedIn ? `/${requestedBy.username}` : '/'}>
                 <img style={{height: "30px"}} src="/mp-new-logo.png" alt="logo"/>
                 &nbsp;&nbsp;&nbsp;
