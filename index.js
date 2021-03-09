@@ -12,7 +12,9 @@ const path = require("path");
 // Express
 const app = express();
 
-app.use(express.static(path.join(__dirname, "client/build")))
+if(process.env.NODE_ENV == 'production'){
+    app.use(express.static(path.join(__dirname, "client/build")));
+}
 
 // Middleware
 app.use(express.json({ limit: '20mb' })); //req.body
