@@ -282,6 +282,10 @@ export const HomeSlider = (props) => {
                     {showAlertLoginFail
                     ? <Alert variant="danger" onClose={() => setShowAlertLoginFail(false)} dismissible>Invlaid email or password!</Alert>
                     : null}
+                    
+                    {typeof(props.history.location.errorMsg) !== 'undefined'
+                    ? <Alert variant="danger" dismissible>{props.history.location.errorMsg}</Alert>
+                    : null}
 
                     <h1>Sign in</h1><br/>
 
