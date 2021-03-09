@@ -221,12 +221,6 @@ export const HomeSlider = (props) => {
                         {errors["invalidUsername"] ? errors["invalidUsername"]: null}
                         {errors["usernameLength"]  ? errors["usernameLength"] : null}
                     </Form.Control.Feedback>      
-                    <label>Show Password </label>
-                    <Switch
-                        type="register"
-                        isOn={showPassword}
-                        handleToggle={() => setShowPassword(!showPassword)}
-                    />
                     <Form.Control
                         custom
                         isInvalid={errors["passwordCheck"] || errors["noMatch"]}
@@ -234,7 +228,14 @@ export const HomeSlider = (props) => {
                         value={registerPasswordCheck}
                         placeholder="Confirm Password"
                         onChange={e => setRegisterPasswordCheck(e.target.value)} 
-                    /><br/>
+                    />
+                    <label>Show Password </label>
+                    <Switch
+                        type="register"
+                        isOn={showPassword}
+                        handleToggle={() => setShowPassword(!showPassword)}
+                    />
+                    <br/>
                     <Form.Control.Feedback type="invalid">
                         {errors["passwordCheck"] && registerPasswordCheck === "" 
                         ? errors["passwordCheck"] : null}

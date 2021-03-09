@@ -351,6 +351,7 @@ table.center {
 
 .user-tab-container{
   padding-left:2.5%;
+  padding-right:2.5%;
   font-size:1.4em;
 }
 
@@ -359,7 +360,13 @@ table.center {
   flex-direction:row;
 }
 
+.h3-style{
+  font-size:1.75rem;
+}
 
+.h5-style{
+  font-size:1.25rem;
+}
 
 @media only screen and (max-width: 800px) {
   #collapsible-nav-dropdown:active{
@@ -391,8 +398,11 @@ table.center {
     padding-left:0;
     padding-right:0;
   }
-  h5{
-    font-size:10px;
+  .h3-style{
+    font-size:25px;
+  }
+  .h5-style{
+    font-size:20px;
   }
 }
 
