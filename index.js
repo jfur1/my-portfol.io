@@ -275,9 +275,9 @@ app.post('/forgotPassword', (req, res) => {
     .catch((err) => console.log(err));
 })
 
-app.get('/reset/:token', (req, res) => {
+app.get('/resetPassword/:token', (req, res) => {
     console.log(req.params.token)
-    db.tx(check => {
+    db.tx(async check => {
         return check.oneOrNone('SELECT * FROM users WHERE reset_token=${token} AND CAST(token_expires AS BIGINT) > ${currentTime};', 
             {
                 token: req.params.token, 
@@ -297,7 +297,7 @@ app.get('/reset/:token', (req, res) => {
     .catch(err => console.log(err));
 })
 
-app.post('/reset/:token', (req, res) => {
+app.post('/resetPassword/:token', (req, res) => {
     const {email, password} = req.body;
 
     db.tx(async reset => {

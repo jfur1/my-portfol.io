@@ -17,7 +17,7 @@ export default class ResetPassword extends Component{
 
     async componentDidMount(){
         console.log(this.props.match.params.token)
-        const response = await fetch(`/reset/${this.props.match.params.token}`, {
+        const response = await fetch(`/resetPassword/${this.props.match.params.token}`, {
             method: 'GET', 
             headers: {
                 'Accept': 'application/json',
@@ -64,7 +64,9 @@ export default class ResetPassword extends Component{
         }
         else{
             this.setState({errors: {null: '', noMatch: '', length: ''}})
-            const response = await fetch(`/reset/${this.props.match.params.token}`, {
+            console.log(this.props.match.params.token);
+            
+            const response = await fetch(`/resetPassword/${this.props.match.params.token}`, {
                 method: 'POST', 
                 headers: {
                     'Accept': 'application/json',
