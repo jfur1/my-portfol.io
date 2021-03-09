@@ -20,8 +20,7 @@ function App() {
         backgroundRepeat: 'no-repeat',
          backgroundSize: 'cover', 
          backgroundAttachment: 'fixed',
-         minHeight:'100vh', 
-         minWidth: '100vw',
+         minHeight:'100vh',
          paddingBottom: '140px'
       }}>
       <Switch>

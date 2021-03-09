@@ -12,7 +12,7 @@ export const Footer = () => {
     
     return(
         <footer style={{
-            height: '100px',
+            height: '140px',
             position: 'relative'
         }}>
             

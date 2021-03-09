@@ -1587,18 +1587,18 @@ export const Portfolio = props => {
         </Modal>
         <br></br>
 
-        <h3>Projects</h3>
+        <h3 className="h3-style">Projects</h3>
         <hr color="black"/>
         <div className="info-container">
             {projectsData
             ? projectsData.map((row, idx) => 
                 <div className="mb-2 ml-3 mr-3" key={idx}>
                     
-                    <div className='row'>
-                        <h5 className='mr-1'><b>{row.title}</b></h5>
+                    <div className='d-flex flex-column'>
+                        <h5 className='mr-1 h5-style'><b>{row.title}</b></h5>
                     
                         {(row.organization && row.organization !== "null")
-                        ? <h5 className='align-self-center'>{' | ' + row.organization}</h5>
+                        ? <h5 className="h5-style">{' ' + row.organization}</h5>
                         : null}
                     </div>
 
@@ -1633,16 +1633,16 @@ export const Portfolio = props => {
             : null}
         </div>
 
-        <h3>Work Experience</h3>
+        <h3 className="h3-style">Work Experience</h3>
         <hr color="black"/>
         <div className="info-container">
         {portfolioData
         ? portfolioData.map((row, idx) => 
             <div className="mb-3 ml-3 mr-3" key={idx}>
                 
-                <div className='row'>
-                    <h5 className='mr-1'><b>{row.occupation}</b></h5>
-                    <h5 className='align-self-center'>{!row.organization ? '' :  ' | ' + row.organization}</h5>
+                <div className='d-flex flex-column'>
+                    <h5 className='mr-1 h5-style'><b>{row.occupation}</b></h5>
+                    <h5 className='h5-style'>{!row.organization ? '' :  ' ' + row.organization}</h5>
                 </div>
 
                 <p className='mb-3'>
@@ -1665,18 +1665,18 @@ export const Portfolio = props => {
         : null } 
         </div>
 
-        <h3>Education</h3>
+        <h3 className="h3-style">Education</h3>
         <hr color="black"/>
         <div className="info-container">
             {educationData 
             ? educationData.map((row, idx) => 
                 <div className="ml-3 mr-3" key={idx}>
                     
-                    <div className='row'>
-                        <h5 className='mr-1'><b>{row.education}</b></h5>
+                    <div className='d-flex flex-column'>
+                        <h5 className='mr-1 h5-style'><b>{row.education}</b></h5>
 
                         {row.organization 
-                        ? <h5><p>{' | ' + row.organization}</p></h5>
+                        ? <h5 className="h5-style"><p>{' ' + row.organization}</p></h5>
                         : null}
                     </div>
                     

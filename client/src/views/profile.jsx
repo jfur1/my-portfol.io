@@ -861,7 +861,7 @@ class Profile extends Component{
     render(){
 
         return(
-            <div className="container">
+            <div className="profile-container">
 
                 {this.state.loading
                 
@@ -888,7 +888,7 @@ class Profile extends Component{
                         fontSize: typeof(this.state.profile[0]) !== 'undefined'
                             ? this.state.profile[0].font_size : null
                         }}>
-                <div className="user-container">
+                <div className="user-tab-container">
                     <Tabs
                     className="tab-style mt-4"
                     activeKey={this.state.key}
