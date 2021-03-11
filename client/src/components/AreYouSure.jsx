@@ -13,7 +13,7 @@ export const AreYouSure = (props) => {
             scrollable={false}
             >
             <Modal.Header closeButton>
-            <Modal.Title>Modal title</Modal.Title>
+            <Modal.Title>Delete?</Modal.Title>
             </Modal.Header>
                 <Modal.Body>
                     <p>Are you sure you want to remove this {props.requestedDelete}?</p>
