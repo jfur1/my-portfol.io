@@ -150,33 +150,33 @@ class Profile extends Component{
 
     // Keeps track of what tab we're on, for the event of user refresh
     componentDidUpdate(){
-        if(typeof this.props.location.state !== 'undefined' && typeof this.props.location.state.key !== 'undefined'){
+        if(typeof this.props.location.state !== 'undefined'){
             if(this.state.key !== this.props.location.state.key){
                 //console.log("Saving a new Key: ", this.state.key);
                 //console.log("State:", this.state);
-                this.props.history.push({
-                    pathname: `/${this.state.user.username}`,
-                    state: {
-                        user: this.state.user,
-                        key: this.state.key,
-                        ownedByUser: this.state.ownedByUser,
-                        loggedIn: this.state.loggedIn,
-                        requestedBy: this.state.requestedBy,
-                        about: this.state.about,
-                        profile: this.state.profile,
-                        portfolio: this.state.portfolio,
-                        contact: this.state.contact,
-                        education: this.state.education,
-                        hobbies: this.state.hobbies,
-                        skills: this.state.skills,
-                        projects: this.state.projects,
-                        images: this.state.images
-                    }
-                })
-                return;
+                // this.props.history.push({
+                //     pathname: `/${this.state.user.username}`,
+                //     state: {
+                //         user: this.state.user,
+                //         key: this.state.key,
+                //         ownedByUser: this.state.ownedByUser,
+                //         loggedIn: this.state.loggedIn,
+                //         requestedBy: this.state.requestedBy,
+                //         about: this.state.about,
+                //         profile: this.state.profile,
+                //         portfolio: this.state.portfolio,
+                //         contact: this.state.contact,
+                //         education: this.state.education,
+                //         hobbies: this.state.hobbies,
+                //         skills: this.state.skills,
+                //         projects: this.state.projects,
+                //         images: this.state.images
+                //     }
+                // })
+                // return;
             }
         } 
-        else if(this.state.username == 'undefined'){
+        else if(this.state.username === 'undefined'){
             this.props.history.push({
                 pathname: '/',
                 errorMsg: `Unable to locate user: ${window.location.pathname.substr(1, window.location.pathname.length)}`
