@@ -50,7 +50,7 @@ button {
 }
 
 button:active {
-	transform: scale(0.95);
+	transform: scale(0.85);
 }
 
 button:focus {
@@ -175,7 +175,9 @@ input {
     position: absolute;
     display: flex;
     justify-content: center;
-    margin-top: 100%;
+    /* margin-top: 50%; */
+    bottom: 16%;
+    right: 10;
     width: 30%;
     opacity: 1;
     z-index: 1;
