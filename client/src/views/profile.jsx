@@ -95,7 +95,7 @@ class Profile extends Component{
                     errorMsg: `Unable to locate user: ${pathname}`,
                     state: {
                         user: data.requestedBy,
-                        key: "home",
+                        key: this.state.key,
                         ownedByUser: this.state.ownedByUser,
                         loggedIn: this.state.loggedIn,
                         requestedBy: data.requestedBy,
@@ -144,8 +144,8 @@ class Profile extends Component{
             this.setState({alert: AlertMsg("error", this.props.location.state.errorMsg)}); 
         }
 
-        // console.log("STATE: ", this.state);
-        // console.log("PROPS: ", this.props.location.state);
+        console.log("STATE: ", this.state);
+        console.log("PROPS: ", this.props.location.state);
         this.setState({loading: false});
     }
 
@@ -153,9 +153,9 @@ class Profile extends Component{
     componentDidUpdate(){
         if(typeof this.props.location.state !== 'undefined'){
             if(this.state.key !== this.props.location.state.key){
-                //console.log("Saving a new Key: ", this.state.key);
+                console.log("Saving a new Key: ", this.state.key);
                 //console.log("State:", this.state);
-                // this.props.history.push({
+                // this.props.history.replace({
                 //     pathname: `/${this.state.user.username}`,
                 //     state: {
                 //         user: this.state.user,
@@ -174,7 +174,6 @@ class Profile extends Component{
                 //         images: this.state.images
                 //     }
                 // })
-                // return;
             }
         } 
         else if(this.state.username === 'undefined'){
@@ -188,7 +187,8 @@ class Profile extends Component{
                 pathname: `/${this.state.user.username}`,
                 state: {
                     user: this.state.user,
-                    key: "home",
+                    key: (this.state.key !== this.props.location.state.key)
+                        ? this.state.key : this.props.location.state.key,
                     ownedByUser: this.state.ownedByUser,
                     loggedIn: this.state.loggedIn,
                     requestedBy: this.state.requestedBy,
