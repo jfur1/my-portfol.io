@@ -1068,7 +1068,7 @@ export const Portfolio = props => {
                     Link
                 </Form.Label>
                 <Col>
-                    <Form.Control type="text" id="project-link" style={{textAlign: "left"}} value={row.link !== null ? row.link : ''} placeholder={"Add an link for your project (Optional)"} 
+                    <Form.Control type="text" id="project-link" style={{textAlign: "left"}} value={row.link !== null ? row.link : ''} placeholder={"Ex: http://www.example.com"} 
                         onChange={e => handleProjectLinkChange(e, idx)}
                     />
                 </Col>

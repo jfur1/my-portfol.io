@@ -9,7 +9,7 @@ export const About = props => {
     //console.log("About Recieved Parent Props: ", props);
     
     // User Data
-    const info = (props.data.about !== null) ? props.data.about : props.location.state.about;
+    const info = (props.data.about !== null) ? props.data.about : null;
     const user = (props.location.state.user !== null) ? props.location.state.user : props.data.user;
     const hobbiesData = (props.data.hobbies !== null) ? props.data.hobbies : props.location.state.hobbies;
     const images = (props.data.images !== null) ? props.data.images : props.location.state.images;

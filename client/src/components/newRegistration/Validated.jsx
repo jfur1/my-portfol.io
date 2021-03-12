@@ -32,9 +32,11 @@ export const Validated = (credentials) => {
 
     if(username === ""){
         errors["username"] = "Please enter a username.";
-    } else if(username.length < 7 || username.length > 49){
+    } 
+    else if(username.length < 7 || username.length > 49){
         errors["usernameLength"] = "Username must be between 8 and 50 characters."
-    } else{
+    } 
+    else{
         var regexp = new RegExp(/^[a-zA-Z0-9-_]+$/);
         if(!regexp.test(username)){
             errors["invalidUsername"] = "Username can only contrain alphanumeric values, dashes, or underscores."

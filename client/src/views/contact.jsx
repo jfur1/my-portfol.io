@@ -225,7 +225,7 @@ export const Contact = (props) => {
                                 isInvalid={(errs["link"] && row.link === "") || (typeof(duplicates["Idx"+idx]) !== 'undefined' && row.link !== "")}
                                 type="text" 
                                 value={row.link} 
-                                placeholder={"Add your link here (Required)"} 
+                                placeholder={"(Required) Ex: http://www.example.com"} 
                                 onChange={e => {
                                     handleLinkChange(e, idx);
                             }}/>

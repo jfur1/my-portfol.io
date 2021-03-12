@@ -10,7 +10,7 @@ export const Home = (props) => {
     const user = props.data.user;
     const profile = (props.data.profile !== null) ? props.data.profile : props.location.state.profile;
     const images = (props.data.images !== null) ? props.data.images : props.location.state.images;
-    const info = (props.data.about !== null) ? props.data.about : props.location.state.about;
+    const info = (props.data.about !== null) ? props.data.about : null;
 
     // NOTE TO SELF: Type check for images -- (e.g. new user)
 
