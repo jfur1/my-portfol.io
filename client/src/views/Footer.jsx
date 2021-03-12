@@ -8,9 +8,9 @@ export const Footer = () => {
     // onClose Handlers
     const handleShowAbout = () => setShowAbout(true);
     const handleShowContact = () => setShowContact(true);
+    const handleShowPrivacy = () => setShowPrivacy(true);
     const handleCloseAbout = () => setShowAbout(false);
     const handleCloseContact = () => setShowContact(false);
-    const handleShowPrivacy = () => setShowPrivacy(true);
     const handleClosePrivacy = () => setShowPrivacy(false);
     
     return(
@@ -36,7 +36,7 @@ export const Footer = () => {
             centered
             scrollable={false}>
                 <Modal.Header closeButton><Modal.Title><h3>About my-portfol.io</h3></Modal.Title></Modal.Header>
-                <Modal.Body><p>My-portfol.io was created and is managed by developers <a href="/johnfurlong" target="_blank" rel="noreferrer">John Furlong</a> and <a href="/tristanhanna" target="_blank" rel="noreferrer">Tristan Hanna</a>. We aim to solve all of your recruiting and job search needs with our platform.</p></Modal.Body>
+                <Modal.Body><p>My-portfol.io was created and is managed by developers <a href="/johnfurlong" target="_blank" rel="noreferrer">John Furlong</a> and <a href="/tristanhanna" target="_blank" rel="noreferrer">Tristan Hanna</a>. We aim to solve all of your recruiting and job search needs with our platform. At this phase we are in early development and any feedback on our site would be appreciated. You can contact us at myportfolio.help@gmail.com</p></Modal.Body>
         </Modal>
 
         <Modal
