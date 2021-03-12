@@ -859,15 +859,15 @@ export const Portfolio = props => {
             }
         })
 
-        console.log("Projects to Create:", projectsToCreate);
-        console.log("Projects to Update:", projectsToUpdate);
-        console.log("Projects to Delete:", projectsToDelete);
-        console.log("Work Experience to Create:", workExperienceToCreate);
-        console.log("Work Experience to Update:", workExperienceToUpdate);
-        console.log("Work Experience to Delete:", workExperienceToDelete);
-        console.log("Education to Create:", educationToCreate);
-        console.log("Education to Update:", educationToUpdate);
-        console.log("Education to Delete:", educationToDelete);
+        // console.log("Projects to Create:", projectsToCreate);
+        // console.log("Projects to Update:", projectsToUpdate);
+        // console.log("Projects to Delete:", projectsToDelete);
+        // console.log("Work Experience to Create:", workExperienceToCreate);
+        // console.log("Work Experience to Update:", workExperienceToUpdate);
+        // console.log("Work Experience to Delete:", workExperienceToDelete);
+        // console.log("Education to Create:", educationToCreate);
+        // console.log("Education to Update:", educationToUpdate);
+        // console.log("Education to Delete:", educationToDelete);
 
         // Begin POST Requests
 
@@ -1594,7 +1594,7 @@ export const Portfolio = props => {
             ? projectsData.map((row, idx) => 
                 <div className="mb-2 ml-3 mr-3" key={idx}>
                     
-                    <div className='row'>
+                    <div className='row mb-1'>
                         <h5 className='d-flex flex-column h5-style h5-style'><b>{row.title}</b></h5>
                     
                         {(row.organization && row.organization !== "null")
@@ -1602,9 +1602,9 @@ export const Portfolio = props => {
                         : null}
                     </div>
 
-                    <p className='mb-2'>
+                    <div className="mb-3">
                         {(row.from_when && row.from_when !== "infinity")
-                        ? <FormatDate dateString={row.from_when} key={idx}/>
+                        ? <FormatDate dateString={row.from_when}/>
                         : null
                         }
                         
@@ -1613,12 +1613,12 @@ export const Portfolio = props => {
                         : null}
 
                         {(row.to_when && row.to_when !== "infinity")
-                        ?  <FormatDate dateString={row.to_when} key={idx}/>
+                        ?  <FormatDate dateString={row.to_when}/>
                         : null}
-                    </p>
-                    
+                    </div>
+
                     {row.description 
-                    ? <><FormatTextarea text={row.description} key={idx}/></>
+                    ? <><FormatTextarea text={row.description}/></>
                     : null}
 
                     {(row.link && row.link !== "null")
@@ -1646,25 +1646,26 @@ export const Portfolio = props => {
                 
                 <div className='row'>
                     <h5 className='d-flex flex-column h5-style h5-style'><b>{row.occupation}</b></h5>
-                    <h5 className='d-flex flex-column h5-style h5-style ml-1'>{!row.organization ? '' :  ' | ' + row.organization}</h5>
+                    <h5 className='d-flex flex-column h5-style h5-style ml-1'>
+                        <p className='mb-2'>{!row.organization ? '' :  ' | ' + row.organization}</p></h5>
                 </div>
 
-                <p className='mb-3'>
-                {(row.from_when && row.from_when !== "infinity")
-                ? <FormatDate dateString={row.from_when} key={idx}/>
-                : null}
-                
-                {(row.from_when && row.from_when !== "infinity") && (row.to_when && row.to_when !== "infinity")
-                ? ' - '
-                : null}
+                <div className="mb-3">
+                    {(row.from_when && row.from_when !== "infinity")
+                    ? <FormatDate dateString={row.from_when}/>
+                    : null}
+                    
+                    {(row.from_when && row.from_when !== "infinity") && (row.to_when && row.to_when !== "infinity")
+                    ? ' - '
+                    : null}
 
-                {(row.to_when && row.to_when !== "infinity")
-                ? <FormatDate dateString={row.to_when} key={idx}/>
-                : null}
-                </p>
+                    {(row.to_when && row.to_when !== "infinity")
+                    ? <FormatDate dateString={row.to_when}/>
+                    : null}
+                </div>
 
                 {(row.description)
-                ? <FormatTextarea text={row.description} key={idx}/>
+                ? <FormatTextarea text={row.description}/>
                 : null}
 
                 <hr/>
@@ -1681,29 +1682,31 @@ export const Portfolio = props => {
                 <div className="ml-3 mr-3" key={idx}>
                     
                     <div className='row'>
-                        <h5 className='d-flex flex-column h5-style'><b>{row.education}</b></h5>
+                        <h5 className='d-flex flex-column h5-style'>
+                            <b>{row.education}</b></h5>
 
                         {row.organization 
-                        ? <h5 className="d-flex flex-column h5-style ml-1"><p>{'| ' + row.organization}</p></h5>
+                        ? <h5 className="d-flex flex-column h5-style ml-1">
+                            <p className='mb-2'>{'| ' + row.organization}</p></h5>
                         : null}
                     </div>
                     
-                    <p>
-                    {(row.from_when && row.from_when !== "infinity")
-                    ? <FormatDate dateString={row.from_when} key={idx}/>
-                    : null}
-                    
-                    {(row.from_when && row.from_when !== "infinity") && (row.to_when && row.to_when !== "infinity")
-                    ? ' - '
-                    : null}
-                    
-                    {(row.to_when && row.to_when !== "infinity")
-                    ? <FormatDate dateString={row.to_when} key={idx}/>
-                    : null}
-                    </p>
+                    <div className="mb-3">
+                        {(row.from_when && row.from_when !== "infinity")
+                        ? <FormatDate dateString={row.from_when}/>
+                        : null}
+                        
+                        {(row.from_when && row.from_when !== "infinity") && (row.to_when && row.to_when !== "infinity")
+                        ? ' - '
+                        : null}
+                        
+                        {(row.to_when && row.to_when !== "infinity")
+                        ? <FormatDate dateString={row.to_when}/>
+                        : null}
+                    </div>
 
                     {row.description
-                    ? <FormatTextarea text={row.description} key={idx}/>
+                    ? <FormatTextarea text={row.description}/>
                     : null}
                     <hr/>
                 </div>

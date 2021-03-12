@@ -392,7 +392,7 @@ app.get('/getUserData', (req, res) => {
                     username: user.username,
                     email: user.email,
                 },
-                requestedBy: user
+                requestedBy: req.user
             });
         }
     })

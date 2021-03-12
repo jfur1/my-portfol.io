@@ -144,8 +144,8 @@ class Profile extends Component{
             this.setState({alert: AlertMsg("error", this.props.location.state.errorMsg)}); 
         }
 
-        console.log("STATE: ", this.state);
-        console.log("PROPS: ", this.props.location.state);
+        // console.log("STATE: ", this.state);
+        // console.log("PROPS: ", this.props.location.state);
         this.setState({loading: false});
     }
 
@@ -153,13 +153,19 @@ class Profile extends Component{
     componentDidUpdate(){
         if(typeof this.props.location.state !== 'undefined'){
             if(this.state.key !== this.props.location.state.key){
-                console.log("Saving a new Key: ", this.state.key);
+                //console.log("Saving a new Key: ", this.state.key);
+                const tmpState = {...this.props.location.state};
+                tmpState['key'] = this.state.key;
+                this.props.history.replace({
+                    pathname: `/${this.state.user.username}`,
+                    state: tmpState
+                })
                 //console.log("State:", this.state);
                 // this.props.history.replace({
                 //     pathname: `/${this.state.user.username}`,
                 //     state: {
                 //         user: this.state.user,
-                //         key: this.state.key,
+                        // key: this.state.key,
                 //         ownedByUser: this.state.ownedByUser,
                 //         loggedIn: this.state.loggedIn,
                 //         requestedBy: this.state.requestedBy,
@@ -176,7 +182,7 @@ class Profile extends Component{
                 // })
             }
         } 
-        else if(this.state.username === 'undefined'){
+        else if(this.state.user.username === 'undefined'){
             this.props.history.push({
                 pathname: '/',
                 errorMsg: `Unable to locate user: ${window.location.pathname.substr(1, window.location.pathname.length)}`
@@ -187,8 +193,7 @@ class Profile extends Component{
                 pathname: `/${this.state.user.username}`,
                 state: {
                     user: this.state.user,
-                    key: (this.state.key !== this.props.location.state.key)
-                        ? this.state.key : this.props.location.state.key,
+                    key: this.state.key,
                     ownedByUser: this.state.ownedByUser,
                     loggedIn: this.state.loggedIn,
                     requestedBy: this.state.requestedBy,
@@ -223,7 +228,7 @@ class Profile extends Component{
                 location: locationToUpdate
             })
         });
-        const data = await response.json();
+        await response.json();
         //console.log("Client Recieved Response: ", data);
         return;
     }
@@ -244,7 +249,7 @@ class Profile extends Component{
                 bio: bioToUpdate
             })
         });
-        const data = await response.json();
+        await response.json();
         //console.log("Client Recieved Response: ", data);
         return;
     }
@@ -262,7 +267,7 @@ class Profile extends Component{
                 position: idx
             }
         });
-        const data = await response.json();
+        await response.json();
         //console.log("Client Recieved Response: ", data);
         return;
     } 
@@ -281,7 +286,7 @@ class Profile extends Component{
                 position: rowIdx
             }
         });
-        const data = await response.json();
+        await response.json();
         //console.log("Client Recieved Response: ", data);
         return;
     }
@@ -296,9 +301,9 @@ class Profile extends Component{
                 hobby_id: hobby_id
             }
         });
-        const data = await response.json();
+        await response.json();
         ///console.log("Client Recieved Response: ", data);
-        return data;
+        return;
     }
 
     createSkill = async(user_id, skill, idx) => {
@@ -314,9 +319,9 @@ class Profile extends Component{
                 position: idx
             }
         });
-        const data = await response.json();
+        await response.json();
        // console.log("Client Recieved Response: ", data);
-        return data;
+        return;
     }
     updateSkill = async(skill_id, skill, user_id, rowIdx) => {
         this.setState({loading: true});
@@ -348,9 +353,9 @@ class Profile extends Component{
                 skill_id: skill_id
             }
         });
-        const data = await response.json();
+        await response.json();
         //console.log("Client Recieved Response: ", data);
-        return data;
+        return;
     }
 
     // CONTACT Tab
@@ -366,7 +371,7 @@ class Profile extends Component{
                 public_email: public_email
             }
         });
-        const data = await response.json();
+        await response.json();
         //console.log("Client Recieved Response: ", data);
         return;
     }
@@ -383,7 +388,7 @@ class Profile extends Component{
                 phone: phone
             }
         });
-        const data = await response.json();
+        await response.json();
         //console.log("Client Recieved Response: ", data);
         return;
     }
@@ -405,7 +410,7 @@ class Profile extends Component{
                 position: idx
             })
         });
-        const data = await response.json();
+        await response.json();
         //console.log("Client Recieved Response: ", data);
         return;
     }
@@ -427,8 +432,8 @@ class Profile extends Component{
                 position: rowIdx
             })
         });
-        const data = await response.json();
-        console.log("Client Recieved Response: ", data);
+        await response.json();
+        //console.log("Client Recieved Response: ", data);
         return;
     }
 
@@ -443,9 +448,9 @@ class Profile extends Component{
                 link_id: link_id
             }
         });
-        const data = await response.json();
+        await response.json();
         //console.log("Client Recieved Response: ", data);
-        return data;
+        return;
     }
 
     // PORTFOLIO Tab
@@ -472,9 +477,9 @@ class Profile extends Component{
                 position: idx
             })
         });
-        const data = await response.json();
+        await response.json();
         //console.log("Client Recieved Response: ", data);
-        return data;
+        return;
     }
 
     updateProject = async(user_id, project, rowIdx) => {
@@ -501,9 +506,9 @@ class Profile extends Component{
                 position: rowIdx
             })
         });
-        const data = await response.json();
+        await response.json();
         //console.log("Client Recieved Response: ", data);
-        return data;
+        return;
     } 
     
     deleteProject = async(project_id) => {
@@ -517,9 +522,9 @@ class Profile extends Component{
                 project_id: project_id
             }
         });
-        const data = await response.json();
+        await response.json();
         //console.log("Client Recieved Response: ", data);
-        return data;
+        return;
     }
 
     createWorkExperience = async(user_id, workExperience, idx) => {
@@ -543,9 +548,9 @@ class Profile extends Component{
                 position: idx
             })
         });
-        const data = await response.json();
+        await response.json();
         //console.log("Client Recieved Response: ", data);
-        return data;
+        return;
     }
 
     updateWorkExperience = async(user_id, workExperience, rowIdx) => {
@@ -570,9 +575,9 @@ class Profile extends Component{
                 position: rowIdx
             })
         });
-        const data = await response.json();
+        await response.json();
         //console.log("Client Recieved Response: ", data);
-        return data;
+        return;
     }
 
     deleteWorkExperience = async(portfolio_id) => {
@@ -586,9 +591,9 @@ class Profile extends Component{
                 portfolio_id: portfolio_id
             }
         });
-        const data = await response.json();
-        console.log("Client Recieved Response: ", data);
-        return data;
+        await response.json();
+        //console.log("Client Recieved Response: ", data);
+        return;
     }
 
     createEducation = async(user_id, education, idx) => {
@@ -612,9 +617,9 @@ class Profile extends Component{
                 position: idx
             })
         });
-        const data = await response.json();
+        await response.json();
         //console.log("Client Recieved Response: ", data);
-        return data;
+        return;
     }
 
     updateEducation = async(user_id, education, rowIdx) => {
@@ -639,9 +644,9 @@ class Profile extends Component{
                 position: rowIdx
             })
         });
-        const data = await response.json();
+        await response.json();
         //console.log("Client Recieved Response: ", data);
-        return data;
+        return;
     }
 
     deleteEducation = async(education_id) => {
@@ -655,9 +660,9 @@ class Profile extends Component{
                 education_id: education_id
             }
         });
-        const data = await response.json();
+        await response.json();
         //console.log("Client Recieved Response: ", data);
-        return data;
+        return;
     }
 
     // HOME Tab
@@ -673,7 +678,7 @@ class Profile extends Component{
                 fullname: fullname
             }
         });
-        const data = await response.json();
+        await response.json();
         //console.log("Client Recieved Response: ", data);
         return;
     }
@@ -690,7 +695,7 @@ class Profile extends Component{
                 occupation: occupation
             }
         });
-        const data = await response.json();
+        await response.json();
         //console.log("Client Recieved Response: ", data);
         return;
     }
@@ -707,7 +712,7 @@ class Profile extends Component{
                 occupation: occupation
             }
         });
-        const data = await response.json();
+        await response.json();
         //console.log("Client Recieved Response: ", data);
         return;
     }
@@ -724,7 +729,7 @@ class Profile extends Component{
                 organization: organization
             }
         });
-        const data = await response.json();
+        await response.json();
         //console.log("Client Recieved Response: ", data);
         return;
     }
@@ -741,7 +746,7 @@ class Profile extends Component{
                 organization: organization
             }
         });
-        const data = await response.json();
+        await response.json();
         //console.log("Client Recieved Response: ", data);
         return;
     }
@@ -764,7 +769,7 @@ class Profile extends Component{
                 prefix: prefix
             })
         });
-        const data = await response.json();
+        await response.json();
         //console.log("Client Recieved Response: ", data);
         return;
     }
@@ -787,7 +792,7 @@ class Profile extends Component{
                 prefix: prefix
             })
         });
-        const data = await response.json();
+        await response.json();
         //console.log("Client Recieved Response: ", data);
         return;
     }
@@ -810,7 +815,7 @@ class Profile extends Component{
                 radius: r
             })
         });
-        const data = await response.json();
+        await response.json();
         //console.log("Client Recieved Response: ", data);
         return;
     }
@@ -832,7 +837,7 @@ class Profile extends Component{
                 font: updatedFont
             })
         });
-        const data = await response.json();
+        await response.json();
        // console.log("Client Recieved Response: ", data);
         return;
     }
@@ -854,7 +859,7 @@ class Profile extends Component{
                 size: updatedSize
             })
         });
-        const data = await response.json();
+        await response.json();
         //console.log("Client Recieved Response: ", data);
         return;
     }
@@ -884,9 +889,9 @@ class Profile extends Component{
                 : <><NavBar {...this.props} data={this.state}/>
                 <div className="tabulation-container" 
                     style={{
-                        fontFamily: typeof(this.state.profile[0]) !== 'undefined'
+                        fontFamily: this.state.profile && this.state.profile[0]
                             ? this.state.profile[0].font : null, 
-                        fontSize: typeof(this.state.profile[0]) !== 'undefined'
+                        fontSize: this.state.profile && this.state.profile[0]
                             ? this.state.profile[0].font_size : null
                         }}>
                 <div className="user-tab-container">
