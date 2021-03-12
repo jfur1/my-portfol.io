@@ -144,8 +144,8 @@ class Profile extends Component{
             this.setState({alert: AlertMsg("error", this.props.location.state.errorMsg)}); 
         }
 
-        // console.log("STATE: ", this.state);
-        // console.log("PROPS: ", this.props.location.state);
+        console.log("STATE: ", this.state);
+        console.log("PROPS: ", this.props.location.state);
         this.setState({loading: false});
     }
 
@@ -156,6 +156,8 @@ class Profile extends Component{
                 //console.log("Saving a new Key: ", this.state.key);
                 const tmpState = {...this.props.location.state};
                 tmpState['key'] = this.state.key;
+                tmpState['user'] = this.state.user;
+                tmpState['requestedBy'] = this.state.requestedBy;
                 this.props.history.replace({
                     pathname: `/${this.state.user.username}`,
                     state: tmpState
@@ -189,24 +191,29 @@ class Profile extends Component{
             })
         }
         else{
+            const tmpState = {...this.props.location.state};
+            tmpState['key'] = this.state.key;
+            tmpState['user'] = this.state.user;
+            tmpState['requestedBy'] = this.state.requestedBy;
             this.props.history.push({
                 pathname: `/${this.state.user.username}`,
-                state: {
-                    user: this.state.user,
-                    key: this.state.key,
-                    ownedByUser: this.state.ownedByUser,
-                    loggedIn: this.state.loggedIn,
-                    requestedBy: this.state.requestedBy,
-                    about: this.state.about,
-                    profile: this.state.profile,
-                    portfolio: this.state.portfolio,
-                    contact: this.state.contact,
-                    education: this.state.education,
-                    hobbies: this.state.hobbies,
-                    skills: this.state.skills,
-                    projects: this.state.projects,
-                    images: this.state.images
-                }
+                state: {...this.props.location.state}
+                // state: {
+                //     user: this.state.user,
+                //     key: this.state.key,
+                //     ownedByUser: this.state.ownedByUser,
+                //     loggedIn: this.state.loggedIn,
+                //     requestedBy: this.state.requestedBy,
+                //     about: this.state.about,
+                //     profile: this.state.profile,
+                //     portfolio: this.state.portfolio,
+                //     contact: this.state.contact,
+                //     education: this.state.education,
+                //     hobbies: this.state.hobbies,
+                //     skills: this.state.skills,
+                //     projects: this.state.projects,
+                //     images: this.state.images
+                // }
             })
         }
     }
