@@ -79,15 +79,16 @@ class Profile extends Component{
             .then((res) => res.json())
         ))
 
-        // If no profile found, redirect back to splash page w/ error msg
+        // No profile found
         if((typeof data !== 'undefined') && data["error"]){
-            
+            // If not signed in, redirect to splash page
             if(!(typeof data.requestedBy !== 'undefined')){
                 return this.props.history.push({
                     pathname: '/',
                     errorMsg: (pathname !== "dashboard") ? `Unable to locate user: ${pathname}` : null,
                 })
             } 
+            // If signed in, redirect back to users profile
             else{
                 this.props.history.push({
                     pathname: `/${data.requestedBy.username}`,

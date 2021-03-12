@@ -3,11 +3,9 @@ import { Nav, Navbar, Dropdown } from 'react-bootstrap';
 import auth from '../components/auth';
 
 export const NavBar = (props) => {
-    //console.log("NavBar Component Recieved Props: ", props);
+    console.log("NavBar Component Recieved Props: ", props);
     const loggedIn = (props.data.loggedIn !== null) ? props.data.loggedIn : false;
     const requestedBy = (typeof props.location.state !== 'undefined' && typeof props.location.state.requestedBy !== 'undefined') ? props.location.state.requestedBy : props.data.requestedBy;
-    
-    //const user = (props.data.user !== null) ? props.data.user : null;
     
 
     return(

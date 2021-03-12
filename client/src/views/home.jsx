@@ -6,7 +6,7 @@ import { AlertDismissible } from '../components/alertDismissible';
 import UploadProfilePicture from './uploadProfilePic';
 
 export const Home = (props) => {
-    //console.log("Home Component Recieved Props: ", props);
+    console.log("Home Component Recieved Props: ", props);
     const user = props.data.user;
     const profile = (props.data.profile !== null) ? props.data.profile : props.location.state.profile;
     const images = (props.data.images !== null) ? props.data.images : props.location.state.images;
