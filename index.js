@@ -102,7 +102,7 @@ var smtpTransport = nodemailer.createTransport({
     service: "Gmail",
     auth: {
         user: "myportfolio.help@gmail.com",
-        pass: "mppassword"
+        pass: process.env.GMAIL_PWRD
     }
 });
 
@@ -371,12 +371,11 @@ function ensureAuthenticated(req, res, next) {
 }
 
 app.get('/getUserData', (req, res) => {
-    const username = req.headers.username;
-    //console.log("Server recieved header:", username);
+    let username = req.headers.username;
 
     db.tx(async t => {
         const data = await t.oneOrNone('SELECT * FROM users WHERE username = ${username};', {username});
-        return data
+        return data;
     })
     .then((user) => {
         if(!(typeof user !== 'undefined')){
