@@ -6,6 +6,7 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { AreYouSure } from '../components/AreYouSure';
 import Switch  from '../components/switch';
 import DatePicker from 'react-datepicker'
+import Fade from 'react-reveal/Fade';
 
 export const Portfolio = props => {
     //console.log("Portfolio Recieved Props: ", props);
@@ -1586,9 +1587,12 @@ export const Portfolio = props => {
             </Modal.Footer>
         </Modal>
         <br></br>
-
+        
+        <Fade left>
         <h3 className="h3-style">Projects</h3>
+        </Fade>
         <hr color="black"/>
+        <Fade left>
         <div className="info-container">
             {projectsData
             ? projectsData.map((row, idx) => 
@@ -1636,9 +1640,13 @@ export const Portfolio = props => {
             )
             : null}
         </div>
+        </Fade>
 
+        <Fade left>
         <h3 className="h3-style">Work Experience</h3>
+        </Fade>
         <hr color="black"/>
+        <Fade left>
         <div className="info-container">
         {portfolioData
         ? portfolioData.map((row, idx) => 
@@ -1673,9 +1681,13 @@ export const Portfolio = props => {
         )
         : null } 
         </div>
+        </Fade>
 
+        <Fade left>
         <h3 className="h3-style">Education</h3>
+        </Fade>
         <hr color="black"/>
+        <Fade left>
         <div className="info-container">
             {educationData 
             ? educationData.map((row, idx) => 
@@ -1713,7 +1725,7 @@ export const Portfolio = props => {
             )
             : null}
         </div>
-
+        </Fade>
         </div>
     );
 }

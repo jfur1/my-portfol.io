@@ -4,6 +4,7 @@ import { Modal, Button, Form, Dropdown, DropdownButton, Col } from 'react-bootst
 import { PencilFill } from 'react-bootstrap-icons';
 import { AlertDismissible } from '../components/alertDismissible';
 import UploadProfilePicture from './uploadProfilePic';
+import Fade from 'react-reveal/Fade';
 
 export const Home = (props) => {
     //console.log("Home Component Recieved Props: ", props);
@@ -460,6 +461,7 @@ export const Home = (props) => {
         </Modal>
             {(user !== null && typeof user !== 'undefined')
             ? 
+            <Fade bottom>
             <div className='home-container'>
                 <div className="mt-3 ml-2 mr-4">
                 {typeof(images[0]) !== 'undefined' && images[0].base64preview.data.length > 0
@@ -512,7 +514,7 @@ export const Home = (props) => {
 
                 <br></br>
             </div> 
-
+            </Fade>
             : null}
 
         </div>

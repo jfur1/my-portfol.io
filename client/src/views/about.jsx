@@ -4,6 +4,7 @@ import { Modal, Button, Form, Col } from 'react-bootstrap';
 import { AlertDismissible } from '../components/alertDismissible';
 import Switch  from '../components/switch';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import Fade from 'react-reveal/Fade';
 
 export const About = props => {
     //console.log("About Recieved Parent Props: ", props);
@@ -675,16 +676,18 @@ export const About = props => {
         </Modal>
 
         <div className="about-container">
+            <Fade right>
             <div>
             {typeof(images[0]) !== 'undefined' && images[0].base64preview.data.length > 0
                  ? <img src={images[0].prefix + `${binaryToBase64(images[0].base64preview.data)}`}  alt="Preview"/>
                  : null}
             </div>
-
+            </Fade>
             <div className="col ml-1">
 
                 {info !== null && info.location !== null && location !== ''
-                ? <div className="d-flex flex-row mr-4 mb-2">
+                ? <Fade left>
+                    <div className="d-flex flex-row mr-4 mb-2">
                     <div>
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" className="align-self-center mr-3 bi bi-geo-alt-fill" viewBox="0 0 16 16">
                         <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/>
@@ -694,11 +697,13 @@ export const About = props => {
                         <FormatTextarea text={info.location}/>
                     </div>
                     </div>
+                    </Fade>
                 : null}
 
 
                 {info !== null && info.bio !== null && bio !== ''
-                ? <div className="d-flex flex-row mr-4">
+                ? <Fade left>
+                    <div className="d-flex flex-row mr-4">
                     <div>
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" className="align-self-center mr-3 bi bi-person-lines-fill" viewBox="0 0 16 16">
                             <path d="M6 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm-5 6s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H1zM11 3.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 1-.5-.5zm.5 2.5a.5.5 0 0 0 0 1h4a.5.5 0 0 0 0-1h-4zm2 3a.5.5 0 0 0 0 1h2a.5.5 0 0 0 0-1h-2zm0 3a.5.5 0 0 0 0 1h2a.5.5 0 0 0 0-1h-2z"/>
@@ -708,10 +713,12 @@ export const About = props => {
                         <FormatTextarea text={info.bio}/>
                     </div>
                 </div>
+                </Fade>
                 : null}
                 
                 <hr className='float-left' style={{width: '95%'}}/><br/>
 
+                <Fade bottom>
                 <div className="user-container row" style={{width: '95%'}}>
                     <div className='d-flex flex-column mx-auto'>
                         <h4><b>Hobbies:</b></h4>
@@ -735,6 +742,7 @@ export const About = props => {
                     : null}
                     </div>
                 </div>
+                </Fade>
             </div>
         </div>
 
