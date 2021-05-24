@@ -1,6 +1,6 @@
-import { AlertDismissible } from '../components/alertDismissible';
+import { AlertDismissible } from '../alertDismissible';
 import { Modal, Button, Form, Col, Dropdown, DropdownButton } from 'react-bootstrap';
-import UploadProfilePicture from '../views/uploadProfilePic';
+import UploadProfilePicture from '../../views/uploadProfilePic';
 
 export const HomeForm = (props) => {
 
@@ -162,7 +162,7 @@ export const HomeForm = (props) => {
                                 scrollable={false}
                             >
                             <Modal.Header closeButton>
-                            <Modal.Title>Modal title</Modal.Title>
+                            <Modal.Title>Confirm Delete</Modal.Title>
                             </Modal.Header>
                                 <Modal.Body>
                                     <p>Are you sure you want to remove your current avatar?</p>

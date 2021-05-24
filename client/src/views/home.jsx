@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { Button} from 'react-bootstrap';
 import { PencilFill } from 'react-bootstrap-icons';
-import { HomeForm } from '../components/HomeForm';
+import { HomeForm } from '../components/EditForms/HomeForm';
 import Fade from 'react-reveal/Fade';
 
 export const Home = (props) => {
@@ -10,8 +10,6 @@ export const Home = (props) => {
     const profile = (props.data.profile !== null) ? props.data.profile : props.location.state.profile;
     const images = (props.data.images !== null) ? props.data.images : props.location.state.images;
     const info = (props.data.about !== null) ? props.data.about : null;
-
-    // NOTE TO SELF: Type check for images -- (e.g. new user)
 
     const [show, setShow] = useState(false);
     const [showDelete, setShowDelete] = useState(false);
@@ -36,9 +34,6 @@ export const Home = (props) => {
     const [font, setFont] = useState(typeof(profile[0]) !== 'undefined' ? profile[0].font : null);
     const [size, setSize] = useState(typeof(profile[0]) !== 'undefined' && profile[0].font_size ? profile[0].font_size : "100%");
     const [showEditPic, setShowEditPic] = useState(false);
-    const [x, setX] = useState(typeof(images[0]) !== 'undefined' ? images[0].x : null);
-    const [y, setY] = useState(typeof(images[0]) !== 'undefined' ? images[0].y : null);
-    const [r, setR] = useState(typeof(images[0]) !== 'undefined' ? images[0].radius : null)
 
     const [profilePic, setProfilePic] 
     = useState(
@@ -75,9 +70,8 @@ export const Home = (props) => {
         setFullname(user.fullname);
         setCurrentOccupation(typeof(profile[0]) !== 'undefined' ? profile[0].current_occupation : null);
         setCurrentOrganization(typeof(profile[0]) !== 'undefined' ? profile[0].current_organization : null);
-        setX(typeof(images[0]) !== 'undefined' ? images[0].x : null);
-        setY(typeof(images[0]) !== 'undefined' ? images[0].y : null);
-        setR(typeof(images[0]) !== 'undefined' ? images[0].radius : null);
+        setFont(typeof(profile[0]) !== 'undefined' ? profile[0].font : null);
+        setSize(typeof(profile[0]) !== 'undefined' && profile[0].font_size ? profile[0].font_size : "100%");
         setShowEditPic(false);
     }
 
@@ -87,10 +81,6 @@ export const Home = (props) => {
     }
     const stagePreview = (preview) => {
         setProfileAvatar(preview.substring(preview.indexOf(',')+1));
-    }
-
-    const stageCoords = (x, y, r) => {
-        setX(x); setY(y); setR(r);
     }
 
     const handleSave = async() => {
@@ -139,9 +129,6 @@ export const Home = (props) => {
         else if(typeof(images[0]) !== 'undefined' && typeof(images[0].base64image) !== 'undefined'  && (profilePic !== images[0].base64image || profileAvatar !== images[0].base64preview)){
             await props.updateProfileImages(user.user_id, profilePic, profileAvatar, prefix)
         }
-        if(typeof(images[0]) !== 'undefined' && ((images[0].x !== x && x) || (images[0].y !== y && y))){
-            await props.updatePreviewCoords(user.user_id, x, y, r);
-        }
 
         window.location.reload();
     }
@@ -172,35 +159,35 @@ export const Home = (props) => {
             user={user}
             profile={profile}
             images={images}
-            fullname={fullname}
-            currentOccupation={currentOccupation}
-            currentOrganization={currentOrganization}
             show={show}
-            font={font}
-            prefix={prefix}
-            profileAvatar={profileAvatar}
-            size={size}
-            showDelete={showDelete}
-            showAlert={showAlert}
-            showEditPic={showEditPic}
             setShowEditPic={setShowEditPic}
             stagePreview={stagePreview}
             stageImage={stageImage}
-            stageCoords={stageCoords}
             setPublicEmail={setPublicEmail}
             setPhone={setPhone}
             setLocation={setLocation}
-            setShowDelete={setShowDelete}
-            setFont={setFont}
-            setSize={setSize}
             setShow={setShow}
-            handleClose={handleClose}
+            font={font}
+            setFont={setFont}
+            prefix={prefix}
+            profileAvatar={profileAvatar}
+            size={size}
+            setSize={setSize}
+            showEditPic={showEditPic}
+            showDelete={showDelete}
+            setShowDelete={setShowDelete}
             setEdited={setEdited}
+            showAlert={showAlert}
             setShowAlert={setShowAlert}
-            handleSave={handleSave}
-            discardChanges={discardChanges}
+            fullname={fullname}
             setFullname={setFullname}
+            currentOccupation={currentOccupation}
             setCurrentOccupation={setCurrentOccupation}
+            currentOrganization={currentOrganization}
+            setCurrentOrganization={setCurrentOrganization}
+            discardChanges={discardChanges}
+            handleSave={handleSave}
+            handleClose={handleClose}
         ></HomeForm>
 
             {(user !== null && typeof user !== 'undefined')

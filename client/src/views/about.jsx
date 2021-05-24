@@ -1,10 +1,8 @@
 import { useEffect, useState } from 'react';
 import { PencilFill } from 'react-bootstrap-icons';
-import { Modal, Button, Form, Col } from 'react-bootstrap';
-import { AlertDismissible } from '../components/alertDismissible';
-import Switch  from '../components/switch';
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import { Button, Form } from 'react-bootstrap';
 import Fade from 'react-reveal/Fade';
+import { AboutForm } from '../components/EditForms/AboutForm';
 
 export const About = props => {
     //console.log("About Recieved Parent Props: ", props);
@@ -274,69 +272,6 @@ export const About = props => {
           return;
       }
     }
-    
-    const ChangeOrder = () => {
-        return (
-            <Form.Row className="text-center">
-            <DragDropContext 
-                onDragEnd={handleOnDragEnd}
-            >
-            <Col>
-                <Droppable droppableId="hobbies">
-                {(provided) => (
-                    <div {...provided.droppableProps} ref={provided.innerRef}>
-                        {hobbies.values.map((row, idx) => {
-                            return (
-                                <Draggable key={idx} draggableId={row.hobby} index={idx}>
-                                    {(provided) => (
-                                    
-                                        <div 
-                                        className='draggable-container mb-4 ml-3 mr-3' 
-                                        ref={provided.innerRef} 
-                                        {...provided.draggableProps} 
-                                        {...provided.dragHandleProps}>
-
-                                        {row.hobby
-                                            ? row.hobby
-                                            : null}
-                                        </div>
-                                    )}
-                                </Draggable>
-                            );
-                        })}
-                        {provided.placeholder}
-                    </div>
-                )}
-                </Droppable>
-            </Col>
-            <Col>
-                <Droppable droppableId="skills">
-                {(provided) => (
-                    <div {...provided.droppableProps} ref={provided.innerRef}>
-                        {skills.values.map((row, idx) => {
-                            return (
-                                <Draggable key={idx} draggableId={row.skill} index={idx}>
-                                    {(provided) => (
-                                    
-                                        <div className='draggable-container mb-4 ml-3 mr-3' ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
-
-                                        {row.skill
-                                            ? row.skill
-                                            : null}
-                                        </div>
-                                    )}
-                                </Draggable>
-                            );
-                        })}
-                        {provided.placeholder}
-                    </div>
-                )}
-                </Droppable>
-            </Col>
-            </DragDropContext>
-        </Form.Row>
-        );
-    }
 
     const validate = () => {
         let isValidated = true;
@@ -533,132 +468,36 @@ export const About = props => {
         : null}
         <h3>About</h3>
         <hr color="black"/>
-        
 
-        <Modal
+        <AboutForm
+            info={info}
+            user={user}
+            hobbiesData={hobbiesData}
+            skillsData={skillsData}
+            hobbies={hobbies}
+            skills={skills}
+            images={images}
+            validated={validated}
+            handleOnDragEnd={handleOnDragEnd}
             show={show}
-            onHide={handleClose}
-            backdrop="static"
-            keyboard={false}
-            size="lg"
-            centered
-            scrollable={false}
-        >
-            <Modal.Header closeButton>
-                <Modal.Title>
-                    Edit
-                    <AlertDismissible
-                        setShow={setShow}
-                        setEdited={setEdited}
-                        setShowAlert={setShowAlert}
-                        showAlert={showAlert}
-                        handleSave={handleSave}
-                        discardChanges={discardChanges}
-                    />
-                </Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-                <Form noValidate validated={validated} onSubmit={handleSave}>
-                    
-                    <Form.Row className='mt-3'>
-                        <Form.Label column sm={2}>
-                            Location
-                        </Form.Label>
-                        <input 
-                            type="text" 
-                            style={{textAlign: "left"}}
-                            className="form-control" 
-                            id="location" 
-                            defaultValue={(info !== null && info.location !== null) 
-                                ? info.location
-                                : ''} 
-                            onChange={e => 
-                                {setLocation(e.target.value); 
-                                setEdited(true);
-                            }}
-                        ></input>
-                    </Form.Row>
-
-                    <Form.Row className='mt-3'>
-                        <Form.Label column sm={2}>
-                            Bio
-                        </Form.Label>
-                            <textarea 
-                                className="form-control" 
-                                rows="5" 
-                                id="bio" 
-                                defaultValue={(info !== null && info.bio !== null) 
-                                    ? info.bio.replace(/\\n/g, '\n')
-                                    : null} 
-                                onChange={e => {
-                                    setBio(e.target.value); 
-                                    setEdited(true);
-                                }}/>
-                    </Form.Row>
-                    <Form.Group className="mt-4">
-                        {(hobbiesData.length > 1 || skillsData.length > 1)
-                        ? <>
-                        <label>Change Order</label>
-                            <Switch
-                                isOn={changingOrder}
-                                handleToggle={() => {
-                                    if(!validate()){
-                                        console.log("Please address errs");
-                                    } else{
-                                        setChangingOrder(!changingOrder);
-                                    }
-                                }}
-                            />
-                            </>
-                        : null}
-                    </Form.Group>
-
-                    <Form.Row className="text-center">
-                        <Col>
-                            <Form.Label className='text-center'>
-                                <h4>Hobbies</h4>
-                            </Form.Label > <br></br>
-
-                            {changingOrder ? null : renderHobbiesForm()}
-                            
-                            {hobbies.values.length < 6 && !changingOrder
-                                ? <Button 
-                                    onClick={() => addHobby()} 
-                                    variant="outline-success" 
-                                    size="sm"    
-                                >Add Hobby</Button>
-                                : null }
-                                
-                        </Col> 
-                        <Col>
-                            <Form.Label className='text-center'>
-                                <h4>Skills</h4>
-                            </Form.Label > <br></br>
-
-                            {changingOrder ? null : renderSkillsForm()}
-
-                            {skills.values.length < 6 && !changingOrder
-                            ? <Button 
-                                onClick={() => addSkill()} 
-                                variant="outline-success" 
-                                size="sm"    
-                            >Add Skill</Button>
-                            : null }
-                        </Col>
-                    </Form.Row>
-
-                    {changingOrder 
-                        ? <ChangeOrder></ChangeOrder>
-                        : null}
-
-                    <Button variant="success" type="submit" className="mt-5">Save Changes</Button>
-
-                </Form>             
-            </Modal.Body>
-            <Modal.Footer>
-            
-            </Modal.Footer>
-        </Modal>
+            setShow={setShow}
+            edited={edited}
+            setEdited={setEdited}
+            showAlert={showAlert}
+            setShowAlert={setShowAlert}
+            setBio={setBio}
+            setLocation={setLocation}
+            validate={validate}
+            changingOrder={changingOrder}
+            setChangingOrder={setChangingOrder}
+            addHobby={addHobby}
+            addSkill={addSkill}
+            renderHobbiesForm={renderHobbiesForm}
+            renderSkillsForm={renderSkillsForm}
+            handleSave={handleSave}
+            discardChanges={discardChanges}
+            handleClose={handleClose}
+        />
 
         <div className="about-container">
             <Fade right>

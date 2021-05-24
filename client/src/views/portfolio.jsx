@@ -1,10 +1,7 @@
 import { useEffect, useState } from 'react';
 import { PencilFill } from 'react-bootstrap-icons';
-import { Nav, Tab, Modal, Button, Form, Row, Col, Badge } from 'react-bootstrap';
-import { AlertDismissible } from '../components/alertDismissible';
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import { AreYouSure } from '../components/AreYouSure';
-import Switch  from '../components/switch';
+import { Button, Form, Col } from 'react-bootstrap';
+import { PortfolioForm } from '../components/EditForms/PortfolioForm';
 import DatePicker from 'react-datepicker'
 import Fade from 'react-reveal/Fade';
 
@@ -1270,95 +1267,7 @@ export const Portfolio = props => {
         )
     }
 
-    const ChangeOrder = (props) => {
-        console.log("ChangeOrder Component Recieved ID:", props.droppableId)
-        return (
-            <DragDropContext 
-                onDragEnd={handleOnDragEnd}
-            >
-            {props.droppableId === "projects"
-            ? <Droppable droppableId="projects">
-            {(provided) => (
-                <div {...provided.droppableProps} ref={provided.innerRef}>
-                    {projects.values.map((row, idx) => {
-                        return (
-                            <Draggable key={idx} draggableId={row.title} index={idx}>
-                                {(provided) => (
-                                
-                                    <div className='draggable-container mb-4 ml-3 mr-3' ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
-
-                                    {row.title
-                                        ? <b>{row.title}</b>
-                                        : null}
-
-                                    </div>
-                                )}
-                            </Draggable>
-                        );
-                    })}
-                    {provided.placeholder}
-                </div>
-            )}
-            </Droppable>
-            : null}
-
-            {props.droppableId === "work-experience"
-            ? <Droppable droppableId="work-experience">
-            {(provided) => (
-                <div {...provided.droppableProps} ref={provided.innerRef}>
-                    {portfolio.values.map((row, idx) => {
-                        return (
-                            <Draggable key={idx} draggableId={row.occupation} index={idx}>
-                                {(provided) => (
-                                
-                                    <div className='draggable-container mb-4 ml-3 mr-3' ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
-
-                                    {row.occupation
-                                        ? <b>{row.occupation}</b>
-                                        : null}
-                                    {row.organization
-                                        ? <>{' | ' + row.organization}</>
-                                        : null}
-
-                                    </div>
-                                )}
-                            </Draggable>
-                        );
-                    })}
-                    {provided.placeholder}
-                </div>
-            )}
-            </Droppable>
-            : null}
-
-            {props.droppableId === "education"
-            ? <Droppable droppableId="education">
-            {(provided) => (
-                <div {...provided.droppableProps} ref={provided.innerRef}>
-                    {education.values.map((row, idx) => {
-                        return (
-                            <Draggable key={idx} draggableId={row.education} index={idx}>
-                                {(provided) => (
-                                
-                                    <div className='draggable-container mb-4 ml-3 mr-3' ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
-
-                                    {row.education
-                                        ? <b>{row.education}</b>
-                                        : null}
-                                        
-                                    </div>
-                                )}
-                            </Draggable>
-                        );
-                    })}
-                    {provided.placeholder}
-                </div>
-            )}
-            </Droppable>
-            : null}
-            </DragDropContext>
-        );
-    }
+    
 
     const FormatDate = (props) => {
         let date = props.dateString;
@@ -1389,191 +1298,48 @@ export const Portfolio = props => {
         <div className="tab-container">        
         {props.data.ownedByUser ? <Button variant="warning" className="edit-button" onClick={handleShow}>Edit&nbsp;<PencilFill size={25}/></Button> : null}
         <h3>Portfolio</h3>
-        <Modal
+    
+        <PortfolioForm
             show={show}
-            onHide={handleClose}
-            backdrop="static"
-            keyboard={false}
-            size="lg"
-            centered
-            scrollable={false}
-        >
-            <Modal.Header closeButton>
-                <Modal.Title id="contained-modal-title-vcenter">
-                    Edit
-                    <AlertDismissible
-                        setShow={setShow}
-                        setEdited={setEdited}
-                        setShowAlert={setShowAlert}
-                        showAlert={showAlert}
-                        handleSave={handleSave}
-                        discardChanges={discardChanges}
-                    />
-                </Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-            <Tab.Container id="left-tabs-example" defaultActiveKey="projects">
-            <Form noValidate validated={validated} onSubmit={handleSave}>
-                <Row>
-                    <Col sm={3}>
-                    <Nav variant="pills" className="flex-column">
-                        <Nav.Item>
-                            <Nav.Link 
-                                className={(length(errs["project"]) > 0) || (length(duplicateProject) > 0)
-                                    ? "nav-error" 
-                                    : ""}
-                                eventKey="projects" 
-                                onClick={() => setChangingOrder(false)}
-                            >
-                            Projects
-                            {((length(errs["project"]) > 0) || (length(duplicateProject) > 0))
-                            ? <Badge variant="danger" className='ml-4'>
-                                {(length(errs["project"]) + length(duplicateProject))}
-                                </Badge>
-                            : null}
-                            
-                            </Nav.Link>
-                        </Nav.Item>
-                        <Nav.Item>
-                            <Nav.Link 
-                                className={(length(errs["portfolio"]) > 0) || (length(duplicateWork) > 0)
-                                    ? "nav-error" : ""}
-                                eventKey="work-exerience" 
-                                onClick={() => setChangingOrder(false)}
-                            >Work Experience
-                            {(length(errs["portfolio"]) > 0) || (length(duplicateWork) > 0)
-                            ? <Badge variant="danger" className='ml-1'>
-                                {length(errs["portfolio"]) + length(duplicateWork)}
-                                </Badge>
-                            : null}
-                            </Nav.Link>
-                        </Nav.Item>
-                        <Nav.Item>
-                            <Nav.Link 
-                                className={(length(errs["education"]) > 0) || (length(duplicateEducation) > 0)
-                                ? "nav-error" : ""}  
-                                eventKey="education" 
-                                onClick={() => setChangingOrder(false)}
-                            >Education
-                            {(length(errs["education"]) > 0) || (length(duplicateEducation) > 0)
-                            ? <Badge variant="danger" className='ml-4'>
-                                {length(errs["education"]) + length(duplicateEducation)}
-                                </Badge>
-                            : null}
-                            </Nav.Link>
-                        </Nav.Item>
-                    </Nav>
-                    </Col>
-                    <Col sm={9}>
-                    <Tab.Content>
-                        <Tab.Pane eventKey="projects">
-                            <Form.Group>
-                                <h4>Projects</h4>
-                                {projects.values.length < 4
-                                ? <Button onClick={() => addProject()} variant="outline-success" size="sm">Add Project</Button>  
-                                : null }<br></br>
-                                                               
-                                {projectsData.length > 1
-                                ? <><label>Change Order</label>
-                                    <Switch
-                                        isOn={changingOrder}
-                                        handleToggle={() => {                                    
-                                            if(!validate()){
-                                                console.log("Please address errs");
-                                            } else{
-                                                setChangingOrder(!changingOrder);
-                                            }
-                                        }}
-                                    /></>
-                                : null}
-
-
-                                {changingOrder
-                                ? <ChangeOrder droppableId="projects"></ChangeOrder>
-                                : renderProjectsForm()}
-
-                            </Form.Group>
-                        </Tab.Pane>
-                        <Tab.Pane eventKey="work-exerience">
-                            <Form.Group>
-                                <h4>Work Experience</h4>
-                                {portfolio.values.length < 4
-                                ? <Button onClick={() => addWorkExperience()} variant="outline-success" size="sm">Add Work Experience</Button>  
-                                : null }<br></br>
-
-                                {portfolioData.length > 1
-                                ? <><label>Change Order</label>
-                                    <Switch
-                                        isOn={changingOrder}
-                                        handleToggle={() => {
-                                            if(!validate()){
-                                                console.log("Please address errs");
-                                            } else{
-                                                setChangingOrder(!changingOrder);
-                                            }
-                                        }}
-                                    /></>
-                                : null}
-
-                                {changingOrder
-                                ? <ChangeOrder droppableId="work-experience"></ChangeOrder>
-                                : renderWorkExperienceForm()}
-                            </Form.Group>
-                        </Tab.Pane>
-                        <Tab.Pane eventKey="education">
-                            <Form.Group>
-                                <h4>Education</h4>
-                                {education.values.length < 4
-                                ? <Button onClick={() => addEducation()} variant="outline-success" size="sm">Add Education</Button>  
-                                : null }<br></br>
-
-                                {educationData.length > 1
-                                ? <><label>Change Order</label>
-                                    <Switch
-                                        isOn={changingOrder}
-                                        handleToggle={() => {
-                                            if(!validate()){
-                                            console.log("Please address errs");
-                                        } else{
-                                            setChangingOrder(!changingOrder);
-                                        }}}
-                                    /></>
-                                : null} 
-
-                                {showDelete
-                                ?    <AreYouSure
-                                        showDelete={showDelete}
-                                        setShowDelete={setShowDelete}
-                                        deleteWork={deleteWorkExperience}
-                                        deleteEdu={deleteEducation}
-                                        deleteProject={deleteProject}
-                                        setEdited={setEdited}
-                                        requestedDelete={requestedDelete}
-                                        setRequestedDelete={setRequestedDelete}
-                                        idx={requestedDeleteIdx}
-                                        setRequestedDeleteIdx={setRequestedDeleteIdx}
-                                    />
-                                :null}
-                                
-                                {changingOrder
-                                ? <ChangeOrder droppableId="education"></ChangeOrder>
-                                : renderEducationForm()}
-
-
-                            </Form.Group>
-                        </Tab.Pane>
-                    </Tab.Content>
-                    </Col>
-                </Row>
-                <Button variant="success" type="submit">Save Changes</Button>
-            </Form>
-            </Tab.Container>
-
-            </Modal.Body>
-            <Modal.Footer>
-                
-            </Modal.Footer>
-        </Modal>
+            setShow={setShow}
+            showAlert={showAlert}
+            setShowAlert={setShowAlert}
+            showDelete={showDelete}
+            setShowDelete={setShowDelete}
+            errs={errs}
+            edited={edited}
+            duplicateProject={duplicateProject}
+            duplicateEducation={duplicateEducation}
+            duplicateWork={duplicateWork}
+            renderProjectsForm={renderProjectsForm}
+            renderEducationForm={renderEducationForm}
+            renderWorkExperienceForm={renderWorkExperienceForm}
+            addEducation={addEducation}
+            addProject={addProject}
+            addWorkExperience={addWorkExperience}
+            deleteWorkExperience={deleteWorkExperience}
+            deleteEducation={deleteEducation}
+            deleteProject={deleteProject}
+            requestedDelete={requestedDelete}
+            setRequestedDelete={setRequestedDelete}
+            requestedDeleteIdx={requestedDeleteIdx}
+            setRequestedDeleteIdx={setRequestedDeleteIdx}
+            validated={validated}
+            validate={validate}
+            setEdited={setEdited}
+            projects={projects}
+            projectsData={projectsData}
+            portfolio={portfolio}
+            portfolioData={portfolioData}
+            education={education}
+            educationData={educationData}
+            changingOrder={changingOrder}
+            setChangingOrder={setChangingOrder}
+            discardChanges={discardChanges}
+            handleSave={handleSave}
+            handleClose={handleClose}
+            handleOnDragEnd={handleOnDragEnd}
+        />
         <br></br>
         
         <Fade left>

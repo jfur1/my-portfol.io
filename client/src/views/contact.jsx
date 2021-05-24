@@ -1,10 +1,7 @@
 import { useEffect, useState } from 'react';
 import { PencilFill } from 'react-bootstrap-icons';
-import { Modal, Button, Form, Col } from 'react-bootstrap';
-import { AlertDismissible } from '../components/alertDismissible';
-import { AreYouSure } from '../components/AreYouSure'
-import Switch  from '../components/switch';
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import { Button, Form, Col } from 'react-bootstrap';
+import { ContactForm } from '../components/EditForms/ContactForm';
 import Fade from 'react-reveal/Fade';
 
 export const Contact = (props) => {
@@ -262,38 +259,6 @@ export const Contact = (props) => {
         return image;
     }
 
-    const ChangeLinksOrder = () => {
-        return (
-            <DragDropContext 
-                onDragEnd={handleOnDragEnd}
-            >
-            <Droppable droppableId="links">
-            {(provided) => (
-                <div {...provided.droppableProps} ref={provided.innerRef}>
-                    {links.values.map((row, idx) => {
-                        return (
-                            <Draggable key={idx} draggableId={row.link} index={idx}>
-                                {(provided) => (
-                                
-                                    <div className='draggable-container mb-4 ml-3 mr-3' ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
-
-                                    {row.link
-                                        ? <b>{row.link}</b>
-                                        : null}
-
-                                    </div>
-                                )}
-                            </Draggable>
-                        );
-                    })}
-                    {provided.placeholder}
-                </div>
-            )}
-            </Droppable>
-            </DragDropContext>
-        );
-    }
-
     const handleLinkTitleChange = (event, idx) => {
         let tmpLinks = [...links.values];
         tmpLinks[idx] = {
@@ -392,121 +357,38 @@ export const Contact = (props) => {
 
     return (
         <div className="tab-container"> 
-            <Modal
+
+            <ContactForm 
                 show={show}
-                onHide={handleClose}
-                backdrop="static"
-                keyboard={false}
-                size="lg"
-                centered
-                scrollable={false}
-            >
-                <Modal.Header closeButton>
-                    <Modal.Title>
-                        <h3>Edit</h3>
-                        <AlertDismissible
-                            setShow={setShow}
-                            setEdited={setEdited}
-                            setShowAlert={setShowAlert}
-                            showAlert={showAlert}
-                            handleSave={handleSave}
-                            discardChanges={discardChanges}
-                        />
-
-                    </Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-
-                <Form noValidate validated={validated} onSubmit={handleSave}>
-                    <h4>Contact Information</h4>
-                    <Form.Row className='mt-4'>
-                        <Form.Label column sm={2}>
-                            Public Email
-                        </Form.Label>
-                        <Col>
-                            <Form.Control type="email" style={{width: "55%"}} 
-                            defaultValue={publicEmail} 
-                            onChange={e => {
-                                setPublicEmail(e.target.value); 
-                                setEdited(true);
-                            }}/>
-                            <Form.Text className="text-muted">
-                            Public email to display on your profile.
-                            </Form.Text>
-                        </Col>
-                    </Form.Row>
-
-                    <Form.Row className='mt-3'>
-                        <Form.Label column sm={2}>
-                            Phone Number
-                        </Form.Label>
-                        <Col>
-                            <Form.Control 
-                            type="text" 
-                            style={{width: "55%"}} 
-                            defaultValue={phone} 
-                            onChange={e => {
-                                setPhone(e.target.value);
-                                setEdited(true);
-                            }}/>
-                        </Col>
-                    </Form.Row>
-
-                    <Form.Group>
-                        <Form.Label className='mt-4'>
-                            <h4>Links</h4>
-                        </Form.Label > <br></br>
-                            {links.values.length < 6
-                                ? <Button 
-                                onClick={() => addLink()} 
-                                variant="outline-success" 
-                                size="sm" 
-                                disabled={changingOrder}
-                                >Add Link</Button>
-                                
-                                : null }
-                            <br></br>
-
-                            {linksData.length > 1
-                            ? <><label>Change Order</label>
-                                <Switch
-                                    isOn={changingOrder}
-                                    handleToggle={() => {
-                                        if(!validate()){
-                                            console.log("Please address errs");
-                                        } else{
-                                            setChangingOrder(!changingOrder);
-                                        }
-                                    }}
-                                /></>
-                            : null}
-
-                            {showDelete
-                                ?    <AreYouSure
-                                        showDelete={showDelete}
-                                        setShowDelete={setShowDelete}
-                                        removeLink={removeLink}
-                                        setEdited={setEdited}
-                                        requestedDelete={requestedDelete}
-                                        setRequestedDelete={setRequestedDelete}
-                                        idx={requestedDeleteIdx}
-                                        setRequestedDeleteIdx={setRequestedDeleteIdx}
-                                    />
-                                :null}
-                       
-
-                        {changingOrder 
-                        ? <ChangeLinksOrder></ChangeLinksOrder>
-                        : renderLinksForm()}
-
-                    </Form.Group>
-                    <Button variant="success" type="submit">Save Changes</Button>
-                </Form>
-                </Modal.Body>
-                <Modal.Footer>
-                    
-                </Modal.Footer>
-            </Modal>
+                setShow={setShow}
+                edited={edited}
+                setEdited={setEdited}
+                showAlert={showAlert}
+                setShowAlert={setShowAlert}
+                handleSave={handleSave}
+                discardChanges={discardChanges}
+                validated={validated}
+                validate={validate}
+                publicEmail={publicEmail}
+                setPublicEmail={setPublicEmail}
+                phone={phone}
+                setPhone={setPhone}
+                links={links}
+                linksData={linksData}
+                addLink={addLink}
+                changingOrder={changingOrder}
+                setChangingOrder={setChangingOrder}
+                showDelete={showDelete}
+                setShowDelete={setShowDelete}
+                removeLink={removeLink}
+                requestedDelete={requestedDelete}
+                setRequestedDelete={setRequestedDelete}
+                requestedDeleteIdx={requestedDeleteIdx}
+                setRequestedDeleteIdx={setRequestedDeleteIdx}
+                renderLinksForm={renderLinksForm}
+                handleOnDragEnd={handleOnDragEnd}
+                handleClose={handleClose}
+            />
 
             {/* After integrating backend, render original data not tmpHooks */}
             {props.data.ownedByUser ? <Button variant="warning" className="edit-button" onClick={handleShow}>Edit&nbsp;<PencilFill size={25}/></Button> : null}
