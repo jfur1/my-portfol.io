@@ -98,103 +98,52 @@ export const Home = (props) => {
     const handleSave = async() => {
         let locationToCreate = [];
         let locationToUpdate = [];
-        
-        // Declare Funcation Prototypes
-        const updateFullname = async() => {
-            await props.updateFullname(user.user_id, fullname);
-        }
-
-        const createCurrentOccupation = async() => {
-            await props.createCurrentOccupation(user.user_id, currentOccupation);
-        }
-
-        const updateCurrentOccupation = async() => {
-            await props.updateCurrentOccupation(user.user_id, currentOccupation);
-        }
-
-        const createCurrentOrganization = async() => {
-            await props.createCurrentOrganization(user.user_id, currentOrganization);
-        }
-
-        const updateCurrentOrganization = async() => {
-            await props.updateCurrentOrganization(user.user_id, currentOrganization);
-        }
-
-        const createProfileImages = async() => {
-            await props.createProfileImages(user.user_id, profilePic, profileAvatar, prefix)
-        }
-
-        const updateProfileImages = async() => {
-            await props.updateProfileImages(user.user_id, profilePic, profileAvatar, prefix)
-        }
-
-        const updateFont = async() => {
-            await props.updateFont(user.user_id, font);
-        }
-
-        const updateSize = async() => {
-            await props.updateSize(user.user_id, size);
-        }
-
-        const updatePreviewCoords = async() => {
-            await props.updatePreviewCoords(user.user_id, x, y, r);
-        }
 
         // Conditionally Call Functions
-        if(fullname !== user.fullname) await updateFullname();
+        if(fullname !== user.fullname) 
+            await props.updateFullname(user.user_id, fullname);
 
         if((!info && location) || (info !== null && info.location !== location)){
-            //console.log(`Set location update from: ${info.location} to: ${location}`);
             locationToUpdate.push(location);
         }
 
-        const createLocation = async() => {
+        if(locationToCreate.length) 
             await props.createLocation(user.user_id, locationToCreate[0]);
-        }
-        if(locationToCreate.length) await createLocation();
 
-        const updateLocation = async() => {
+        if(locationToUpdate.length) 
             await props.updateLocation(locationToUpdate[0], user.user_id);
-        }
-        if(locationToUpdate.length) await updateLocation();
 
         if((!typeof(profile.current_occupation) !== 'undefined') && currentOccupation)
-            await createCurrentOccupation();
+            await props.createCurrentOccupation(user.user_id, currentOccupation);
         else if(typeof(profile[0]) !== 'undefined' && currentOccupation !== profile[0].current_occupation)
-            await updateCurrentOccupation();
+            await props.updateCurrentOccupation(user.user_id, currentOccupation);
 
         if((!typeof(profile.current_organization) !== 'undefined') && currentOrganization)
-            await createCurrentOrganization();
+            await props.createCurrentOrganization(user.user_id, currentOrganization);
         else if(typeof(profile[0]) !== 'undefined' && currentOrganization !== profile[0].current_organization)
-            await updateCurrentOrganization();
+            await props.updateCurrentOrganization(user.user_id, currentOrganization);
 
-        const updatePhone = async() => {
-            await props.updatePhone(user.user_id, phone);
-        }
-        if((typeof(profile[0]) == 'undefined' && phone) || (typeof(profile[0]) !== 'undefined' && phone !== profile[0].phone)) await updatePhone();
+        if((typeof(profile[0]) == 'undefined' && phone) || (typeof(profile[0]) !== 'undefined' && phone !== profile[0].phone)) await props.updatePhone(user.user_id, phone);
 
-        const updateEmail = async() => {
+        if((typeof(profile[0]) == 'undefined' && publicEmail) || (typeof(profile[0]) !== 'undefined' && publicEmail !== profile[0].public_email)) 
             await props.updateEmail(user.user_id, publicEmail);
-        }
-        if((typeof(profile[0]) == 'undefined' && publicEmail) || (typeof(profile[0]) !== 'undefined' && publicEmail !== profile[0].public_email)) await updateEmail();
 
         if(typeof(profile[0]) !== 'undefined' && font !== profile[0].font)
-            await updateFont();
+            await props.updateFont(user.user_id, font);
         
         if(typeof(profile[0]) !== 'undefined' && size !== profile[0].font_size)
-            await updateSize();
+            await props.updateSize(user.user_id, size);
             
         // Create Profile Picture
         if(typeof(images[0]) == 'undefined' && (profileAvatar || profilePic)){
-            await createProfileImages();
+            await props.createProfileImages(user.user_id, profilePic, profileAvatar, prefix)
         }
         else if(typeof(images[0]) !== 'undefined' && typeof(images[0].base64image) !== 'undefined'  && (profilePic !== images[0].base64image || profileAvatar !== images[0].base64preview)){
-            await updateProfileImages();
+            await props.updateProfileImages(user.user_id, profilePic, profileAvatar, prefix)
         }
         if(typeof(images[0]) !== 'undefined' && ((images[0].x !== x && x) || (images[0].y !== y && y))){
-            await updatePreviewCoords();
+            await props.updatePreviewCoords(user.user_id, x, y, r);
         }
-
 
         window.location.reload();
     }

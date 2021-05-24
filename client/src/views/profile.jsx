@@ -151,7 +151,7 @@ class Profile extends Component{
     componentDidUpdate(){
         if(typeof this.props.location.state !== 'undefined'){
             if(this.state.key !== this.props.location.state.key){
-                //console.log("Saving a new Key: ", this.state.key);
+                console.log("Saving a new Key: ", this.state.key);
                 const tmpState = {...this.props.location.state};
                 tmpState['key'] = this.state.key;
                 tmpState['user'] = this.state.user;
