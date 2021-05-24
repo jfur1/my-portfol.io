@@ -84,18 +84,14 @@ export const Home = (props) => {
     }
 
     const stageImage = (fullImage) => {
-        //console.log("Recieved Full Base64 Img:", fullImage);
         setProfilePic(fullImage.substring(fullImage.indexOf(',')+1));
         setPrefix(fullImage.substring(0, fullImage.indexOf(',')+1));
     }
     const stagePreview = (preview) => {
-        //console.log("Recieved Base64 Preview:", preview);
         setProfileAvatar(preview.substring(preview.indexOf(',')+1));
     }
 
     const stageCoords = (x, y, r) => {
-        //console.log("Home tab recieved crop coords:");
-        //console.log("(x: " + x ,", y: " + y + ", Radius: ", + r + ")");
         setX(x); setY(y); setR(r);
     }
 

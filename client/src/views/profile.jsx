@@ -114,7 +114,6 @@ class Profile extends Component{
             }
         }else{
             // If user was found => Store in state
-            //console.log("Found user: ", data.user);
             this.setState({
                 user: data.user, 
                 requestedBy: data.requestedBy,
@@ -132,7 +131,6 @@ class Profile extends Component{
 
         // Regardless of whether the current user matches the profile, a user must always be logged-in in order to edit their profile
         if(typeof this.state.requestedBy !== 'undefined' && typeof this.state.user !== 'undefined' && this.state.requestedBy !== null && this.state.user !== null && this.state.requestedBy.user_id === this.state.user.user_id){
-            //console.log("Profile owned by user!");
             this.setState({ownedByUser: true});
         }
 
@@ -162,26 +160,6 @@ class Profile extends Component{
                     pathname: `/${this.state.user.username}`,
                     state: tmpState
                 })
-                //console.log("State:", this.state);
-                // this.props.history.replace({
-                //     pathname: `/${this.state.user.username}`,
-                //     state: {
-                //         user: this.state.user,
-                        // key: this.state.key,
-                //         ownedByUser: this.state.ownedByUser,
-                //         loggedIn: this.state.loggedIn,
-                //         requestedBy: this.state.requestedBy,
-                //         about: this.state.about,
-                //         profile: this.state.profile,
-                //         portfolio: this.state.portfolio,
-                //         contact: this.state.contact,
-                //         education: this.state.education,
-                //         hobbies: this.state.hobbies,
-                //         skills: this.state.skills,
-                //         projects: this.state.projects,
-                //         images: this.state.images
-                //     }
-                // })
             }
         } 
         else if(this.state.user.username === 'undefined'){
@@ -198,22 +176,6 @@ class Profile extends Component{
             this.props.history.push({
                 pathname: `/${this.state.user.username}`,
                 state: {...this.props.location.state}
-                // state: {
-                //     user: this.state.user,
-                //     key: this.state.key,
-                //     ownedByUser: this.state.ownedByUser,
-                //     loggedIn: this.state.loggedIn,
-                //     requestedBy: this.state.requestedBy,
-                //     about: this.state.about,
-                //     profile: this.state.profile,
-                //     portfolio: this.state.portfolio,
-                //     contact: this.state.contact,
-                //     education: this.state.education,
-                //     hobbies: this.state.hobbies,
-                //     skills: this.state.skills,
-                //     projects: this.state.projects,
-                //     images: this.state.images
-                // }
             })
         }
     }
@@ -236,7 +198,6 @@ class Profile extends Component{
             })
         });
         await response.json();
-        //console.log("Client Recieved Response: ", data);
         return;
     }
 
@@ -257,7 +218,6 @@ class Profile extends Component{
             })
         });
         await response.json();
-        //console.log("Client Recieved Response: ", data);
         return;
     }
     
@@ -275,7 +235,6 @@ class Profile extends Component{
             }
         });
         await response.json();
-        //console.log("Client Recieved Response: ", data);
         return;
     } 
     updateHobby = async(hobby_id, hobby, user_id, rowIdx) => {
@@ -294,7 +253,6 @@ class Profile extends Component{
             }
         });
         await response.json();
-        //console.log("Client Recieved Response: ", data);
         return;
     }
     deleteHobby = async(hobby_id) => {
@@ -309,7 +267,6 @@ class Profile extends Component{
             }
         });
         await response.json();
-        ///console.log("Client Recieved Response: ", data);
         return;
     }
 
@@ -327,7 +284,6 @@ class Profile extends Component{
             }
         });
         await response.json();
-       // console.log("Client Recieved Response: ", data);
         return;
     }
     updateSkill = async(skill_id, skill, user_id, rowIdx) => {
@@ -361,7 +317,6 @@ class Profile extends Component{
             }
         });
         await response.json();
-        //console.log("Client Recieved Response: ", data);
         return;
     }
 
@@ -379,7 +334,6 @@ class Profile extends Component{
             }
         });
         await response.json();
-        //console.log("Client Recieved Response: ", data);
         return;
     }
 
@@ -396,7 +350,6 @@ class Profile extends Component{
             }
         });
         await response.json();
-        //console.log("Client Recieved Response: ", data);
         return;
     }
 
@@ -418,7 +371,6 @@ class Profile extends Component{
             })
         });
         await response.json();
-        //console.log("Client Recieved Response: ", data);
         return;
     }
 
@@ -440,7 +392,6 @@ class Profile extends Component{
             })
         });
         await response.json();
-        //console.log("Client Recieved Response: ", data);
         return;
     }
 
@@ -456,7 +407,6 @@ class Profile extends Component{
             }
         });
         await response.json();
-        //console.log("Client Recieved Response: ", data);
         return;
     }
 
@@ -485,13 +435,11 @@ class Profile extends Component{
             })
         });
         await response.json();
-        //console.log("Client Recieved Response: ", data);
         return;
     }
 
     updateProject = async(user_id, project, rowIdx) => {
         this.setState({loading: true});
-        //console.log("Profile.jsx Recieved Project:", project)
         const response = await fetch('/updateProject',  {
             method: 'POST', 
             mode: 'cors',
@@ -514,7 +462,6 @@ class Profile extends Component{
             })
         });
         await response.json();
-        //console.log("Client Recieved Response: ", data);
         return;
     } 
     
@@ -530,7 +477,6 @@ class Profile extends Component{
             }
         });
         await response.json();
-        //console.log("Client Recieved Response: ", data);
         return;
     }
 
@@ -556,7 +502,6 @@ class Profile extends Component{
             })
         });
         await response.json();
-        //console.log("Client Recieved Response: ", data);
         return;
     }
 
@@ -583,7 +528,6 @@ class Profile extends Component{
             })
         });
         await response.json();
-        //console.log("Client Recieved Response: ", data);
         return;
     }
 
@@ -599,7 +543,6 @@ class Profile extends Component{
             }
         });
         await response.json();
-        //console.log("Client Recieved Response: ", data);
         return;
     }
 
@@ -625,7 +568,6 @@ class Profile extends Component{
             })
         });
         await response.json();
-        //console.log("Client Recieved Response: ", data);
         return;
     }
 
@@ -652,7 +594,6 @@ class Profile extends Component{
             })
         });
         await response.json();
-        //console.log("Client Recieved Response: ", data);
         return;
     }
 
@@ -668,7 +609,6 @@ class Profile extends Component{
             }
         });
         await response.json();
-        //console.log("Client Recieved Response: ", data);
         return;
     }
 
@@ -686,7 +626,6 @@ class Profile extends Component{
             }
         });
         await response.json();
-        //console.log("Client Recieved Response: ", data);
         return;
     }
 
@@ -703,7 +642,6 @@ class Profile extends Component{
             }
         });
         await response.json();
-        //console.log("Client Recieved Response: ", data);
         return;
     }
 
@@ -720,7 +658,6 @@ class Profile extends Component{
             }
         });
         await response.json();
-        //console.log("Client Recieved Response: ", data);
         return;
     }
 
@@ -737,7 +674,6 @@ class Profile extends Component{
             }
         });
         await response.json();
-        //console.log("Client Recieved Response: ", data);
         return;
     }
 
@@ -754,7 +690,6 @@ class Profile extends Component{
             }
         });
         await response.json();
-        //console.log("Client Recieved Response: ", data);
         return;
     }
     
@@ -777,7 +712,6 @@ class Profile extends Component{
             })
         });
         await response.json();
-        //console.log("Client Recieved Response: ", data);
         return;
     }
 
@@ -800,7 +734,6 @@ class Profile extends Component{
             })
         });
         await response.json();
-        //console.log("Client Recieved Response: ", data);
         return;
     }
 
@@ -823,7 +756,6 @@ class Profile extends Component{
             })
         });
         await response.json();
-        //console.log("Client Recieved Response: ", data);
         return;
     }
 
@@ -845,7 +777,6 @@ class Profile extends Component{
             })
         });
         await response.json();
-       // console.log("Client Recieved Response: ", data);
         return;
     }
 
@@ -867,7 +798,6 @@ class Profile extends Component{
             })
         });
         await response.json();
-        //console.log("Client Recieved Response: ", data);
         return;
     }
 
