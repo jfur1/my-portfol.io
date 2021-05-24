@@ -151,49 +151,35 @@ export const Contact = (props) => {
         console.log("links.values:", links.values);
 
         // Begin POST Requests
-        const updatePhone = async() => {
+        if(phoneToUpdate.length) 
             await props.updatePhone(user.user_id, phoneToUpdate);
-        }
-        if(phoneToUpdate.length) await updatePhone();
 
-        
-        const updateEmail = async() => {
+        if(emailToUpdate.length) 
             await props.updateEmail(user.user_id, emailToUpdate);
-        }
-        if(emailToUpdate.length) await updateEmail();
 
-
-        const createLinks = async() => {
+        if(linksToCreate.length){
             for await (let linkToCreate of linksToCreate){
                 await props.createLink(user.user_id, linkToCreate, linkToCreate.rowIdx);
             }
         }
-        if(linksToCreate.length) await createLinks();
 
-
-        const updateLinks = async() => {
+        if(linksToUpdate.length){
             for await(let linkToUpdate of linksToUpdate){
                 await props.updateLink(linkToUpdate, user.user_id, linkToUpdate.rowIdx);
             }
         }
-        if(linksToUpdate.length) await updateLinks();
 
-
-        const reorder = async() => {
+        if(reordered){
             links.values.forEach(async (row, rowIdx) => {
                 await props.updateLink(row.link_id, row.link, row.title, row.description, user.user_id, rowIdx);
             })
         }
-        if(reordered) await reorder();
 
-
-        const deleteLinks = async() => {
+        if(linksToDelete.length){
             for await (let linkToDelete of linksToDelete){
                 await props.deleteLink(linkToDelete.link_id);
             }
         }
-        if(linksToDelete.length) await deleteLinks();
-
 
         window.location.reload();
         }
@@ -275,7 +261,6 @@ export const Contact = (props) => {
         }, ''));
         return image;
     }
-
 
     const ChangeLinksOrder = () => {
         return (

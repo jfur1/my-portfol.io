@@ -871,71 +871,61 @@ export const Portfolio = props => {
         // console.log("Education to Delete:", educationToDelete);
 
         // Begin POST Requests
-
-        const createProjects = async() => {
+        if(projectsToCreate.length){
             for await (const projectToCreate of projectsToCreate){
                 await props.createProject(user.user_id, projectToCreate, projectToCreate.rowIdx);
             }
         }
-        if(projectsToCreate.length) await createProjects();
 
-        const updateProjects = async() => {
+        if(projectsToUpdate.length){
             for(const projectToUpdate of projectsToUpdate){
                 await props.updateProject(user.user_id, projectToUpdate, projectToUpdate.rowIdx);
             }
         }
-        if(projectsToUpdate.length) await updateProjects();
 
-        const createPortfolio = async() => {
+        if(workExperienceToCreate.length){
             for await (let workToCreate of workExperienceToCreate){
                 await props.createWorkExperience(user.user_id, workToCreate, workToCreate.rowIdx);
             }
         }
-        if(workExperienceToCreate.length) await createPortfolio();
 
-        const updateWorkExperience = async() => {
+        if(workExperienceToUpdate.length){
             for(const workToUpdate of workExperienceToUpdate){
                 await props.updateWorkExperience(user.user_id, workToUpdate, workToUpdate.rowIdx);
             }
         }
-        if(workExperienceToUpdate.length) await updateWorkExperience();
 
-        const createEdu = async() => {
-                for await (let eduToCreate of educationToCreate){
-                    await props.createEducation(user.user_id, eduToCreate, eduToCreate.rowIdx);
-                }
+        if(educationToCreate.length){
+            for await (let eduToCreate of educationToCreate){
+                await props.createEducation(user.user_id, eduToCreate, eduToCreate.rowIdx);
+            }
         }
-        if(educationToCreate.length) await createEdu();
 
-        const updateEdu = async() => {
+        if(educationToUpdate.length){
             for await (const eduToUpdate of educationToUpdate){
                 await props.updateEducation(user.user_id, eduToUpdate, eduToUpdate.rowIdx);
             }
         }
-        if(educationToUpdate.length) await updateEdu();
 
-        const deleteProjects = async() => {
+        if(projectsToDelete.length){
             for await (let projectToDelete of projectsToDelete){
                 await props.deleteProject(projectToDelete.project_id);
             }
-        };
-        if(projectsToDelete.length) await deleteProjects();
+        }
 
-        const deleteWork = async() => {
+        if(workExperienceToDelete.length){
             for await (let workToDelete of workExperienceToDelete){
                 await props.deleteWorkExperience(workToDelete.portfolio_id);
             }
         }
-        if(workExperienceToDelete.length) await deleteWork();
 
-        const deleteEdu = async() => {
+        if(educationToDelete.length){
             for await (let eduToDelete of educationToDelete){
                 await props.deleteEducation(eduToDelete.education_id);
             }
         }
-        if(educationToDelete.length) await deleteEdu();
 
-        const reorder = async() => {
+        if(reordered){
             console.log("Reordered projects:");
             projects.values.forEach(async (row, rowIdx) => {
                 console.log("Row:", row);
@@ -954,8 +944,6 @@ export const Portfolio = props => {
                 await props.updateEducation(user.user_id, row, rowIdx);
             })
         }
-        if(reordered) await reorder();
-
 
         window.location.reload();
         }

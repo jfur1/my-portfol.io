@@ -1,13 +1,11 @@
 // Home Tab on a User's Profile
 import { useState } from 'react';
-import { Modal, Button, Form, Dropdown, DropdownButton, Col } from 'react-bootstrap';
+import { Button} from 'react-bootstrap';
 import { PencilFill } from 'react-bootstrap-icons';
-import { AlertDismissible } from '../components/alertDismissible';
-import UploadProfilePicture from './uploadProfilePic';
+import { HomeForm } from '../components/HomeForm';
 import Fade from 'react-reveal/Fade';
 
 export const Home = (props) => {
-    //console.log("Home Component Recieved Props: ", props);
     const user = props.data.user;
     const profile = (props.data.profile !== null) ? props.data.profile : props.location.state.profile;
     const images = (props.data.images !== null) ? props.data.images : props.location.state.images;
@@ -169,241 +167,42 @@ export const Home = (props) => {
         ? <Button variant="warning" className="edit-button" onClick={handleShow}>Edit&nbsp;<PencilFill size={25}/></Button>
         : null}
         
-        <Modal
+        <HomeForm
+            info={info}
+            user={user}
+            profile={profile}
+            images={images}
+            fullname={fullname}
+            currentOccupation={currentOccupation}
+            currentOrganization={currentOrganization}
             show={show}
-            onHide={handleClose}
-            backdrop="static"
-            keyboard={false}
-            size="lg"
-            centered
-            scrollable={false}
-        >
-            <Modal.Header closeButton>
-                <Modal.Title>
-                    Edit Homepage
-                    <AlertDismissible
-                        setShow={setShow}
-                        setEdited={setEdited}
-                        setShowAlert={setShowAlert}
-                        showAlert={showAlert}
-                        handleSave={handleSave}
-                        discardChanges={discardChanges}
-                    />
-                </Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-                <Form noValidate onSubmit={handleSave}>
-                    
-                    <Form.Row className='mt-3'>
-                        <Form.Label column sm={2}>
-                            Full Name
-                        </Form.Label>
-                        <input 
-                            type="text" 
-                            style={{textAlign:"left", width: "45%"}} 
-                            className="form-control ml-1" 
-                            defaultValue={fullname} 
-                            onChange={e => 
-                                {    
-                                setFullname(e.target.value); 
-                                setEdited(true);
-                            }}
-                        ></input>
-                    </Form.Row>
-                    <Form.Row className='mt-3'>
-                        <Form.Label column sm={2}>
-                            Current Occupation
-                        </Form.Label>
-                        <input 
-                            type="text" 
-                            style={{textAlign:"left", width: "45%"}} 
-                            className="form-control ml-1 mt-2" 
-                            defaultValue={currentOccupation} 
-                            onChange={e => 
-                                {setCurrentOccupation(e.target.value); 
-                                setEdited(true); 
-                            }}
-                        ></input>
-                    </Form.Row>
-                    <Form.Row className='mt-3'>
-                        <Form.Label column sm={2}>
-                            Current Organization
-                        </Form.Label>
-                        <input 
-                            type="text" 
-                            style={{textAlign:"left", width: "45%"}} 
-                            className="form-control ml-1 mt-2" 
-                            defaultValue={currentOrganization} 
-                            onChange={e => 
-                                {setCurrentOrganization(e.target.value); 
-                                setEdited(true);
-                            }}
-                        ></input>
-                    </Form.Row>
+            font={font}
+            prefix={prefix}
+            profileAvatar={profileAvatar}
+            size={size}
+            showDelete={showDelete}
+            showAlert={showAlert}
+            showEditPic={showEditPic}
+            setShowEditPic={setShowEditPic}
+            stagePreview={stagePreview}
+            stageImage={stageImage}
+            stageCoords={stageCoords}
+            setPublicEmail={setPublicEmail}
+            setPhone={setPhone}
+            setLocation={setLocation}
+            setShowDelete={setShowDelete}
+            setFont={setFont}
+            setSize={setSize}
+            setShow={setShow}
+            handleClose={handleClose}
+            setEdited={setEdited}
+            setShowAlert={setShowAlert}
+            handleSave={handleSave}
+            discardChanges={discardChanges}
+            setFullname={setFullname}
+            setCurrentOccupation={setCurrentOccupation}
+        ></HomeForm>
 
-                    <Form.Row className='mt-3'>
-                        <Form.Label column sm={2}>
-                            Location
-                        </Form.Label>
-                        <input 
-                            type="text" 
-                            style={{textAlign:"left", width: "45%"}} 
-                            className="form-control ml-1" 
-                            id="location" 
-                            defaultValue={(info !== null && info.location !== null) 
-                                ? info.location 
-                                : ''} 
-                            onChange={e => 
-                                {setLocation(e.target.value); 
-                                setEdited(true);
-                            }}
-                        ></input>
-                    </Form.Row>
-
-                    <Form.Row className='mt-4'>
-                        <Form.Label column sm={2}>
-                            Public Email
-                        </Form.Label>
-                        <Col>
-                            <Form.Control 
-                                type="email" 
-                                style={{textAlign:"left", width: "55%"}} 
-                                defaultValue={typeof(profile[0]) !== 'undefined' ? profile[0].public_email : null}  
-                                onChange={e => {
-                                    setPublicEmail(e.target.value); 
-                                    setEdited(true);
-                                }}/>
-                            <Form.Text className="text-muted">
-                            Public email to display on your profile.
-                            </Form.Text>
-                        </Col>
-                    </Form.Row>
-
-                    <Form.Row className='mt-3'>
-                        <Form.Label column sm={2}>
-                            Phone Number
-                        </Form.Label>
-                        <Col>
-                            <Form.Control 
-                            type="text" 
-                            style={{textAlign:"left", width: "55%"}} 
-                            defaultValue={typeof(profile[0]) !== 'undefined' ? profile[0].phone : null} 
-                            onChange={e => {
-                                setPhone(e.target.value);
-                                setEdited(true);
-                            }}/>
-                        </Col>
-                    </Form.Row>
-
-                    <Form.Row className='mt-3'>
-                        <Form.Label>
-                            Edit Profile Picture
-                        </Form.Label>
-                    </Form.Row>
-
-                    <Form.Row className='justify-content-center'>
-                        {showEditPic 
-                        ? <UploadProfilePicture 
-                            stagePreview={stagePreview}
-                            stageImage={stageImage}
-                            stageCoords={stageCoords}
-                            x={x}
-                            y={y}
-                            r={r}
-                        />
-                        : <img src={typeof(images[0]) !== 'undefined'
-                            ? prefix + profileAvatar
-                            : ''} alt="Preview"/>}
-                        
-                        {showDelete
-                            ? <Modal
-                                show={showDelete}
-                                onHide={() => setShowDelete(false)}
-                                backdrop="static"
-                                keyboard={false}
-                                size="sm"
-                                centered
-                                scrollable={false}
-                            >
-                            <Modal.Header closeButton>
-                            <Modal.Title>Modal title</Modal.Title>
-                            </Modal.Header>
-                                <Modal.Body>
-                                    <p>Are you sure you want to remove your current avatar?</p>
-                                </Modal.Body>
-                            <Modal.Footer>
-                                <Button variant="secondary" onClick={() => setShowDelete(false)}>Cancel</Button>
-                                <Button variant="danger" 
-                                    onClick={() => {
-                                        setProfileAvatar('');
-                                        setProfilePic('');
-                                        setEdited(true);
-                                        setShowDelete(false);
-                                    }}>    
-                                OK</Button>
-                            </Modal.Footer>
-                            </Modal>
-                        :null}
-
-                        {!showEditPic
-                        ? <DropdownButton id="avatar-dropdown" title="edit" size="sm">
-                            <Dropdown.Item eventKey="1" 
-                                onClick={() => {setShowEditPic(!showEditPic);setEdited(true);}}>
-                                Upload a photo...
-                            </Dropdown.Item>
-                            <Dropdown.Item eventKey="2" onClick={() => setShowDelete(true)}>Remove Photo</Dropdown.Item>
-                        </DropdownButton>
-                        : null}
-                    </Form.Row>
-
-                    <br></br>
-                    <Form.Row className='mt-3'>
-                        <Form.Label>
-                            Edit Font
-                        </Form.Label>
-                    </Form.Row>
-                    <Dropdown id="collapsible-nav-dropdown">
-                        <Dropdown.Toggle className="bg-transparent text-dark" id="dropdown-custom-components">
-                        Your font: <b style={{
-                            fontFamily: font
-                        }}>{!font ? "Arial" : font}</b>
-                        </Dropdown.Toggle>
-                        <Dropdown.Menu>
-                            <Dropdown.Item active={(font === "Arial") ? true : false} onSelect={e => {setFont("Arial");setEdited(true);}} style={{fontFamily: "Arial"}}>Arial</Dropdown.Item>
-                            <Dropdown.Item active={(font === "Times New Roman") ? true : false} onSelect={e => {setFont("Times New Roman");setEdited(true);}} style={{fontFamily: "Times New Roman"}}>Times New Roman</Dropdown.Item>
-                            <Dropdown.Item active={(font === "Helvetica") ? true : false} onSelect={e => {setFont("Helvetica");setEdited(true);}} style={{fontFamily: "Helvetica"}}>Helvetica</Dropdown.Item>
-                            <Dropdown.Item active={(font === "Lucida Console") ? true : false} onSelect={e => {setFont("Lucida Console");setEdited(true);}} style={{fontFamily: "Lucida Console"}}>Lucida Console</Dropdown.Item>
-                            <Dropdown.Item active={(font === "Georgia") ? true : false} onSelect={e => {setFont("Georgia");setEdited(true);}} style={{fontFamily: "Georgia"}}>Georgia</Dropdown.Item>
-                            <Dropdown.Item active={(font === "Garamond") ? true : false} onSelect={e => {setFont("Garamond");setEdited(true);}} style={{fontFamily: "Garamond"}}>Garamond</Dropdown.Item>
-                            <Dropdown.Item active={(font === "Verdana") ? true : false} onSelect={e => {setFont("Verdana");setEdited(true);}} style={{fontFamily: "Verdana"}}>Verdana</Dropdown.Item>
-                            <Dropdown.Item active={(font === "Courier New") ? true : false} onSelect={e => {setFont("Courier New");setEdited(true);}} style={{fontFamily: "Courier New"}}>Courier New</Dropdown.Item>
-                            <Dropdown.Item active={(font === "Monaco") ? true : false} onSelect={e => {setFont("Monaco");setEdited(true);}} style={{fontFamily: "Monaco"}}>Monaco</Dropdown.Item>
-                            <Dropdown.Item active={(font === "Brush Script MT") ? true : false} onSelect={e => {setFont("Brush Script MT");setEdited(true);}} style={{fontFamily: "Brush Script MT"}}>Brush Script MT</Dropdown.Item>
-                            <Dropdown.Item active={(font === "Lucida Handwriting") ? true : false} onSelect={e => {setFont("Lucida Handwriting");setEdited(true);}} style={{fontFamily: "Lucida Handwriting"}}>Lucida Handwriting</Dropdown.Item>
-                            <Dropdown.Item active={(font === "Copperplate") ? true : false} onSelect={e => {setFont("Copperplate");setEdited(true);}} style={{fontFamily: "Copperplate"}}>Copperplate</Dropdown.Item>
-                        </Dropdown.Menu>
-                    </Dropdown>
-
-                    <br></br>
-                    <Dropdown id="collapsible-nav-dropdown">
-                        <Dropdown.Toggle className="bg-transparent text-dark" id="dropdown-custom-components">
-                        Font size: <b style={{fontFamily: font, fontSize: size}}>
-                        {size === "75%" ? "Small Text" : null}
-                        {size === "100%" ? "Medium Text" : null}
-                        {size === "125%" ? "Large Text" : null}</b>
-                        </Dropdown.Toggle>
-                        <Dropdown.Menu>
-                            <Dropdown.Item active={(size === "75%") ? true : false} onSelect={e => {setSize("75%");setEdited(true);}} style={{fontSize: '75%'}}>Small text</Dropdown.Item>
-                            <Dropdown.Item active={(size === "100%") ? true : false} onSelect={e => {setSize("100%");setEdited(true);}} style={{fontSize: '100%'}}>Normal Text</Dropdown.Item>
-                            <Dropdown.Item active={(size === "125%") ? true : false} onSelect={e => {setSize("125%");setEdited(true);}} style={{fontSize: '125%'}}>Large Text</Dropdown.Item>
-                        </Dropdown.Menu>
-                    </Dropdown>
-
-                    <Button variant="success" type="submit" className="mt-5">Save Changes</Button>
-
-                </Form>
-            </Modal.Body>
-        </Modal>
             {(user !== null && typeof user !== 'undefined')
             ? 
             <Fade bottom>
