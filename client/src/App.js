@@ -1,5 +1,5 @@
 import React from 'react';
-import { Switch, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 
@@ -23,13 +23,13 @@ function App() {
          minHeight:'100vh',
          paddingBottom: '140px'
       }}>
-      <Switch>
+      <Routes>
         <Route exact path="/" component={HomeSlider} />
         <Route exact path="/forgot" component={ForgotPassword} />
         <Route exact path="/reset/:token" component={ResetPassword} />
         <Route exact path="/:username" component={Profile} />
         <Route path="*" component={() => "404 Not Found"} />
-      </Switch>
+      </Routes>
     </div>
     <Footer/></>
   );
